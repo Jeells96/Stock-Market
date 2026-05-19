@@ -3,252 +3,1087 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Stock Advisor</title>
+    <title>APEX CAPITAL — Market Intelligence</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
-        body { font-family: system-ui, -apple-system, sans-serif; }
-        .price-up { color: #22c55e; }
-        .price-down { color: #ef4444; }
-        .card { transition: all 0.3s; }
-        .card:hover { transform: translateY(-4px); }
+        :root {
+            --apex-black: #080a0e;
+            --apex-dark: #0d1117;
+            --apex-card: #111620;
+            --apex-border: #1e2d40;
+            --apex-gold: #f0a500;
+            --apex-gold-dim: #9a6a00;
+            --apex-green: #00ff94;
+            --apex-green-dim: #00cc77;
+            --apex-red: #ff2d55;
+            --apex-red-dim: #cc2244;
+            --apex-blue: #0af;
+            --apex-muted: #4a5568;
+            --apex-text: #c8d6e5;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: var(--apex-black);
+            color: var(--apex-text);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Scanline overlay */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 2px,
+                rgba(0,0,0,0.06) 2px,
+                rgba(0,0,0,0.06) 4px
+            );
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        /* Ticker tape */
+        .ticker-wrap {
+            background: var(--apex-gold);
+            overflow: hidden;
+            height: 28px;
+            display: flex;
+            align-items: center;
+        }
+        .ticker-track {
+            display: flex;
+            gap: 0;
+            animation: ticker 40s linear infinite;
+            white-space: nowrap;
+        }
+        @keyframes ticker {
+            from { transform: translateX(0); }
+            to { transform: translateX(-50%); }
+        }
+        .ticker-item {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: #000;
+            font-weight: 700;
+            padding: 0 24px;
+        }
+        .ticker-item .up { color: #006633; }
+        .ticker-item .down { color: #880011; }
+
+        /* Header */
+        header {
+            background: var(--apex-dark);
+            border-bottom: 1px solid var(--apex-border);
+            padding: 16px 32px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 32px;
+            letter-spacing: 4px;
+            color: var(--apex-gold);
+            text-shadow: 0 0 30px rgba(240,165,0,0.4);
+        }
+        .logo span { color: #fff; }
+        .market-status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-family: 'Space Mono', monospace;
+            color: var(--apex-green);
+        }
+        .market-status .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: var(--apex-green);
+            box-shadow: 0 0 8px var(--apex-green);
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Search bar */
+        .search-zone {
+            background: var(--apex-dark);
+            border-bottom: 1px solid var(--apex-border);
+            padding: 12px 32px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .search-zone input {
+            background: var(--apex-card);
+            border: 1px solid var(--apex-border);
+            color: #fff;
+            font-family: 'Space Mono', monospace;
+            font-size: 13px;
+            padding: 10px 16px;
+            border-radius: 4px;
+            outline: none;
+            width: 200px;
+            transition: border-color 0.2s;
+            text-transform: uppercase;
+        }
+        .search-zone input:focus { border-color: var(--apex-gold); }
+        .search-zone input::placeholder { color: var(--apex-muted); text-transform: none; }
+        .btn-add {
+            background: var(--apex-gold);
+            color: #000;
+            font-family: 'Space Mono', monospace;
+            font-size: 12px;
+            font-weight: 700;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .btn-add:hover { background: #ffd740; transform: translateY(-1px); }
+        .btn-add:active { transform: translateY(0); }
+        .label-hint {
+            font-size: 11px;
+            color: var(--apex-muted);
+            font-family: 'Space Mono', monospace;
+        }
+
+        /* Main layout */
+        main {
+            display: grid;
+            grid-template-columns: 320px 1fr;
+            grid-template-rows: auto 1fr;
+            height: calc(100vh - 120px);
+            gap: 0;
+        }
+
+        /* Watchlist sidebar */
+        .sidebar {
+            grid-row: 1 / 3;
+            background: var(--apex-dark);
+            border-right: 1px solid var(--apex-border);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--apex-border) transparent;
+        }
+        .sidebar-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--apex-border);
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--apex-gold);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Stock card */
+        .stock-card {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--apex-border);
+            cursor: pointer;
+            transition: background 0.15s;
+            position: relative;
+            overflow: hidden;
+        }
+        .stock-card::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 0; bottom: 0;
+            width: 3px;
+            background: transparent;
+            transition: background 0.2s;
+        }
+        .stock-card:hover { background: rgba(240,165,0,0.04); }
+        .stock-card:hover::before { background: var(--apex-gold-dim); }
+        .stock-card.active { background: rgba(240,165,0,0.07); }
+        .stock-card.active::before { background: var(--apex-gold); }
+
+        .card-top { display: flex; justify-content: space-between; align-items: flex-start; }
+        .card-symbol {
+            font-family: 'Space Mono', monospace;
+            font-size: 15px;
+            font-weight: 700;
+            color: #fff;
+        }
+        .card-price {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+        }
+        .card-name {
+            font-size: 11px;
+            color: var(--apex-muted);
+            margin-top: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 160px;
+        }
+        .card-change {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            margin-top: 4px;
+            text-align: right;
+        }
+        .up { color: var(--apex-green); }
+        .down { color: var(--apex-red); }
+        .neutral { color: var(--apex-muted); }
+
+        /* Signal badge */
+        .signal-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 2px;
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            margin-top: 8px;
+        }
+        .signal-BUY { background: rgba(0,255,148,0.15); color: var(--apex-green); border: 1px solid rgba(0,255,148,0.3); }
+        .signal-SELL { background: rgba(255,45,85,0.15); color: var(--apex-red); border: 1px solid rgba(255,45,85,0.3); }
+        .signal-HOLD { background: rgba(240,165,0,0.1); color: var(--apex-gold); border: 1px solid rgba(240,165,0,0.3); }
+        .signal-WATCH { background: rgba(0,170,255,0.1); color: var(--apex-blue); border: 1px solid rgba(0,170,255,0.3); }
+        .signal-STRONG\ BUY { background: rgba(0,255,148,0.25); color: #fff; border: 1px solid var(--apex-green); }
+        .signal-STRONG\ SELL { background: rgba(255,45,85,0.25); color: #fff; border: 1px solid var(--apex-red); }
+
+        /* Chart area */
+        .chart-area {
+            background: var(--apex-card);
+            border-bottom: 1px solid var(--apex-border);
+            padding: 24px 28px;
+            position: relative;
+        }
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+        .selected-symbol {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 42px;
+            color: #fff;
+            letter-spacing: 3px;
+            line-height: 1;
+        }
+        .selected-company {
+            font-size: 12px;
+            color: var(--apex-muted);
+            margin-top: 4px;
+            font-family: 'Space Mono', monospace;
+        }
+        .selected-price {
+            font-family: 'Space Mono', monospace;
+            font-size: 36px;
+            font-weight: 700;
+            color: #fff;
+            text-align: right;
+        }
+        .selected-change {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            text-align: right;
+            margin-top: 4px;
+        }
+        .chart-canvas-wrap {
+            height: 220px;
+            position: relative;
+        }
+
+        /* Stats panel */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0;
+            border-top: 1px solid var(--apex-border);
+            margin-top: 16px;
+        }
+        .stat-cell {
+            padding: 12px 16px;
+            border-right: 1px solid var(--apex-border);
+        }
+        .stat-cell:last-child { border-right: none; }
+        .stat-label {
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+            color: var(--apex-muted);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+        .stat-value {
+            font-family: 'Space Mono', monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: #fff;
+            margin-top: 4px;
+        }
+
+        /* AI Analysis panel */
+        .analysis-panel {
+            background: var(--apex-card);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--apex-border) transparent;
+        }
+        .analysis-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--apex-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .analysis-title {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            color: var(--apex-gold);
+            letter-spacing: 2px;
+        }
+        .ai-badge {
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+            background: rgba(240,165,0,0.1);
+            border: 1px solid rgba(240,165,0,0.3);
+            color: var(--apex-gold);
+            padding: 2px 8px;
+            border-radius: 2px;
+        }
+
+        /* Big recommendation */
+        .rec-zone {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--apex-border);
+            text-align: center;
+        }
+        .rec-label {
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+            color: var(--apex-muted);
+            letter-spacing: 2px;
+            margin-bottom: 8px;
+        }
+        #bigRec {
+            font-family: 'Bebas Neue', cursive;
+            font-size: 64px;
+            letter-spacing: 4px;
+            line-height: 1;
+            transition: all 0.3s;
+        }
+        .rec-score-bar {
+            margin: 12px auto 0;
+            height: 6px;
+            background: var(--apex-border);
+            border-radius: 3px;
+            overflow: hidden;
+            max-width: 180px;
+        }
+        .rec-score-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.8s cubic-bezier(.16,1,.3,1);
+        }
+        .rec-confidence {
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+            color: var(--apex-muted);
+            margin-top: 6px;
+        }
+
+        /* Signals list */
+        .signals-zone {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--apex-border);
+        }
+        .signals-title {
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+            color: var(--apex-muted);
+            letter-spacing: 2px;
+            margin-bottom: 12px;
+        }
+        .signal-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(30,45,64,0.5);
+            font-size: 12px;
+        }
+        .signal-row:last-child { border-bottom: none; }
+        .signal-name { color: var(--apex-text); font-size: 11px; }
+        .signal-val {
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        /* AI text */
+        .ai-text-zone {
+            padding: 16px 20px;
+        }
+        .ai-text-label {
+            font-size: 10px;
+            font-family: 'Space Mono', monospace;
+            color: var(--apex-muted);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+        #aiAnalysisText {
+            font-size: 12px;
+            line-height: 1.8;
+            color: var(--apex-text);
+        }
+        .ai-thinking {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--apex-muted);
+            font-family: 'Space Mono', monospace;
+            font-size: 11px;
+        }
+        .ai-thinking .dots span {
+            animation: blink 1.4s infinite;
+            opacity: 0;
+        }
+        .ai-thinking .dots span:nth-child(2) { animation-delay: 0.2s; }
+        .ai-thinking .dots span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+
+        /* Refresh btn */
+        .refresh-btn {
+            background: transparent;
+            border: 1px solid var(--apex-border);
+            color: var(--apex-muted);
+            font-family: 'Space Mono', monospace;
+            font-size: 10px;
+            padding: 4px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .refresh-btn:hover { border-color: var(--apex-gold); color: var(--apex-gold); }
+
+        /* Loading skeleton */
+        .skeleton {
+            background: linear-gradient(90deg, var(--apex-border) 25%, #253545 50%, var(--apex-border) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 3px;
+        }
+        @keyframes shimmer {
+            from { background-position: 200% 0; }
+            to { background-position: -200% 0; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--apex-border); border-radius: 2px; }
+
+        /* Flicker on load */
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            5% { opacity: 0.8; }
+            10% { opacity: 1; }
+            15% { opacity: 0.9; }
+            20% { opacity: 1; }
+        }
+        .logo { animation: flicker 0.5s ease-in-out; }
+
+        /* Mobile note */
+        @media (max-width: 900px) {
+            main { grid-template-columns: 1fr; grid-template-rows: auto; height: auto; }
+            .sidebar { max-height: 300px; border-right: none; border-bottom: 1px solid var(--apex-border); }
+        }
     </style>
 </head>
-<body class="bg-gray-950 text-white min-h-screen">
-    <div class="max-w-7xl mx-auto p-6">
-        <header class="flex justify-between items-center mb-8">
-            <h1 class="text-4xl font-bold">Stock Advisor</h1>
-            <div class="flex items-center gap-4">
-                <input id="symbolInput" 
-                       class="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
-                       placeholder="Add symbol (e.g. AAPL)" 
-                       onkeypress="if(event.key === 'Enter') addSymbol()">
-                <button onclick="addSymbol()" 
-                        class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-medium">
-                    Add
-                </button>
-            </div>
-        </header>
+<body>
 
-        <!-- Watchlist -->
-        <div class="mb-8">
-            <h2 class="text-xl font-semibold mb-4">Watchlist</h2>
-            <div id="watchlist" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+<!-- TICKER TAPE -->
+<div class="ticker-wrap">
+    <div class="ticker-track" id="tickerTrack">
+        <!-- Populated by JS -->
+    </div>
+</div>
+
+<!-- HEADER -->
+<header>
+    <div>
+        <div class="logo">APEX <span>CAPITAL</span></div>
+        <div style="font-size:11px; color:var(--apex-muted); font-family:'Space Mono',monospace; margin-top:2px;">MARKET INTELLIGENCE TERMINAL v4.2</div>
+    </div>
+    <div style="display:flex; align-items:center; gap:24px;">
+        <div class="market-status">
+            <div class="dot"></div>
+            LIVE FEED ACTIVE
         </div>
+        <div style="font-family:'Space Mono',monospace; font-size:12px; color:var(--apex-muted);" id="clock">--:--:-- EST</div>
+    </div>
+</header>
 
-        <!-- Selected Stock Detail -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="lg:col-span-2 bg-gray-900 rounded-2xl p-6">
-                <div class="flex justify-between items-start mb-6">
-                    <div>
-                        <div id="selectedSymbol" class="text-3xl font-bold">AAPL</div>
-                        <div id="selectedCompany" class="text-gray-400">Apple Inc.</div>
-                    </div>
-                    <div class="text-right">
-                        <div id="selectedPrice" class="text-4xl font-mono font-bold">$226.84</div>
-                        <div id="selectedChange" class="text-lg font-medium price-up">+2.31 (+1.03%)</div>
-                    </div>
-                </div>
-                <canvas id="priceChart" class="h-96"></canvas>
-            </div>
+<!-- SEARCH BAR -->
+<div class="search-zone">
+    <span class="label-hint">ADD SYMBOL →</span>
+    <input id="symbolInput" placeholder="e.g. NVDA, META, GME" onkeypress="if(event.key==='Enter')addSymbol()">
+    <button class="btn-add" onclick="addSymbol()">+ TRACK</button>
+    <span style="flex:1"></span>
+    <span class="label-hint" id="lastUpdated"></span>
+</div>
 
-            <!-- Recommendation -->
-            <div class="bg-gray-900 rounded-2xl p-6">
-                <h3 class="text-lg font-semibold mb-4">Recommendation</h3>
-                <div id="recommendation" class="text-5xl font-bold mb-4">BUY</div>
-                <div id="reason" class="text-gray-400 leading-relaxed"></div>
-                
-                <div class="mt-8 pt-6 border-t border-gray-700">
-                    <h4 class="font-medium mb-3">Quick Stats</h4>
-                    <div id="stats" class="space-y-3"></div>
-                </div>
+<!-- MAIN GRID -->
+<main>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <span>WATCHLIST</span>
+            <span style="color:var(--apex-muted)" id="watchCount">0 STOCKS</span>
+        </div>
+        <div id="watchlist"></div>
+    </div>
+
+    <!-- CHART AREA -->
+    <div class="chart-area">
+        <div class="chart-header">
+            <div>
+                <div class="selected-symbol" id="selectedSymbol">—</div>
+                <div class="selected-company" id="selectedCompany">SELECT A SYMBOL</div>
             </div>
+            <div>
+                <div class="selected-price" id="selectedPrice">—</div>
+                <div class="selected-change" id="selectedChange"></div>
+            </div>
+        </div>
+        <div class="chart-canvas-wrap">
+            <canvas id="priceChart"></canvas>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-cell"><div class="stat-label">OPEN</div><div class="stat-value" id="statOpen">—</div></div>
+            <div class="stat-cell"><div class="stat-label">HIGH</div><div class="stat-value" id="statHigh">—</div></div>
+            <div class="stat-cell"><div class="stat-label">LOW</div><div class="stat-value" id="statLow">—</div></div>
+            <div class="stat-cell"><div class="stat-label">PREV CLOSE</div><div class="stat-value" id="statPrev">—</div></div>
         </div>
     </div>
 
-    <script>
-        // === CONFIG ===
-        const API_KEY = 'd867m8hr01qnvdehbq10d867m8hr01qnvdehbq1g'; // ← REPLACE THIS
-        let symbols = ['AAPL', 'GOOGL', 'TSLA', 'MSFT'];
-        let currentSymbol = 'AAPL';
-        let priceChart = null;
+    <!-- ANALYSIS PANEL -->
+    <div class="analysis-panel">
+        <div class="analysis-header">
+            <span class="analysis-title">AI ANALYSIS</span>
+            <span class="ai-badge">⚡ CLAUDE POWERED</span>
+        </div>
 
-        // === FETCH FUNCTIONS ===
-        async function fetchQuote(symbol) {
-            try {
-                const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${API_KEY}`);
-                if (!res.ok) throw new Error('Rate limit or error');
-                return await res.json();
-            } catch (e) {
-                console.error(e);
-                return null;
-            }
-        }
+        <div class="rec-zone">
+            <div class="rec-label">CURRENT SIGNAL</div>
+            <div id="bigRec" style="color:var(--apex-muted)">—</div>
+            <div class="rec-score-bar"><div class="rec-score-fill" id="recScoreFill" style="width:0%"></div></div>
+            <div class="rec-confidence" id="recConfidence">SELECT A STOCK</div>
+        </div>
 
-        async function fetchCompanyProfile(symbol) {
-            try {
-                const res = await fetch(`https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${API_KEY}`);
-                return await res.json();
-            } catch (e) { return {}; }
-        }
+        <div class="signals-zone">
+            <div class="signals-title">TECHNICAL SIGNALS</div>
+            <div id="signalsList"></div>
+        </div>
 
-        async function fetchCandles(symbol) {
-            const to = Math.floor(Date.now() / 1000);
-            const from = to - (30 * 24 * 60 * 60);
-            try {
-                const res = await fetch(
-                    `https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&from=${from}&to=${to}&token=${API_KEY}`
-                );
-                const data = await res.json();
-                if (data.s === 'ok') return data;
-                return null;
-            } catch (e) {
-                console.error(e);
-                return null;
-            }
-        }
+        <div class="ai-text-zone">
+            <div class="ai-text-label">ANALYST BRIEF</div>
+            <div id="aiAnalysisText">
+                <span style="color:var(--apex-muted); font-family:'Space Mono',monospace; font-size:11px;">
+                    Select a stock to generate AI analysis.
+                </span>
+            </div>
+        </div>
+    </div>
+</main>
 
-        // === SIMPLE ANALYSIS ===
-        function generateRecommendation(quote, candles) {
-            if (!quote || !candles) {
-                return { rec: 'HOLD', reason: 'Insufficient data', color: 'text-yellow-400' };
-            }
-            const prices = candles.c;
-            const current = quote.c;
-            const sma20 = prices.slice(-20).reduce((a, b) => a + b, 0) / 20;
-            const change = ((current - prices[prices.length - 2]) / prices[prices.length - 2]) * 100;
+<script>
+// =============================================
+// CONFIG
+// =============================================
+const FINNHUB_KEY = 'd867m8hr01qnvdehbq10d867m8hr01qnvdehbq1g';
+let symbols = ['AAPL','NVDA','TSLA','MSFT','META','AMZN'];
+let currentSymbol = null;
+let priceChart = null;
+let profiles = {};
 
-            if (current < sma20 * 0.97 && change < -1) {
-                return { rec: 'BUY', reason: 'Trading below 20-day SMA with recent dip', color: 'text-green-400' };
-            }
-            if (current > sma20 * 1.05 && change > 2) {
-                return { rec: 'SELL', reason: 'Well above 20-day SMA and strong recent gain', color: 'text-red-400' };
-            }
-            return { rec: 'HOLD', reason: 'Near moving average - neutral momentum', color: 'text-yellow-400' };
-        }
+// =============================================
+// CLOCK
+// =============================================
+function updateClock() {
+    const now = new Date();
+    const est = now.toLocaleTimeString('en-US', { timeZone: 'America/New_York', hour12: false });
+    document.getElementById('clock').textContent = est + ' EST';
+}
+setInterval(updateClock, 1000);
+updateClock();
 
-        // === RENDER WATCHLIST ===
-        async function renderWatchlist() {
-            const container = document.getElementById('watchlist');
-            container.innerHTML = '';
-            for (let sym of symbols) {
-                const quote = await fetchQuote(sym);
-                if (!quote) continue;
-                const change = quote.d || 0;
-                const pct = quote.dp || 0;
+// =============================================
+// TICKER TAPE
+// =============================================
+const tickerData = [
+    {s:'AAPL',p:226.84,d:+2.31},{s:'NVDA',p:875.40,d:+14.2},{s:'TSLA',p:248.50,d:-3.1},
+    {s:'MSFT',p:415.22,d:+1.8},{s:'META',p:502.10,d:+6.4},{s:'AMZN',p:185.60,d:+0.9},
+    {s:'GOOGL',p:175.30,d:-0.5},{s:'SPY',p:555.80,d:+1.2},{s:'QQQ',p:484.20,d:+2.1},
+    {s:'AMD',p:172.50,d:+3.4},{s:'PLTR',p:24.80,d:+0.6},{s:'COIN',p:220.40,d:-8.2}
+];
+function buildTicker() {
+    const track = document.getElementById('tickerTrack');
+    const items = [...tickerData, ...tickerData].map(t => {
+        const cls = t.d >= 0 ? 'up' : 'down';
+        const sign = t.d >= 0 ? '▲' : '▼';
+        return `<div class="ticker-item">${t.s} <strong>$${t.p.toFixed(2)}</strong> <span class="${cls}">${sign} ${Math.abs(t.d).toFixed(2)}</span> &nbsp;|&nbsp;</div>`;
+    }).join('');
+    track.innerHTML = items;
+}
+buildTicker();
 
-                const card = document.createElement('div');
-                card.className = `card bg-gray-900 rounded-2xl p-5 cursor-pointer border border-gray-800 hover:border-blue-500`;
-                card.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <div>
-                            <div class="font-mono text-xl font-bold">${sym}</div>
-                            <div class="text-sm text-gray-400">Last: $${quote.c.toFixed(2)}</div>
-                        </div>
-                        <div class="text-right">
-                            <div class="${change >= 0 ? 'price-up' : 'price-down'} font-medium">
-                                ${change >= 0 ? '+' : ''}$${change.toFixed(2)}
-                            </div>
-                            <div class="${change >= 0 ? 'price-up' : 'price-down'} text-sm">
-                                ${change >= 0 ? '+' : ''}${pct.toFixed(2)}%
-                            </div>
-                        </div>
+// =============================================
+// FINNHUB FETCHES
+// =============================================
+async function fetchQuote(sym) {
+    try {
+        const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=${sym}&token=${FINNHUB_KEY}`);
+        if (!r.ok) return null;
+        return await r.json();
+    } catch { return null; }
+}
+
+async function fetchProfile(sym) {
+    if (profiles[sym]) return profiles[sym];
+    try {
+        const r = await fetch(`https://finnhub.io/api/v1/stock/profile2?symbol=${sym}&token=${FINNHUB_KEY}`);
+        const d = await r.json();
+        profiles[sym] = d;
+        return d;
+    } catch { return {}; }
+}
+
+async function fetchCandles(sym) {
+    const to = Math.floor(Date.now() / 1000);
+    const from = to - 30 * 24 * 60 * 60;
+    try {
+        const r = await fetch(`https://finnhub.io/api/v1/stock/candle?symbol=${sym}&resolution=D&from=${from}&to=${to}&token=${FINNHUB_KEY}`);
+        const d = await r.json();
+        return d.s === 'ok' ? d : null;
+    } catch { return null; }
+}
+
+// =============================================
+// TECHNICAL ANALYSIS
+// =============================================
+function calcSMA(prices, period) {
+    if (prices.length < period) return null;
+    return prices.slice(-period).reduce((a,b) => a+b, 0) / period;
+}
+
+function calcRSI(prices, period = 14) {
+    if (prices.length < period + 1) return null;
+    const deltas = prices.slice(1).map((p, i) => p - prices[i]);
+    const recent = deltas.slice(-period);
+    const gains = recent.filter(d => d > 0);
+    const losses = recent.filter(d => d < 0).map(Math.abs);
+    const avgGain = gains.reduce((a,b) => a+b, 0) / period;
+    const avgLoss = losses.reduce((a,b) => a+b, 0) / period;
+    if (avgLoss === 0) return 100;
+    const rs = avgGain / avgLoss;
+    return 100 - (100 / (1 + rs));
+}
+
+function calcVolatility(prices) {
+    if (prices.length < 5) return null;
+    const recent = prices.slice(-10);
+    const mean = recent.reduce((a,b) => a+b, 0) / recent.length;
+    const variance = recent.reduce((a,b) => a + (b-mean)**2, 0) / recent.length;
+    return (Math.sqrt(variance) / mean * 100).toFixed(1);
+}
+
+function calcMACD(prices) {
+    if (prices.length < 26) return null;
+    const ema12 = calcEMA(prices, 12);
+    const ema26 = calcEMA(prices, 26);
+    return ema12 - ema26;
+}
+
+function calcEMA(prices, period) {
+    const k = 2 / (period + 1);
+    let ema = prices.slice(0, period).reduce((a,b) => a+b, 0) / period;
+    for (let i = period; i < prices.length; i++) {
+        ema = prices[i] * k + ema * (1 - k);
+    }
+    return ema;
+}
+
+function generateSignals(quote, candles) {
+    if (!quote || !candles) return { rec: '—', score: 0, signals: [], color: 'var(--apex-muted)' };
+
+    const prices = candles.c;
+    const current = quote.c;
+    const sma20 = calcSMA(prices, 20);
+    const sma50 = calcSMA(prices, Math.min(50, prices.length));
+    const rsi = calcRSI(prices);
+    const macd = calcMACD(prices);
+    const vol = calcVolatility(prices);
+    const change1d = quote.dp;
+    const high52 = Math.max(...prices);
+    const low52 = Math.min(...prices);
+    const pctFrom52Low = ((current - low52) / low52 * 100).toFixed(1);
+    const pctFrom52High = ((current - high52) / high52 * 100).toFixed(1);
+
+    let score = 50; // neutral
+    let signals = [];
+
+    // RSI signals
+    if (rsi !== null) {
+        if (rsi < 30) { score += 20; signals.push({ name: 'RSI (Oversold)', val: rsi.toFixed(1), cls: 'up' }); }
+        else if (rsi < 45) { score += 8; signals.push({ name: 'RSI (Bearish lean)', val: rsi.toFixed(1), cls: 'up' }); }
+        else if (rsi > 70) { score -= 20; signals.push({ name: 'RSI (Overbought)', val: rsi.toFixed(1), cls: 'down' }); }
+        else if (rsi > 60) { score -= 5; signals.push({ name: 'RSI (Bullish lean)', val: rsi.toFixed(1), cls: 'down' }); }
+        else { signals.push({ name: 'RSI (Neutral)', val: rsi.toFixed(1), cls: 'neutral' }); }
+    }
+
+    // SMA signals
+    if (sma20) {
+        const aboveSMA = current > sma20;
+        const pct = ((current - sma20) / sma20 * 100).toFixed(1);
+        if (aboveSMA) { score += 5; signals.push({ name: 'Price vs SMA20', val: `+${pct}%`, cls: 'up' }); }
+        else { score -= 5; signals.push({ name: 'Price vs SMA20', val: `${pct}%`, cls: 'down' }); }
+    }
+
+    // Golden cross / death cross
+    if (sma20 && sma50) {
+        if (sma20 > sma50) { score += 10; signals.push({ name: 'SMA20 / SMA50', val: 'GOLDEN CROSS', cls: 'up' }); }
+        else { score -= 10; signals.push({ name: 'SMA20 / SMA50', val: 'DEATH CROSS', cls: 'down' }); }
+    }
+
+    // MACD
+    if (macd !== null) {
+        if (macd > 0) { score += 8; signals.push({ name: 'MACD', val: `+${macd.toFixed(2)}`, cls: 'up' }); }
+        else { score -= 8; signals.push({ name: 'MACD', val: macd.toFixed(2), cls: 'down' }); }
+    }
+
+    // Momentum
+    if (Math.abs(change1d) > 2) {
+        if (change1d > 0) { score += 5; signals.push({ name: '1D Momentum', val: `+${change1d.toFixed(2)}%`, cls: 'up' }); }
+        else { score -= 5; signals.push({ name: '1D Momentum', val: `${change1d.toFixed(2)}%`, cls: 'down' }); }
+    }
+
+    // 52-week context
+    signals.push({ name: 'From 52W Low', val: `+${pctFrom52Low}%`, cls: 'neutral' });
+    signals.push({ name: 'From 52W High', val: `${pctFrom52High}%`, cls: parseFloat(pctFrom52High) > -5 ? 'up' : 'neutral' });
+
+    // Volatility
+    if (vol) signals.push({ name: 'Volatility (10D)', val: `${vol}%`, cls: 'neutral' });
+
+    score = Math.max(0, Math.min(100, score));
+
+    let rec, color;
+    if (score >= 75) { rec = 'STRONG BUY'; color = 'var(--apex-green)'; }
+    else if (score >= 60) { rec = 'BUY'; color = 'var(--apex-green)'; }
+    else if (score <= 25) { rec = 'STRONG SELL'; color = 'var(--apex-red)'; }
+    else if (score <= 40) { rec = 'SELL'; color = 'var(--apex-red)'; }
+    else if (score >= 52) { rec = 'WATCH'; color = 'var(--apex-blue)'; }
+    else { rec = 'HOLD'; color = 'var(--apex-gold)'; }
+
+    return { rec, score, signals, color };
+}
+
+// =============================================
+// AI ANALYSIS (Claude API)
+// =============================================
+async function getAIAnalysis(symbol, quote, candles, signals) {
+    const aiEl = document.getElementById('aiAnalysisText');
+    aiEl.innerHTML = `<div class="ai-thinking">CLAUDE ANALYZING<div class="dots"><span>.</span><span>.</span><span>.</span></div></div>`;
+
+    const prices = candles ? candles.c : [];
+    const sma20 = prices.length >= 20 ? (prices.slice(-20).reduce((a,b)=>a+b,0)/20).toFixed(2) : 'N/A';
+    const rsiVal = calcRSI(prices);
+
+    const prompt = `You are an elite Wall Street quantitative analyst at a top hedge fund. Your job: give razor-sharp, high-conviction stock analysis. Be direct, confident, and use the language of professional traders.
+
+Stock: ${symbol}
+Current Price: $${quote ? quote.c.toFixed(2) : 'N/A'}
+1D Change: ${quote ? (quote.dp > 0 ? '+' : '') + quote.dp.toFixed(2) + '%' : 'N/A'}
+SMA-20: $${sma20}
+RSI-14: ${rsiVal ? rsiVal.toFixed(1) : 'N/A'}
+Signal: ${signals.rec} (Score: ${signals.score}/100)
+Key signals: ${signals.signals.slice(0,4).map(s=>s.name+': '+s.val).join(', ')}
+
+Write a 3-4 sentence analyst brief. Cover: (1) what the chart is telling you right now, (2) the risk/reward setup, (3) a specific actionable take — entry/exit point, catalyst to watch, or specific risk. Be bold and specific. Do not use disclaimers or hedge language. Talk like you're briefing a PM about to deploy $10M.`;
+
+    try {
+        const res = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                model: 'claude-sonnet-4-20250514',
+                max_tokens: 1000,
+                messages: [{ role: 'user', content: prompt }]
+            })
+        });
+        const data = await res.json();
+        const text = data.content?.find(b => b.type === 'text')?.text || 'Analysis unavailable.';
+        aiEl.textContent = text;
+    } catch (e) {
+        aiEl.innerHTML = `<span style="color:var(--apex-muted);font-family:'Space Mono',monospace;font-size:11px;">ANALYSIS UNAVAILABLE — API ERROR</span>`;
+    }
+}
+
+// =============================================
+// WATCHLIST RENDER
+// =============================================
+async function renderWatchlist() {
+    const container = document.getElementById('watchlist');
+    document.getElementById('watchCount').textContent = symbols.length + ' STOCKS';
+    container.innerHTML = '';
+
+    for (let sym of symbols) {
+        const card = document.createElement('div');
+        card.className = `stock-card${sym === currentSymbol ? ' active' : ''}`;
+        card.id = `card-${sym}`;
+        card.onclick = () => loadSymbol(sym);
+
+        // Skeleton placeholder
+        card.innerHTML = `
+            <div class="card-top">
+                <div>
+                    <div class="card-symbol">${sym}</div>
+                    <div class="card-name" style="color:var(--apex-muted)">Loading...</div>
+                </div>
+                <div>
+                    <div class="card-price neutral">—</div>
+                    <div class="card-change neutral">—</div>
+                </div>
+            </div>`;
+        container.appendChild(card);
+
+        // Fetch async and update
+        fetchQuote(sym).then(async quote => {
+            const profile = await fetchProfile(sym);
+            if (!quote) return;
+
+            const change = quote.d || 0;
+            const pct = quote.dp || 0;
+            const cls = change >= 0 ? 'up' : 'down';
+            const sign = change >= 0 ? '+' : '';
+
+            // Quick signal
+            fetchCandles(sym).then(candles => {
+                const { rec, score } = generateSignals(quote, candles);
+                const badgeEl = card.querySelector('.sig-badge');
+                if (badgeEl) badgeEl.outerHTML = `<div class="signal-badge signal-${rec}">${rec}</div>`;
+            });
+
+            card.innerHTML = `
+                <div class="card-top">
+                    <div>
+                        <div class="card-symbol">${sym}</div>
+                        <div class="card-name">${profile.name || sym}</div>
                     </div>
-                `;
-                card.onclick = () => loadSymbol(sym);
-                container.appendChild(card);
-            }
-        }
+                    <div style="text-align:right">
+                        <div class="card-price ${cls}">$${quote.c.toFixed(2)}</div>
+                        <div class="card-change ${cls}">${sign}${pct.toFixed(2)}%</div>
+                    </div>
+                </div>
+                <div class="signal-badge sig-badge signal-HOLD">...</div>`;
+        });
+    }
 
-        async function loadSymbol(symbol) {
-            currentSymbol = symbol;
-            document.getElementById('selectedSymbol').textContent = symbol;
+    const ts = new Date().toLocaleTimeString();
+    document.getElementById('lastUpdated').textContent = `UPDATED ${ts}`;
+}
 
-            const [quote, profile, candles] = await Promise.all([
-                fetchQuote(symbol),
-                fetchCompanyProfile(symbol),
-                fetchCandles(symbol)
-            ]);
+// =============================================
+// CHART
+// =============================================
+function renderChart(candles) {
+    const ctx = document.getElementById('priceChart');
+    if (priceChart) priceChart.destroy();
+    if (!candles?.c) return;
 
-            if (profile.name) document.getElementById('selectedCompany').textContent = profile.name;
+    const labels = candles.t.map(ts =>
+        new Date(ts * 1000).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
+    );
+    const prices = candles.c;
+    const startPrice = prices[0];
+    const isUp = prices[prices.length - 1] >= startPrice;
+    const lineColor = isUp ? '#00ff94' : '#ff2d55';
+    const gradientId = isUp ? 'gradUp' : 'gradDown';
 
-            if (quote) {
-                const change = quote.d || 0;
-                const pct = quote.dp || 0;
-                document.getElementById('selectedPrice').textContent = `$${quote.c.toFixed(2)}`;
-                const changeEl = document.getElementById('selectedChange');
-                changeEl.textContent = `${change >= 0 ? '+' : ''}$${change.toFixed(2)} (${change >= 0 ? '+' : ''}${pct.toFixed(2)}%)`;
-                changeEl.className = `text-lg font-medium ${change >= 0 ? 'price-up' : 'price-down'}`;
-            }
-
-            const rec = generateRecommendation(quote, candles);
-            document.getElementById('recommendation').textContent = rec.rec;
-            document.getElementById('recommendation').className = `text-5xl font-bold ${rec.color}`;
-            document.getElementById('reason').textContent = rec.reason;
-
-            const statsHTML = quote ? `
-                <div class="flex justify-between"><span class="text-gray-400">Open</span><span>$${quote.o.toFixed(2)}</span></div>
-                <div class="flex justify-between"><span class="text-gray-400">High</span><span>$${quote.h.toFixed(2)}</span></div>
-                <div class="flex justify-between"><span class="text-gray-400">Low</span><span>$${quote.l.toFixed(2)}</span></div>
-                <div class="flex justify-between"><span class="text-gray-400">Prev Close</span><span>$${quote.pc.toFixed(2)}</span></div>
-            ` : '';
-            document.getElementById('stats').innerHTML = statsHTML;
-
-            renderChart(candles);
-        }
-
-        function renderChart(candles) {
-            const ctx = document.getElementById('priceChart');
-            if (priceChart) priceChart.destroy();
-            if (!candles || !candles.c) return;
-
-            const labels = candles.t.map(ts => new Date(ts * 1000).toLocaleDateString('en-US', {month:'short', day:'numeric'}));
-
-            priceChart = new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Close Price',
-                        data: candles.c,
-                        borderColor: '#3b82f6',
-                        borderWidth: 3,
-                        tension: 0.1,
-                        pointRadius: 0
-                    }]
+    priceChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels,
+            datasets: [{
+                data: prices,
+                borderColor: lineColor,
+                borderWidth: 2,
+                tension: 0.3,
+                pointRadius: 0,
+                fill: true,
+                backgroundColor: (ctx) => {
+                    const chart = ctx.chart;
+                    const { ctx: c, chartArea } = chart;
+                    if (!chartArea) return 'transparent';
+                    const grad = c.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+                    grad.addColorStop(0, isUp ? 'rgba(0,255,148,0.25)' : 'rgba(255,45,85,0.25)');
+                    grad.addColorStop(1, 'rgba(0,0,0,0)');
+                    return grad;
+                }
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false }, tooltip: {
+                backgroundColor: '#111620',
+                titleColor: '#f0a500',
+                bodyColor: '#c8d6e5',
+                borderColor: '#1e2d40',
+                borderWidth: 1,
+                titleFont: { family: 'Space Mono', size: 10 },
+                bodyFont: { family: 'Space Mono', size: 11 },
+                callbacks: {
+                    label: ctx => ` $${ctx.parsed.y.toFixed(2)}`
+                }
+            }},
+            scales: {
+                y: {
+                    grid: { color: 'rgba(30,45,64,0.5)' },
+                    ticks: {
+                        color: '#4a5568',
+                        font: { family: 'Space Mono', size: 10 },
+                        callback: v => '$' + v.toFixed(0)
+                    }
                 },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
-                        x: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', maxTicksLimit: 10 } }
+                x: {
+                    grid: { display: false },
+                    ticks: {
+                        color: '#4a5568',
+                        font: { family: 'Space Mono', size: 10 },
+                        maxTicksLimit: 8
                     }
                 }
-            });
-        }
-
-        function addSymbol() {
-            const input = document.getElementById('symbolInput');
-            let newSym = input.value.trim().toUpperCase();
-            if (newSym && !symbols.includes(newSym)) {
-                symbols.push(newSym);
-                renderWatchlist();
-                input.value = '';
             }
         }
+    });
+}
 
-        async function init() {
-            await renderWatchlist();
-            await loadSymbol('AAPL');
-            setInterval(() => {
-                renderWatchlist();
-                if (currentSymbol) loadSymbol(currentSymbol);
-            }, 30000);
-        }
+// =============================================
+// LOAD SYMBOL
+// =============================================
+async function loadSymbol(sym) {
+    currentSymbol = sym;
+    document.querySelectorAll('.stock-card').forEach(c => c.classList.remove('active'));
+    const activeCard = document.getElementById(`card-${sym}`);
+    if (activeCard) activeCard.classList.add('active');
 
-        window.onload = init;
-    </script>
+    document.getElementById('selectedSymbol').textContent = sym;
+    document.getElementById('selectedCompany').textContent = '...';
+    document.getElementById('selectedPrice').textContent = '—';
+    document.getElementById('selectedChange').textContent = '';
+    document.getElementById('bigRec').textContent = '...';
+    document.getElementById('bigRec').style.color = 'var(--apex-muted)';
+    document.getElementById('recScoreFill').style.width = '0%';
+    document.getElementById('recConfidence').textContent = 'CALCULATING...';
+    document.getElementById('signalsList').innerHTML = '';
+
+    const [quote, profile, candles] = await Promise.all([
+        fetchQuote(sym),
+        fetchProfile(sym),
+        fetchCandles(sym)
+    ]);
+
+    // Company
+    if (profile?.name) {
+        document.getElementById('selectedCompany').textContent = profile.name.toUpperCase() + (profile.exchange ? ' · ' + profile.exchange : '');
+    }
+
+    // Price
+    if (quote) {
+        const chg = quote.d || 0;
+        const pct = quote.dp || 0;
+        const cls = chg >= 0 ? 'up' : 'down';
+        document.getElementById('selectedPrice').textContent = `$${quote.c.toFixed(2)}`;
+        document.getElementById('selectedChange').className = 'selected-change ' + cls;
+        document.getElementById('selectedChange').textContent =
+            `${chg >= 0 ? '+' : ''}$${chg.toFixed(2)}  (${chg >= 0 ? '+' : ''}${pct.toFixed(2)}%)`;
+
+        document.getElementById('statOpen').textContent = `$${quote.o.toFixed(2)}`;
+        document.getElementById('statHigh').textContent = `$${quote.h.toFixed(2)}`;
+        document.getElementById('statLow').textContent = `$${quote.l.toFixed(2)}`;
+        document.getElementById('statPrev').textContent = `$${quote.pc.toFixed(2)}`;
+    }
+
+    // Chart
+    renderChart(candles);
+
+    // Signals
+    const analysis = generateSignals(quote, candles);
+    const recEl = document.getElementById('bigRec');
+    recEl.textContent = analysis.rec;
+    recEl.style.color = analysis.color;
+
+    const barEl = document.getElementById('recScoreFill');
+    const barColor = analysis.score >= 60 ? 'var(--apex-green)' : analysis.score <= 40 ? 'var(--apex-red)' : 'var(--apex-gold)';
+    barEl.style.background = barColor;
+    barEl.style.width = analysis.score + '%';
+    document.getElementById('recConfidence').textContent = `CONFIDENCE SCORE: ${analysis.score}/100`;
+
+    const sigList = document.getElementById('signalsList');
+    sigList.innerHTML = analysis.signals.map(s => `
+        <div class="signal-row">
+            <span class="signal-name">${s.name}</span>
+            <span class="signal-val ${s.cls}">${s.val}</span>
+        </div>
+    `).join('');
+
+    // AI analysis
+    await getAIAnalysis(sym, quote, candles, analysis);
+}
+
+// =============================================
+// ADD SYMBOL
+// =============================================
+function addSymbol() {
+    const input = document.getElementById('symbolInput');
+    const sym = input.value.trim().toUpperCase();
+    if (sym && !symbols.includes(sym)) {
+        symbols.unshift(sym);
+        renderWatchlist();
+        loadSymbol(sym);
+        input.value = '';
+    }
+}
+
+// =============================================
+// INIT
+// =============================================
+async function init() {
+    await renderWatchlist();
+    await loadSymbol(symbols[0]);
+    setInterval(async () => {
+        await renderWatchlist();
+        if (currentSymbol) await loadSymbol(currentSymbol);
+    }, 60000);
+}
+
+window.onload = init;
+</script>
 </body>
 </html>
