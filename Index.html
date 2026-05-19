@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Stock Advisor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        body { font-family: system-ui, -apple-system, sans-serif; }
+        .price-up { color: #22c55e; }
+        .price-down { color: #ef4444; }
+        .card { transition: all 0.3s; }
+        .card:hover { transform: translateY(-4px); }
+    </style>
+</head>
+<body class="bg-gray-950 text-white min-h-screen">
+    <div class="max-w-7xl mx-auto p-6">
+        <header class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-bold">Stock Advisor</h1>
+            <div class="flex items-center gap-4">
+                <input id="symbolInput" 
+                       class="bg-gray-900 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-blue-500"
+                       placeholder="Add symbol (e.g. AAPL)" 
+                       onkeypress="if(event.key === 'Enter') addSymbol()">
+                <button onclick="addSymbol()" 
+                        class="bg-blue-600 hover:bg-blue-700 px-6 py-2 rounded-lg font-medium">
+                    Add
+                </button>
+            </div>
+        </header>
+
+        <!-- Watchlist -->
+        <div class="mb-8">
+            <h2 class="text-xl font-semibold mb-4">Watchlist</h2>
+            <div id="watchlist" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+
+        <!-- Selected Stock Detail -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div class="lg:col-span-2 bg-gray-900 rounded-2xl p-6">
+                <div class="flex justify-between items-start mb-6">
+                    <div>
+                        <div id="selectedSymbol" class="text-3xl font-bold">AAPL</div>
+                        <div id="selectedCompany" class="text-gray-400">Apple Inc.</div>
+                    </div>
+                    <div class="text-right">
+                        <div id="selectedPrice" class="text-4xl font-mono font-bold">$226.84</div>
+                        <div id="selectedChange" class="text-lg font-medium price-up">+2.31 (+1.03%)</div>
+                    </div>
+                </div>
+                <canvas id="priceChart" class="h-96"></canvas>
+            </div>
+
+            <!-- Recommendation -->
+            <div class="bg-gray-900 rounded-2xl p-6">
+                <h3 class="text-lg font-semibold mb-4">Recommendation</h3>
+                <div id="recommendation" class="text-5xl font-bold mb-4">BUY</div>
+                <div id="reason" class="text-gray-400 leading-relaxed"></div>
+                
+                <div class="mt-8 pt-6 border-t border-gray-700">
+                    <h4 class="font-medium mb-3">Quick Stats</h4>
+                    <div id="stats" class="space-y-3"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // === CONFIG ===
+        const API_KEY = 'd867m8hr01qnvdehbq10d867m8hr01qnvdehbq1g'; // ← REPLACE THIS
+        let symbols = ['AAPL', 'GOOGL', 'TSLA', 'MSFT'];
+        let currentSymbol = 'AAPL';
+        let priceChart = null;
+
+        // === FETCH FUNCTIONS ===
+        async function fetchQuote(symbol) {
+            try {
+                const res = await fetch(`https://finnhub.io/api/v1/quote?symbol=${symbol}&token=${API_KEY}`);
+                if (!res.ok) throw new Error('Rate limit or error');
+                return await res.json();
+            } catch (e) {
+                console.error(e);
+                return null;
+            }
+        }
+
+        async function fetchCompanyProfile(symbol) {
+            try {
+                const res = await fetch(`https://finnhub.io/api/v1/stock/profile2?symbol=${symbol}&token=${API_KEY}`);
+                return await res.json();
+            } catch (e) { return {}; }
+        }
+
+        async function fetchCandles(symbol) {
+            const to = Math.floor(Date.now() / 1000);
+            const from = to - (30 * 24 * 60 * 60);
+            try {
+                const res = await fetch(
+                    `https://finnhub.io/api/v1/stock/candle?symbol=${symbol}&resolution=D&from=${from}&to=${to}&token=${API_KEY}`
+                );
+                const data = await res.json();
+                if (data.s === 'ok') return data;
+                return null;
+            } catch (e) {
+                console.error(e);
+                return null;
+            }
+        }
+
+        // === SIMPLE ANALYSIS ===
+        function generateRecommendation(quote, candles) {
+            if (!quote || !candles) {
+                return { rec: 'HOLD', reason: 'Insufficient data', color: 'text-yellow-400' };
+            }
+            const prices = candles.c;
+            const current = quote.c;
+            const sma20 = prices.slice(-20).reduce((a, b) => a + b, 0) / 20;
+            const change = ((current - prices[prices.length - 2]) / prices[prices.length - 2]) * 100;
+
+            if (current < sma20 * 0.97 && change < -1) {
+                return { rec: 'BUY', reason: 'Trading below 20-day SMA with recent dip', color: 'text-green-400' };
+            }
+            if (current > sma20 * 1.05 && change > 2) {
+                return { rec: 'SELL', reason: 'Well above 20-day SMA and strong recent gain', color: 'text-red-400' };
+            }
+            return { rec: 'HOLD', reason: 'Near moving average - neutral momentum', color: 'text-yellow-400' };
+        }
+
+        // === RENDER WATCHLIST ===
+        async function renderWatchlist() {
+            const container = document.getElementById('watchlist');
+            container.innerHTML = '';
+            for (let sym of symbols) {
+                const quote = await fetchQuote(sym);
+                if (!quote) continue;
+                const change = quote.d || 0;
+                const pct = quote.dp || 0;
+
+                const card = document.createElement('div');
+                card.className = `card bg-gray-900 rounded-2xl p-5 cursor-pointer border border-gray-800 hover:border-blue-500`;
+                card.innerHTML = `
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <div class="font-mono text-xl font-bold">${sym}</div>
+                            <div class="text-sm text-gray-400">Last: $${quote.c.toFixed(2)}</div>
+                        </div>
+                        <div class="text-right">
+                            <div class="${change >= 0 ? 'price-up' : 'price-down'} font-medium">
+                                ${change >= 0 ? '+' : ''}$${change.toFixed(2)}
+                            </div>
+                            <div class="${change >= 0 ? 'price-up' : 'price-down'} text-sm">
+                                ${change >= 0 ? '+' : ''}${pct.toFixed(2)}%
+                            </div>
+                        </div>
+                    </div>
+                `;
+                card.onclick = () => loadSymbol(sym);
+                container.appendChild(card);
+            }
+        }
+
+        async function loadSymbol(symbol) {
+            currentSymbol = symbol;
+            document.getElementById('selectedSymbol').textContent = symbol;
+
+            const [quote, profile, candles] = await Promise.all([
+                fetchQuote(symbol),
+                fetchCompanyProfile(symbol),
+                fetchCandles(symbol)
+            ]);
+
+            if (profile.name) document.getElementById('selectedCompany').textContent = profile.name;
+
+            if (quote) {
+                const change = quote.d || 0;
+                const pct = quote.dp || 0;
+                document.getElementById('selectedPrice').textContent = `$${quote.c.toFixed(2)}`;
+                const changeEl = document.getElementById('selectedChange');
+                changeEl.textContent = `${change >= 0 ? '+' : ''}$${change.toFixed(2)} (${change >= 0 ? '+' : ''}${pct.toFixed(2)}%)`;
+                changeEl.className = `text-lg font-medium ${change >= 0 ? 'price-up' : 'price-down'}`;
+            }
+
+            const rec = generateRecommendation(quote, candles);
+            document.getElementById('recommendation').textContent = rec.rec;
+            document.getElementById('recommendation').className = `text-5xl font-bold ${rec.color}`;
+            document.getElementById('reason').textContent = rec.reason;
+
+            const statsHTML = quote ? `
+                <div class="flex justify-between"><span class="text-gray-400">Open</span><span>$${quote.o.toFixed(2)}</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">High</span><span>$${quote.h.toFixed(2)}</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">Low</span><span>$${quote.l.toFixed(2)}</span></div>
+                <div class="flex justify-between"><span class="text-gray-400">Prev Close</span><span>$${quote.pc.toFixed(2)}</span></div>
+            ` : '';
+            document.getElementById('stats').innerHTML = statsHTML;
+
+            renderChart(candles);
+        }
+
+        function renderChart(candles) {
+            const ctx = document.getElementById('priceChart');
+            if (priceChart) priceChart.destroy();
+            if (!candles || !candles.c) return;
+
+            const labels = candles.t.map(ts => new Date(ts * 1000).toLocaleDateString('en-US', {month:'short', day:'numeric'}));
+
+            priceChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Close Price',
+                        data: candles.c,
+                        borderColor: '#3b82f6',
+                        borderWidth: 3,
+                        tension: 0.1,
+                        pointRadius: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: { grid: { color: '#374151' }, ticks: { color: '#9ca3af' } },
+                        x: { grid: { color: '#374151' }, ticks: { color: '#9ca3af', maxTicksLimit: 10 } }
+                    }
+                }
+            });
+        }
+
+        function addSymbol() {
+            const input = document.getElementById('symbolInput');
+            let newSym = input.value.trim().toUpperCase();
+            if (newSym && !symbols.includes(newSym)) {
+                symbols.push(newSym);
+                renderWatchlist();
+                input.value = '';
+            }
+        }
+
+        async function init() {
+            await renderWatchlist();
+            await loadSymbol('AAPL');
+            setInterval(() => {
+                renderWatchlist();
+                if (currentSymbol) loadSymbol(currentSymbol);
+            }, 30000);
+        }
+
+        window.onload = init;
+    </script>
+</body>
+</html>
