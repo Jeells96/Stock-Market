@@ -35,7 +35,6 @@
       linear-gradient(180deg, #08111f 0%, #0a1628 100%);
     background-attachment:fixed;
   }
-  /* subtle paper grain overlay */
   body::before{
     content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
     background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.04'/></svg>");
@@ -45,21 +44,8 @@
   input,select{font-family:inherit;color:var(--ivory);background:rgba(8,17,31,0.6);border:1px solid var(--border);padding:8px 10px;border-radius:2px;font-size:13px}
   input:focus,select:focus{outline:none;border-color:var(--gold)}
 
-  /* ===== TICKER ===== */
-  .ticker-bar{
-    position:sticky;top:0;z-index:50;
-    background:linear-gradient(180deg,#06101e,#0a1628);
-    border-bottom:1px solid var(--border-strong);
-    overflow:hidden;height:42px;display:flex;align-items:center;
-    box-shadow:0 4px 20px rgba(0,0,0,0.5);
-  }
-  .ticker-label{
-    flex-shrink:0;padding:0 14px;height:100%;display:flex;align-items:center;
-    background:linear-gradient(90deg,var(--gold-dim),transparent);
-    border-right:1px solid var(--border);
-    font-family:'Cormorant Garamond',serif;font-weight:700;font-size:14px;
-    color:#08111f;letter-spacing:.18em;text-transform:uppercase;
-  }
+  .ticker-bar{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#06101e,#0a1628);border-bottom:1px solid var(--border-strong);overflow:hidden;height:42px;display:flex;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.5);}
+  .ticker-label{flex-shrink:0;padding:0 14px;height:100%;display:flex;align-items:center;background:linear-gradient(90deg,var(--gold-dim),transparent);border-right:1px solid var(--border);font-family:'Cormorant Garamond',serif;font-weight:700;font-size:14px;color:#08111f;letter-spacing:.18em;text-transform:uppercase;}
   .ticker-label .dot{width:6px;height:6px;border-radius:50%;background:#dc2626;margin-right:8px;box-shadow:0 0 8px #dc2626;animation:pulse 1.6s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
   .ticker-track{display:flex;animation:scroll 90s linear infinite;flex-shrink:0;will-change:transform}
@@ -72,83 +58,39 @@
   .ticker-chg.down{color:var(--red)}
   .ticker-arrow{font-size:9px}
 
-  /* ===== HEADER ===== */
-  .header{
-    position:relative;z-index:5;
-    padding:28px 20px 18px;text-align:center;
-    border-bottom:1px solid var(--border);
-    background:linear-gradient(180deg,rgba(15,31,61,0.4),transparent);
-  }
-  .crest{
-    display:inline-flex;align-items:center;gap:12px;margin-bottom:6px;
-    font-family:'Cormorant Garamond',serif;
-  }
+  .header{position:relative;z-index:5;padding:28px 20px 18px;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(15,31,61,0.4),transparent);}
+  .crest{display:inline-flex;align-items:center;gap:12px;margin-bottom:6px;font-family:'Cormorant Garamond',serif;}
   .crest-line{height:1px;width:40px;background:linear-gradient(90deg,transparent,var(--gold))}
   .crest-line.r{background:linear-gradient(90deg,var(--gold),transparent)}
   .crest-mark{color:var(--gold);font-size:18px}
-  h1{
-    font-family:'Cormorant Garamond',serif;
-    font-weight:700;font-size:clamp(28px,6vw,42px);
-    letter-spacing:.02em;color:var(--ivory);line-height:1;
-  }
-  h1 .amp{color:var(--gold);font-style:italic}
-  .subtitle{
-    margin-top:8px;font-size:10px;letter-spacing:.4em;
-    color:var(--gold-dim);text-transform:uppercase;
-  }
+  h1{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(28px,6vw,42px);letter-spacing:.02em;color:var(--ivory);line-height:1;}
+  .subtitle{margin-top:8px;font-size:10px;letter-spacing:.4em;color:var(--gold-dim);text-transform:uppercase;}
   .est{font-size:9px;color:var(--gold-dim);letter-spacing:.3em;margin-top:4px}
 
-  /* ===== NAV TABS ===== */
-  .tabs{
-    display:flex;justify-content:center;gap:0;
-    border-bottom:1px solid var(--border);
-    background:rgba(8,17,31,0.4);position:sticky;top:42px;z-index:40;
-    backdrop-filter:blur(8px);
-  }
-  .tab{
-    padding:14px 18px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;
-    color:var(--gold-dim);position:relative;transition:color .2s;
-    border-bottom:2px solid transparent;
-  }
+  .tabs{display:flex;justify-content:center;gap:0;border-bottom:1px solid var(--border);background:rgba(8,17,31,0.4);position:sticky;top:42px;z-index:40;backdrop-filter:blur(8px);}
+  .tab{padding:14px 18px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);position:relative;transition:color .2s;border-bottom:2px solid transparent;}
   .tab:hover{color:var(--gold-bright)}
   .tab.active{color:var(--gold-bright);border-bottom-color:var(--gold)}
-  .tab .count{
-    display:inline-block;margin-left:6px;background:var(--gold);color:#08111f;
-    font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700;
-  }
+  .tab .count{display:inline-block;margin-left:6px;background:var(--gold);color:#08111f;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700;}
 
-  /* ===== MAIN ===== */
   main{position:relative;z-index:5;padding:20px;max-width:1400px;margin:0 auto}
   .view{display:none}
   .view.active{display:block;animation:fadeIn .35s ease}
   @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 
-  /* ===== SCAN PANEL ===== */
-  .scan-header{
-    display:flex;justify-content:space-between;align-items:flex-start;gap:14px;
-    margin-bottom:18px;flex-wrap:wrap;
-  }
+  .scan-header{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:18px;flex-wrap:wrap;}
   .scan-title{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--ivory);font-weight:600}
   .scan-title .sub{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--gold-dim);margin-top:4px;text-transform:uppercase}
   .scan-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-  .btn{
-    padding:10px 16px;border:1px solid var(--border-strong);
-    background:linear-gradient(180deg,rgba(201,169,97,0.08),rgba(201,169,97,0.02));
-    color:var(--gold-bright);font-size:11px;letter-spacing:.18em;text-transform:uppercase;
-    transition:all .2s;border-radius:2px;
-  }
+  .btn{padding:10px 16px;border:1px solid var(--border-strong);background:linear-gradient(180deg,rgba(201,169,97,0.08),rgba(201,169,97,0.02));color:var(--gold-bright);font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:all .2s;border-radius:2px;}
   .btn:hover{background:linear-gradient(180deg,rgba(201,169,97,0.18),rgba(201,169,97,0.05));border-color:var(--gold);box-shadow:0 0 14px rgba(201,169,97,0.2)}
   .btn:disabled{opacity:.4;cursor:not-allowed}
   .btn.primary{background:linear-gradient(180deg,var(--gold),var(--gold-dim));color:#08111f;border-color:var(--gold)}
   .btn.primary:hover{background:linear-gradient(180deg,var(--gold-bright),var(--gold))}
   .btn.ghost{background:transparent;border-color:var(--border)}
+  .btn.danger{color:var(--red);border-color:var(--red-dim)}
 
-  /* ===== STATUS ===== */
-  .status-bar{
-    display:flex;gap:14px;flex-wrap:wrap;align-items:center;
-    padding:10px 14px;background:rgba(8,17,31,0.5);
-    border:1px solid var(--border);border-radius:2px;margin-bottom:18px;font-size:11px;
-  }
+  .status-bar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:10px 14px;background:rgba(8,17,31,0.5);border:1px solid var(--border);border-radius:2px;margin-bottom:18px;font-size:11px;}
   .status-item{display:flex;align-items:center;gap:6px;color:var(--cream)}
   .status-item .lbl{color:var(--gold-dim);letter-spacing:.15em;text-transform:uppercase;font-size:10px}
   .budget-bar{flex:1;min-width:120px;height:6px;background:rgba(8,17,31,0.8);border:1px solid var(--border);border-radius:3px;overflow:hidden;position:relative}
@@ -156,36 +98,20 @@
   .budget-fill.warn{background:linear-gradient(90deg,var(--gold),#f59e0b)}
   .budget-fill.danger{background:linear-gradient(90deg,#f59e0b,var(--red))}
 
-  /* ===== PROGRESS ===== */
-  .progress{
-    display:none;margin:14px 0;padding:14px;background:rgba(15,31,61,0.5);
-    border:1px solid var(--border);border-radius:2px;
-  }
+  .progress{display:none;margin:14px 0;padding:14px;background:rgba(15,31,61,0.5);border:1px solid var(--border);border-radius:2px;}
   .progress.show{display:block}
-  .progress-text{font-size:12px;color:var(--cream);margin-bottom:8px;display:flex;justify-content:space-between}
+  .progress-text{font-size:12px;color:var(--cream);margin-bottom:8px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
   .progress-text .stage{color:var(--gold-bright);letter-spacing:.15em;text-transform:uppercase;font-size:10px}
   .progress-bar{height:4px;background:rgba(8,17,31,0.8);border-radius:2px;overflow:hidden}
   .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold-bright));transition:width .3s;width:0}
+  .progress-actions{display:flex;justify-content:flex-end;margin-top:10px}
 
-  /* ===== PICKS GRID ===== */
   .picks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
-  .pick{
-    background:linear-gradient(180deg,rgba(22,43,82,0.7),rgba(15,31,61,0.7));
-    border:1px solid var(--border);border-radius:2px;
-    padding:18px;position:relative;transition:all .25s;overflow:hidden;
-  }
+  .pick{background:linear-gradient(180deg,rgba(22,43,82,0.7),rgba(15,31,61,0.7));border:1px solid var(--border);border-radius:2px;padding:18px;position:relative;transition:all .25s;overflow:hidden;}
   .pick:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.4),0 0 0 1px rgba(201,169,97,0.3)}
-  .pick::before{
-    content:"";position:absolute;top:0;left:0;right:0;height:2px;
-    background:linear-gradient(90deg,transparent,var(--gold),transparent);
-    opacity:0;transition:opacity .25s;
-  }
+  .pick::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .25s;}
   .pick:hover::before{opacity:1}
-  .pick-rank{
-    position:absolute;top:14px;right:14px;
-    font-family:'Cormorant Garamond',serif;font-size:32px;
-    color:var(--gold);opacity:.35;font-style:italic;line-height:1;
-  }
+  .pick-rank{position:absolute;top:14px;right:14px;font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);opacity:.35;font-style:italic;line-height:1;}
   .pick-rank .num{font-size:32px}
   .pick-sym{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--ivory);letter-spacing:.04em}
   .pick-name{font-size:10px;color:var(--gold-dim);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;height:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -208,12 +134,7 @@
   .factor-bar{flex:1;height:5px;background:rgba(8,17,31,0.6);border-radius:2px;overflow:hidden}
   .factor-fill{height:100%;background:linear-gradient(90deg,var(--navy-light),var(--gold));transition:width .4s}
   .factor-val{font-size:10px;color:var(--cream);min-width:32px;text-align:right}
-  .pick-thesis{
-    font-size:11px;color:var(--cream);line-height:1.5;
-    margin:10px 0;padding:8px 10px;
-    background:rgba(8,17,31,0.4);border-left:2px solid var(--gold-dim);
-    font-style:italic;
-  }
+  .pick-thesis{font-size:11px;color:var(--cream);line-height:1.5;margin:10px 0;padding:8px 10px;background:rgba(8,17,31,0.4);border-left:2px solid var(--gold-dim);font-style:italic;}
   .pick-targets{display:flex;gap:8px;margin:10px 0;font-size:10px}
   .target-cell{flex:1;text-align:center;padding:6px;background:rgba(8,17,31,0.4);border:1px solid var(--border)}
   .target-cell .lbl{display:block;color:var(--gold-dim);font-size:9px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
@@ -224,14 +145,8 @@
   .pick-actions{display:flex;gap:8px;margin-top:12px}
   .pick-actions .btn{flex:1;padding:8px;font-size:10px}
 
-  /* ===== PORTFOLIO ===== */
-  .portfolio-summary{
-    display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;
-  }
-  .summary-tile{
-    background:linear-gradient(180deg,rgba(22,43,82,0.7),rgba(15,31,61,0.7));
-    border:1px solid var(--border);padding:14px;border-radius:2px;text-align:center;
-  }
+  .portfolio-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
+  .summary-tile{background:linear-gradient(180deg,rgba(22,43,82,0.7),rgba(15,31,61,0.7));border:1px solid var(--border);padding:14px;border-radius:2px;text-align:center;}
   .summary-tile .lbl{font-size:10px;color:var(--gold-dim);letter-spacing:.2em;text-transform:uppercase}
   .summary-tile .val{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--ivory);margin-top:6px;line-height:1}
   .summary-tile .val.up{color:var(--green)}
@@ -239,20 +154,14 @@
   .summary-tile .sub{font-size:11px;color:var(--cream);margin-top:4px}
 
   .holdings-table{width:100%;border-collapse:collapse;font-size:12px}
-  .holdings-table th{
-    text-align:left;padding:10px 8px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;
-    color:var(--gold-dim);border-bottom:1px solid var(--border);font-weight:500;
-  }
+  .holdings-table th{text-align:left;padding:10px 8px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-dim);border-bottom:1px solid var(--border);font-weight:500;}
   .holdings-table th.r,.holdings-table td.r{text-align:right}
   .holdings-table td{padding:12px 8px;border-bottom:1px solid rgba(201,169,97,0.1)}
   .holdings-table tr:hover{background:rgba(201,169,97,0.03)}
   .holdings-table .sym{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--ivory)}
   .holdings-table .up{color:var(--green)}
   .holdings-table .down{color:var(--red)}
-  .signal-pill{
-    display:inline-block;padding:3px 10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;
-    border-radius:1px;font-weight:600;
-  }
+  .signal-pill{display:inline-block;padding:3px 10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;border-radius:1px;font-weight:600;}
   .signal-HOLD{background:rgba(201,169,97,0.15);color:var(--gold-bright);border:1px solid var(--gold-dim)}
   .signal-SELL{background:rgba(248,113,113,0.15);color:var(--red);border:1px solid var(--red-dim)}
   .signal-TAKE_PROFIT{background:rgba(74,222,128,0.15);color:var(--green);border:1px solid var(--green-dim)}
@@ -262,19 +171,11 @@
   .icon-btn{padding:4px 8px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);border:1px solid var(--border)}
   .icon-btn:hover{color:var(--red);border-color:var(--red)}
 
-  .empty{
-    text-align:center;padding:60px 20px;color:var(--gold-dim);
-    border:1px dashed var(--border);border-radius:2px;
-  }
+  .empty{text-align:center;padding:60px 20px;color:var(--gold-dim);border:1px dashed var(--border);border-radius:2px;}
   .empty .big{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);margin-bottom:8px;font-style:italic}
   .empty .small{font-size:12px;letter-spacing:.1em}
 
-  /* ===== SETTINGS ===== */
-  .settings-card{
-    max-width:600px;margin:0 auto;padding:24px;
-    background:linear-gradient(180deg,rgba(22,43,82,0.7),rgba(15,31,61,0.7));
-    border:1px solid var(--border);border-radius:2px;
-  }
+  .settings-card{max-width:600px;margin:0 auto;padding:24px;background:linear-gradient(180deg,rgba(22,43,82,0.7),rgba(15,31,61,0.7));border:1px solid var(--border);border-radius:2px;}
   .settings-card h2{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ivory);margin-bottom:18px}
   .field{margin-bottom:18px}
   .field label{display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px}
@@ -283,42 +184,21 @@
   .key-row{display:flex;gap:8px}
   .key-row input{flex:1;font-family:'JetBrains Mono',monospace;font-size:11px}
 
-  /* ===== MODAL ===== */
-  .modal-bg{
-    display:none;position:fixed;inset:0;background:rgba(6,16,30,0.85);z-index:100;
-    backdrop-filter:blur(4px);padding:20px;overflow-y:auto;
-  }
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(6,16,30,0.85);z-index:100;backdrop-filter:blur(4px);padding:20px;overflow-y:auto;}
   .modal-bg.show{display:flex;align-items:flex-start;justify-content:center}
-  .modal{
-    background:linear-gradient(180deg,#162b52,#0f1f3d);
-    border:1px solid var(--gold);border-radius:2px;padding:24px;
-    max-width:520px;width:100%;margin:auto;
-    box-shadow:0 0 40px rgba(201,169,97,0.2);
-  }
+  .modal{background:linear-gradient(180deg,#162b52,#0f1f3d);border:1px solid var(--gold);border-radius:2px;padding:24px;max-width:520px;width:100%;margin:auto;box-shadow:0 0 40px rgba(201,169,97,0.2);}
   .modal h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--ivory);margin-bottom:6px}
   .modal .modal-sub{font-size:11px;color:var(--gold-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:18px}
   .modal-actions{display:flex;gap:10px;margin-top:18px}
   .modal-actions .btn{flex:1}
 
-  /* ===== TOAST ===== */
   .toast-wrap{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px}
-  .toast{
-    padding:12px 16px;background:linear-gradient(180deg,#162b52,#0f1f3d);
-    border:1px solid var(--gold);border-left:3px solid var(--gold);
-    color:var(--ivory);font-size:12px;border-radius:2px;
-    box-shadow:0 4px 20px rgba(0,0,0,0.5);max-width:320px;
-    animation:slideIn .25s ease;
-  }
+  .toast{padding:12px 16px;background:linear-gradient(180deg,#162b52,#0f1f3d);border:1px solid var(--gold);border-left:3px solid var(--gold);color:var(--ivory);font-size:12px;border-radius:2px;box-shadow:0 4px 20px rgba(0,0,0,0.5);max-width:320px;animation:slideIn .25s ease;}
   .toast.err{border-color:var(--red);border-left-color:var(--red)}
   .toast.ok{border-color:var(--green);border-left-color:var(--green)}
   @keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
 
-  /* ===== FOOTER ===== */
-  footer{
-    text-align:center;padding:30px 20px;margin-top:40px;
-    border-top:1px solid var(--border);
-    font-size:10px;color:var(--gold-dim);letter-spacing:.2em;text-transform:uppercase;
-  }
+  footer{text-align:center;padding:30px 20px;margin-top:40px;border-top:1px solid var(--border);font-size:10px;color:var(--gold-dim);letter-spacing:.2em;text-transform:uppercase;}
   footer .ornament{color:var(--gold);font-size:14px;margin:0 8px}
 
   @media (max-width:640px){
@@ -335,25 +215,22 @@
 </head>
 <body>
 
-<!-- LIVE TICKER -->
 <div class="ticker-bar">
   <div class="ticker-label"><span class="dot"></span>Live</div>
   <div class="ticker-track" id="tickerTrack"></div>
 </div>
 
-<!-- HEADER -->
 <header class="header">
   <div class="crest">
     <span class="crest-line"></span>
     <span class="crest-mark">✦</span>
     <span class="crest-line r"></span>
   </div>
-  <h1>Jaren's <span class="amp">&amp;</span> Stock Market Tracker</h1>
+  <h1>Jaren's Stock Market Tracker</h1>
   <div class="subtitle">Intelligence · Conviction · Capital</div>
   <div class="est">Est. MMXXVI · Powered by Finnhub</div>
 </header>
 
-<!-- TABS -->
 <nav class="tabs">
   <button class="tab active" data-view="scan">Scanner</button>
   <button class="tab" data-view="portfolio">Portfolio <span class="count" id="pfCount">0</span></button>
@@ -361,7 +238,6 @@
 </nav>
 
 <main>
-  <!-- ============ SCANNER VIEW ============ -->
   <section class="view active" id="view-scan">
     <div class="scan-header">
       <div>
@@ -390,6 +266,9 @@
     <div class="progress" id="progress">
       <div class="progress-text"><span class="stage" id="progStage">Initializing</span><span id="progDetail">—</span></div>
       <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+      <div class="progress-actions">
+        <button class="btn danger" id="cancelScanBtn" style="padding:6px 12px;font-size:10px">✕ Cancel Scan</button>
+      </div>
     </div>
 
     <div id="picksGrid" class="picks-grid"></div>
@@ -399,7 +278,6 @@
     </div>
   </section>
 
-  <!-- ============ PORTFOLIO VIEW ============ -->
   <section class="view" id="view-portfolio">
     <div class="scan-header">
       <div>
@@ -412,12 +290,10 @@
         <button class="btn" id="addManualBtn">+ Add Position</button>
       </div>
     </div>
-
     <div class="portfolio-summary" id="pfSummary"></div>
     <div id="pfTableWrap"></div>
   </section>
 
-  <!-- ============ SETTINGS VIEW ============ -->
   <section class="view" id="view-settings">
     <div class="settings-card">
       <h2>Configuration</h2>
@@ -448,17 +324,15 @@
       <div class="field">
         <label>About the Model</label>
         <div class="hint" style="font-style:normal;line-height:1.7;color:var(--cream)">
-          Multi-factor scoring across momentum (5d &amp; 20d returns, RSI-14), volume confirmation,
-          analyst recommendation trend, insider sentiment (MSPR), and news sentiment.
-          The scanner uses a funnel: ~600 ticker quick-screen → top 30 deep momentum check → top 10 full deep-dive.
-          Rate limited to 55 calls/min with token-bucket queueing. Aggressive cache reuse means re-scans burn far less budget.
+          Multi-factor scoring across momentum (intraday position + day's change), analyst recommendation trend, insider sentiment (MSPR), and news sentiment.
+          The scanner uses a funnel: quote screen → top 30 momentum sort → top 10 deep-dive with analyst + insider + news data.
+          Rate limited to 55 calls/min with token-bucket queueing. Ticker pauses during scans so the scan gets full budget.
         </div>
       </div>
     </div>
   </section>
 </main>
 
-<!-- ADD TO PORTFOLIO MODAL -->
 <div class="modal-bg" id="addModal">
   <div class="modal">
     <h3 id="addModalTitle">Add to Portfolio</h3>
@@ -499,36 +373,18 @@
 </footer>
 
 <script>
-/* ===================== UNIVERSES ===================== */
 const UNIVERSES = {
-  sp: ["AAPL","MSFT","GOOGL","GOOG","AMZN","NVDA","META","TSLA","BRK.B","JPM","V","UNH","XOM","JNJ","WMT","MA","PG","LLY","HD","CVX","ABBV","KO","PEP","MRK","AVGO","COST","BAC","ADBE","ACN","CRM","TMO","CSCO","NFLX","ABT","MCD","DHR","WFC","TXN","NEE","ORCL","DIS","AMD","PM","CMCSA","VZ","NKE","UPS","RTX","PFE","INTC","HON","INTU","AMGN","T","COP","UNP","LOW","SPGI","LIN","CAT","GS","MS","ISRG","BLK","NOW","BKNG","DE","AXP","SCHW","TJX","C","BMY","SYK","MMC","BA","ELV","GE","MDT","ADP","PLD","LMT","REGN","VRTX","GILD","BSX","TMUS","CI","CB","ZTS","SO","DUK","MO","PGR","MDLZ","SLB","ETN","ADI","FI","ICE","CME","SHW","KLAC","APD","NSC","HCA","FCX","WM","BDX","CL","EOG","FDX","ITW","CSX","EQIX","NOC","MMM","PNC","TGT","EMR","MPC","PSX","AON","ORLY","HUM","MCK","PSA","ROP","MSI","USB","CARR","COF","APH","AJG","TFC","GD","SRE","D","NXPI","AZO","KMB","MAR","AIG","WMB","TT","ECL","WELL","O","FIS","OKE","KMI","ROST","CCI","TRV","CHTR","GIS","ALL","HLT","STZ","ANET","FTNT","KHC","SYY","BIIB","DOW","KDP","LRCX","ABNB","CTAS","BK","AFL","NUE","IDXX","JCI","VLO","MET","OXY","PCAR","SPG","AMP","PAYX","EW","TEL","HSY","CMG","DXCM","CTSH","A","PRU","DLR","LEN","DHI","CNC","MNST","DD","CRWD","DG","KR","WBA","YUM","ADM","EXC","XEL","FAST","SBUX","WEC","ED","ROK","BKR","HAL","RSG","VRSK","TROW","CDNS","SNPS","WST","ANSS","CDW","WTW","GWW","ALGN","ZBH","TYL","KEYS","NDAQ","NTAP","STT","STE","RJF","PFG","PHM","HBAN","RF","CFG","TSCO","ULTA","DRI","HAS","NWSA","NWS","FOXA","FOX","PARA","WBD","LYV","EA","TTWO","RBLX","UBER","LYFT","SQ","PYPL","SHOP","PINS","SNAP","SPOT","DOCU","ZM","DASH","BABA","BIDU","JD","PDD","NIO","XPEV","LI","CCL","RCL","NCLH","LUV","DAL","UAL","AAL","ALK","HAL","SLB","DVN","PXD","MRO","APA","CTRA","EQT","CVE","TRGP","WBA","CVS","HOLX","ILMN","RMD","WAT","MTD","PKG","IP","WRK","SEE","BALL","CCK","AVY","NEM","GOLD","WPM","FNV","ALB","LYB","CE","EMN","FMC","CF","MOS","NTR","WY","RPM","SHW","PPG","VMC","MLM","NUE","X","CLF","STLD","RS","CMC","KALU","AA","ATI","HAYN","CRS","WOR","ZEUS","TILE","MHK","WMS","BMCH","BLD","BCC","UFPI"],
-
-  momentum: ["GME","AMC","BBBY","BB","CLOV","SOFI","PLTR","HOOD","COIN","MSTR","MARA","RIOT","CLSK","WULF","HUT","BTBT","BITF","CIFR","HIVE","ARM","SMCI","AI","BBAI","SOUN","UPST","LCID","RIVN","FSR","NKLA","RIDE","WKHS","BLNK","CHPT","EVGO","QS","ENPH","SEDG","RUN","FSLR","SPWR","NOVA","ARRY","BE","PLUG","FCEL","BLDP","BEEM","SHLS","STEM","DQ","JKS","CSIQ","SOL","TSLA","NVDA","TSM","INTC","MU","ON","MCHP","SWKS","QRVO","LSCC","CRWD","ZS","NET","SNOW","DDOG","MDB","OKTA","DOCN","ESTC","FROG","CFLT","S","TENB","RPD","CYBR","VRNS","FTNT","PANW","CHKP","SAIL","BSY","GTLB","SUMO","NEWR","DT","PCTY","PAYC","CDAY","WDAY","ZUO","BL","ALRM","APPN","APPS","SE","GRAB","MELI","NU","STNE","PAGS","CART","RDDT","KSPI","ARM","HIMS","TLRY","CGC","ACB","CRON","SNDL","HEXO","OGI","VFF","GTBIF","CURLF","TCNNF","TRUL","CRLBF","MMNFF","MEDIF","DSP","KOSS","EXPR","WEN","NOK","SNDL","MULN","PROG","BBIG","ATER","IRNT","SPRT","GREE","DWAC","CFVI","PHUN","MARK","BNGO","CTRM","TOPS","NAKD","SHIP","CTXR","ASRT","INO","OCGN","SAVA","AHT","KNDI","ZOM","JAGX","GEVO","SENS","CIDM","UAMY","XELA","BIOX"],
-
-  mega: null // will be assembled from sp+momentum+nasdaq100 below
+  sp: ["AAPL","MSFT","GOOGL","GOOG","AMZN","NVDA","META","TSLA","BRK.B","JPM","V","UNH","XOM","JNJ","WMT","MA","PG","LLY","HD","CVX","ABBV","KO","PEP","MRK","AVGO","COST","BAC","ADBE","ACN","CRM","TMO","CSCO","NFLX","ABT","MCD","DHR","WFC","TXN","NEE","ORCL","DIS","AMD","PM","CMCSA","VZ","NKE","UPS","RTX","PFE","INTC","HON","INTU","AMGN","T","COP","UNP","LOW","SPGI","LIN","CAT","GS","MS","ISRG","BLK","NOW","BKNG","DE","AXP","SCHW","TJX","C","BMY","SYK","MMC","BA","ELV","GE","MDT","ADP","PLD","LMT","REGN","VRTX","GILD","BSX","TMUS","CI","CB","ZTS","SO","DUK","MO","PGR","MDLZ","SLB","ETN","ADI","FI","ICE","CME","SHW","KLAC","APD","NSC","HCA","FCX","WM","BDX","CL","EOG","FDX","ITW","CSX","EQIX","NOC","MMM","PNC","TGT","EMR","MPC","PSX","AON","ORLY","HUM","MCK","PSA","ROP","MSI","USB","CARR","COF","APH","AJG","TFC","GD","SRE","D","NXPI","AZO","KMB","MAR","AIG","WMB","TT","ECL","WELL","O","FIS","OKE","KMI","ROST","CCI","TRV","CHTR","GIS","ALL","HLT","STZ","ANET","FTNT","KHC","SYY","BIIB","DOW","KDP","LRCX","ABNB","CTAS","BK","AFL","NUE","IDXX","JCI","VLO","MET","OXY","PCAR","SPG","AMP","PAYX","EW","TEL","HSY","CMG","DXCM","CTSH","A","PRU","DLR","LEN","DHI","CNC","MNST","DD","CRWD","DG","KR","WBA","YUM","ADM","EXC","XEL","FAST","SBUX","WEC","ED","ROK","BKR","HAL","RSG","VRSK","TROW","CDNS","SNPS","WST","ANSS","CDW","WTW","GWW","ALGN","ZBH","TYL","KEYS","NDAQ","NTAP","STT","STE","RJF","PFG","PHM","HBAN","RF","CFG","TSCO","ULTA","DRI","HAS"],
+  momentum: ["GME","AMC","BB","CLOV","SOFI","PLTR","HOOD","COIN","MSTR","MARA","RIOT","CLSK","WULF","HUT","BTBT","BITF","CIFR","HIVE","ARM","SMCI","AI","BBAI","SOUN","UPST","LCID","RIVN","FSR","NKLA","RIDE","QS","ENPH","SEDG","RUN","FSLR","SPWR","NOVA","ARRY","BE","PLUG","FCEL","BLDP","BEEM","SHLS","STEM","DQ","JKS","CSIQ","SOL","TSLA","NVDA","TSM","INTC","MU","ON","MCHP","SWKS","QRVO","LSCC","CRWD","ZS","NET","SNOW","DDOG","MDB","OKTA","DOCN","ESTC","FROG","CFLT","S","TENB","RPD","CYBR","VRNS","FTNT","PANW","CHKP","BSY","GTLB","NEWR","DT","PCTY","PAYC","WDAY","ZUO","BL","APPN","APPS","SE","GRAB","MELI","NU","STNE","PAGS","CART","RDDT","KSPI","HIMS","TLRY","CGC","ACB","CRON","SNDL","HEXO","OGI","VFF"],
+  mega: null
 };
-
-const NASDAQ_EXTRA = ["ASML","ADSK","ADP","ABNB","ADBE","ADI","AEP","AMAT","AMD","AMGN","AMZN","ANSS","APP","ARM","ASND","AVGO","AZN","BIIB","BKNG","BKR","CCEP","CDNS","CDW","CEG","CHTR","CMCSA","COST","CPRT","CRWD","CSCO","CSGP","CSX","CTAS","CTSH","DASH","DDOG","DXCM","EA","EXC","FANG","FAST","FTNT","GEHC","GFS","GILD","GOOG","GOOGL","HON","IDXX","INTC","INTU","ISRG","KDP","KHC","KLAC","LIN","LRCX","LULU","MAR","MCHP","MDB","MDLZ","MELI","META","MNST","MRNA","MRVL","MSFT","MU","NFLX","NVDA","NXPI","ODFL","ON","ORLY","PANW","PAYX","PCAR","PDD","PEP","PLTR","PYPL","QCOM","REGN","ROP","ROST","SBUX","SMCI","SNPS","TEAM","TMUS","TSLA","TTD","TTWO","TXN","VRSK","VRTX","WBA","WBD","WDAY","XEL","ZS"];
-
-// Assemble mega universe (deduped)
+const NASDAQ_EXTRA = ["ASML","ADSK","ABNB","ADBE","ADI","AEP","AMAT","AMD","AMGN","AMZN","ANSS","APP","ARM","ASND","AVGO","AZN","BIIB","BKNG","BKR","CDNS","CDW","CEG","CHTR","CMCSA","COST","CPRT","CRWD","CSCO","CSGP","CSX","CTAS","CTSH","DASH","DDOG","DXCM","EA","EXC","FANG","FAST","FTNT","GEHC","GFS","GILD","GOOG","GOOGL","HON","IDXX","INTC","INTU","ISRG","KDP","KHC","KLAC","LIN","LRCX","LULU","MAR","MCHP","MDB","MDLZ","MELI","META","MNST","MRNA","MRVL","MSFT","MU","NFLX","NVDA","NXPI","ODFL","ON","ORLY","PANW","PAYX","PCAR","PDD","PEP","PLTR","PYPL","QCOM","REGN","ROP","ROST","SBUX","SMCI","SNPS","TEAM","TMUS","TSLA","TTD","TTWO","TXN","VRSK","VRTX","WBA","WBD","WDAY","XEL","ZS"];
 UNIVERSES.mega = [...new Set([...UNIVERSES.sp, ...UNIVERSES.momentum, ...NASDAQ_EXTRA])];
 
-const TICKER_DISPLAY = ["AAPL","MSFT","NVDA","GOOGL","AMZN","META","TSLA","BRK.B","JPM","V","UNH","XOM","WMT","LLY","AVGO","JNJ","MA","PG","HD","COST","BAC","NFLX","ABBV","CVX","KO","CRM","ORCL","TMO","ADBE","PEP","AMD","MCD","CSCO","DIS","ABT","INTC","WFC","ACN","BA","GS","SMCI","PLTR","COIN","UBER","SHOP","SOFI","HOOD","MSTR","ARM","CRWD"];
+const TICKER_DISPLAY = ["AAPL","MSFT","NVDA","GOOGL","AMZN","META","TSLA","JPM","V","UNH","XOM","WMT","LLY","AVGO","JNJ","MA","PG","HD","COST","BAC","NFLX","ABBV","CVX","KO","CRM","ORCL","TMO","ADBE","PEP","AMD","MCD","CSCO","DIS","ABT","INTC","WFC","BA","GS","SMCI","PLTR","COIN","UBER","SHOP","SOFI","HOOD","MSTR","ARM","CRWD"];
 
-/* ===================== STATE ===================== */
-const LS = {
-  KEY: "jstm.apiKey",
-  PORTFOLIO: "jstm.portfolio",
-  CACHE: "jstm.cache",
-  LAST_SCAN: "jstm.lastScan",
-  RISK: "jstm.risk",
-};
-
-const RISK_PROFILES = {
-  conservative: {target: 0.06, stop: 0.03},
-  balanced:     {target: 0.10, stop: 0.05},
-  aggressive:   {target: 0.18, stop: 0.07},
-};
+const LS = {KEY:"jstm.apiKey",PORTFOLIO:"jstm.portfolio",CACHE:"jstm.cache",LAST_SCAN:"jstm.lastScan",RISK:"jstm.risk"};
+const RISK_PROFILES = {conservative:{target:0.06,stop:0.03},balanced:{target:0.10,stop:0.05},aggressive:{target:0.18,stop:0.07}};
 
 let apiKey = localStorage.getItem(LS.KEY) || "d874rh1r01ql0hsk9qogd874rh1r01ql0hsk9qp0";
 let portfolio = JSON.parse(localStorage.getItem(LS.PORTFOLIO) || "[]");
@@ -536,34 +392,19 @@ let cache = JSON.parse(localStorage.getItem(LS.CACHE) || "{}");
 let lastScanResults = JSON.parse(localStorage.getItem(LS.LAST_SCAN) || "null");
 let risk = localStorage.getItem(LS.RISK) || "balanced";
 
-/* ===================== RATE LIMITER ===================== */
-// Token bucket: max 55 calls per 60 seconds (5-call safety margin)
-const RL = {
-  capacity: 55,
-  refillRate: 55/60, // tokens per second
-  tokens: 55,
-  lastRefill: Date.now(),
-  queue: [],
-  draining: false,
-  callTimes: [], // for status display
+let scanInProgress = false;
+let scanCancelRequested = false;
 
+const RL = {
+  capacity: 55, refillRate: 55/60, tokens: 55, lastRefill: Date.now(),
+  queue: [], draining: false, callTimes: [],
   refill(){
     const now = Date.now();
-    const elapsed = (now - this.lastRefill)/1000;
-    this.tokens = Math.min(this.capacity, this.tokens + elapsed * this.refillRate);
+    this.tokens = Math.min(this.capacity, this.tokens + (now - this.lastRefill)/1000 * this.refillRate);
     this.lastRefill = now;
-    // prune call times older than 60s
-    const cutoff = now - 60000;
-    this.callTimes = this.callTimes.filter(t => t > cutoff);
+    this.callTimes = this.callTimes.filter(t => t > now - 60000);
   },
-
-  async acquire(){
-    return new Promise(resolve => {
-      this.queue.push(resolve);
-      this.drain();
-    });
-  },
-
+  async acquire(){ return new Promise(resolve => { this.queue.push(resolve); this.drain(); }); },
   async drain(){
     if(this.draining) return;
     this.draining = true;
@@ -575,7 +416,6 @@ const RL = {
         const r = this.queue.shift();
         updateStatusBar();
         r();
-        // tiny breather between calls to avoid bursting
         await sleep(18);
       } else {
         const waitMs = Math.ceil((1 - this.tokens)/this.refillRate * 1000) + 30;
@@ -586,14 +426,9 @@ const RL = {
     this.draining = false;
     updateStatusBar();
   },
-
-  remaining(){
-    this.refill();
-    return Math.max(0, 60 - this.callTimes.length);
-  }
+  remaining(){ this.refill(); return Math.max(0, 60 - this.callTimes.length); }
 };
 
-/* ===================== HELPERS ===================== */
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const $ = id => document.getElementById(id);
 const $$ = sel => document.querySelectorAll(sel);
@@ -610,28 +445,21 @@ function toast(msg, kind=""){
 }
 
 function saveCache(){
-  // trim cache to avoid bloating localStorage
   const now = Date.now();
-  for(const k in cache){
-    if(cache[k].exp < now - 7*86400000) delete cache[k];
-  }
+  for(const k in cache){ if(cache[k].exp < now - 7*86400000) delete cache[k]; }
   try{ localStorage.setItem(LS.CACHE, JSON.stringify(cache)); }
   catch(e){ console.warn("cache save failed", e); cache = {}; }
 }
 function savePortfolio(){ localStorage.setItem(LS.PORTFOLIO, JSON.stringify(portfolio)); }
 function saveLastScan(){ localStorage.setItem(LS.LAST_SCAN, JSON.stringify(lastScanResults)); }
-
 function cacheGet(key){
   const c = cache[key];
   if(!c) return null;
   if(c.exp < Date.now()){ delete cache[key]; return null; }
   return c.val;
 }
-function cacheSet(key, val, ttlMs){
-  cache[key] = {val, exp: Date.now() + ttlMs};
-}
+function cacheSet(key, val, ttlMs){ cache[key] = {val, exp: Date.now() + ttlMs}; }
 
-/* ===================== FINNHUB API ===================== */
 async function finn(path, params={}, ttlMs=0){
   const cacheKey = path + "?" + new URLSearchParams(params).toString();
   if(ttlMs > 0){
@@ -643,7 +471,6 @@ async function finn(path, params={}, ttlMs=0){
   try{
     const res = await fetch(url);
     if(res.status === 429){
-      // hit rate limit despite our budgeting — back off and retry once
       await sleep(2500);
       const res2 = await fetch(url);
       if(!res2.ok) throw new Error("HTTP " + res2.status);
@@ -651,49 +478,24 @@ async function finn(path, params={}, ttlMs=0){
       if(ttlMs > 0) cacheSet(cacheKey, j2, ttlMs);
       return j2;
     }
-    if(res.status === 401 || res.status === 403){
-      throw new Error("Invalid API key");
-    }
+    if(res.status === 401 || res.status === 403) throw new Error("Invalid API key");
     if(!res.ok) throw new Error("HTTP " + res.status);
     const j = await res.json();
-    if(ttlMs > 0){
-      cacheSet(cacheKey, j, ttlMs);
-      saveCache();
-    }
+    if(ttlMs > 0){ cacheSet(cacheKey, j, ttlMs); saveCache(); }
     return j;
-  } catch(err){
-    console.warn("finn error", path, err);
-    throw err;
-  }
+  } catch(err){ console.warn("finn error", path, err); throw err; }
 }
 
-async function getQuote(sym){
-  return finn("/quote", {symbol: sym}, 90 * 1000); // 90s
-}
-async function getProfile(sym){
-  return finn("/stock/profile2", {symbol: sym}, 7 * 86400 * 1000); // 7 days
-}
-async function getRecommendation(sym){
-  return finn("/stock/recommendation", {symbol: sym}, 12 * 3600 * 1000); // 12h
-}
+async function getQuote(sym){ return finn("/quote", {symbol: sym}, 90 * 1000); }
+async function getProfile(sym){ return finn("/stock/profile2", {symbol: sym}, 7 * 86400 * 1000); }
+async function getRecommendation(sym){ return finn("/stock/recommendation", {symbol: sym}, 12 * 3600 * 1000); }
 async function getInsiderSentiment(sym){
   const to = new Date().toISOString().slice(0,10);
   const fromDt = new Date(Date.now()-90*86400000).toISOString().slice(0,10);
   return finn("/stock/insider-sentiment", {symbol: sym, from: fromDt, to}, 24*3600*1000);
 }
-async function getCompanyNews(sym){
-  const to = new Date().toISOString().slice(0,10);
-  const fromDt = new Date(Date.now()-7*86400000).toISOString().slice(0,10);
-  return finn("/company-news", {symbol: sym, from: fromDt, to}, 3*3600*1000);
-}
-async function getNewsSentiment(sym){
-  return finn("/news-sentiment", {symbol: sym}, 6*3600*1000);
-}
-async function getBasicFin(sym){
-  return finn("/stock/metric", {symbol: sym, metric: "all"}, 24*3600*1000);
-}
+async function getNewsSentiment(sym){ return finn("/news-sentiment", {symbol: sym}, 6*3600*1000); }
 
-/* ===================== STATUS BAR ===================== */
 function updateStatusBar(){
   const remaining = RL.remaining();
   $("budgetTxt").textContent = `${remaining} / 60`;
@@ -704,49 +506,45 @@ function updateStatusBar(){
   $("cacheCount").textContent = Object.keys(cache).length;
   $("apiStatus").textContent = apiKey ? "● Connected" : "● No Key";
   $("apiStatus").style.color = apiKey ? "var(--green)" : "var(--red)";
-
-  // last scan age
   if(lastScanResults?.ts){
     const ageMin = Math.floor((Date.now() - lastScanResults.ts)/60000);
     $("lastScanAge").textContent = ageMin < 1 ? "just now" : ageMin < 60 ? `${ageMin}m ago` : `${Math.floor(ageMin/60)}h ago`;
   }
 }
 
-/* ===================== LIVE TICKER ===================== */
+// TICKER: pauses during scans, 5-minute cache, only fires when >20 tokens free
 async function buildTicker(){
-  // initial paint with placeholders
   const tickerData = TICKER_DISPLAY.map(s => ({sym: s, px: null, chg: null}));
+  TICKER_DISPLAY.forEach((sym, i) => {
+    const cached = cacheGet(`/quote?symbol=${sym}`);
+    if(cached && cached.c) tickerData[i] = {sym, px: cached.c, chg: cached.dp || 0};
+  });
   renderTicker(tickerData);
 
-  // load progressively — use cached if available
   let idx = 0;
   const drip = async () => {
     if(!apiKey) return;
     while(true){
+      if(scanInProgress){ await sleep(2000); continue; }
+      if(RL.remaining() < 20){ await sleep(3000); continue; }
       const sym = TICKER_DISPLAY[idx % TICKER_DISPLAY.length];
       try{
-        // longer cache for ticker so it doesn't burn budget
-        const q = await finn("/quote", {symbol: sym}, 60*1000);
+        const q = await finn("/quote", {symbol: sym}, 5*60*1000);
         if(q && q.c){
-          tickerData[idx % TICKER_DISPLAY.length] = {
-            sym, px: q.c, chg: q.dp
-          };
+          tickerData[idx % TICKER_DISPLAY.length] = { sym, px: q.c, chg: q.dp || 0 };
           renderTicker(tickerData);
         }
       } catch(e){ /* silent */ }
       idx++;
-      await sleep(1500); // ~1 call every 1.5s for ticker = 40/min if all uncached
+      await sleep(4000);
     }
   };
   drip();
 }
 
 function renderTicker(data){
-  // duplicate for seamless loop
   const items = [...data, ...data].map(d => {
-    if(d.px === null) {
-      return `<div class="ticker-item"><span class="ticker-sym">${d.sym}</span><span class="ticker-px">—</span></div>`;
-    }
+    if(d.px === null) return `<div class="ticker-item"><span class="ticker-sym">${d.sym}</span><span class="ticker-px">—</span></div>`;
     const up = (d.chg||0) >= 0;
     return `<div class="ticker-item">
       <span class="ticker-sym">${d.sym}</span>
@@ -757,38 +555,20 @@ function renderTicker(data){
   $("tickerTrack").innerHTML = items;
 }
 
-/* ===================== SCANNER ===================== */
-function computeRSI(closes, period=14){
-  if(closes.length < period+1) return 50;
-  let gains=0, losses=0;
-  for(let i=1; i<=period; i++){
-    const d = closes[i]-closes[i-1];
-    if(d>=0) gains += d; else losses -= d;
-  }
-  let avgG = gains/period, avgL = losses/period;
-  for(let i=period+1; i<closes.length; i++){
-    const d = closes[i]-closes[i-1];
-    if(d>=0){ avgG = (avgG*(period-1)+d)/period; avgL = (avgL*(period-1))/period; }
-    else    { avgG = (avgG*(period-1))/period;    avgL = (avgL*(period-1)-d)/period; }
-  }
-  if(avgL===0) return 100;
-  const rs = avgG/avgL;
-  return 100 - (100/(1+rs));
-}
-
 function showProgress(stage, detail, pct){
   $("progress").classList.add("show");
   $("progStage").textContent = stage;
   $("progDetail").textContent = detail;
   $("progFill").style.width = pct + "%";
 }
-function hideProgress(){
-  setTimeout(()=>$("progress").classList.remove("show"), 800);
-}
+function hideProgress(){ setTimeout(()=>$("progress").classList.remove("show"), 800); }
 
 async function runScan(){
   if(!apiKey){ toast("Add your Finnhub API key in Settings first.", "err"); return; }
+  if(scanInProgress){ toast("Scan already running.", "err"); return; }
 
+  scanInProgress = true;
+  scanCancelRequested = false;
   $("scanBtn").disabled = true;
   $("emptyScan").style.display = "none";
   $("picksGrid").innerHTML = "";
@@ -797,118 +577,103 @@ async function runScan(){
   const candidates = [];
 
   try {
-    // ========== STAGE 1: Quick quote screen ==========
-    // Goal: pull lightweight quote for every ticker, prefer cached.
-    // Stop early once we've burned ~40% of budget if uncached, since later stages need budget too.
     showProgress("Stage 1 — Quote Screen", `0 / ${universe.length}`, 5);
-
     let scanned = 0;
     let uncachedCalls = 0;
-    const MAX_STAGE1_NEW_CALLS = 35; // hard cap on fresh calls in stage 1
+    const MAX_STAGE1_NEW_CALLS = 50;
 
     for(const sym of universe){
-      // Try cache first — won't count against budget
+      if(scanCancelRequested) throw new Error("Cancelled by user");
       const cacheKey = `/quote?symbol=${sym}`;
       const cached = cacheGet(cacheKey);
-
       let q;
-      if(cached){
-        q = cached;
-      } else if(uncachedCalls < MAX_STAGE1_NEW_CALLS){
-        try {
-          q = await getQuote(sym);
-          uncachedCalls++;
-        } catch(e){ continue; }
-      } else {
-        continue; // skip uncached if we've used too much budget
-      }
+      if(cached) q = cached;
+      else if(uncachedCalls < MAX_STAGE1_NEW_CALLS){
+        try { q = await getQuote(sym); uncachedCalls++; }
+        catch(e){ continue; }
+      } else continue;
 
       if(q && q.c && q.c > 0){
         candidates.push({
-          sym,
-          price: q.c,
-          changePct: q.dp || 0,
-          high: q.h,
-          low: q.l,
-          open: q.o,
-          prevClose: q.pc,
-          dayRange: q.h && q.l ? (q.h - q.l) / q.l : 0,
+          sym, price: q.c, changePct: q.dp || 0,
+          high: q.h, low: q.l, open: q.o, prevClose: q.pc,
         });
       }
-
       scanned++;
       if(scanned % 5 === 0 || scanned === universe.length){
-        showProgress("Stage 1 — Quote Screen", `${scanned} / ${universe.length} · ${candidates.length} live`, 5 + (scanned/universe.length)*30);
+        showProgress("Stage 1 — Quote Screen",
+          `${scanned}/${universe.length} screened · ${candidates.length} live · ${uncachedCalls} fresh calls`,
+          5 + (scanned/universe.length)*30);
+        await sleep(10);
       }
     }
 
-    if(candidates.length === 0){ throw new Error("No quotes returned. Check your API key."); }
+    if(candidates.length === 0) throw new Error("No quotes returned. Verify your API key works.");
 
-    // ========== STAGE 2: Momentum pre-rank ==========
-    // Score candidates on day's change% and intraday range strength.
-    // Top by composite momentum -> top 30
     showProgress("Stage 2 — Momentum Sort", `${candidates.length} candidates`, 38);
     await sleep(200);
-
     candidates.forEach(c => {
-      // simple momentum score: today's % change weighted by where price sits in day range
       const positionInRange = c.high > c.low ? (c.price - c.low) / (c.high - c.low) : 0.5;
       c.momentumScore = (c.changePct * 0.7) + (positionInRange * 100 * 0.3);
     });
     candidates.sort((a,b)=> b.momentumScore - a.momentumScore);
     const top30 = candidates.slice(0, 30);
 
-    showProgress("Stage 2 — Momentum Sort", `Top 30 selected`, 42);
+    showProgress("Stage 2 — Momentum Sort", `Top 30 selected · sorting`, 42);
 
-    // ========== STAGE 3: Deep-dive top 10 ==========
-    // For top 10, fetch recommendation trend + insider sentiment + news sentiment.
-    // Heavy on calls but only on the cream.
     const deepCount = Math.min(10, top30.length);
     const finalists = top30.slice(0, deepCount);
 
     for(let i = 0; i < finalists.length; i++){
+      if(scanCancelRequested) throw new Error("Cancelled by user");
       const c = finalists[i];
       const pct = 42 + (i/deepCount)*52;
-      showProgress("Stage 3 — Deep Dive", `${c.sym} (${i+1}/${deepCount})`, pct);
+      showProgress("Stage 3 — Deep Dive", `${c.sym} (${i+1}/${deepCount}) · pulling analyst + insider + news`, pct);
 
-      // parallel fetch (rate limiter serializes)
       const [profile, rec, ins, newsSent] = await Promise.allSettled([
-        getProfile(c.sym),
-        getRecommendation(c.sym),
-        getInsiderSentiment(c.sym),
-        getNewsSentiment(c.sym),
+        getProfile(c.sym), getRecommendation(c.sym), getInsiderSentiment(c.sym), getNewsSentiment(c.sym),
       ]);
-
       c.profile = profile.status==="fulfilled" ? profile.value : null;
       c.recommendation = rec.status==="fulfilled" ? rec.value : null;
       c.insider = ins.status==="fulfilled" ? ins.value : null;
       c.newsSent = newsSent.status==="fulfilled" ? newsSent.value : null;
-
       scoreFinalist(c);
+
+      // progressive render
+      const sortedSoFar = finalists.filter(f => f.totalScore !== undefined).sort((a,b)=> b.totalScore - a.totalScore);
+      renderPicks(sortedSoFar);
     }
 
-    // Final sort by composite score
     finalists.sort((a,b)=> b.totalScore - a.totalScore);
-
-    // ========== STAGE 4: Render ==========
     showProgress("Stage 4 — Finalizing", `${finalists.length} picks ranked`, 98);
     await sleep(300);
 
-    lastScanResults = {
-      ts: Date.now(),
-      universe: $("universeSel").value,
-      picks: finalists
-    };
+    lastScanResults = { ts: Date.now(), universe: $("universeSel").value, picks: finalists };
     saveLastScan();
     renderPicks(finalists);
-
     $("scanTs").textContent = new Date().toLocaleTimeString();
     toast(`Scan complete. ${finalists.length} picks ranked.`, "ok");
 
   } catch(err){
     console.error(err);
-    toast("Scan failed: " + err.message, "err");
+    toast("Scan: " + err.message, "err");
+    if(candidates.length > 0 && $("picksGrid").innerHTML === ""){
+      const fallback = candidates.sort((a,b) => (b.changePct||0) - (a.changePct||0)).slice(0, 10);
+      fallback.forEach(c => {
+        c.f_momentum = clamp(50 + c.changePct * 8, 0, 100);
+        c.f_analyst = 50; c.f_insider = 50; c.f_news = 50;
+        c.totalScore = Math.round(c.f_momentum * 0.6 + 25);
+        c.conviction = "WATCH";
+        c.thesis = "Quote-only screen — deep dive incomplete.";
+        const profile = RISK_PROFILES[risk];
+        c.targetPrice = c.price * (1 + profile.target);
+        c.stopPrice = c.price * (1 - profile.stop);
+      });
+      renderPicks(fallback);
+    }
   } finally {
+    scanInProgress = false;
+    scanCancelRequested = false;
     $("scanBtn").disabled = false;
     hideProgress();
     updateStatusBar();
@@ -916,55 +681,29 @@ async function runScan(){
 }
 
 function scoreFinalist(c){
-  // === Momentum factor (0-100) ===
-  // based on today's change% and intraday range position
   const positionInRange = c.high > c.low ? (c.price - c.low) / (c.high - c.low) : 0.5;
   c.f_momentum = clamp(50 + c.changePct * 8 + (positionInRange - 0.5) * 20, 0, 100);
-
-  // === Analyst factor (0-100) ===
-  // Recommendation trend: strong buy + buy weighted positive, sell weighted negative
   if(c.recommendation && c.recommendation.length){
-    const latest = c.recommendation[0]; // most recent month
+    const latest = c.recommendation[0];
     const total = latest.strongBuy + latest.buy + latest.hold + latest.sell + latest.strongSell;
     if(total > 0){
       const bullScore = (latest.strongBuy * 2 + latest.buy * 1 - latest.sell * 1 - latest.strongSell * 2) / total;
       c.f_analyst = clamp(50 + bullScore * 35, 0, 100);
     } else c.f_analyst = 50;
   } else c.f_analyst = 50;
-
-  // === Insider factor (0-100) ===
-  // MSPR -100 to +100, take average of recent
   if(c.insider && c.insider.data && c.insider.data.length){
     const recent = c.insider.data.slice(-3);
     const avgMspr = recent.reduce((s,d)=>s+(d.mspr||0),0) / recent.length;
     c.f_insider = clamp(50 + avgMspr * 0.5, 0, 100);
   } else c.f_insider = 50;
-
-  // === News sentiment factor (0-100) ===
-  if(c.newsSent && c.newsSent.companyNewsScore != null){
-    // companyNewsScore is 0-1, higher = more positive
-    c.f_news = clamp(c.newsSent.companyNewsScore * 100, 0, 100);
-  } else c.f_news = 50;
-
-  // === Composite score ===
-  // Weighted: momentum 35%, analyst 30%, insider 20%, news 15%
-  c.totalScore = Math.round(
-    c.f_momentum * 0.35 +
-    c.f_analyst * 0.30 +
-    c.f_insider * 0.20 +
-    c.f_news    * 0.15
-  );
-
-  // Conviction tier
+  if(c.newsSent && c.newsSent.companyNewsScore != null) c.f_news = clamp(c.newsSent.companyNewsScore * 100, 0, 100);
+  else c.f_news = 50;
+  c.totalScore = Math.round(c.f_momentum * 0.35 + c.f_analyst * 0.30 + c.f_insider * 0.20 + c.f_news * 0.15);
   if(c.totalScore >= 75) c.conviction = "STRONG";
   else if(c.totalScore >= 62) c.conviction = "BUY";
   else if(c.totalScore >= 50) c.conviction = "HOLD";
   else c.conviction = "WATCH";
-
-  // Thesis generation
   c.thesis = generateThesis(c);
-
-  // Targets
   const profile = RISK_PROFILES[risk];
   c.targetPrice = c.price * (1 + profile.target);
   c.stopPrice = c.price * (1 - profile.stop);
@@ -980,7 +719,6 @@ function generateThesis(c){
   else if(c.f_insider <= 35) parts.push("insider selling (caution)");
   if(c.f_news >= 65) parts.push("positive news flow");
   else if(c.f_news <= 35) parts.push("negative news flow (caution)");
-
   if(parts.length === 0) return "Mixed signals — moderate conviction setup.";
   const sector = c.profile?.finnhubIndustry || "the sector";
   return `${capitalize(parts[0])}${parts.length>1 ? ", " + parts.slice(1).join(", ") : ""} in ${sector}.`;
@@ -990,10 +728,9 @@ function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
 function renderPicks(picks){
   const html = picks.map((p, i) => {
     const up = p.changePct >= 0;
-    const rankNum = i+1;
     return `
     <div class="pick" data-sym="${p.sym}">
-      <div class="pick-rank"><span class="num">${String(rankNum).padStart(2,'0')}</span></div>
+      <div class="pick-rank"><span class="num">${String(i+1).padStart(2,'0')}</span></div>
       <div class="pick-sym">${p.sym}</div>
       <div class="pick-name">${p.profile?.name || ""}</div>
       <div class="pick-px-row">
@@ -1025,7 +762,6 @@ function renderPicks(picks){
     </div>`;
   }).join("");
   $("picksGrid").innerHTML = html;
-
   $$(".add-pick-btn").forEach(btn => {
     btn.addEventListener("click", (e) => {
       const sym = e.target.dataset.sym;
@@ -1042,7 +778,6 @@ function factorBar(label, val){
   </div>`;
 }
 
-/* ===================== PORTFOLIO ===================== */
 function openAddModal(pick = null){
   $("addModal").classList.add("show");
   if(pick){
@@ -1055,10 +790,7 @@ function openAddModal(pick = null){
   } else {
     $("addModalTitle").textContent = "Add Position";
     $("addModalSub").textContent = "Manual entry";
-    $("addSymbol").value = "";
-    $("addEntry").value = "";
-    $("addTarget").value = "";
-    $("addStop").value = "";
+    $("addSymbol").value = ""; $("addEntry").value = ""; $("addTarget").value = ""; $("addStop").value = "";
   }
   $("addShares").value = "";
   setTimeout(()=> $("addShares").focus(), 100);
@@ -1075,13 +807,7 @@ function confirmAdd(){
   const profile = RISK_PROFILES[risk];
   const tgt = parseFloat($("addTarget").value) || entry * (1 + profile.target);
   const stop = parseFloat($("addStop").value) || entry * (1 - profile.stop);
-
-  portfolio.push({
-    sym, shares, entry, target: tgt, stop,
-    addedAt: Date.now(),
-    currentPrice: entry,
-    lastUpdate: 0,
-  });
+  portfolio.push({ sym, shares, entry, target: tgt, stop, addedAt: Date.now(), currentPrice: entry, lastUpdate: 0 });
   savePortfolio();
   closeAddModal();
   toast(`${sym} added to portfolio.`, "ok");
@@ -1089,9 +815,7 @@ function confirmAdd(){
   renderPortfolio();
 }
 
-function updatePfCount(){
-  $("pfCount").textContent = portfolio.length;
-}
+function updatePfCount(){ $("pfCount").textContent = portfolio.length; }
 
 async function renderPortfolio(){
   updatePfCount();
@@ -1100,41 +824,18 @@ async function renderPortfolio(){
     $("pfTableWrap").innerHTML = `<div class="empty"><div class="big">No Positions</div><div class="small">Add picks from the Scanner or manually</div></div>`;
     return;
   }
-
-  // refresh current prices (cached 90s)
   await refreshPortfolioPrices();
-
-  // summary
   let totCost = 0, totVal = 0;
-  portfolio.forEach(p => {
-    totCost += p.shares * p.entry;
-    totVal  += p.shares * (p.currentPrice || p.entry);
-  });
+  portfolio.forEach(p => { totCost += p.shares * p.entry; totVal += p.shares * (p.currentPrice || p.entry); });
   const pnl = totVal - totCost;
   const pnlPct = totCost > 0 ? pnl/totCost : 0;
   const winners = portfolio.filter(p => (p.currentPrice||p.entry) > p.entry).length;
-
   $("pfSummary").innerHTML = `
-    <div class="summary-tile">
-      <div class="lbl">Cost Basis</div>
-      <div class="val">${fmt$(totCost)}</div>
-    </div>
-    <div class="summary-tile">
-      <div class="lbl">Market Value</div>
-      <div class="val">${fmt$(totVal)}</div>
-    </div>
-    <div class="summary-tile">
-      <div class="lbl">Unrealized P&L</div>
-      <div class="val ${pnl>=0?'up':'down'}">${pnl>=0?'+':''}${fmt$(pnl)}</div>
-      <div class="sub ${pnl>=0?'up':'down'}" style="color:${pnl>=0?'var(--green)':'var(--red)'}">${fmtPct(pnlPct)}</div>
-    </div>
-    <div class="summary-tile">
-      <div class="lbl">Winners</div>
-      <div class="val">${winners} <span style="font-size:14px;color:var(--gold-dim)">/ ${portfolio.length}</span></div>
-    </div>
+    <div class="summary-tile"><div class="lbl">Cost Basis</div><div class="val">${fmt$(totCost)}</div></div>
+    <div class="summary-tile"><div class="lbl">Market Value</div><div class="val">${fmt$(totVal)}</div></div>
+    <div class="summary-tile"><div class="lbl">Unrealized P&L</div><div class="val ${pnl>=0?'up':'down'}">${pnl>=0?'+':''}${fmt$(pnl)}</div><div class="sub" style="color:${pnl>=0?'var(--green)':'var(--red)'}">${fmtPct(pnlPct)}</div></div>
+    <div class="summary-tile"><div class="lbl">Winners</div><div class="val">${winners} <span style="font-size:14px;color:var(--gold-dim)">/ ${portfolio.length}</span></div></div>
   `;
-
-  // table
   const rows = portfolio.map((p,i) => {
     const cp = p.currentPrice || p.entry;
     const posPnl = (cp - p.entry) * p.shares;
@@ -1149,34 +850,21 @@ async function renderPortfolio(){
       <td class="r">${fmt$(p.stop)}</td>
       <td class="r ${posPnl>=0?'up':'down'}">${posPnl>=0?'+':''}${fmt$(posPnl)}<br><span style="font-size:10px">${fmtPct(posPnlPct)}</span></td>
       <td class="r"><span class="signal-pill signal-${signal.code}">${signal.label}</span></td>
-      <td class="r"><div class="row-actions">
-        <button class="icon-btn remove-pos-btn" data-idx="${i}">✕</button>
-      </div></td>
+      <td class="r"><div class="row-actions"><button class="icon-btn remove-pos-btn" data-idx="${i}">✕</button></div></td>
     </tr>`;
   }).join("");
-
   $("pfTableWrap").innerHTML = `
     <div style="overflow-x:auto">
     <table class="holdings-table">
-      <thead>
-        <tr>
-          <th>Symbol</th><th class="r">Shares</th><th class="r">Entry</th><th class="r">Current</th>
-          <th class="r">Target</th><th class="r">Stop</th><th class="r">P&L</th>
-          <th class="r">Signal</th><th class="r"></th>
-        </tr>
-      </thead>
+      <thead><tr><th>Symbol</th><th class="r">Shares</th><th class="r">Entry</th><th class="r">Current</th><th class="r">Target</th><th class="r">Stop</th><th class="r">P&L</th><th class="r">Signal</th><th class="r"></th></tr></thead>
       <tbody>${rows}</tbody>
-    </table>
-    </div>
+    </table></div>
   `;
-
   $$(".remove-pos-btn").forEach(b => {
     b.addEventListener("click", e => {
       const idx = +e.target.dataset.idx;
       if(confirm(`Remove ${portfolio[idx].sym}?`)){
-        portfolio.splice(idx,1);
-        savePortfolio();
-        renderPortfolio();
+        portfolio.splice(idx,1); savePortfolio(); renderPortfolio();
       }
     });
   });
@@ -1185,15 +873,10 @@ async function renderPortfolio(){
 function computeSignal(pos, currentPrice){
   if(currentPrice <= pos.stop) return {code:"STOP_LOSS", label:"Stop Hit · Sell"};
   if(currentPrice >= pos.target) return {code:"TAKE_PROFIT", label:"Target Hit · Take Profit"};
-
   const upside = (pos.target - currentPrice)/currentPrice;
   const downside = (currentPrice - pos.stop)/currentPrice;
-
-  // approaching target (within 2%)
   if(upside < 0.02 && upside > 0) return {code:"TAKE_PROFIT", label:"Near Target"};
-  // approaching stop (within 1.5%)
   if(downside < 0.015 && downside > 0) return {code:"SELL", label:"Near Stop"};
-  // big winner already
   if((currentPrice - pos.entry)/pos.entry > 0.08) return {code:"WATCH", label:"Trim Watch"};
   return {code:"HOLD", label:"Hold"};
 }
@@ -1201,18 +884,12 @@ function computeSignal(pos, currentPrice){
 async function refreshPortfolioPrices(){
   if(portfolio.length === 0) return;
   for(const pos of portfolio){
-    try {
-      const q = await getQuote(pos.sym);
-      if(q && q.c){
-        pos.currentPrice = q.c;
-        pos.lastUpdate = Date.now();
-      }
-    } catch(e){ /* keep stale */ }
+    try { const q = await getQuote(pos.sym); if(q && q.c){ pos.currentPrice = q.c; pos.lastUpdate = Date.now(); } }
+    catch(e){ /* keep stale */ }
   }
   savePortfolio();
 }
 
-/* ===================== INIT ===================== */
 function switchTab(name){
   $$(".tab").forEach(t => t.classList.toggle("active", t.dataset.view === name));
   $$(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + name));
@@ -1220,26 +897,19 @@ function switchTab(name){
 }
 
 function init(){
-  // populate cached scan if any
   if(lastScanResults?.picks){
     renderPicks(lastScanResults.picks);
     $("scanTs").textContent = new Date(lastScanResults.ts).toLocaleTimeString();
     $("emptyScan").style.display = "none";
     $("universeSel").value = lastScanResults.universe || "mega";
   }
-
-  // pre-fill settings
   $("apiKeyInput").value = apiKey;
   $("riskSel").value = risk;
-
-  // tab nav
   $$(".tab").forEach(t => t.addEventListener("click", () => switchTab(t.dataset.view)));
-
-  // buttons
   $("scanBtn").addEventListener("click", runScan);
+  $("cancelScanBtn").addEventListener("click", () => { scanCancelRequested = true; toast("Cancelling scan…", "err"); });
   $("refreshPfBtn").addEventListener("click", async () => {
     if(portfolio.length === 0){ toast("No positions to refresh.", "err"); return; }
-    // force fresh
     portfolio.forEach(p => { delete cache[`/quote?symbol=${p.sym}`]; });
     await renderPortfolio();
     toast("Portfolio refreshed.", "ok");
@@ -1248,7 +918,6 @@ function init(){
   $("cancelAddBtn").addEventListener("click", closeAddModal);
   $("confirmAddBtn").addEventListener("click", confirmAdd);
   $("addModal").addEventListener("click", (e) => { if(e.target.id === "addModal") closeAddModal(); });
-
   $("saveKeyBtn").addEventListener("click", () => {
     const v = $("apiKeyInput").value.trim();
     if(!v){ toast("Key cannot be empty.", "err"); return; }
@@ -1262,12 +931,7 @@ function init(){
     localStorage.setItem(LS.RISK, risk);
     toast("Risk profile: " + risk, "ok");
   });
-  $("clearCacheBtn").addEventListener("click", () => {
-    cache = {};
-    saveCache();
-    toast("Cache cleared.", "ok");
-    updateStatusBar();
-  });
+  $("clearCacheBtn").addEventListener("click", () => { cache = {}; saveCache(); toast("Cache cleared.", "ok"); updateStatusBar(); });
   $("clearAllBtn").addEventListener("click", () => {
     if(!confirm("This wipes portfolio, cache, and scan history. Continue?")) return;
     [LS.PORTFOLIO, LS.CACHE, LS.LAST_SCAN].forEach(k => localStorage.removeItem(k));
@@ -1278,8 +942,6 @@ function init(){
     updateStatusBar();
     toast("Local data wiped.", "ok");
   });
-
-  // initial status + ticker
   updateStatusBar();
   setInterval(updateStatusBar, 1000);
   buildTicker();
