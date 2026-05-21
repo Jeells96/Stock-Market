@@ -388,14 +388,13 @@
 // API key loaded from localStorage — set it in ⚙ Settings
 let FKEY = localStorage.getItem('jaren_fkey') || '';
 let PHASE2_LIMIT = parseInt(localStorage.getItem('jaren_depth') || '60');
-// Batch settings to stay under 60 req/min
-const BATCH_SIZE  = 4;
-const BATCH_DELAY = 1200;
 
-// Screener-like filters applied after Phase 1
-const MIN_PRICE   = 2;
-const MAX_PRICE   = 500;
-const MIN_ABS_CHG = 0.5; // minimum absolute % change to be interesting
+const PHASE1_LIMIT = 200;  // stocks to quote-scan in pass 1
+const BATCH_SIZE   = 4;    // parallel requests per batch
+const BATCH_DELAY  = 1200; // ms between batches (stays under 60 req/min)
+const MIN_PRICE    = 2;    // filter stocks under $2
+const MAX_PRICE    = 500;  // filter extreme outliers
+const MIN_ABS_CHG  = 0.5;  // minimum % move to be interesting
 
 const SIG_ORDER = {'STRONG BUY':0,'BUY':1,'WATCH':2,'HOLD':3,'SELL':4,'STRONG SELL':5,'—':6};
 
@@ -703,7 +702,9 @@ async function startScan() {
     setPhase(1,'FETCHING US STOCK LIST…','p1');
     const allSyms=await fetchUSSymbols();
     if(!allSyms.length){
-        document.getElementById('scanStatus').textContent='✗ FAILED — CHECK API KEY';
+        document.getElementById('scanStatus').textContent='✗ FAILED — KEY MAY BE INVALID. CLICK ⚙ API KEY TO UPDATE.';
+        document.getElementById('scanPanel').classList.add('visible');
+        setKeyStatus('bad','FAILED');
         btn.disabled=false;btn.textContent='⚡ SMART SCAN';scanning=false;return;
     }
 
