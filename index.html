@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jaren's Stock Market Tracker — v2.1</title>
+    <title>Jaren's Stock Market Tracker — v2.2</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Bebas+Neue&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
@@ -33,6 +33,12 @@
         .btn-scan{background:rgba(0,255,148,0.1);color:var(--green);border:1px solid rgba(0,255,148,0.3);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:7px 16px;border-radius:3px;cursor:pointer;letter-spacing:1px;transition:all 0.2s;}
         .btn-scan:hover{background:rgba(0,255,148,0.2);}
         .btn-scan:disabled{opacity:0.4;cursor:not-allowed;}
+        .btn-settings{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;padding:7px 12px;border-radius:3px;cursor:pointer;transition:all 0.15s;letter-spacing:1px;}
+        .btn-settings:hover{border-color:var(--gold);color:var(--gold);}
+        .key-dot{width:7px;height:7px;border-radius:50%;display:inline-block;margin-right:5px;vertical-align:middle;}
+        .key-ok{background:var(--green);box-shadow:0 0 5px var(--green);}
+        .key-bad{background:var(--red);box-shadow:0 0 5px var(--red);}
+        .key-unknown{background:var(--muted);}
         .sep{width:1px;height:24px;background:var(--border);margin:0 4px;}
         .sort-btn{font-family:'Space Mono',monospace;font-size:9px;padding:4px 10px;border-radius:2px;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--muted);transition:all 0.15s;}
         .sort-btn:hover{border-color:var(--gold);color:var(--gold);}
@@ -42,35 +48,26 @@
         .scan-panel.visible{display:flex;}
         .scan-row{display:flex;align-items:center;gap:12px;}
         .scan-track{flex:1;height:5px;background:var(--border);border-radius:3px;overflow:hidden;}
-        .scan-fill{height:100%;border-radius:3px;transition:width 0.4s ease;width:0%;}
-        .scan-fill.p1{background:var(--gold);}
-        .scan-fill.p2{background:var(--blue);}
-        .scan-fill.p3{background:var(--green);}
-        .scan-status{font-family:'Space Mono',monospace;font-size:11px;min-width:260px;}
+        .scan-fill{height:100%;background:var(--green);border-radius:3px;transition:width 0.4s ease;width:0%;}
+        .scan-status{font-family:'Space Mono',monospace;font-size:11px;color:var(--green);min-width:240px;}
         .scan-pct{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
         .scan-stats{display:flex;gap:16px;flex-wrap:wrap;}
         .ss{font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);}
         .ss b{color:#fff;}
-        .phase-tag{display:inline-block;padding:1px 7px;border-radius:2px;font-family:'Space Mono',monospace;font-size:9px;font-weight:700;letter-spacing:1px;margin-right:6px;}
-        .phase-1{background:rgba(240,165,0,0.15);color:var(--gold);border:1px solid rgba(240,165,0,0.3);}
-        .phase-2{background:rgba(0,170,255,0.15);color:var(--blue);border:1px solid rgba(0,170,255,0.3);}
-        .phase-3{background:rgba(0,255,148,0.15);color:var(--green);border:1px solid rgba(0,255,148,0.3);}
         .tabs{background:var(--dark);border-bottom:1px solid var(--border);display:flex;}
         .tab{padding:10px 20px;font-family:'Space Mono',monospace;font-size:10px;letter-spacing:1px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.15s;white-space:nowrap;}
         .tab:hover{color:var(--text);}
         .tab.active{color:var(--gold);border-bottom-color:var(--gold);}
         .tab-content{display:none;}
         .tab-content.active{display:block;}
-        .market-view{padding:14px 24px;overflow-y:auto;height:calc(100vh - 215px);scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+        .market-view{padding:14px 24px;overflow-y:auto;height:calc(100vh - 210px);scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
         .filter-bar{display:flex;align-items:center;gap:8px;margin-bottom:12px;flex-wrap:wrap;}
         .filter-btn{font-family:'Space Mono',monospace;font-size:9px;padding:4px 10px;border-radius:2px;cursor:pointer;background:transparent;border:1px solid var(--border);color:var(--muted);transition:all 0.15s;}
         .filter-btn:hover{border-color:var(--gold);color:var(--gold);}
         .filter-btn.active{background:rgba(240,165,0,0.1);border-color:var(--gold);color:var(--gold);}
         .filter-btn.fg.active{background:rgba(0,255,148,0.1);border-color:var(--green);color:var(--green);}
         .filter-btn.fr.active{background:rgba(255,45,85,0.1);border-color:var(--red);color:var(--red);}
-        .filter-btn.fb.active{background:rgba(0,170,255,0.1);border-color:var(--blue);color:var(--blue);}
         .results-count{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-left:auto;}
-        .news-tag{display:inline-block;background:rgba(0,170,255,0.1);border:1px solid rgba(0,170,255,0.25);color:var(--blue);font-family:'Space Mono',monospace;font-size:8px;padding:1px 5px;border-radius:2px;margin-left:4px;vertical-align:middle;}
         .stock-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(195px,1fr));gap:10px;}
         .grid-card{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
         .grid-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:transparent;transition:background 0.2s;}
@@ -78,8 +75,6 @@
         .grid-card:hover::before{background:var(--gold);}
         .grid-card.selected{border-color:var(--gold);}
         .grid-card.selected::before{background:var(--gold);}
-        .grid-card.news-boosted::before{background:var(--blue);}
-        .grid-card.news-boosted{border-color:rgba(0,170,255,0.3);}
         .gc-row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:3px;}
         .gc-sym{font-family:'Space Mono',monospace;font-size:14px;font-weight:700;color:#fff;}
         .gc-price{font-family:'Space Mono',monospace;font-size:13px;font-weight:700;}
@@ -95,7 +90,7 @@
         .b-SELL{background:rgba(255,45,85,0.1);color:var(--red);border:1px solid rgba(255,45,85,0.2);}
         .b-STRONG-SELL{background:rgba(255,45,85,0.2);color:var(--red);border:1px solid rgba(255,45,85,0.4);}
         .up{color:var(--green)}.dn{color:var(--red)}.nt{color:var(--muted)}
-        .detail-view{display:flex;height:calc(100vh - 215px);overflow:hidden;}
+        .detail-view{display:flex;height:calc(100vh - 210px);overflow:hidden;}
         .chart-panel{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--card);}
         .chart-top{padding:16px 22px;border-bottom:1px solid var(--border);flex-shrink:0;}
         .chart-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;}
@@ -130,12 +125,7 @@
         .btn-buy.in-port{background:var(--red);color:#fff;}
         .btn-buy.in-port:hover{background:#e0003a;}
         .btn-buy:disabled{background:var(--border);color:var(--muted);cursor:not-allowed;}
-        .news-panel{padding:12px 14px;}
-        .news-item{padding:8px 0;border-bottom:1px solid rgba(30,45,64,0.4);font-size:11px;line-height:1.6;}
-        .news-item:last-child{border-bottom:none;}
-        .news-headline{color:var(--text);margin-bottom:2px;}
-        .news-meta{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);}
-        .portfolio-view{padding:16px 24px;overflow-y:auto;height:calc(100vh - 215px);scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
+        .portfolio-view{padding:16px 24px;overflow-y:auto;height:calc(100vh - 210px);scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
         .port-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;}
         .port-stat{background:var(--card);border:1px solid var(--border);border-radius:6px;padding:12px;}
         .port-stat-lbl{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:5px;}
@@ -159,30 +149,23 @@
         .modal-title{font-family:'Bebas Neue',cursive;font-size:22px;color:var(--gold);letter-spacing:2px;margin-bottom:14px;}
         .modal-row{margin-bottom:12px;}
         .modal-lbl{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:5px;}
-        .modal-input{width:100%;background:var(--dark);border:1px solid var(--border);color:#fff;font-family:'Space Mono',monospace;font-size:13px;padding:8px 12px;border-radius:3px;outline:none;transition:border-color 0.2s;}
+        .modal-input{width:100%;background:var(--dark);border:1px solid var(--border);color:#fff;font-family:'Space Mono',monospace;font-size:12px;padding:8px 12px;border-radius:3px;outline:none;transition:border-color 0.2s;}
         .modal-input:focus{border-color:var(--gold);}
         .modal-btns{display:flex;gap:8px;margin-top:14px;}
         .modal-confirm{flex:1;background:var(--green);color:#000;font-family:'Space Mono',monospace;font-size:11px;font-weight:700;padding:10px;border:none;border-radius:3px;cursor:pointer;}
         .modal-cancel{flex:1;background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;padding:10px;border:1px solid var(--border);border-radius:3px;cursor:pointer;}
-        .placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80px;gap:8px;color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;}
-        .empty-grid{grid-column:1/-1;text-align:center;padding:60px 20px;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);}
-        .settings-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;padding:7px 12px;border-radius:3px;cursor:pointer;transition:all 0.15s;letter-spacing:1px;}
-        .settings-btn:hover{border-color:var(--gold);color:var(--gold);}
-        .key-status{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;}
-        .key-ok{background:var(--green);box-shadow:0 0 6px var(--green);}
-        .key-bad{background:var(--red);box-shadow:0 0 6px var(--red);animation:pulse 1s infinite;}
-        .key-unknown{background:var(--muted);}
-        .settings-modal{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;width:420px;max-width:95vw;}
-        .settings-row{margin-bottom:16px;}
-        .settings-lbl{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:5px;}
-        .settings-desc{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.6;}
-        .key-input-wrap{display:flex;gap:8px;}
-        .key-input-wrap .modal-input{flex:1;font-size:11px;letter-spacing:1px;}
+        /* Settings modal extras */
+        .settings-modal{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;width:440px;max-width:95vw;}
+        .settings-desc{font-size:10px;color:var(--muted);line-height:1.7;margin-top:6px;}
+        .key-row{display:flex;gap:8px;margin-top:6px;}
+        .key-row .modal-input{flex:1;}
         .btn-test{background:rgba(0,170,255,0.1);color:var(--blue);border:1px solid rgba(0,170,255,0.3);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:8px 14px;border-radius:3px;cursor:pointer;white-space:nowrap;transition:all 0.15s;}
         .btn-test:hover{background:rgba(0,170,255,0.2);}
         .test-result{font-family:'Space Mono',monospace;font-size:10px;margin-top:8px;padding:8px 12px;border-radius:3px;display:none;}
-        .test-result.ok{background:rgba(0,255,148,0.08);border:1px solid rgba(0,255,148,0.2);color:var(--green);}
-        .test-result.fail{background:rgba(255,45,85,0.08);border:1px solid rgba(255,45,85,0.2);color:var(--red);}
+        .test-ok{background:rgba(0,255,148,0.08);border:1px solid rgba(0,255,148,0.2);color:var(--green);}
+        .test-fail{background:rgba(255,45,85,0.08);border:1px solid rgba(255,45,85,0.2);color:var(--red);}
+        .placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80px;gap:8px;color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;}
+        .empty-grid{grid-column:1/-1;text-align:center;padding:60px 20px;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);}
         ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
         @media(max-width:900px){.detail-view{flex-direction:column;height:auto;overflow:auto;}.analysis-panel{width:100%;min-width:unset;border-left:none;border-top:1px solid var(--border);}.port-summary{grid-template-columns:repeat(2,1fr);}.stock-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));}}
     </style>
@@ -193,8 +176,8 @@
 
 <header>
     <div>
-        <div class="logo">Jaren's <span>Stock Market Tracker</span><span class="version-badge">v2.1</span></div>
-        <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:1px;">2-PASS SCAN · NEWS BOOST · LIVE SIGNALS</div>
+        <div class="logo">Jaren's <span>Stock Market Tracker</span><span class="version-badge">v2.2</span></div>
+        <div style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);margin-top:1px;">AUTO-SCAN · ALGO SIGNALS · LIVE DATA</div>
     </div>
     <div style="display:flex;align-items:center;gap:16px;">
         <span class="live-lbl"><span class="live-dot"></span>LIVE</span>
@@ -203,7 +186,7 @@
 </header>
 
 <div class="toolbar">
-    <button class="btn-scan" id="scanBtn" onclick="startScan()">⚡ SMART SCAN</button>
+    <button class="btn-scan" id="scanBtn" onclick="startScan()">⚡ AUTO-SCAN</button>
     <div class="sep"></div>
     <span style="font-family:'Space Mono',monospace;font-size:10px;color:var(--muted);">ADD →</span>
     <input id="symInput" placeholder="e.g. GME, PLTR" onkeypress="if(event.key==='Enter')addSymbol()">
@@ -213,24 +196,21 @@
     <button class="sort-btn active" id="srtSignal" onclick="setSort('signal')">SIGNAL</button>
     <button class="sort-btn" id="srtScore"  onclick="setSort('score')">SCORE</button>
     <button class="sort-btn" id="srtChange" onclick="setSort('change')">TODAY%</button>
-    <button class="sort-btn" id="srtNews"   onclick="setSort('news')">NEWS🔥</button>
     <span class="updated-lbl" id="updatedLbl"></span>
-    <button class="settings-btn" onclick="openSettings()">⚙ <span class="key-status key-unknown" id="keyStatusDot"></span>API KEY</button>
+    <button class="btn-settings" id="settingsBtn" onclick="openSettings()">⚙ <span class="key-dot key-unknown" id="keyDot"></span>API KEY</button>
 </div>
 
 <div class="scan-panel" id="scanPanel">
     <div class="scan-row">
-        <span class="scan-status" id="scanStatus">STARTING…</span>
-        <div class="scan-track"><div class="scan-fill p1" id="scanFill"></div></div>
+        <span class="scan-status" id="scanStatus">SCANNING…</span>
+        <div class="scan-track"><div class="scan-fill" id="scanFill"></div></div>
         <span class="scan-pct" id="scanPct">0%</span>
     </div>
     <div class="scan-stats">
-        <div class="ss">PHASE: <b id="ssPhase">—</b></div>
-        <div class="ss">QUOTES FETCHED: <b id="ssQuotes">0</b></div>
-        <div class="ss">DEEP SCANNED: <b id="ssDeep">0</b></div>
-        <div class="ss" style="color:var(--blue)">NEWS BOOSTS: <b id="ssNews">0</b></div>
+        <div class="ss">SCANNED: <b id="ssScanned">0</b></div>
         <div class="ss" style="color:var(--green)">STRONG BUY: <b id="ssSB">0</b></div>
         <div class="ss" style="color:var(--green)">BUY: <b id="ssB">0</b></div>
+        <div class="ss" style="color:var(--blue)">WATCH: <b id="ssW">0</b></div>
         <div class="ss" style="color:var(--red)">RATE LIMITS: <b id="ssRL">0</b></div>
     </div>
 </div>
@@ -238,12 +218,10 @@
 <div class="tabs">
     <div class="tab active" id="tab-buy"       onclick="switchTab('buy')">⚡ BUY SIGNALS</div>
     <div class="tab"        id="tab-all"       onclick="switchTab('all')">🔍 ALL SCANNED</div>
-    <div class="tab"        id="tab-news"      onclick="switchTab('news')">📰 NEWS FEED</div>
     <div class="tab"        id="tab-detail"    onclick="switchTab('detail')">📈 DETAIL</div>
     <div class="tab"        id="tab-portfolio" onclick="switchTab('portfolio')">💼 PORTFOLIO <span id="portBadge" style="display:none;background:var(--gold);color:#000;font-size:8px;padding:1px 5px;border-radius:2px;margin-left:4px;"></span></div>
 </div>
 
-<!-- BUY SIGNALS -->
 <div class="tab-content active" id="content-buy">
     <div class="market-view">
         <div class="filter-bar">
@@ -251,24 +229,18 @@
             <button class="filter-btn fg active" id="fSB" onclick="toggleFilter('STRONG BUY')">STRONG BUY</button>
             <button class="filter-btn fg active" id="fB"  onclick="toggleFilter('BUY')">BUY</button>
             <button class="filter-btn active"    id="fW"  onclick="toggleFilter('WATCH')">WATCH</button>
-            <button class="filter-btn fb"        id="fNB" onclick="toggleNewsFilter()">📰 NEWS ONLY</button>
             <span class="results-count" id="buyCount"></span>
         </div>
         <div class="stock-grid" id="buyGrid">
             <div class="empty-grid">
                 <div style="font-size:36px;margin-bottom:16px;">⚡</div>
-                CLICK "SMART SCAN" TO FIND TODAY'S BEST OPPORTUNITIES<br>
-                <span style="font-size:10px;opacity:0.5;margin-top:8px;display:block;">
-                    Phase 1: Quote-scan 200 stocks · Filter by movers & price range<br>
-                    Phase 2: Deep-scan top 60 · Run full signal engine<br>
-                    Phase 3: News boost · Bump today's trending tickers to the front
-                </span>
+                CLICK "AUTO-SCAN" TO FIND BUY SIGNALS<br>
+                <span style="font-size:10px;opacity:0.5;margin-top:8px;display:block;">Scans ~100 stocks across large cap, tech, growth, crypto, and high-momentum categories</span>
             </div>
         </div>
     </div>
 </div>
 
-<!-- ALL SCANNED -->
 <div class="tab-content" id="content-all">
     <div class="market-view">
         <div class="filter-bar">
@@ -287,14 +259,6 @@
     </div>
 </div>
 
-<!-- NEWS FEED -->
-<div class="tab-content" id="content-news">
-    <div class="market-view">
-        <div id="newsFeed"><div class="placeholder" style="min-height:200px">Run a scan to load today's market news.</div></div>
-    </div>
-</div>
-
-<!-- DETAIL -->
 <div class="tab-content" id="content-detail">
     <div class="detail-view">
         <div class="chart-panel">
@@ -316,13 +280,11 @@
             <div class="ap-sec"><div class="ap-lbl">SIGNAL</div><div id="bigRec">—</div><div class="score-bar"><div class="score-fill" id="scoreFill"></div></div><div class="score-lbl" id="scoreLbl">SELECT A STOCK</div></div>
             <div class="ap-sec"><div class="ap-lbl">INDICATORS</div><div id="sigList"><div class="placeholder">—</div></div></div>
             <div class="ap-sec"><div class="ap-lbl">ANALYST BRIEF</div><div id="briefText"><div class="placeholder">SELECT A STOCK</div></div></div>
-            <div class="ap-sec" id="stockNewsSection" style="display:none"><div class="ap-lbl">IN THE NEWS</div><div id="stockNewsList"></div></div>
             <div class="ap-sec"><div class="ap-lbl">ACTION</div><button class="btn-buy" id="buyBtn" disabled>SELECT A STOCK FIRST</button></div>
         </div>
     </div>
 </div>
 
-<!-- PORTFOLIO -->
 <div class="tab-content" id="content-portfolio">
     <div class="portfolio-view">
         <div class="port-summary">
@@ -333,7 +295,7 @@
         </div>
         <table class="port-table">
             <thead><tr><th>SYMBOL</th><th>SHARES</th><th>BUY PRICE</th><th>CURRENT</th><th>P&L</th><th>SIGNAL</th><th>ACTIONS</th></tr></thead>
-            <tbody id="portBody"><tr><td colspan="7"><div class="empty-port">◈<br><br>NO POSITIONS YET</div></td></tr></tbody>
+            <tbody id="portBody"><tr><td colspan="7"><div class="empty-port">◈<br><br>NO POSITIONS YET<br><span style="font-size:10px;opacity:0.5">Run a scan, find a buy, click BUY</span></div></td></tr></tbody>
         </table>
     </div>
 </div>
@@ -342,26 +304,14 @@
 <div class="modal-overlay" id="settingsModal">
     <div class="settings-modal">
         <div class="modal-title">⚙ SETTINGS</div>
-        <div class="settings-row">
-            <div class="settings-lbl">FINNHUB API KEY &nbsp;<span class="key-status key-unknown" id="modalKeyDot"></span><span id="modalKeyLabel" style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);">NOT TESTED</span></div>
-            <div class="key-input-wrap">
-                <input class="modal-input" id="keyInput" type="text" placeholder="Paste your Finnhub API key here" autocomplete="off" spellcheck="false">
+        <div class="modal-row">
+            <div class="modal-lbl">FINNHUB API KEY</div>
+            <div class="key-row">
+                <input class="modal-input" id="keyInput" type="text" placeholder="Paste your Finnhub key here" autocomplete="off" spellcheck="false">
                 <button class="btn-test" onclick="testKey()">TEST</button>
             </div>
             <div class="test-result" id="testResult"></div>
-            <div class="settings-desc" style="margin-top:8px;">
-                Get a free key at <strong style="color:var(--gold)">finnhub.io</strong> → Dashboard → API Key.<br>
-                Your key is saved in your browser — never shared anywhere.
-            </div>
-        </div>
-        <div class="settings-row">
-            <div class="settings-lbl">PHASE 2 SCAN DEPTH</div>
-            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
-                <button class="sort-btn active" id="depthBtn60"  onclick="setScanDepth(60)">60 STOCKS</button>
-                <button class="sort-btn"        id="depthBtn100" onclick="setScanDepth(100)">100 STOCKS</button>
-                <button class="sort-btn"        id="depthBtn150" onclick="setScanDepth(150)">150 STOCKS</button>
-            </div>
-            <div class="settings-desc" style="margin-top:6px;">Higher = more opportunities found, slower scan, more API calls used.</div>
+            <div class="settings-desc">Get a free key at <strong style="color:var(--gold)">finnhub.io</strong> → Dashboard → API Key. Saved in your browser only.</div>
         </div>
         <div class="modal-btns">
             <button class="modal-confirm" onclick="saveSettings()">✓ SAVE & SCAN</button>
@@ -370,6 +320,7 @@
     </div>
 </div>
 
+<!-- BUY MODAL -->
 <div class="modal-overlay" id="buyModal">
     <div class="modal">
         <div class="modal-title" id="modalTitle">BUY —</div>
@@ -385,30 +336,35 @@
 
 <script>
 // ─── CONFIG ───────────────────────────────────────────────
-// API key loaded from localStorage — set it in ⚙ Settings
+// Key stored in localStorage — enter it via ⚙ API KEY button
 let FKEY = localStorage.getItem('jaren_fkey') || '';
-let PHASE2_LIMIT = parseInt(localStorage.getItem('jaren_depth') || '60');
 
-const PHASE1_LIMIT = 200;  // stocks to quote-scan in pass 1
-const BATCH_SIZE   = 4;    // parallel requests per batch
-const BATCH_DELAY  = 1200; // ms between batches (stays under 60 req/min)
-const MIN_PRICE    = 2;    // filter stocks under $2
-const MAX_PRICE    = 500;  // filter extreme outliers
-const MIN_ABS_CHG  = 0.5;  // minimum % move to be interesting
+// Scan universe — ~100 curated high-volume tickers
+const SCAN_UNIVERSE = [
+    'AAPL','MSFT','NVDA','TSLA','META','AMZN','GOOGL','AMD','PLTR','COIN',
+    'MARA','RIOT','CLSK','CIFR','HUT','BTBT','SOFI','HOOD','RIVN','LCID',
+    'RKLB','IONQ','RGTI','QUBT','ASTS','SOUN','ACHR','LUNR','SMCI','CRWD',
+    'NET','SHOP','SNOW','DDOG','OKTA','ABNB','NFLX','DIS','SBUX','NKE',
+    'INTC','MU','QCOM','AVGO','TXN','AMAT','LRCX','MRVL','ADI','KLAC',
+    'CRM','ORCL','HUBS','TWLO','MDB','GTLB','BILL','ZM','DOCN','TTD',
+    'JPM','GS','MS','BAC','V','MA','PYPL','SQ','UBER','LYFT',
+    'LLY','NVO','MRNA','BNTX','ABBV','AMGN','REGN','GILD','PFE','JNJ',
+    'XOM','CVX','OXY','SLB','DVN','FANG','MPC','VLO','HAL','PSX',
+    'GME','AMC','BBBY','RBLX','SNAP','PINS','ROKU','SPOT','TWTR','HOOD'
+];
 
-const SIG_ORDER = {'STRONG BUY':0,'BUY':1,'WATCH':2,'HOLD':3,'SELL':4,'STRONG SELL':5,'—':6};
+const BATCH_SIZE  = 3;
+const BATCH_DELAY = 1400;
+const SIG_ORDER   = {'STRONG BUY':0,'BUY':1,'WATCH':2,'HOLD':3,'SELL':4,'STRONG SELL':5,'—':6};
 
 let stockData    = {};
 let profileCache = {};
-let newsCache    = [];        // today's market news articles
-let newsTickers  = new Set(); // tickers mentioned in news today
 let currentSym   = null;
 let priceChart   = null;
 let portfolio    = JSON.parse(localStorage.getItem('jaren_portfolio') || '[]');
 let sortMode     = 'signal';
 let buyFilters   = new Set(['STRONG BUY','BUY','WATCH']);
 let allFilters   = new Set(['STRONG BUY','BUY','WATCH','HOLD','SELL','STRONG SELL']);
-let newsOnly     = false;
 let scanning     = false;
 let rlHits       = 0;
 
@@ -424,6 +380,52 @@ setInterval(() => {
     document.getElementById('tickerTrack').innerHTML=[...seed,...seed].map(t=>`<div class="ticker-item">${t.s} <strong>$${t.p.toFixed(2)}</strong> <span class="${t.d>=0?'t-up':'t-dn'}">${t.d>=0?'▲':'▼'}${Math.abs(t.d).toFixed(2)}%</span>&nbsp;·&nbsp;</div>`).join('');
 })();
 
+// ─── SETTINGS ────────────────────────────────────────────
+function openSettings() {
+    document.getElementById('keyInput').value = FKEY;
+    document.getElementById('testResult').style.display = 'none';
+    document.getElementById('settingsModal').classList.add('open');
+}
+function closeSettings() {
+    document.getElementById('settingsModal').classList.remove('open');
+}
+async function testKey() {
+    const key = document.getElementById('keyInput').value.trim();
+    const res  = document.getElementById('testResult');
+    const btn  = document.querySelector('.btn-test');
+    res.style.display = 'none';
+    if (!key) { res.className='test-result test-fail'; res.textContent='✗ Enter a key first.'; res.style.display='block'; return; }
+    btn.textContent='TESTING…'; btn.disabled=true;
+    try {
+        const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=AAPL&token=${key}`);
+        const d = await r.json();
+        if (d && d.c > 0) {
+            res.className='test-result test-ok'; res.textContent=`✓ VALID — AAPL: $${d.c.toFixed(2)}`;
+            setKeyDot('ok');
+        } else {
+            res.className='test-result test-fail'; res.textContent='✗ INVALID — Finnhub returned no data. Double-check your key.';
+            setKeyDot('bad');
+        }
+    } catch {
+        res.className='test-result test-fail'; res.textContent='✗ CONNECTION ERROR';
+        setKeyDot('bad');
+    }
+    res.style.display='block'; btn.textContent='TEST'; btn.disabled=false;
+}
+function saveSettings() {
+    const key = document.getElementById('keyInput').value.trim();
+    if (!key) { alert('Please enter an API key.'); return; }
+    FKEY = key;
+    localStorage.setItem('jaren_fkey', key);
+    setKeyDot('ok');
+    closeSettings();
+    startScan();
+}
+function setKeyDot(state) {
+    const d = document.getElementById('keyDot');
+    d.className = `key-dot key-${state}`;
+}
+
 // ─── TABS ────────────────────────────────────────────────
 function switchTab(n) {
     document.querySelectorAll('.tab,.tab-content').forEach(el=>el.classList.remove('active'));
@@ -436,17 +438,15 @@ function switchTab(n) {
 function setSort(m) {
     sortMode=m;
     document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('active'));
-    document.getElementById({signal:'srtSignal',score:'srtScore',change:'srtChange',news:'srtNews'}[m]).classList.add('active');
+    document.getElementById({signal:'srtSignal',score:'srtScore',change:'srtChange'}[m]).classList.add('active');
     renderBuyGrid(); renderAllGrid();
 }
-
 function getSorted(syms) {
     return [...syms].sort((a,b)=>{
         const ad=stockData[a],bd=stockData[b];
-        if (sortMode==='signal') return (SIG_ORDER[ad?.analysis?.rec??'—']??6)-(SIG_ORDER[bd?.analysis?.rec??'—']??6);
-        if (sortMode==='score')  return (bd?.analysis?.score??50)-(ad?.analysis?.score??50);
-        if (sortMode==='change') return (bd?.quote?.dp??0)-(ad?.quote?.dp??0);
-        if (sortMode==='news')   return (newsTickers.has(b)?1:0)-(newsTickers.has(a)?1:0);
+        if(sortMode==='signal') return (SIG_ORDER[ad?.analysis?.rec??'—']??6)-(SIG_ORDER[bd?.analysis?.rec??'—']??6);
+        if(sortMode==='score')  return (bd?.analysis?.score??50)-(ad?.analysis?.score??50);
+        if(sortMode==='change') return (bd?.quote?.dp??0)-(ad?.quote?.dp??0);
         return a.localeCompare(b);
     });
 }
@@ -454,95 +454,41 @@ function getSorted(syms) {
 // ─── FILTERS ─────────────────────────────────────────────
 function toggleFilter(sig) {
     const ids={'STRONG BUY':'fSB','BUY':'fB','WATCH':'fW'};
-    if (buyFilters.has(sig)){buyFilters.delete(sig);document.getElementById(ids[sig])?.classList.remove('active');}
+    if(buyFilters.has(sig)){buyFilters.delete(sig);document.getElementById(ids[sig])?.classList.remove('active');}
     else{buyFilters.add(sig);document.getElementById(ids[sig])?.classList.add('active');}
     renderBuyGrid();
 }
 function toggleAllFilter(sig) {
     const ids={'STRONG BUY':'afSB','BUY':'afB','WATCH':'afW','HOLD':'afH','SELL':'afS','STRONG SELL':'afSS'};
-    if (allFilters.has(sig)){allFilters.delete(sig);document.getElementById(ids[sig])?.classList.remove('active');}
+    if(allFilters.has(sig)){allFilters.delete(sig);document.getElementById(ids[sig])?.classList.remove('active');}
     else{allFilters.add(sig);document.getElementById(ids[sig])?.classList.add('active');}
     renderAllGrid();
 }
-function toggleNewsFilter() {
-    newsOnly = !newsOnly;
-    const btn = document.getElementById('fNB');
-    newsOnly ? btn.classList.add('active') : btn.classList.remove('active');
-    renderBuyGrid();
-}
 
-// ─── API HELPERS ─────────────────────────────────────────
+// ─── FINNHUB ─────────────────────────────────────────────
 const delay = ms => new Promise(r=>setTimeout(r,ms));
-
 async function apiFetch(url) {
     try {
         const r = await fetch(url);
-        if (r.status===429){rlHits++;document.getElementById('ssRL').textContent=rlHits;return null;}
-        if (!r.ok) return null;
+        if(r.status===429){rlHits++;document.getElementById('ssRL').textContent=rlHits;return null;}
+        if(!r.ok) return null;
         return await r.json();
     } catch { return null; }
 }
-
-async function fetchUSSymbols() {
-    const d = await apiFetch(`https://finnhub.io/api/v1/stock/symbol?exchange=US&token=${FKEY}`);
-    if (!d) return [];
-    return d.filter(s=>s.type==='Common Stock'&&s.symbol&&s.symbol.length<=5&&!/[.\-]/.test(s.symbol)).map(s=>s.symbol);
-}
-
 async function fetchQuote(sym) {
     const d = await apiFetch(`https://finnhub.io/api/v1/quote?symbol=${sym}&token=${FKEY}`);
     return (d&&d.c>0)?d:null;
 }
-
 async function fetchCandles(sym) {
     const now=Math.floor(Date.now()/1000), from=now-90*24*60*60;
     const d = await apiFetch(`https://finnhub.io/api/v1/stock/candle?symbol=${sym}&resolution=D&from=${from}&to=${now}&token=${FKEY}`);
     return (d?.s==='ok'&&d.c?.length>=5)?d:null;
 }
-
 async function fetchProfile(sym) {
-    if (profileCache[sym]) return profileCache[sym];
+    if(profileCache[sym]) return profileCache[sym];
     const d = await apiFetch(`https://finnhub.io/api/v1/stock/profile2?symbol=${sym}&token=${FKEY}`);
-    if (d?.name) profileCache[sym]=d;
+    if(d?.name) profileCache[sym]=d;
     return d||{};
-}
-
-// Phase 3: fetch today's market news and extract tickers
-async function fetchMarketNews() {
-    const d = await apiFetch(`https://finnhub.io/api/v1/news?category=general&token=${FKEY}`);
-    if (!d||!Array.isArray(d)) return;
-    newsCache = d.slice(0, 30);
-    // Extract uppercase ticker-like words from headlines (2-5 caps)
-    const tickerRe = /\b([A-Z]{2,5})\b/g;
-    const commonWords = new Set(['THE','AND','FOR','ARE','BUT','NOT','YOU','ALL','CAN','HER','WAS','ONE','OUR','OUT','DAY','GET','HAS','HIM','HIS','HOW','ITS','MAY','NEW','NOW','OLD','SEE','TWO','WAY','WHO','BOY','DID','ITS','LET','PUT','SAY','SHE','TOO','USE','FDA','CEO','CFO','IPO','ETF','GDP','SEC','FED','IMF','GDP','USD','EUR','API']);
-    newsCache.forEach(article => {
-        const text = (article.headline||'') + ' ' + (article.summary||'');
-        let m;
-        while ((m=tickerRe.exec(text))!==null) {
-            if (!commonWords.has(m[1])&&m[1].length>=2&&m[1].length<=5) {
-                newsTickers.add(m[1]);
-            }
-        }
-    });
-    document.getElementById('ssNews').textContent = newsTickers.size;
-    renderNewsTab();
-}
-
-function renderNewsTab() {
-    const feed = document.getElementById('newsFeed');
-    if (!newsCache.length) { feed.innerHTML='<div class="placeholder" style="min-height:200px">No news loaded.</div>'; return; }
-    feed.innerHTML = newsCache.map(a=>{
-        const ts = a.datetime ? new Date(a.datetime*1000).toLocaleString() : '';
-        const tickers = [];
-        const re=/\b([A-Z]{2,5})\b/g; let m;
-        const text=(a.headline||'')+(a.summary||'');
-        while((m=re.exec(text))!==null){if(stockData[m[1]]){tickers.push(m[1]);}}
-        const tickerBadges = [...new Set(tickers)].map(t=>`<span class="news-tag" style="cursor:pointer" onclick="openDetail('${t}')">${t}</span>`).join('');
-        return `<div class="news-item">
-            <div class="news-headline">${a.headline||''}${tickerBadges}</div>
-            <div class="news-meta">${a.source||''} · ${ts}</div>
-        </div>`;
-    }).join('');
 }
 
 // ─── INDICATORS ──────────────────────────────────────────
@@ -555,7 +501,7 @@ const vol10=a=>(!a||a.length<10)?null:(()=>{const s=a.slice(-10),m=s.reduce((x,y
 const mom=(a,n=10)=>(!a||a.length<n+1)?null:((a[a.length-1]-a[a.length-1-n])/a[a.length-1-n])*100;
 
 // ─── SIGNAL ENGINE ────────────────────────────────────────
-function runSignals(quote,candles) {
+function runSignals(quote,candles){
     if(!quote)return{rec:'—',score:50,signals:[],color:'var(--muted)',bull:[],bear:[],bands:null,s20:null,vol:null};
     const c=candles?.c||[],h=candles?.h||[],l=candles?.l||[],curr=quote.c,dp=quote.dp||0;
     let score=50;const signals=[],bull=[],bear=[];
@@ -570,8 +516,6 @@ function runSignals(quote,candles) {
     if(h.length&&l.length){const hi52=Math.max(...h),lo52=Math.min(...l),rp=hi52!==lo52?((curr-lo52)/(hi52-lo52)*100).toFixed(0):50;signals.push({n:'52W Range',v:rp+'%',cls:parseInt(rp)>75?'dn':parseInt(rp)<25?'up':'nt'});if(parseInt(rp)<25){score+=5;bull.push(`Near 52W low (${rp}%)`);}if(parseInt(rp)>80){score-=5;bear.push(`Near 52W high (${rp}%)`);}}
     const v=vol10(c);if(v!==null)signals.push({n:'Volatility 10D',v:v.toFixed(1)+'%',cls:'nt'});
     if(Math.abs(dp)>1.5){signals.push({n:'Today',v:(dp>0?'+':'')+dp.toFixed(2)+'%',cls:dp>0?'up':'dn'});if(dp>3){score+=5;bull.push(`+${dp.toFixed(2)}% today`);}else if(dp<-3){score-=5;bear.push(`${dp.toFixed(2)}% today`);}}
-    // News boost: +8 points if mentioned in today's news
-    if(newsTickers.has(quote._sym||'')) { score+=8; bull.push('📰 Trending in today\'s market news'); }
     score=Math.max(0,Math.min(100,score));
     let rec,color;
     if(score>=75){rec='STRONG BUY';color='var(--green)';}else if(score>=62){rec='BUY';color='var(--green)';}else if(score<=25){rec='STRONG SELL';color='var(--red)';}else if(score<=38){rec='SELL';color='var(--red)';}else if(score>=54){rec='WATCH';color='var(--blue)';}else{rec='HOLD';color='var(--gold)';}
@@ -579,29 +523,29 @@ function runSignals(quote,candles) {
 }
 
 // ─── BRIEF ───────────────────────────────────────────────
-function generateBrief(sym,quote,a) {
+function generateBrief(sym,quote,a){
     if(!quote)return'<div class="placeholder">NO DATA</div>';
     const{rec,score,bull,bear,bands,s20,vol}=a,curr=quote.c,dp=quote.dp||0;
     const om={'STRONG BUY':'<span class="bb-up">STRONG BUY</span>','BUY':'<span class="bb-up">BUY</span>','WATCH':'<span class="bb-nt">WATCH</span>','HOLD':'<span class="bb-nt">HOLD</span>','SELL':'<span class="bb-dn">SELL</span>','STRONG SELL':'<span class="bb-dn">STRONG SELL</span>'};
     const s20s=s20?`$${s20.toFixed(2)}`:'N/A';
-    const rrLine=bands?`Range $${bands.lower.toFixed(2)}–$${bands.upper.toFixed(2)}. Upside: <span class="bb-up">+${((bands.upper-curr)/curr*100).toFixed(1)}%</span>. Downside: <span class="bb-dn">-${((curr-bands.lower)/curr*100).toFixed(1)}%</span>.`:(s20?`SMA-20 at ${s20s}.`:'Limited data.');
+    const rr=bands?`Range $${bands.lower.toFixed(2)}–$${bands.upper.toFixed(2)}. Upside: <span class="bb-up">+${((bands.upper-curr)/curr*100).toFixed(1)}%</span>. Downside: <span class="bb-dn">-${((curr-bands.lower)/curr*100).toFixed(1)}%</span>.`:(s20?`SMA-20 at ${s20s}.`:'Limited data.');
     let action;
     if(rec==='STRONG BUY'||rec==='BUY'){const stop=(s20?s20*0.97:curr*0.95).toFixed(2),tgt=(bands?bands.upper:curr*1.08).toFixed(2);action=`Entry ~$${curr.toFixed(2)}. Stop $${stop}. Target $${tgt}.`;}
     else if(rec==='STRONG SELL'||rec==='SELL'){action=`Avoid longs. Target ${bands?'$'+bands.lower.toFixed(2):'$'+(curr*0.93).toFixed(2)}. Bounce to ${s20s} = trim.`;}
     else if(rec==='WATCH'){action=`Wait for RSI>50 or close above ${s20s}.`;}
     else{action='No clear edge. Wait for a cleaner setup.';}
     const volLine=vol!==null?(parseFloat(vol)>3?`<span class="bb-dn">Elevated vol ${parseFloat(vol).toFixed(1)}%</span> — size carefully.`:`Vol ${parseFloat(vol).toFixed(1)}%.`):'';
-    const bH=bull.length?bull.slice(0,4).map(f=>`• ${f}`).join('<br>'):'<span style="color:var(--muted)">None</span>';
+    const bH=bull.length?bull.slice(0,3).map(f=>`• ${f}`).join('<br>'):'<span style="color:var(--muted)">None</span>';
     const beH=bear.length?bear.slice(0,3).map(f=>`• ${f}`).join('<br>'):'<span style="color:var(--muted)">None</span>';
-    return `<div class="brief-sec"><div class="brief-lbl">READ</div><div class="brief-body">${sym} ${score}/100 — ${om[rec]||rec}. $${curr.toFixed(2)}, ${dp>=0?`<span class="bb-up">+${dp.toFixed(2)}%</span>`:`<span class="bb-dn">${dp.toFixed(2)}%</span>`} today. ${volLine}</div></div>
+    return`<div class="brief-sec"><div class="brief-lbl">READ</div><div class="brief-body">${sym} ${score}/100 — ${om[rec]||rec}. $${curr.toFixed(2)}, ${dp>=0?`<span class="bb-up">+${dp.toFixed(2)}%</span>`:`<span class="bb-dn">${dp.toFixed(2)}%</span>`} today. ${volLine}</div></div>
         <div class="brief-sec"><div class="brief-lbl">BULL</div><div class="brief-body">${bH}</div></div>
         <div class="brief-sec"><div class="brief-lbl">BEAR</div><div class="brief-body">${beH}</div></div>
-        <div class="brief-sec"><div class="brief-lbl">LEVELS</div><div class="brief-body">${rrLine}</div></div>
+        <div class="brief-sec"><div class="brief-lbl">LEVELS</div><div class="brief-body">${rr}</div></div>
         <div class="brief-sec"><div class="brief-lbl">ACTION</div><div class="brief-body"><strong>${action}</strong></div></div>`;
 }
 
 // ─── CHART ───────────────────────────────────────────────
-function renderChart(candles) {
+function renderChart(candles){
     const ctx=document.getElementById('priceChart');
     if(priceChart){priceChart.destroy();priceChart=null;}
     if(!candles?.c?.length)return;
@@ -610,59 +554,43 @@ function renderChart(candles) {
     priceChart=new Chart(ctx,{type:'line',data:{labels,datasets:[{data:prices,borderColor:lc,borderWidth:2,tension:0.2,pointRadius:0,fill:true,backgroundColor:(ctx)=>{const{ctx:c,chartArea}=ctx.chart;if(!chartArea)return'transparent';const g=c.createLinearGradient(0,chartArea.top,0,chartArea.bottom);g.addColorStop(0,isUp?'rgba(0,255,148,0.18)':'rgba(255,45,85,0.18)');g.addColorStop(1,'rgba(0,0,0,0)');return g;}}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#111620',titleColor:'#f0a500',bodyColor:'#c8d6e5',borderColor:'#1e2d40',borderWidth:1,titleFont:{family:'Space Mono',size:10},bodyFont:{family:'Space Mono',size:11},callbacks:{label:c=>` $${c.parsed.y.toFixed(2)}`}}},scales:{y:{grid:{color:'rgba(30,45,64,0.5)'},ticks:{color:'#4a5568',font:{family:'Space Mono',size:9},callback:v=>'$'+v.toFixed(0)}},x:{grid:{display:false},ticks:{color:'#4a5568',font:{family:'Space Mono',size:9},maxTicksLimit:7}}}}});
 }
 
-// ─── CARD BUILDER ────────────────────────────────────────
-function makeCard(sym) {
+// ─── CARDS & GRIDS ───────────────────────────────────────
+function makeCard(sym){
     const d=stockData[sym],q=d?.quote,a=d?.analysis,prof=profileCache[sym];
     const chg=q?.dp||0,cls=chg>=0?'up':'dn',rec=a?.rec||'—',score=a?.score||50;
     const sc=score>=62?'var(--green)':score<=38?'var(--red)':score>=54?'var(--blue)':'var(--gold)';
-    const inPort=portfolio.some(p=>p.sym===sym);
-    const isNews=newsTickers.has(sym);
-    const star=inPort?' <span style="font-size:9px;color:var(--gold)">★</span>':'';
-    const newsBadge=isNews?'<span class="news-tag">NEWS</span>':'';
+    const star=portfolio.some(p=>p.sym===sym)?' <span style="font-size:9px;color:var(--gold)">★</span>':'';
     const card=document.createElement('div');
-    card.className=`grid-card${sym===currentSym?' selected':''}${isNews?' news-boosted':''}`;
+    card.className=`grid-card${sym===currentSym?' selected':''}`;
     card.id=`gc-${sym}`;
     card.innerHTML=`
-        <div class="gc-row"><div class="gc-sym">${sym}${star}${newsBadge}</div><div class="gc-price ${q?cls:'nt'}">${q?`$${q.c.toFixed(2)}`:'…'}</div></div>
+        <div class="gc-row"><div class="gc-sym">${sym}${star}</div><div class="gc-price ${q?cls:'nt'}">${q?`$${q.c.toFixed(2)}`:'…'}</div></div>
         <div class="gc-name">${prof?.name||'…'}</div>
-        <div class="gc-row">
-            <div style="font-family:'Space Mono',monospace;font-size:11px;" class="${q?cls:'nt'}">${q?(chg>=0?'+':'')+chg.toFixed(2)+'%':'—'}</div>
-            <div class="gc-badge b-${rec.replace(' ','-')}">${rec}</div>
-        </div>
+        <div class="gc-row"><div style="font-family:'Space Mono',monospace;font-size:11px;" class="${q?cls:'nt'}">${q?(chg>=0?'+':'')+chg.toFixed(2)+'%':'—'}</div><div class="gc-badge b-${rec.replace(' ','-')}">${rec}</div></div>
         <div class="score-bar-sm"><div class="score-fill-sm" style="width:${score}%;background:${sc}"></div></div>
         <div class="gc-score-lbl">SCORE ${score}/100</div>`;
     card.onclick=()=>openDetail(sym);
     return card;
 }
-
-function renderBuyGrid() {
+function renderBuyGrid(){
     const grid=document.getElementById('buyGrid');
-    let syms=getSorted(Object.keys(stockData)).filter(s=>buyFilters.has(stockData[s]?.analysis?.rec));
-    if(newsOnly) syms=syms.filter(s=>newsTickers.has(s));
+    const filtered=getSorted(Object.keys(stockData)).filter(s=>buyFilters.has(stockData[s]?.analysis?.rec));
     grid.innerHTML='';
-    if(!syms.length){
-        grid.innerHTML=Object.keys(stockData).length===0
-            ?`<div class="empty-grid"><div style="font-size:36px;margin-bottom:16px;">⚡</div>CLICK "SMART SCAN" TO FIND TODAY'S BEST OPPORTUNITIES<br><span style="font-size:10px;opacity:0.5;margin-top:8px;display:block;">Phase 1: Quote-scan 200 stocks · Filter by movers & price<br>Phase 2: Deep-scan top 60 · Full signal engine<br>Phase 3: News boost · Trending tickers get priority</span></div>`
-            :`<div class="empty-grid">No stocks match current filters.</div>`;
-        document.getElementById('buyCount').textContent='';
-        return;
-    }
-    syms.forEach(s=>grid.appendChild(makeCard(s)));
-    document.getElementById('buyCount').textContent=`${syms.length} OPPORTUNITIES`;
+    if(!filtered.length){grid.innerHTML=Object.keys(stockData).length===0?`<div class="empty-grid"><div style="font-size:36px;margin-bottom:16px;">⚡</div>CLICK "AUTO-SCAN" TO FIND BUY SIGNALS<br><span style="font-size:10px;opacity:0.5;margin-top:8px;display:block;">Scans ~100 stocks across large cap, tech, growth, crypto, and high-momentum categories</span></div>`:`<div class="empty-grid">No stocks match current filters.</div>`;document.getElementById('buyCount').textContent='';return;}
+    filtered.forEach(s=>grid.appendChild(makeCard(s)));
+    document.getElementById('buyCount').textContent=`${filtered.length} OPPORTUNITIES`;
 }
-
-function renderAllGrid() {
+function renderAllGrid(){
     const grid=document.getElementById('allGrid');
     const all=Object.keys(stockData);
     if(!all.length){grid.innerHTML='<div class="empty-grid">Run a scan first.</div>';return;}
     const filtered=getSorted(all).filter(s=>allFilters.has(stockData[s]?.analysis?.rec));
-    grid.innerHTML='';
-    filtered.forEach(s=>grid.appendChild(makeCard(s)));
+    grid.innerHTML='';filtered.forEach(s=>grid.appendChild(makeCard(s)));
     document.getElementById('allCount').textContent=`${filtered.length} / ${all.length}`;
 }
 
 // ─── DETAIL ──────────────────────────────────────────────
-function openDetail(sym) {
+function openDetail(sym){
     currentSym=sym;switchTab('detail');
     document.querySelectorAll('.grid-card').forEach(c=>c.classList.remove('selected'));
     document.querySelectorAll(`[id="gc-${sym}"]`).forEach(c=>c.classList.add('selected'));
@@ -672,128 +600,65 @@ function openDetail(sym) {
     if(quote){const chg=quote.d||0,pct=quote.dp||0,cls=chg>=0?'up':'dn';document.getElementById('chPrice').textContent=`$${quote.c.toFixed(2)}`;const ce=document.getElementById('chChg');ce.className='ch-chg '+cls;ce.textContent=`${chg>=0?'+':''}$${chg.toFixed(2)}  (${chg>=0?'+':''}${pct.toFixed(2)}%)`;document.getElementById('sOpen').textContent=`$${quote.o.toFixed(2)}`;document.getElementById('sHigh').textContent=`$${quote.h.toFixed(2)}`;document.getElementById('sLow').textContent=`$${quote.l.toFixed(2)}`;document.getElementById('sPrev').textContent=`$${quote.pc.toFixed(2)}`;}
     renderChart(candles);
     if(analysis){document.getElementById('bigRec').textContent=analysis.rec;document.getElementById('bigRec').style.color=analysis.color;const fc=analysis.score>=60?'var(--green)':analysis.score<=40?'var(--red)':'var(--gold)';document.getElementById('scoreFill').style.background=fc;document.getElementById('scoreFill').style.width=analysis.score+'%';document.getElementById('scoreLbl').textContent=`SCORE: ${analysis.score}/100`;document.getElementById('sigList').innerHTML=analysis.signals.map(s=>`<div class="sig-row"><span class="sig-name">${s.n}</span><span class="sig-val ${s.cls}">${s.v}</span></div>`).join('');document.getElementById('briefText').innerHTML=generateBrief(sym,quote,analysis);}
-    // Show related news for this stock
-    const relatedNews=newsCache.filter(a=>((a.headline||'')+(a.summary||'')).includes(sym));
-    const newsSection=document.getElementById('stockNewsSection');
-    if(relatedNews.length){newsSection.style.display='block';document.getElementById('stockNewsList').innerHTML=relatedNews.slice(0,3).map(a=>`<div class="news-item"><div class="news-headline">${a.headline||''}</div><div class="news-meta">${a.source||''}</div></div>`).join('');}
-    else{newsSection.style.display='none';}
     const inPort=portfolio.some(p=>p.sym===sym);
     const bb=document.getElementById('buyBtn');bb.disabled=false;
     if(inPort){bb.textContent=`SELL / CLOSE ${sym}`;bb.className='btn-buy in-port';bb.onclick=()=>sellPosition(sym);}
     else{bb.textContent=`★ BUY ${sym} — ADD TO PORTFOLIO`;bb.className='btn-buy';bb.onclick=()=>openBuyModal();}
 }
 
-// ─── MAIN SCAN ───────────────────────────────────────────
-async function startScan() {
+// ─── SCAN ────────────────────────────────────────────────
+async function startScan(){
     if(scanning)return;
-    scanning=true;rlHits=0;stockData={};newsCache=[];newsTickers=new Set();
+    if(!FKEY){openSettings();return;}
+    scanning=true;rlHits=0;stockData={};
     const btn=document.getElementById('scanBtn');
     btn.disabled=true;btn.textContent='⟳ SCANNING…';
     document.getElementById('scanPanel').classList.add('visible');
     document.getElementById('scanFill').style.width='0%';
+    document.getElementById('scanStatus').textContent='SCANNING…';
     switchTab('buy');
-    document.getElementById('buyGrid').innerHTML=`<div class="empty-grid">⟳ STARTING SMART SCAN…</div>`;
-
-    // ── PHASE 3 (parallel): fetch news while we scan ──
-    setPhase(3,'FETCHING NEWS…','p3');
-    fetchMarketNews(); // fire and forget
-
-    // ── PHASE 1: Get stock list ──
-    setPhase(1,'FETCHING US STOCK LIST…','p1');
-    const allSyms=await fetchUSSymbols();
-    if(!allSyms.length){
-        document.getElementById('scanStatus').textContent='✗ FAILED — KEY MAY BE INVALID. CLICK ⚙ API KEY TO UPDATE.';
-        document.getElementById('scanPanel').classList.add('visible');
-        setKeyStatus('bad','FAILED');
-        btn.disabled=false;btn.textContent='⚡ SMART SCAN';scanning=false;return;
-    }
-
-    // Shuffle and take PHASE1_LIMIT for quote scanning
-    const shuffled=allSyms.sort(()=>Math.random()-0.5).slice(0,PHASE1_LIMIT);
-    setPhase(1,`PHASE 1 — QUOTE SCANNING ${shuffled.length} STOCKS…`,'p1');
-
-    // Fetch quotes in batches
-    const quotedStocks=[]; // {sym, quote}
-    for(let i=0;i<shuffled.length;i+=BATCH_SIZE){
-        const batch=shuffled.slice(i,i+BATCH_SIZE);
-        await Promise.all(batch.map(async sym=>{
-            const q=await fetchQuote(sym);
-            if(q) quotedStocks.push({sym,q});
-            const pct=Math.round((i+BATCH_SIZE)/shuffled.length*50); // phase 1 = 0-50%
-            document.getElementById('scanFill').style.width=Math.min(pct,50)+'%';
-            document.getElementById('scanPct').textContent=Math.min(pct,50)+'%';
-            document.getElementById('ssQuotes').textContent=quotedStocks.length;
-        }));
-        if(i+BATCH_SIZE<shuffled.length) await delay(BATCH_DELAY);
-    }
-
-    // ── SCREENER FILTER (Option 2 logic) ──
-    // Filter by price range, minimum movement, not near 52W high
-    const filtered=quotedStocks.filter(({q})=>
-        q.c>=MIN_PRICE&&q.c<=MAX_PRICE&&Math.abs(q.dp||0)>=MIN_ABS_CHG
-    );
-
-    // Sort: news-mentioned first, then by absolute % change descending
-    const newsBoost=filtered.filter(({sym})=>newsTickers.has(sym));
-    const rest=filtered.filter(({sym})=>!newsTickers.has(sym)).sort((a,b)=>Math.abs(b.q.dp||0)-Math.abs(a.q.dp||0));
-    const scanList=[...newsBoost,...rest].slice(0,PHASE2_LIMIT).map(x=>x.sym);
-
-    document.getElementById('ssNews').textContent=newsBoost.length;
-
-    // ── PHASE 2: Deep scan top candidates ──
-    setPhase(2,`PHASE 2 — DEEP SCANNING TOP ${scanList.length} MOVERS…`,'p2');
-    let deep=0,sb=0,b=0,w=0;
-
-    for(let i=0;i<scanList.length;i+=BATCH_SIZE){
-        const batch=scanList.slice(i,i+BATCH_SIZE);
+    document.getElementById('buyGrid').innerHTML=`<div class="empty-grid">⟳ SCANNING…</div>`;
+    let scanned=0,sb=0,b=0,w=0;
+    const total=SCAN_UNIVERSE.length;
+    for(let i=0;i<total;i+=BATCH_SIZE){
+        const batch=SCAN_UNIVERSE.slice(i,i+BATCH_SIZE);
         await Promise.all(batch.map(async sym=>{
             const[quote,candles]=await Promise.all([fetchQuote(sym),fetchCandles(sym)]);
-            if(quote) quote._sym=sym; // tag for news boost in signal engine
             const analysis=runSignals(quote,candles);
             stockData[sym]={quote,candles,analysis};
-            deep++;
+            scanned++;
             if(analysis.rec==='STRONG BUY')sb++;
             else if(analysis.rec==='BUY')b++;
             else if(analysis.rec==='WATCH')w++;
-            const pct=50+Math.round(deep/scanList.length*50);
+            const pct=Math.round(scanned/total*100);
             document.getElementById('scanFill').style.width=pct+'%';
             document.getElementById('scanPct').textContent=pct+'%';
-            document.getElementById('scanStatus').textContent=`PHASE 2 — SCANNING ${sym}…`;
-            document.getElementById('ssDeep').textContent=deep;
+            document.getElementById('scanStatus').textContent=`SCANNING ${sym}…`;
+            document.getElementById('ssScanned').textContent=scanned;
             document.getElementById('ssSB').textContent=sb;
             document.getElementById('ssB').textContent=b;
+            document.getElementById('ssW').textContent=w;
             fetchProfile(sym);
             renderBuyGrid();
         }));
-        if(i+BATCH_SIZE<scanList.length) await delay(BATCH_DELAY);
+        if(i+BATCH_SIZE<total) await delay(BATCH_DELAY);
     }
-
     scanning=false;
     document.getElementById('scanStatus').textContent=`✓ DONE — ${sb} STRONG BUY · ${b} BUY · ${w} WATCH`;
     document.getElementById('scanFill').style.width='100%';
-    document.getElementById('scanPct').textContent='100%';
     btn.disabled=false;btn.textContent='⚡ RE-SCAN';
     document.getElementById('updatedLbl').textContent='SCANNED '+new Date().toLocaleTimeString();
-    renderBuyGrid();renderAllGrid();renderNewsTab();
+    renderBuyGrid();renderAllGrid();
     setTimeout(()=>document.getElementById('scanPanel').classList.remove('visible'),5000);
 }
 
-function setPhase(n,msg,cls) {
-    const tags={1:'PHASE 1',2:'PHASE 2',3:'PHASE 3'};
-    const clsMap={p1:'phase-1',p2:'phase-2',p3:'phase-3'};
-    document.getElementById('ssPhase').textContent=tags[n];
-    document.getElementById('scanStatus').innerHTML=`<span class="phase-tag ${clsMap[cls]}">${tags[n]}</span>${msg}`;
-    document.getElementById('scanFill').className=`scan-fill ${cls}`;
-}
-
 // ─── ADD SYMBOL ──────────────────────────────────────────
-async function addSymbol() {
+async function addSymbol(){
     const input=document.getElementById('symInput');
     const sym=input.value.trim().toUpperCase().replace(/[^A-Z.]/g,'');
     input.value='';
     if(!sym||stockData[sym])return;
     const[quote,candles]=await Promise.all([fetchQuote(sym),fetchCandles(sym)]);
-    if(quote) quote._sym=sym;
     fetchProfile(sym);
     stockData[sym]={quote,candles,analysis:runSignals(quote,candles)};
     renderBuyGrid();renderAllGrid();openDetail(sym);
@@ -815,87 +680,16 @@ function renderPortfolio(){
     document.getElementById('portCount').textContent=portfolio.length;document.getElementById('portInvested').textContent='$'+inv.toFixed(2);document.getElementById('portValue').textContent='$'+val.toFixed(2);const pe=document.getElementById('portPnl');pe.textContent=ps+'$'+pnl.toFixed(2);pe.style.color=pc;
 }
 
-// ─── SETTINGS ────────────────────────────────────────────
-function openSettings() {
-    document.getElementById('keyInput').value = FKEY;
-    updateDepthButtons();
-    // Show current key status
-    if (FKEY) {
-        setKeyStatus('unknown', 'NOT TESTED');
-    } else {
-        setKeyStatus('bad', 'NO KEY SET');
-    }
-    document.getElementById('testResult').style.display = 'none';
-    document.getElementById('settingsModal').classList.add('open');
-}
-function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
-
-function setKeyStatus(state, label) {
-    const dots = document.querySelectorAll('#keyStatusDot, #modalKeyDot');
-    dots.forEach(d => { d.className = `key-status key-${state}`; });
-    const lbl = document.getElementById('modalKeyLabel');
-    if (lbl) lbl.textContent = label;
-}
-
-async function testKey() {
-    const key = document.getElementById('keyInput').value.trim();
-    const resultEl = document.getElementById('testResult');
-    const btn = document.querySelector('.btn-test');
-    if (!key) { resultEl.className='test-result fail'; resultEl.style.display='block'; resultEl.textContent='✗ Please enter a key first.'; return; }
-    btn.textContent = 'TESTING…'; btn.disabled = true;
-    resultEl.style.display = 'none';
-    try {
-        const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=AAPL&token=${key}`);
-        const d = await r.json();
-        if (d && d.c > 0) {
-            resultEl.className = 'test-result ok';
-            resultEl.textContent = `✓ KEY VALID — AAPL: $${d.c.toFixed(2)}`;
-            setKeyStatus('ok', 'VALID ✓');
-        } else {
-            resultEl.className = 'test-result fail';
-            resultEl.textContent = '✗ KEY INVALID — Finnhub returned no data. Check your key.';
-            setKeyStatus('bad', 'INVALID ✗');
-        }
-    } catch {
-        resultEl.className = 'test-result fail';
-        resultEl.textContent = '✗ CONNECTION ERROR — Check your internet connection.';
-        setKeyStatus('bad', 'ERROR');
-    }
-    resultEl.style.display = 'block';
-    btn.textContent = 'TEST'; btn.disabled = false;
-}
-
-function setScanDepth(n) {
-    PHASE2_LIMIT = n;
-    updateDepthButtons();
-}
-function updateDepthButtons() {
-    [60,100,150].forEach(n => {
-        const btn = document.getElementById(`depthBtn${n}`);
-        if (btn) btn.className = `sort-btn${PHASE2_LIMIT===n?' active':''}`;
-    });
-}
-
-function saveSettings() {
-    const key = document.getElementById('keyInput').value.trim();
-    if (!key) { alert('Please enter an API key.'); return; }
-    FKEY = key;
-    localStorage.setItem('jaren_fkey', key);
-    localStorage.setItem('jaren_depth', PHASE2_LIMIT);
-    closeSettings();
-    startScan();
-}
-
 // ─── INIT ────────────────────────────────────────────────
-window.onload = function() {
+window.onload = function(){
     updatePortBadge();
-    if (!FKEY) {
-        // No key saved — open settings immediately
-        document.getElementById('buyGrid').innerHTML = `<div class="empty-grid"><div style="font-size:36px;margin-bottom:16px;">⚙</div>NO API KEY SET<br><span style="font-size:10px;opacity:0.6;margin-top:8px;display:block;">Click <strong style="color:var(--gold)">⚙ API KEY</strong> in the toolbar to add your Finnhub key and start scanning.</span></div>`;
-        setKeyStatus('bad', 'NO KEY SET');
+    if(!FKEY){
+        // No key saved — show prompt and open settings
+        setKeyDot('bad');
+        document.getElementById('buyGrid').innerHTML=`<div class="empty-grid"><div style="font-size:36px;margin-bottom:16px;">⚙</div>NO API KEY SET<br><span style="font-size:10px;opacity:0.6;margin-top:8px;display:block;">Click <strong style="color:var(--gold)">⚙ API KEY</strong> in the toolbar to enter your Finnhub key.</span></div>`;
         openSettings();
     } else {
-        setKeyStatus('unknown', 'SAVED');
+        setKeyDot('ok');
         startScan();
     }
 };
