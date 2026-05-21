@@ -166,6 +166,23 @@
         .modal-cancel{flex:1;background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;padding:10px;border:1px solid var(--border);border-radius:3px;cursor:pointer;}
         .placeholder{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80px;gap:8px;color:var(--muted);font-family:'Space Mono',monospace;font-size:11px;}
         .empty-grid{grid-column:1/-1;text-align:center;padding:60px 20px;font-family:'Space Mono',monospace;font-size:12px;color:var(--muted);}
+        .settings-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Space Mono',monospace;font-size:10px;padding:7px 12px;border-radius:3px;cursor:pointer;transition:all 0.15s;letter-spacing:1px;}
+        .settings-btn:hover{border-color:var(--gold);color:var(--gold);}
+        .key-status{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;}
+        .key-ok{background:var(--green);box-shadow:0 0 6px var(--green);}
+        .key-bad{background:var(--red);box-shadow:0 0 6px var(--red);animation:pulse 1s infinite;}
+        .key-unknown{background:var(--muted);}
+        .settings-modal{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:24px;width:420px;max-width:95vw;}
+        .settings-row{margin-bottom:16px;}
+        .settings-lbl{font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:5px;}
+        .settings-desc{font-size:10px;color:var(--muted);margin-top:4px;line-height:1.6;}
+        .key-input-wrap{display:flex;gap:8px;}
+        .key-input-wrap .modal-input{flex:1;font-size:11px;letter-spacing:1px;}
+        .btn-test{background:rgba(0,170,255,0.1);color:var(--blue);border:1px solid rgba(0,170,255,0.3);font-family:'Space Mono',monospace;font-size:10px;font-weight:700;padding:8px 14px;border-radius:3px;cursor:pointer;white-space:nowrap;transition:all 0.15s;}
+        .btn-test:hover{background:rgba(0,170,255,0.2);}
+        .test-result{font-family:'Space Mono',monospace;font-size:10px;margin-top:8px;padding:8px 12px;border-radius:3px;display:none;}
+        .test-result.ok{background:rgba(0,255,148,0.08);border:1px solid rgba(0,255,148,0.2);color:var(--green);}
+        .test-result.fail{background:rgba(255,45,85,0.08);border:1px solid rgba(255,45,85,0.2);color:var(--red);}
         ::-webkit-scrollbar{width:3px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
         @media(max-width:900px){.detail-view{flex-direction:column;height:auto;overflow:auto;}.analysis-panel{width:100%;min-width:unset;border-left:none;border-top:1px solid var(--border);}.port-summary{grid-template-columns:repeat(2,1fr);}.stock-grid{grid-template-columns:repeat(auto-fill,minmax(155px,1fr));}}
     </style>
@@ -198,6 +215,7 @@
     <button class="sort-btn" id="srtChange" onclick="setSort('change')">TODAY%</button>
     <button class="sort-btn" id="srtNews"   onclick="setSort('news')">NEWS🔥</button>
     <span class="updated-lbl" id="updatedLbl"></span>
+    <button class="settings-btn" onclick="openSettings()">⚙ <span class="key-status key-unknown" id="keyStatusDot"></span>API KEY</button>
 </div>
 
 <div class="scan-panel" id="scanPanel">
@@ -320,6 +338,38 @@
     </div>
 </div>
 
+<!-- SETTINGS MODAL -->
+<div class="modal-overlay" id="settingsModal">
+    <div class="settings-modal">
+        <div class="modal-title">⚙ SETTINGS</div>
+        <div class="settings-row">
+            <div class="settings-lbl">FINNHUB API KEY &nbsp;<span class="key-status key-unknown" id="modalKeyDot"></span><span id="modalKeyLabel" style="font-family:'Space Mono',monospace;font-size:9px;color:var(--muted);">NOT TESTED</span></div>
+            <div class="key-input-wrap">
+                <input class="modal-input" id="keyInput" type="text" placeholder="Paste your Finnhub API key here" autocomplete="off" spellcheck="false">
+                <button class="btn-test" onclick="testKey()">TEST</button>
+            </div>
+            <div class="test-result" id="testResult"></div>
+            <div class="settings-desc" style="margin-top:8px;">
+                Get a free key at <strong style="color:var(--gold)">finnhub.io</strong> → Dashboard → API Key.<br>
+                Your key is saved in your browser — never shared anywhere.
+            </div>
+        </div>
+        <div class="settings-row">
+            <div class="settings-lbl">PHASE 2 SCAN DEPTH</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:4px;">
+                <button class="sort-btn active" id="depthBtn60"  onclick="setScanDepth(60)">60 STOCKS</button>
+                <button class="sort-btn"        id="depthBtn100" onclick="setScanDepth(100)">100 STOCKS</button>
+                <button class="sort-btn"        id="depthBtn150" onclick="setScanDepth(150)">150 STOCKS</button>
+            </div>
+            <div class="settings-desc" style="margin-top:6px;">Higher = more opportunities found, slower scan, more API calls used.</div>
+        </div>
+        <div class="modal-btns">
+            <button class="modal-confirm" onclick="saveSettings()">✓ SAVE & SCAN</button>
+            <button class="modal-cancel"  onclick="closeSettings()">CLOSE</button>
+        </div>
+    </div>
+</div>
+
 <div class="modal-overlay" id="buyModal">
     <div class="modal">
         <div class="modal-title" id="modalTitle">BUY —</div>
@@ -335,12 +385,9 @@
 
 <script>
 // ─── CONFIG ───────────────────────────────────────────────
-const FKEY = 'd867m8hr01qnvdehbq10d867m8hr01qnvdehbq1g'; // ← Replace with your key
-
-// Phase 1: how many stocks to quote-scan
-const PHASE1_LIMIT = 200;
-// Phase 2: how many top movers to deep-scan (quote + candles)
-const PHASE2_LIMIT = 60;
+// API key loaded from localStorage — set it in ⚙ Settings
+let FKEY = localStorage.getItem('jaren_fkey') || '';
+let PHASE2_LIMIT = parseInt(localStorage.getItem('jaren_depth') || '60');
 // Batch settings to stay under 60 req/min
 const BATCH_SIZE  = 4;
 const BATCH_DELAY = 1200;
@@ -767,10 +814,89 @@ function renderPortfolio(){
     document.getElementById('portCount').textContent=portfolio.length;document.getElementById('portInvested').textContent='$'+inv.toFixed(2);document.getElementById('portValue').textContent='$'+val.toFixed(2);const pe=document.getElementById('portPnl');pe.textContent=ps+'$'+pnl.toFixed(2);pe.style.color=pc;
 }
 
+// ─── SETTINGS ────────────────────────────────────────────
+function openSettings() {
+    document.getElementById('keyInput').value = FKEY;
+    updateDepthButtons();
+    // Show current key status
+    if (FKEY) {
+        setKeyStatus('unknown', 'NOT TESTED');
+    } else {
+        setKeyStatus('bad', 'NO KEY SET');
+    }
+    document.getElementById('testResult').style.display = 'none';
+    document.getElementById('settingsModal').classList.add('open');
+}
+function closeSettings() { document.getElementById('settingsModal').classList.remove('open'); }
+
+function setKeyStatus(state, label) {
+    const dots = document.querySelectorAll('#keyStatusDot, #modalKeyDot');
+    dots.forEach(d => { d.className = `key-status key-${state}`; });
+    const lbl = document.getElementById('modalKeyLabel');
+    if (lbl) lbl.textContent = label;
+}
+
+async function testKey() {
+    const key = document.getElementById('keyInput').value.trim();
+    const resultEl = document.getElementById('testResult');
+    const btn = document.querySelector('.btn-test');
+    if (!key) { resultEl.className='test-result fail'; resultEl.style.display='block'; resultEl.textContent='✗ Please enter a key first.'; return; }
+    btn.textContent = 'TESTING…'; btn.disabled = true;
+    resultEl.style.display = 'none';
+    try {
+        const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=AAPL&token=${key}`);
+        const d = await r.json();
+        if (d && d.c > 0) {
+            resultEl.className = 'test-result ok';
+            resultEl.textContent = `✓ KEY VALID — AAPL: $${d.c.toFixed(2)}`;
+            setKeyStatus('ok', 'VALID ✓');
+        } else {
+            resultEl.className = 'test-result fail';
+            resultEl.textContent = '✗ KEY INVALID — Finnhub returned no data. Check your key.';
+            setKeyStatus('bad', 'INVALID ✗');
+        }
+    } catch {
+        resultEl.className = 'test-result fail';
+        resultEl.textContent = '✗ CONNECTION ERROR — Check your internet connection.';
+        setKeyStatus('bad', 'ERROR');
+    }
+    resultEl.style.display = 'block';
+    btn.textContent = 'TEST'; btn.disabled = false;
+}
+
+function setScanDepth(n) {
+    PHASE2_LIMIT = n;
+    updateDepthButtons();
+}
+function updateDepthButtons() {
+    [60,100,150].forEach(n => {
+        const btn = document.getElementById(`depthBtn${n}`);
+        if (btn) btn.className = `sort-btn${PHASE2_LIMIT===n?' active':''}`;
+    });
+}
+
+function saveSettings() {
+    const key = document.getElementById('keyInput').value.trim();
+    if (!key) { alert('Please enter an API key.'); return; }
+    FKEY = key;
+    localStorage.setItem('jaren_fkey', key);
+    localStorage.setItem('jaren_depth', PHASE2_LIMIT);
+    closeSettings();
+    startScan();
+}
+
 // ─── INIT ────────────────────────────────────────────────
 window.onload = function() {
     updatePortBadge();
-    startScan();
+    if (!FKEY) {
+        // No key saved — open settings immediately
+        document.getElementById('buyGrid').innerHTML = `<div class="empty-grid"><div style="font-size:36px;margin-bottom:16px;">⚙</div>NO API KEY SET<br><span style="font-size:10px;opacity:0.6;margin-top:8px;display:block;">Click <strong style="color:var(--gold)">⚙ API KEY</strong> in the toolbar to add your Finnhub key and start scanning.</span></div>`;
+        setKeyStatus('bad', 'NO KEY SET');
+        openSettings();
+    } else {
+        setKeyStatus('unknown', 'SAVED');
+        startScan();
+    }
 };
 </script>
 </body>
