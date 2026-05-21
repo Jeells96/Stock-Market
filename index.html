@@ -158,6 +158,13 @@
   .holdings-table th.r,.holdings-table td.r{text-align:right}
   .holdings-table td{padding:12px 8px;border-bottom:1px solid rgba(201,169,97,0.1)}
   .holdings-table tr:hover{background:rgba(201,169,97,0.03)}
+  /* row alerts — pulse a glow when a position hits target or stop */
+  .holdings-table tr.row-alert-profit{background:rgba(74,222,128,0.10);box-shadow:inset 3px 0 0 var(--green);animation:glowProfit 2s ease-in-out infinite}
+  .holdings-table tr.row-alert-profit:hover{background:rgba(74,222,128,0.16)}
+  .holdings-table tr.row-alert-stop{background:rgba(220,38,38,0.12);box-shadow:inset 3px 0 0 var(--red);animation:glowStop 2s ease-in-out infinite}
+  .holdings-table tr.row-alert-stop:hover{background:rgba(220,38,38,0.18)}
+  @keyframes glowProfit{0%,100%{background:rgba(74,222,128,0.08)}50%{background:rgba(74,222,128,0.18)}}
+  @keyframes glowStop{0%,100%{background:rgba(220,38,38,0.10)}50%{background:rgba(220,38,38,0.22)}}
   .holdings-table .sym{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--ivory)}
   .holdings-table .up{color:var(--green)}
   .holdings-table .down{color:var(--red)}
@@ -521,25 +528,28 @@ async function buildTicker(){
   });
   renderTicker(tickerData);
 
-  let idx = 0;
-  const drip = async () => {
+  // Fill the ticker ONCE on load, then freeze. No background looping —
+  // keeps the budget/cache numbers steady once everything has loaded.
+  const fillOnce = async () => {
     if(!apiKey) return;
-    while(true){
-      if(scanInProgress){ await sleep(2000); continue; }
-      if(RL.remaining() < 20){ await sleep(3000); continue; }
-      const sym = TICKER_DISPLAY[idx % TICKER_DISPLAY.length];
+    for(let i = 0; i < TICKER_DISPLAY.length; i++){
+      // pause if a scan kicks off mid-fill so the scan gets priority
+      while(scanInProgress){ await sleep(2000); }
+      const sym = TICKER_DISPLAY[i];
+      // already seeded from cache above? skip the call
+      if(tickerData[i].px !== null) continue;
       try{
         const q = await finn("/quote", {symbol: sym}, 5*60*1000);
         if(q && q.c){
-          tickerData[idx % TICKER_DISPLAY.length] = { sym, px: q.c, chg: q.dp || 0 };
+          tickerData[i] = { sym, px: q.c, chg: q.dp || 0 };
           renderTicker(tickerData);
         }
       } catch(e){ /* silent */ }
-      idx++;
-      await sleep(4000);
+      await sleep(1200);
     }
+    // done — ticker is now static until the page is reloaded
   };
-  drip();
+  fillOnce();
 }
 
 function renderTicker(data){
@@ -841,7 +851,10 @@ async function renderPortfolio(){
     const posPnl = (cp - p.entry) * p.shares;
     const posPnlPct = (cp - p.entry) / p.entry;
     const signal = computeSignal(p, cp);
-    return `<tr>
+    // row-level visual alert: green glow when target hit, red glow when stop hit
+    const rowAlert = signal.code === "TAKE_PROFIT" ? " row-alert-profit"
+                   : signal.code === "STOP_LOSS"   ? " row-alert-stop" : "";
+    return `<tr class="${rowAlert.trim()}">
       <td><span class="sym">${p.sym}</span></td>
       <td class="r">${p.shares.toLocaleString("en-US",{maximumFractionDigits:4})}</td>
       <td class="r">${fmt$(p.entry)}</td>
@@ -890,10 +903,27 @@ async function refreshPortfolioPrices(){
   savePortfolio();
 }
 
+// auto-refresh portfolio every 60s, but only while the Portfolio tab is open
+let pfRefreshTimer = null;
+function startPfAutoRefresh(){
+  stopPfAutoRefresh();
+  pfRefreshTimer = setInterval(async () => {
+    // don't fight a running scan, and don't bother if nothing to track
+    if(scanInProgress || portfolio.length === 0) return;
+    // force fresh quotes so the 60s tick actually pulls new prices
+    portfolio.forEach(p => { delete cache[`/quote?symbol=${p.sym}`]; });
+    await renderPortfolio();
+  }, 60000);
+}
+function stopPfAutoRefresh(){
+  if(pfRefreshTimer){ clearInterval(pfRefreshTimer); pfRefreshTimer = null; }
+}
+
 function switchTab(name){
   $$(".tab").forEach(t => t.classList.toggle("active", t.dataset.view === name));
   $$(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + name));
-  if(name === "portfolio") renderPortfolio();
+  if(name === "portfolio"){ renderPortfolio(); startPfAutoRefresh(); }
+  else { stopPfAutoRefresh(); }
 }
 
 function init(){
