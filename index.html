@@ -85,6 +85,10 @@
   .scan-title{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--ivory);font-weight:600}
   .scan-title .sub{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--gold-dim);margin-top:4px;text-transform:uppercase}
   .scan-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .auto-toggle{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-dim);cursor:pointer;user-select:none}
+  .auto-toggle input{width:auto;accent-color:var(--gold)}
+  .spin{display:inline-block;animation:spin 1.1s linear infinite}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
   .btn{padding:10px 16px;border:1px solid var(--border-strong);background:linear-gradient(180deg,rgba(201,169,97,0.08),rgba(201,169,97,0.02));color:var(--gold-bright);font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:all .2s;border-radius:2px;}
   .btn:hover{background:linear-gradient(180deg,rgba(201,169,97,0.18),rgba(201,169,97,0.05));border-color:var(--gold);box-shadow:0 0 14px rgba(201,169,97,0.2)}
   .btn:disabled{opacity:.4;cursor:not-allowed}
@@ -252,10 +256,17 @@
     <div class="scan-header">
       <div>
         <div class="scan-title">Top Conviction Picks
-          <span class="sub">Multi-factor model · Updated <span id="scanTs">—</span></span>
+          <span class="sub">Multi-factor model · Updated <span id="scanTs">—</span>
+            <span id="refreshPill" style="display:none;align-items:center;gap:5px;margin-left:8px;color:var(--gold-bright);text-transform:none;letter-spacing:0">
+              <span class="spin">⟳</span> updating…
+            </span>
+          </span>
         </div>
       </div>
       <div class="scan-actions">
+        <label class="auto-toggle" title="Automatically refresh picks in the background">
+          <input type="checkbox" id="autoRefreshChk" checked /> Auto
+        </label>
         <select id="universeSel">
           <option value="mega">Mega Universe (~600)</option>
           <option value="momentum">Momentum &amp; Meme</option>
@@ -402,7 +413,7 @@ UNIVERSES.mega = [...new Set([...UNIVERSES.sp, ...UNIVERSES.momentum, ...NASDAQ_
 
 const TICKER_DISPLAY = ["AAPL","MSFT","NVDA","GOOGL","AMZN","META","TSLA","JPM","V","UNH","XOM","WMT","LLY","AVGO","JNJ","MA","PG","HD","COST","BAC","NFLX","ABBV","CVX","KO","CRM","ORCL","TMO","ADBE","PEP","AMD","MCD","CSCO","DIS","ABT","INTC","WFC","BA","GS","SMCI","PLTR","COIN","UBER","SHOP","SOFI","HOOD","MSTR","ARM","CRWD"];
 
-const LS = {KEY:"jstm.apiKey",PORTFOLIO:"jstm.portfolio",CACHE:"jstm.cache",LAST_SCAN:"jstm.lastScan",RISK:"jstm.risk",FB:"jstm.fbConfig"};
+const LS = {KEY:"jstm.apiKey",PORTFOLIO:"jstm.portfolio",CACHE:"jstm.cache",LAST_SCAN:"jstm.lastScan",RISK:"jstm.risk",FB:"jstm.fbConfig",AUTO:"jstm.autoRefresh"};
 const RISK_PROFILES = {conservative:{target:0.06,stop:0.03},balanced:{target:0.10,stop:0.05},aggressive:{target:0.18,stop:0.07}};
 
 let apiKey = localStorage.getItem(LS.KEY) || "d874rh1r01ql0hsk9qogd874rh1r01ql0hsk9qp0";
@@ -423,7 +434,6 @@ const DEFAULT_FB_CONFIG = {
 };
 let fbConfig = JSON.parse(localStorage.getItem(LS.FB) || "null") || DEFAULT_FB_CONFIG;
 let fbApp = null, fbDb = null, fbReady = false;
-const SCANS_PER_HOUR = 2; // global cap across the whole league
 
 let scanInProgress = false;
 let scanCancelRequested = false;
@@ -533,50 +543,20 @@ async function fetchSharedScan(){
   return null;
 }
 
-// Write a completed scan as the new shared scan, and log its timestamp for the global cap.
+// Write a completed scan as the new shared scan for the league.
 async function publishSharedScan(scan){
   if(!fbReady) return;
   try {
     await fbDb.collection("scans").doc("latest").set(scan);
-    // append timestamp to the rolling meta list (keep only last hour)
-    const metaRef = fbDb.collection("scans").doc("meta");
-    const metaDoc = await metaRef.get();
-    let times = (metaDoc.exists && metaDoc.data().times) ? metaDoc.data().times : [];
-    const cutoff = Date.now() - 3600000;
-    times = times.filter(t => t > cutoff);
-    times.push(scan.ts);
-    await metaRef.set({times});
   } catch(e){ console.warn("publishSharedScan failed", e); }
 }
 
-// Check the GLOBAL scan cap (2/hour across everyone). Returns {allowed, count, nextAt}.
-async function checkScanAllowance(){
-  // No Firebase = local-only; fall back to a per-device hourly cap so a solo user still can't spam.
-  if(!fbReady){
-    const local = JSON.parse(localStorage.getItem("jstm.scanTimes") || "[]").filter(t => t > Date.now()-3600000);
-    if(local.length >= SCANS_PER_HOUR){
-      return {allowed:false, count:local.length, nextAt: Math.min(...local) + 3600000};
-    }
-    return {allowed:true, count:local.length};
-  }
-  try {
-    const metaDoc = await fbDb.collection("scans").doc("meta").get();
-    let times = (metaDoc.exists && metaDoc.data().times) ? metaDoc.data().times : [];
-    times = times.filter(t => t > Date.now()-3600000);
-    if(times.length >= SCANS_PER_HOUR){
-      return {allowed:false, count:times.length, nextAt: Math.min(...times) + 3600000};
-    }
-    return {allowed:true, count:times.length};
-  } catch(e){
-    console.warn("checkScanAllowance failed", e);
-    return {allowed:true, count:0}; // fail open rather than block the user
-  }
-}
+// Check the GLOBAL scan cap — removed. Auto-refresh now relies on the per-minute
+// token bucket plus league-sync (load a teammate's fresh scan instead of re-scanning).
 
-function logLocalScanTime(ts){
-  const local = JSON.parse(localStorage.getItem("jstm.scanTimes") || "[]").filter(t => t > Date.now()-3600000);
-  local.push(ts);
-  localStorage.setItem("jstm.scanTimes", JSON.stringify(local));
+function setRefreshing(on){
+  const el = $("refreshPill");
+  if(el) el.style.display = on ? "inline-flex" : "none";
 }
 function cacheGet(key){
   const c = cache[key];
@@ -692,32 +672,27 @@ function showProgress(stage, detail, pct){
 }
 function hideProgress(){ setTimeout(()=>$("progress").classList.remove("show"), 800); }
 
-async function runScan(){
-  if(!apiKey){ toast("Add your Finnhub API key in Settings first.", "err"); return; }
-  if(scanInProgress){ toast("Scan already running.", "err"); return; }
-
-  // Global rate guardrail: max 2 scans/hour across the league (or per-device if not synced)
-  const allowance = await checkScanAllowance();
-  if(!allowance.allowed){
-    const mins = Math.max(1, Math.ceil((allowance.nextAt - Date.now())/60000));
-    toast(`League scan limit reached (${SCANS_PER_HOUR}/hour). Next scan in ~${mins} min. Latest picks are already loaded.`, "err");
-    // make sure they're seeing the shared latest
-    const shared = await fetchSharedScan();
-    if(shared){ lastScanResults = shared; saveLastScan(); renderPicks(shared.picks); $("scanTs").textContent = new Date(shared.ts).toLocaleTimeString(); }
-    return;
-  }
+async function runScan(opts = {}){
+  const background = !!opts.background;
+  if(!apiKey){ if(!background) toast("Add your Finnhub API key in Settings first.", "err"); return; }
+  if(scanInProgress){ if(!background) toast("Scan already running.", "err"); return; }
 
   scanInProgress = true;
   scanCancelRequested = false;
   $("scanBtn").disabled = true;
-  $("emptyScan").style.display = "none";
-  $("picksGrid").innerHTML = "";
+  if(background){
+    // keep old picks visible; just show a subtle updating indicator
+    setRefreshing(true);
+  } else {
+    $("emptyScan").style.display = "none";
+    $("picksGrid").innerHTML = "";
+  }
 
   const universe = UNIVERSES[$("universeSel").value];
   const candidates = [];
 
   try {
-    showProgress("Stage 1 — Quote Screen", `0 / ${universe.length}`, 5);
+    if(!background) showProgress("Stage 1 — Quote Screen", `0 / ${universe.length}`, 5);
     let scanned = 0;
     let uncachedCalls = 0;
     const MAX_STAGE1_NEW_CALLS = 50;
@@ -740,7 +715,7 @@ async function runScan(){
         });
       }
       scanned++;
-      if(scanned % 5 === 0 || scanned === universe.length){
+      if(!background && (scanned % 5 === 0 || scanned === universe.length)){
         showProgress("Stage 1 — Quote Screen",
           `${scanned}/${universe.length} screened · ${candidates.length} live · ${uncachedCalls} fresh calls`,
           5 + (scanned/universe.length)*30);
@@ -750,8 +725,8 @@ async function runScan(){
 
     if(candidates.length === 0) throw new Error("No quotes returned. Verify your API key works.");
 
-    showProgress("Stage 2 — Momentum Sort", `${candidates.length} candidates`, 38);
-    await sleep(200);
+    if(!background) showProgress("Stage 2 — Momentum Sort", `${candidates.length} candidates`, 38);
+    await sleep(background ? 0 : 200);
     candidates.forEach(c => {
       const positionInRange = c.high > c.low ? (c.price - c.low) / (c.high - c.low) : 0.5;
       c.momentumScore = (c.changePct * 0.7) + (positionInRange * 100 * 0.3);
@@ -759,7 +734,7 @@ async function runScan(){
     candidates.sort((a,b)=> b.momentumScore - a.momentumScore);
     const top30 = candidates.slice(0, 30);
 
-    showProgress("Stage 2 — Momentum Sort", `Top 30 selected · sorting`, 42);
+    if(!background) showProgress("Stage 2 — Momentum Sort", `Top 30 selected · sorting`, 42);
 
     const deepCount = Math.min(10, top30.length);
     const finalists = top30.slice(0, deepCount);
@@ -767,8 +742,10 @@ async function runScan(){
     for(let i = 0; i < finalists.length; i++){
       if(scanCancelRequested) throw new Error("Cancelled by user");
       const c = finalists[i];
-      const pct = 42 + (i/deepCount)*52;
-      showProgress("Stage 3 — Deep Dive", `${c.sym} (${i+1}/${deepCount}) · pulling analyst + insider + news`, pct);
+      if(!background){
+        const pct = 42 + (i/deepCount)*52;
+        showProgress("Stage 3 — Deep Dive", `${c.sym} (${i+1}/${deepCount}) · pulling analyst + insider + news`, pct);
+      }
 
       const [profile, rec, ins, newsSent] = await Promise.allSettled([
         getProfile(c.sym), getRecommendation(c.sym), getInsiderSentiment(c.sym), getNewsSentiment(c.sym),
@@ -779,47 +756,53 @@ async function runScan(){
       c.newsSent = newsSent.status==="fulfilled" ? newsSent.value : null;
       scoreFinalist(c);
 
-      // progressive render
-      const sortedSoFar = finalists.filter(f => f.totalScore !== undefined).sort((a,b)=> b.totalScore - a.totalScore);
-      renderPicks(sortedSoFar);
+      // progressive render ONLY in foreground; background keeps old data until the swap
+      if(!background){
+        const sortedSoFar = finalists.filter(f => f.totalScore !== undefined).sort((a,b)=> b.totalScore - a.totalScore);
+        renderPicks(sortedSoFar);
+      }
     }
 
     finalists.sort((a,b)=> b.totalScore - a.totalScore);
-    showProgress("Stage 4 — Finalizing", `${finalists.length} picks ranked`, 98);
-    await sleep(300);
+    if(!background){ showProgress("Stage 4 — Finalizing", `${finalists.length} picks ranked`, 98); await sleep(300); }
 
+    // atomic swap — replace old picks with the fresh set
     lastScanResults = { ts: Date.now(), universe: $("universeSel").value, picks: finalists };
     saveLastScan();
     renderPicks(finalists);
+    $("emptyScan").style.display = "none";
     $("scanTs").textContent = new Date().toLocaleTimeString();
 
-    // publish to the league + log the timestamp for the global cap
-    logLocalScanTime(lastScanResults.ts);
+    // share with the league
     await publishSharedScan(lastScanResults);
-    toast(`Scan complete. ${finalists.length} picks ranked.${fbReady ? " Shared with the league." : ""}`, "ok");
+    if(!background) toast(`Scan complete. ${finalists.length} picks ranked.${fbReady ? " Shared with the league." : ""}`, "ok");
 
   } catch(err){
     console.error(err);
-    toast("Scan: " + err.message, "err");
-    if(candidates.length > 0 && $("picksGrid").innerHTML === ""){
-      const fallback = candidates.sort((a,b) => (b.changePct||0) - (a.changePct||0)).slice(0, 10);
-      fallback.forEach(c => {
-        c.f_momentum = clamp(50 + c.changePct * 8, 0, 100);
-        c.f_analyst = 50; c.f_insider = 50; c.f_news = 50;
-        c.totalScore = Math.round(c.f_momentum * 0.6 + 25);
-        c.conviction = "WATCH";
-        c.thesis = "Quote-only screen — deep dive incomplete.";
-        const profile = RISK_PROFILES[risk];
-        c.targetPrice = c.price * (1 + profile.target);
-        c.stopPrice = c.price * (1 - profile.stop);
-      });
-      renderPicks(fallback);
+    if(!background){
+      toast("Scan: " + err.message, "err");
+      if(candidates.length > 0 && $("picksGrid").innerHTML === ""){
+        const fallback = candidates.sort((a,b) => (b.changePct||0) - (a.changePct||0)).slice(0, 10);
+        fallback.forEach(c => {
+          c.f_momentum = clamp(50 + c.changePct * 8, 0, 100);
+          c.f_analyst = 50; c.f_insider = 50; c.f_news = 50;
+          c.totalScore = Math.round(c.f_momentum * 0.6 + 25);
+          c.conviction = "WATCH";
+          c.thesis = "Quote-only screen — deep dive incomplete.";
+          const profile = RISK_PROFILES[risk];
+          c.targetPrice = c.price * (1 + profile.target);
+          c.stopPrice = c.price * (1 - profile.stop);
+        });
+        renderPicks(fallback);
+      }
     }
+    // background errors stay silent and leave the existing picks untouched
   } finally {
     scanInProgress = false;
     scanCancelRequested = false;
     $("scanBtn").disabled = false;
-    hideProgress();
+    if(background) setRefreshing(false);
+    else hideProgress();
     updateStatusBar();
   }
 }
@@ -1191,6 +1174,41 @@ function init(){
       }
     });
   }
+
+  // ===== Auto-refresh =====
+  // Keeps picks as current as possible without every device hammering Finnhub.
+  // Each tick: if a teammate published a newer scan, load it (1 cheap read).
+  // Otherwise, if our picks are getting stale, run a background scan (old data stays
+  // on screen until the new set is ready) and share it with the league.
+  let autoRefresh = (localStorage.getItem(LS.AUTO) ?? "true") === "true";
+  $("autoRefreshChk").checked = autoRefresh;
+  $("autoRefreshChk").addEventListener("change", () => {
+    autoRefresh = $("autoRefreshChk").checked;
+    localStorage.setItem(LS.AUTO, autoRefresh);
+    toast(autoRefresh ? "Auto-refresh on." : "Auto-refresh paused.", "ok");
+  });
+
+  const STALE_MS = 3 * 60 * 1000;   // re-scan if our picks are older than 3 min
+  const TICK_MS  = 30 * 1000;       // check every 30s
+  setInterval(async () => {
+    if(!autoRefresh || scanInProgress || !apiKey) return;
+    // 1) prefer a fresher scan from the league (nearly free)
+    if(fbReady){
+      const shared = await fetchSharedScan();
+      if(shared && (!lastScanResults || shared.ts > lastScanResults.ts)){
+        lastScanResults = shared; saveLastScan();
+        renderPicks(shared.picks);
+        $("scanTs").textContent = new Date(shared.ts).toLocaleTimeString();
+        $("emptyScan").style.display = "none";
+        return;
+      }
+    }
+    // 2) if nothing fresher available and ours is stale, refresh in the background
+    const age = lastScanResults ? Date.now() - lastScanResults.ts : Infinity;
+    if(age > STALE_MS){
+      runScan({background: true});
+    }
+  }, TICK_MS);
 
   updateStatusBar();
   updateFbStatus();
