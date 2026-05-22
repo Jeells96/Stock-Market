@@ -695,6 +695,8 @@ async function runScan(opts = {}){
     if(!background) showProgress("Stage 1 — Quote Screen", `0 / ${universe.length}`, 5);
     let scanned = 0;
     let uncachedCalls = 0;
+    let errCount = 0;
+    let lastErr = null;
     const MAX_STAGE1_NEW_CALLS = 50;
 
     for(const sym of universe){
@@ -705,7 +707,7 @@ async function runScan(opts = {}){
       if(cached) q = cached;
       else if(uncachedCalls < MAX_STAGE1_NEW_CALLS){
         try { q = await getQuote(sym); uncachedCalls++; }
-        catch(e){ continue; }
+        catch(e){ errCount++; lastErr = e.message; continue; }
       } else continue;
 
       if(q && q.c && q.c > 0){
@@ -723,7 +725,10 @@ async function runScan(opts = {}){
       }
     }
 
-    if(candidates.length === 0) throw new Error("No quotes returned. Verify your API key works.");
+    if(candidates.length === 0){
+      if(lastErr) throw new Error(`All quote calls failed (${errCount}). Last error: ${lastErr}`);
+      throw new Error("No quotes returned. Verify your API key in Settings.");
+    }
 
     if(!background) showProgress("Stage 2 — Momentum Sort", `${candidates.length} candidates`, 38);
     await sleep(background ? 0 : 200);
