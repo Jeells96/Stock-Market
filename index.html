@@ -242,7 +242,7 @@
   </div>
   <h1>Jaren's Stock Market Tracker</h1>
   <div class="subtitle">Intelligence · Conviction · Capital</div>
-  <div class="est">Est. MMXXVI · Powered by Finnhub · <span id="verTag">v1.3</span></div>
+  <div class="est">Est. MMXXVI · Powered by Finnhub · <span id="verTag">v1.4</span></div>
 </header>
 
 <nav class="tabs">
@@ -294,8 +294,8 @@
 
     <div id="picksGrid" class="picks-grid"></div>
     <div id="emptyScan" class="empty">
-      <div class="big">Awaiting Orders</div>
-      <div class="small">Run a scan to surface the day's highest-conviction opportunities</div>
+      <div class="big">Loading Picks…</div>
+      <div class="small">Surfacing the day's highest-conviction opportunities — this runs automatically</div>
     </div>
   </section>
 
@@ -399,11 +399,11 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <footer>
-  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v1.3</span>
+  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v1.4</span>
 </footer>
 
 <script>
-const APP_VERSION = "1.3";
+const APP_VERSION = "1.4";
 const UNIVERSES = {
   sp: ["AAPL","MSFT","GOOGL","GOOG","AMZN","NVDA","META","TSLA","BRK.B","JPM","V","UNH","XOM","JNJ","WMT","MA","PG","LLY","HD","CVX","ABBV","KO","PEP","MRK","AVGO","COST","BAC","ADBE","ACN","CRM","TMO","CSCO","NFLX","ABT","MCD","DHR","WFC","TXN","NEE","ORCL","DIS","AMD","PM","CMCSA","VZ","NKE","UPS","RTX","PFE","INTC","HON","INTU","AMGN","T","COP","UNP","LOW","SPGI","LIN","CAT","GS","MS","ISRG","BLK","NOW","BKNG","DE","AXP","SCHW","TJX","C","BMY","SYK","MMC","BA","ELV","GE","MDT","ADP","PLD","LMT","REGN","VRTX","GILD","BSX","TMUS","CI","CB","ZTS","SO","DUK","MO","PGR","MDLZ","SLB","ETN","ADI","FI","ICE","CME","SHW","KLAC","APD","NSC","HCA","FCX","WM","BDX","CL","EOG","FDX","ITW","CSX","EQIX","NOC","MMM","PNC","TGT","EMR","MPC","PSX","AON","ORLY","HUM","MCK","PSA","ROP","MSI","USB","CARR","COF","APH","AJG","TFC","GD","SRE","D","NXPI","AZO","KMB","MAR","AIG","WMB","TT","ECL","WELL","O","FIS","OKE","KMI","ROST","CCI","TRV","CHTR","GIS","ALL","HLT","STZ","ANET","FTNT","KHC","SYY","BIIB","DOW","KDP","LRCX","ABNB","CTAS","BK","AFL","NUE","IDXX","JCI","VLO","MET","OXY","PCAR","SPG","AMP","PAYX","EW","TEL","HSY","CMG","DXCM","CTSH","A","PRU","DLR","LEN","DHI","CNC","MNST","DD","CRWD","DG","KR","WBA","YUM","ADM","EXC","XEL","FAST","SBUX","WEC","ED","ROK","BKR","HAL","RSG","VRSK","TROW","CDNS","SNPS","WST","ANSS","CDW","WTW","GWW","ALGN","ZBH","TYL","KEYS","NDAQ","NTAP","STT","STE","RJF","PFG","PHM","HBAN","RF","CFG","TSCO","ULTA","DRI","HAS"],
   momentum: ["GME","AMC","BB","CLOV","SOFI","PLTR","HOOD","COIN","MSTR","MARA","RIOT","CLSK","WULF","HUT","BTBT","BITF","CIFR","HIVE","ARM","SMCI","AI","BBAI","SOUN","UPST","LCID","RIVN","FSR","NKLA","RIDE","QS","ENPH","SEDG","RUN","FSLR","SPWR","NOVA","ARRY","BE","PLUG","FCEL","BLDP","BEEM","SHLS","STEM","DQ","JKS","CSIQ","SOL","TSLA","NVDA","TSM","INTC","MU","ON","MCHP","SWKS","QRVO","LSCC","CRWD","ZS","NET","SNOW","DDOG","MDB","OKTA","DOCN","ESTC","FROG","CFLT","S","TENB","RPD","CYBR","VRNS","FTNT","PANW","CHKP","BSY","GTLB","NEWR","DT","PCTY","PAYC","WDAY","ZUO","BL","APPN","APPS","SE","GRAB","MELI","NU","STNE","PAGS","CART","RDDT","KSPI","HIMS","TLRY","CGC","ACB","CRON","SNDL","HEXO","OGI","VFF"],
@@ -860,7 +860,12 @@ async function runScan(opts = {}){
   } catch(err){
     console.error(err);
     if(!background) toast("Scan: " + err.message, "err");
-    // refresh errors leave existing picks intact
+    // If this was the very first scan (no picks yet) and it failed, retry shortly —
+    // the page must never stay stuck on the empty state once it's been used.
+    const stillEmpty = !(lastScanResults && lastScanResults.picks && lastScanResults.picks.length);
+    if(stillEmpty && err.message !== "Cancelled by user"){
+      setTimeout(() => { if(!scanInProgress) runScan({background: false}); }, 20000);
+    }
   } finally {
     scanInProgress = false;
     scanCancelRequested = false;
@@ -1317,14 +1322,26 @@ function init(){
     }
   }, TICK_MS);
 
-  // Auto-kickoff: if we have no picks shortly after load (and didn't get a league scan),
-  // start the first scan automatically so the user never has to tap Run Scan.
-  setTimeout(() => {
-    if(autoRefresh && !scanInProgress && apiKey &&
-       !(lastScanResults && lastScanResults.picks && lastScanResults.picks.length)){
-      runScan({background: true});
+  // Auto-kickoff: ensure picks ALWAYS appear after load. Try Firebase first (handled
+  // above), and if we still have no picks a few seconds in, run a real foreground scan.
+  // No budget guard here — the first scan is essential, so it takes priority over the ticker.
+  setTimeout(async () => {
+    const hasPicks = lastScanResults && lastScanResults.picks && lastScanResults.picks.length;
+    if(hasPicks || scanInProgress || !apiKey) return;
+    // one more Firebase attempt in case the connection was slow on first try
+    if(fbReady){
+      const shared = await fetchSharedScan();
+      if(shared && shared.picks && shared.picks.length){
+        lastScanResults = shared; saveLastScan();
+        renderPicks(shared.picks);
+        $("scanTs").textContent = new Date(shared.ts).toLocaleTimeString();
+        $("emptyScan").style.display = "none";
+        return;
+      }
     }
-  }, 6000);
+    // nothing shared yet — run our own first scan (foreground, shows progress)
+    runScan({background: false});
+  }, 5000);
 
   $("verTag").textContent = "v" + APP_VERSION;
   $("verTagFoot").textContent = "v" + APP_VERSION;
