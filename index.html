@@ -242,7 +242,7 @@
   </div>
   <h1>Jaren's Stock Market Tracker</h1>
   <div class="subtitle">Intelligence · Conviction · Capital</div>
-  <div class="est">Est. MMXXVI · Powered by Finnhub</div>
+  <div class="est">Est. MMXXVI · Powered by Finnhub · <span id="verTag">v1.1</span></div>
 </header>
 
 <nav class="tabs">
@@ -399,10 +399,11 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <footer>
-  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> Trade with Discipline
+  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v1.1</span>
 </footer>
 
 <script>
+const APP_VERSION = "1.1";
 const UNIVERSES = {
   sp: ["AAPL","MSFT","GOOGL","GOOG","AMZN","NVDA","META","TSLA","BRK.B","JPM","V","UNH","XOM","JNJ","WMT","MA","PG","LLY","HD","CVX","ABBV","KO","PEP","MRK","AVGO","COST","BAC","ADBE","ACN","CRM","TMO","CSCO","NFLX","ABT","MCD","DHR","WFC","TXN","NEE","ORCL","DIS","AMD","PM","CMCSA","VZ","NKE","UPS","RTX","PFE","INTC","HON","INTU","AMGN","T","COP","UNP","LOW","SPGI","LIN","CAT","GS","MS","ISRG","BLK","NOW","BKNG","DE","AXP","SCHW","TJX","C","BMY","SYK","MMC","BA","ELV","GE","MDT","ADP","PLD","LMT","REGN","VRTX","GILD","BSX","TMUS","CI","CB","ZTS","SO","DUK","MO","PGR","MDLZ","SLB","ETN","ADI","FI","ICE","CME","SHW","KLAC","APD","NSC","HCA","FCX","WM","BDX","CL","EOG","FDX","ITW","CSX","EQIX","NOC","MMM","PNC","TGT","EMR","MPC","PSX","AON","ORLY","HUM","MCK","PSA","ROP","MSI","USB","CARR","COF","APH","AJG","TFC","GD","SRE","D","NXPI","AZO","KMB","MAR","AIG","WMB","TT","ECL","WELL","O","FIS","OKE","KMI","ROST","CCI","TRV","CHTR","GIS","ALL","HLT","STZ","ANET","FTNT","KHC","SYY","BIIB","DOW","KDP","LRCX","ABNB","CTAS","BK","AFL","NUE","IDXX","JCI","VLO","MET","OXY","PCAR","SPG","AMP","PAYX","EW","TEL","HSY","CMG","DXCM","CTSH","A","PRU","DLR","LEN","DHI","CNC","MNST","DD","CRWD","DG","KR","WBA","YUM","ADM","EXC","XEL","FAST","SBUX","WEC","ED","ROK","BKR","HAL","RSG","VRSK","TROW","CDNS","SNPS","WST","ANSS","CDW","WTW","GWW","ALGN","ZBH","TYL","KEYS","NDAQ","NTAP","STT","STE","RJF","PFG","PHM","HBAN","RF","CFG","TSCO","ULTA","DRI","HAS"],
   momentum: ["GME","AMC","BB","CLOV","SOFI","PLTR","HOOD","COIN","MSTR","MARA","RIOT","CLSK","WULF","HUT","BTBT","BITF","CIFR","HIVE","ARM","SMCI","AI","BBAI","SOUN","UPST","LCID","RIVN","FSR","NKLA","RIDE","QS","ENPH","SEDG","RUN","FSLR","SPWR","NOVA","ARRY","BE","PLUG","FCEL","BLDP","BEEM","SHLS","STEM","DQ","JKS","CSIQ","SOL","TSLA","NVDA","TSM","INTC","MU","ON","MCHP","SWKS","QRVO","LSCC","CRWD","ZS","NET","SNOW","DDOG","MDB","OKTA","DOCN","ESTC","FROG","CFLT","S","TENB","RPD","CYBR","VRNS","FTNT","PANW","CHKP","BSY","GTLB","NEWR","DT","PCTY","PAYC","WDAY","ZUO","BL","APPN","APPS","SE","GRAB","MELI","NU","STNE","PAGS","CART","RDDT","KSPI","HIMS","TLRY","CGC","ACB","CRON","SNDL","HEXO","OGI","VFF"],
@@ -680,128 +681,156 @@ async function runScan(opts = {}){
   scanInProgress = true;
   scanCancelRequested = false;
   $("scanBtn").disabled = true;
+
+  const universe = UNIVERSES[$("universeSel").value];
+  const MAX_PICKS = 100;          // hard cap on list size
+  const MIN_BUDGET_FOR_NEW = 8;   // keep this much budget free before deep-diving a new stock
+  const DEEP_CALLS = 4;           // calls per deep-dive (profile, rec, insider, news)
+
+  // Decide mode: a "grow/refresh" run if we already have picks, else a fresh first scan.
+  const existing = (lastScanResults && lastScanResults.picks && lastScanResults.picks.length) ? lastScanResults.picks.slice() : null;
+  const isRefresh = !!existing;
+
   if(background){
-    // keep old picks visible; just show a subtle updating indicator
     setRefreshing(true);
-  } else {
+  } else if(!isRefresh){
     $("emptyScan").style.display = "none";
     $("picksGrid").innerHTML = "";
   }
 
-  const universe = UNIVERSES[$("universeSel").value];
-  const candidates = [];
+  // track which universe symbols we've already deep-dived (persisted across runs)
+  let covered = new Set((lastScanResults && lastScanResults.coveredSyms) || []);
 
   try {
-    if(!background) showProgress("Stage 1 — Quote Screen", `0 / ${universe.length}`, 5);
-    let scanned = 0;
-    let uncachedCalls = 0;
-    let errCount = 0;
-    let lastErr = null;
-    const MAX_STAGE1_NEW_CALLS = 50;
+    /* ============================================================
+       PATH A — FIRST SCAN (no existing picks): top 10 fast
+    ============================================================ */
+    if(!isRefresh){
+      if(!background) showProgress("Stage 1 — Quote Screen", `0 / ${universe.length}`, 5);
+      const candidates = [];
+      let scanned = 0, uncachedCalls = 0, errCount = 0, lastErr = null;
+      const MAX_STAGE1_NEW_CALLS = 50;
 
-    for(const sym of universe){
+      for(const sym of universe){
+        if(scanCancelRequested) throw new Error("Cancelled by user");
+        const cached = cacheGet(`/quote?symbol=${sym}`);
+        let q;
+        if(cached) q = cached;
+        else if(uncachedCalls < MAX_STAGE1_NEW_CALLS){
+          try { q = await getQuote(sym); uncachedCalls++; }
+          catch(e){ errCount++; lastErr = e.message; continue; }
+        } else continue;
+
+        if(q && q.c && q.c > 0){
+          candidates.push({sym, price:q.c, changePct:q.dp||0, high:q.h, low:q.l, open:q.o, prevClose:q.pc});
+        }
+        scanned++;
+        if(!background && (scanned % 5 === 0 || scanned === universe.length)){
+          showProgress("Stage 1 — Quote Screen",
+            `${scanned}/${universe.length} screened · ${candidates.length} live · ${uncachedCalls} fresh calls`,
+            5 + (scanned/universe.length)*30);
+          await sleep(10);
+        }
+      }
+      if(candidates.length === 0){
+        if(lastErr) throw new Error(`All quote calls failed (${errCount}). Last error: ${lastErr}`);
+        throw new Error("No quotes returned. Verify your API key in Settings.");
+      }
+
+      candidates.forEach(scoreMomentum);
+      candidates.sort((a,b)=> b.momentumScore - a.momentumScore);
+
+      const deepCount = Math.min(10, candidates.length);
+      const finalists = candidates.slice(0, deepCount);
+
+      for(let i=0; i<finalists.length; i++){
+        if(scanCancelRequested) throw new Error("Cancelled by user");
+        const c = finalists[i];
+        if(!background) showProgress("Stage 2 — Deep Dive", `${c.sym} (${i+1}/${deepCount})`, 42 + (i/deepCount)*52);
+        await deepDive(c);
+        covered.add(c.sym);
+        if(!background){
+          renderPicks(finalists.filter(f=>f.totalScore!==undefined).sort((a,b)=>b.totalScore-a.totalScore));
+        }
+      }
+      finalists.sort((a,b)=> b.totalScore - a.totalScore);
+      commitScan(finalists, covered);
+      if(!background) toast(`Scan complete. ${finalists.length} picks ranked.${fbReady?" Shared with the league.":""}`, "ok");
+      return;
+    }
+
+    /* ============================================================
+       PATH B — REFRESH/GROW (have picks already)
+       Priority 1: refresh existing picks.  Priority 2: add new ones.
+    ============================================================ */
+    // ---- Priority 1: refresh data on the stocks we already hold in the list ----
+    if(!background) showProgress("Refreshing", `Updating ${existing.length} current picks`, 10);
+    for(let i=0; i<existing.length; i++){
       if(scanCancelRequested) throw new Error("Cancelled by user");
-      const cacheKey = `/quote?symbol=${sym}`;
-      const cached = cacheGet(cacheKey);
-      let q;
-      if(cached) q = cached;
-      else if(uncachedCalls < MAX_STAGE1_NEW_CALLS){
-        try { q = await getQuote(sym); uncachedCalls++; }
-        catch(e){ errCount++; lastErr = e.message; continue; }
-      } else continue;
+      const c = existing[i];
+      // bust the quote cache so we get a fresh price, then re-deep-dive
+      delete cache[`/quote?symbol=${c.sym}`];
+      try {
+        const q = await getQuote(c.sym);
+        if(q && q.c && q.c > 0){ c.price=q.c; c.changePct=q.dp||0; c.high=q.h; c.low=q.l; c.open=q.o; c.prevClose=q.pc; }
+      } catch(e){ /* keep old price */ }
+      await deepDive(c); // refreshes analyst/insider/news (cached TTLs mean this is cheap if recent)
+      covered.add(c.sym);
+      if(!background) showProgress("Refreshing", `Updated ${c.sym} (${i+1}/${existing.length})`, 10 + (i/existing.length)*45);
+    }
+    // re-render refreshed list immediately so targets are current before we grow
+    existing.sort((a,b)=> b.totalScore - a.totalScore);
+    renderPicks(existing);
 
-      if(q && q.c && q.c > 0){
-        candidates.push({
-          sym, price: q.c, changePct: q.dp || 0,
-          high: q.h, low: q.l, open: q.o, prevClose: q.pc,
-        });
+    // ---- Priority 2: spend leftover budget adding NEW stocks, up to the cap ----
+    let added = 0;
+    if(existing.length < MAX_PICKS){
+      // build the pool of not-yet-covered universe symbols
+      const uncovered = universe.filter(s => !covered.has(s));
+      // quick-screen a chunk of them by momentum using budget that's available
+      const newCandidates = [];
+      for(const sym of uncovered){
+        if(scanCancelRequested) break;
+        if(RL.remaining() < MIN_BUDGET_FOR_NEW + DEEP_CALLS) break; // save room for at least one deep-dive
+        const cached = cacheGet(`/quote?symbol=${sym}`);
+        let q;
+        if(cached) q = cached;
+        else { try { q = await getQuote(sym); } catch(e){ continue; } }
+        if(q && q.c && q.c > 0){
+          const cand = {sym, price:q.c, changePct:q.dp||0, high:q.h, low:q.l, open:q.o, prevClose:q.pc};
+          scoreMomentum(cand);
+          newCandidates.push(cand);
+        }
+        covered.add(sym); // mark screened so we don't re-screen it next time
       }
-      scanned++;
-      if(!background && (scanned % 5 === 0 || scanned === universe.length)){
-        showProgress("Stage 1 — Quote Screen",
-          `${scanned}/${universe.length} screened · ${candidates.length} live · ${uncachedCalls} fresh calls`,
-          5 + (scanned/universe.length)*30);
-        await sleep(10);
+      // best momentum first, then deep-dive as many as budget + cap allow
+      newCandidates.sort((a,b)=> b.momentumScore - a.momentumScore);
+      for(const cand of newCandidates){
+        if(scanCancelRequested) break;
+        if(existing.length >= MAX_PICKS) break;
+        if(RL.remaining() < MIN_BUDGET_FOR_NEW) break;
+        await deepDive(cand);
+        existing.push(cand);
+        added++;
+        existing.sort((a,b)=> b.totalScore - a.totalScore);
+        if(!background){
+          renderPicks(existing);
+          showProgress("Adding", `+${cand.sym} · ${existing.length}/${MAX_PICKS} tracked`, 60 + Math.min(38, added*3));
+        }
       }
     }
 
-    if(candidates.length === 0){
-      if(lastErr) throw new Error(`All quote calls failed (${errCount}). Last error: ${lastErr}`);
-      throw new Error("No quotes returned. Verify your API key in Settings.");
+    existing.sort((a,b)=> b.totalScore - a.totalScore);
+    commitScan(existing, covered);
+    if(!background){
+      const caph = existing.length >= MAX_PICKS ? " (cap reached)" : "";
+      toast(`Refreshed ${existing.length} picks${added?`, added ${added}`:""}.${caph}`, "ok");
     }
-
-    if(!background) showProgress("Stage 2 — Momentum Sort", `${candidates.length} candidates`, 38);
-    await sleep(background ? 0 : 200);
-    candidates.forEach(c => {
-      const positionInRange = c.high > c.low ? (c.price - c.low) / (c.high - c.low) : 0.5;
-      c.momentumScore = (c.changePct * 0.7) + (positionInRange * 100 * 0.3);
-    });
-    candidates.sort((a,b)=> b.momentumScore - a.momentumScore);
-    const top30 = candidates.slice(0, 30);
-
-    if(!background) showProgress("Stage 2 — Momentum Sort", `Top 30 selected · sorting`, 42);
-
-    const deepCount = Math.min(10, top30.length);
-    const finalists = top30.slice(0, deepCount);
-
-    for(let i = 0; i < finalists.length; i++){
-      if(scanCancelRequested) throw new Error("Cancelled by user");
-      const c = finalists[i];
-      if(!background){
-        const pct = 42 + (i/deepCount)*52;
-        showProgress("Stage 3 — Deep Dive", `${c.sym} (${i+1}/${deepCount}) · pulling analyst + insider + news`, pct);
-      }
-
-      const [profile, rec, ins, newsSent] = await Promise.allSettled([
-        getProfile(c.sym), getRecommendation(c.sym), getInsiderSentiment(c.sym), getNewsSentiment(c.sym),
-      ]);
-      c.profile = profile.status==="fulfilled" ? profile.value : null;
-      c.recommendation = rec.status==="fulfilled" ? rec.value : null;
-      c.insider = ins.status==="fulfilled" ? ins.value : null;
-      c.newsSent = newsSent.status==="fulfilled" ? newsSent.value : null;
-      scoreFinalist(c);
-
-      // progressive render ONLY in foreground; background keeps old data until the swap
-      if(!background){
-        const sortedSoFar = finalists.filter(f => f.totalScore !== undefined).sort((a,b)=> b.totalScore - a.totalScore);
-        renderPicks(sortedSoFar);
-      }
-    }
-
-    finalists.sort((a,b)=> b.totalScore - a.totalScore);
-    if(!background){ showProgress("Stage 4 — Finalizing", `${finalists.length} picks ranked`, 98); await sleep(300); }
-
-    // atomic swap — replace old picks with the fresh set
-    lastScanResults = { ts: Date.now(), universe: $("universeSel").value, picks: finalists };
-    saveLastScan();
-    renderPicks(finalists);
-    $("emptyScan").style.display = "none";
-    $("scanTs").textContent = new Date().toLocaleTimeString();
-
-    // share with the league
-    await publishSharedScan(lastScanResults);
-    if(!background) toast(`Scan complete. ${finalists.length} picks ranked.${fbReady ? " Shared with the league." : ""}`, "ok");
 
   } catch(err){
     console.error(err);
-    if(!background){
-      toast("Scan: " + err.message, "err");
-      if(candidates.length > 0 && $("picksGrid").innerHTML === ""){
-        const fallback = candidates.sort((a,b) => (b.changePct||0) - (a.changePct||0)).slice(0, 10);
-        fallback.forEach(c => {
-          c.f_momentum = clamp(50 + c.changePct * 8, 0, 100);
-          c.f_analyst = 50; c.f_insider = 50; c.f_news = 50;
-          c.totalScore = Math.round(c.f_momentum * 0.6 + 25);
-          c.conviction = "WATCH";
-          c.thesis = "Quote-only screen — deep dive incomplete.";
-          const profile = RISK_PROFILES[risk];
-          c.targetPrice = c.price * (1 + profile.target);
-          c.stopPrice = c.price * (1 - profile.stop);
-        });
-        renderPicks(fallback);
-      }
-    }
-    // background errors stay silent and leave the existing picks untouched
+    if(!background) toast("Scan: " + err.message, "err");
+    // refresh errors leave existing picks intact
   } finally {
     scanInProgress = false;
     scanCancelRequested = false;
@@ -810,6 +839,39 @@ async function runScan(opts = {}){
     else hideProgress();
     updateStatusBar();
   }
+}
+
+// momentum-only quick score (used for screening)
+function scoreMomentum(c){
+  const positionInRange = c.high > c.low ? (c.price - c.low) / (c.high - c.low) : 0.5;
+  c.momentumScore = (c.changePct * 0.7) + (positionInRange * 100 * 0.3);
+}
+
+// full deep-dive: pulls analyst/insider/news and computes the conviction score
+async function deepDive(c){
+  const [profile, rec, ins, newsSent] = await Promise.allSettled([
+    getProfile(c.sym), getRecommendation(c.sym), getInsiderSentiment(c.sym), getNewsSentiment(c.sym),
+  ]);
+  c.profile = profile.status==="fulfilled" ? profile.value : c.profile || null;
+  c.recommendation = rec.status==="fulfilled" ? rec.value : c.recommendation || null;
+  c.insider = ins.status==="fulfilled" ? ins.value : c.insider || null;
+  c.newsSent = newsSent.status==="fulfilled" ? newsSent.value : c.newsSent || null;
+  scoreFinalist(c);
+}
+
+// persist + render a completed scan/refresh
+function commitScan(picks, coveredSet){
+  lastScanResults = {
+    ts: Date.now(),
+    universe: $("universeSel").value,
+    picks,
+    coveredSyms: Array.from(coveredSet)
+  };
+  saveLastScan();
+  renderPicks(picks);
+  $("emptyScan").style.display = "none";
+  $("scanTs").textContent = new Date().toLocaleTimeString();
+  publishSharedScan(lastScanResults);
 }
 
 function scoreFinalist(c){
@@ -1215,15 +1277,19 @@ function init(){
         }
       } catch(e){ /* ignore, fall through */ }
     }
-    // 2) background re-scan ONLY if we already have picks (never cold-start a scan)
+    // 2) background refresh ONLY if we already have picks (never cold-start a scan)
     //    and there's enough budget headroom so we don't fight the ticker.
     if(!lastScanResults || !lastScanResults.picks || !lastScanResults.picks.length) return;
     const age = Date.now() - lastScanResults.ts;
-    if(age > STALE_MS && RL.remaining() >= 45){
+    const belowCap = lastScanResults.picks.length < 100;
+    // refresh if picks are stale, or if we still have room to grow the list
+    if((age > STALE_MS || belowCap) && RL.remaining() >= 45){
       runScan({background: true});
     }
   }, TICK_MS);
 
+  $("verTag").textContent = "v" + APP_VERSION;
+  $("verTagFoot").textContent = "v" + APP_VERSION;
   updateStatusBar();
   updateFbStatus();
   setInterval(updateStatusBar, 1000);
