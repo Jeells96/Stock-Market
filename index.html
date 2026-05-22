@@ -6,6 +6,9 @@
 <title>Jaren's Stock Market Tracker</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Firebase (compat SDK — no build step, works on GitHub Pages + iOS Safari) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
@@ -41,8 +44,8 @@
     mix-blend-mode:overlay;
   }
   button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
-  input,select{font-family:inherit;color:var(--ivory);background:rgba(8,17,31,0.6);border:1px solid var(--border);padding:8px 10px;border-radius:2px;font-size:13px}
-  input:focus,select:focus{outline:none;border-color:var(--gold)}
+  input,select,textarea{font-family:inherit;color:var(--ivory);background:rgba(8,17,31,0.6);border:1px solid var(--border);padding:8px 10px;border-radius:2px;font-size:13px}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold)}
 
   .ticker-bar{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#06101e,#0a1628);border-bottom:1px solid var(--border-strong);overflow:hidden;height:42px;display:flex;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.5);}
   .ticker-label{flex-shrink:0;padding:0 14px;height:100%;display:flex;align-items:center;background:linear-gradient(90deg,var(--gold-dim),transparent);border-right:1px solid var(--border);font-family:'Cormorant Garamond',serif;font-weight:700;font-size:14px;color:#08111f;letter-spacing:.18em;text-transform:uppercase;}
@@ -321,6 +324,15 @@
         </select>
       </div>
       <div class="field">
+        <label>League Sync — Firebase Config</label>
+        <textarea id="fbConfigInput" placeholder='Paste your Firebase config object here, e.g.&#10;{&#10;  "apiKey": "...",&#10;  "authDomain": "...",&#10;  "projectId": "...",&#10;  "storageBucket": "...",&#10;  "messagingSenderId": "...",&#10;  "appId": "..."&#10;}' style="width:100%;min-height:120px;font-family:'JetBrains Mono',monospace;font-size:11px;resize:vertical"></textarea>
+        <div class="key-row" style="margin-top:8px">
+          <button class="btn primary" id="saveFbBtn" style="flex:1">Connect League Sync</button>
+          <button class="btn ghost" id="disconnectFbBtn" style="flex:1">Disconnect</button>
+        </div>
+        <div class="hint" id="fbStatusHint">Not connected. Paste your Firebase config to share scans across the league and cut down on API usage. Scans are shared; portfolios stay private to each device.</div>
+      </div>
+      <div class="field">
         <label>Cache &amp; Local Data</label>
         <div class="key-row">
           <button class="btn ghost" id="clearCacheBtn" style="flex:1">Clear Quote Cache</button>
@@ -333,7 +345,7 @@
         <div class="hint" style="font-style:normal;line-height:1.7;color:var(--cream)">
           Multi-factor scoring across momentum (intraday position + day's change), analyst recommendation trend, insider sentiment (MSPR), and news sentiment.
           The scanner uses a funnel: quote screen → top 30 momentum sort → top 10 deep-dive with analyst + insider + news data.
-          Rate limited to 55 calls/min with token-bucket queueing. Ticker pauses during scans so the scan gets full budget.
+          League sync shares the latest scan via Firebase so teammates don't all re-scan. Global limit: 2 scans per hour across the whole league.
         </div>
       </div>
     </div>
@@ -390,7 +402,7 @@ UNIVERSES.mega = [...new Set([...UNIVERSES.sp, ...UNIVERSES.momentum, ...NASDAQ_
 
 const TICKER_DISPLAY = ["AAPL","MSFT","NVDA","GOOGL","AMZN","META","TSLA","JPM","V","UNH","XOM","WMT","LLY","AVGO","JNJ","MA","PG","HD","COST","BAC","NFLX","ABBV","CVX","KO","CRM","ORCL","TMO","ADBE","PEP","AMD","MCD","CSCO","DIS","ABT","INTC","WFC","BA","GS","SMCI","PLTR","COIN","UBER","SHOP","SOFI","HOOD","MSTR","ARM","CRWD"];
 
-const LS = {KEY:"jstm.apiKey",PORTFOLIO:"jstm.portfolio",CACHE:"jstm.cache",LAST_SCAN:"jstm.lastScan",RISK:"jstm.risk"};
+const LS = {KEY:"jstm.apiKey",PORTFOLIO:"jstm.portfolio",CACHE:"jstm.cache",LAST_SCAN:"jstm.lastScan",RISK:"jstm.risk",FB:"jstm.fbConfig"};
 const RISK_PROFILES = {conservative:{target:0.06,stop:0.03},balanced:{target:0.10,stop:0.05},aggressive:{target:0.18,stop:0.07}};
 
 let apiKey = localStorage.getItem(LS.KEY) || "d874rh1r01ql0hsk9qogd874rh1r01ql0hsk9qp0";
@@ -398,6 +410,20 @@ let portfolio = JSON.parse(localStorage.getItem(LS.PORTFOLIO) || "[]");
 let cache = JSON.parse(localStorage.getItem(LS.CACHE) || "{}");
 let lastScanResults = JSON.parse(localStorage.getItem(LS.LAST_SCAN) || "null");
 let risk = localStorage.getItem(LS.RISK) || "balanced";
+
+// ===== League sync (Firebase) state =====
+// Hardcoded league config — everyone using this build shares the same project automatically.
+const DEFAULT_FB_CONFIG = {
+  apiKey: "AIzaSyBQzn4hcka-PM4Ns70022p70gvQ4iQ4d08",
+  authDomain: "stocks-b13c5.firebaseapp.com",
+  projectId: "stocks-b13c5",
+  storageBucket: "stocks-b13c5.firebasestorage.app",
+  messagingSenderId: "1011539617993",
+  appId: "1:1011539617993:web:5ae58443d40dde4d634518"
+};
+let fbConfig = JSON.parse(localStorage.getItem(LS.FB) || "null") || DEFAULT_FB_CONFIG;
+let fbApp = null, fbDb = null, fbReady = false;
+const SCANS_PER_HOUR = 2; // global cap across the whole league
 
 let scanInProgress = false;
 let scanCancelRequested = false;
@@ -459,6 +485,99 @@ function saveCache(){
 }
 function savePortfolio(){ localStorage.setItem(LS.PORTFOLIO, JSON.stringify(portfolio)); }
 function saveLastScan(){ localStorage.setItem(LS.LAST_SCAN, JSON.stringify(lastScanResults)); }
+
+/* ===================== LEAGUE SYNC (FIREBASE) =====================
+   - One shared Firestore doc: scans/latest  → holds most recent scan + timestamp
+   - One shared doc: scans/meta → holds rolling list of recent scan timestamps (for the global 2/hour cap)
+   - Portfolios are NOT synced; they stay local per device.
+   - If Firebase isn't configured/reachable, everything falls back to local-only.
+=================================================================== */
+function initFirebase(){
+  if(!fbConfig) { fbReady = false; updateFbStatus(); return false; }
+  try {
+    if(!fbApp){
+      fbApp = firebase.initializeApp(fbConfig);
+      fbDb = firebase.firestore();
+    }
+    fbReady = true;
+  } catch(e){
+    console.warn("Firebase init failed", e);
+    fbReady = false;
+  }
+  updateFbStatus();
+  return fbReady;
+}
+
+function updateFbStatus(){
+  const hint = $("fbStatusHint");
+  if(!hint) return;
+  if(fbReady){
+    hint.innerHTML = `<span style="color:var(--green)">● Connected</span> — scans shared across the league. Portfolios stay private to this device.`;
+  } else if(fbConfig){
+    hint.innerHTML = `<span style="color:var(--red)">● Config saved but not connected</span> — check the config object is valid.`;
+  } else {
+    hint.textContent = "Not connected. Paste your Firebase config to share scans across the league and cut down on API usage. Scans are shared; portfolios stay private to each device.";
+  }
+}
+
+// Pull the latest shared scan from Firebase. Returns scan obj or null.
+async function fetchSharedScan(){
+  if(!fbReady) return null;
+  try {
+    const doc = await fbDb.collection("scans").doc("latest").get();
+    if(doc.exists){
+      const data = doc.data();
+      if(data && data.picks) return data;
+    }
+  } catch(e){ console.warn("fetchSharedScan failed", e); }
+  return null;
+}
+
+// Write a completed scan as the new shared scan, and log its timestamp for the global cap.
+async function publishSharedScan(scan){
+  if(!fbReady) return;
+  try {
+    await fbDb.collection("scans").doc("latest").set(scan);
+    // append timestamp to the rolling meta list (keep only last hour)
+    const metaRef = fbDb.collection("scans").doc("meta");
+    const metaDoc = await metaRef.get();
+    let times = (metaDoc.exists && metaDoc.data().times) ? metaDoc.data().times : [];
+    const cutoff = Date.now() - 3600000;
+    times = times.filter(t => t > cutoff);
+    times.push(scan.ts);
+    await metaRef.set({times});
+  } catch(e){ console.warn("publishSharedScan failed", e); }
+}
+
+// Check the GLOBAL scan cap (2/hour across everyone). Returns {allowed, count, nextAt}.
+async function checkScanAllowance(){
+  // No Firebase = local-only; fall back to a per-device hourly cap so a solo user still can't spam.
+  if(!fbReady){
+    const local = JSON.parse(localStorage.getItem("jstm.scanTimes") || "[]").filter(t => t > Date.now()-3600000);
+    if(local.length >= SCANS_PER_HOUR){
+      return {allowed:false, count:local.length, nextAt: Math.min(...local) + 3600000};
+    }
+    return {allowed:true, count:local.length};
+  }
+  try {
+    const metaDoc = await fbDb.collection("scans").doc("meta").get();
+    let times = (metaDoc.exists && metaDoc.data().times) ? metaDoc.data().times : [];
+    times = times.filter(t => t > Date.now()-3600000);
+    if(times.length >= SCANS_PER_HOUR){
+      return {allowed:false, count:times.length, nextAt: Math.min(...times) + 3600000};
+    }
+    return {allowed:true, count:times.length};
+  } catch(e){
+    console.warn("checkScanAllowance failed", e);
+    return {allowed:true, count:0}; // fail open rather than block the user
+  }
+}
+
+function logLocalScanTime(ts){
+  const local = JSON.parse(localStorage.getItem("jstm.scanTimes") || "[]").filter(t => t > Date.now()-3600000);
+  local.push(ts);
+  localStorage.setItem("jstm.scanTimes", JSON.stringify(local));
+}
 function cacheGet(key){
   const c = cache[key];
   if(!c) return null;
@@ -577,6 +696,17 @@ async function runScan(){
   if(!apiKey){ toast("Add your Finnhub API key in Settings first.", "err"); return; }
   if(scanInProgress){ toast("Scan already running.", "err"); return; }
 
+  // Global rate guardrail: max 2 scans/hour across the league (or per-device if not synced)
+  const allowance = await checkScanAllowance();
+  if(!allowance.allowed){
+    const mins = Math.max(1, Math.ceil((allowance.nextAt - Date.now())/60000));
+    toast(`League scan limit reached (${SCANS_PER_HOUR}/hour). Next scan in ~${mins} min. Latest picks are already loaded.`, "err");
+    // make sure they're seeing the shared latest
+    const shared = await fetchSharedScan();
+    if(shared){ lastScanResults = shared; saveLastScan(); renderPicks(shared.picks); $("scanTs").textContent = new Date(shared.ts).toLocaleTimeString(); }
+    return;
+  }
+
   scanInProgress = true;
   scanCancelRequested = false;
   $("scanBtn").disabled = true;
@@ -662,7 +792,11 @@ async function runScan(){
     saveLastScan();
     renderPicks(finalists);
     $("scanTs").textContent = new Date().toLocaleTimeString();
-    toast(`Scan complete. ${finalists.length} picks ranked.`, "ok");
+
+    // publish to the league + log the timestamp for the global cap
+    logLocalScanTime(lastScanResults.ts);
+    await publishSharedScan(lastScanResults);
+    toast(`Scan complete. ${finalists.length} picks ranked.${fbReady ? " Shared with the league." : ""}`, "ok");
 
   } catch(err){
     console.error(err);
@@ -776,9 +910,32 @@ function renderPicks(picks){
     btn.addEventListener("click", (e) => {
       const sym = e.target.dataset.sym;
       const pick = picks.find(p => p.sym === sym);
-      openAddModal(pick);
+      addPickDirect(pick, e.target);
     });
   });
+}
+
+// Add a scanner pick straight to the portfolio — no modal, no shares prompt.
+function addPickDirect(pick, btnEl){
+  if(!pick) return;
+  if(portfolio.some(p => p.sym === pick.sym)){
+    toast(`${pick.sym} is already in your portfolio.`, "err");
+    return;
+  }
+  portfolio.push({
+    sym: pick.sym,
+    shares: 1,
+    entry: pick.price,
+    target: pick.targetPrice,
+    stop: pick.stopPrice,
+    addedAt: Date.now(),
+    currentPrice: pick.price,
+    lastUpdate: 0,
+  });
+  savePortfolio();
+  toast(`${pick.sym} added to portfolio.`, "ok");
+  updatePfCount();
+  if(btnEl){ btnEl.textContent = "✓ In Portfolio"; btnEl.disabled = true; }
 }
 function factorBar(label, val){
   return `<div class="factor">
@@ -809,11 +966,14 @@ function closeAddModal(){ $("addModal").classList.remove("show"); }
 
 function confirmAdd(){
   const sym = $("addSymbol").value.trim().toUpperCase();
-  const shares = parseFloat($("addShares").value);
   const entry = parseFloat($("addEntry").value);
-  if(!sym || !shares || !entry || shares <= 0 || entry <= 0){
-    toast("Enter symbol, shares, and entry price.", "err"); return;
+  if(!sym || !entry || entry <= 0){
+    toast("Enter a symbol and entry price.", "err"); return;
   }
+  if(portfolio.some(p => p.sym === sym)){
+    toast(`${sym} is already in your portfolio.`, "err"); return;
+  }
+  const shares = parseFloat($("addShares").value) || 1;
   const profile = RISK_PROFILES[risk];
   const tgt = parseFloat($("addTarget").value) || entry * (1 + profile.target);
   const stop = parseFloat($("addStop").value) || entry * (1 - profile.stop);
@@ -972,7 +1132,68 @@ function init(){
     updateStatusBar();
     toast("Local data wiped.", "ok");
   });
+
+  // ===== League Sync (Firebase) settings =====
+  if(fbConfig) $("fbConfigInput").value = JSON.stringify(fbConfig, null, 2);
+  $("saveFbBtn").addEventListener("click", async () => {
+    const raw = $("fbConfigInput").value.trim();
+    if(!raw){ toast("Paste your Firebase config first.", "err"); return; }
+    let parsed;
+    try {
+      // tolerate JS-style config (unquoted keys) by trying JSON first, then a loose eval-free clean
+      parsed = JSON.parse(raw);
+    } catch(e){
+      try {
+        // strip trailing commas + wrap to coerce common copy-paste forms
+        const cleaned = raw.replace(/^\s*const\s+\w+\s*=\s*/,"").replace(/;?\s*$/,"").replace(/(\w+):/g,'"$1":').replace(/'/g,'"').replace(/,(\s*[}\]])/g,"$1");
+        parsed = JSON.parse(cleaned);
+      } catch(e2){
+        toast("Couldn't parse that config. Paste the JSON object with apiKey, projectId, etc.", "err");
+        return;
+      }
+    }
+    if(!parsed.projectId || !parsed.apiKey){
+      toast("Config needs at least apiKey and projectId.", "err"); return;
+    }
+    fbConfig = parsed;
+    localStorage.setItem(LS.FB, JSON.stringify(fbConfig));
+    fbApp = null; // force re-init
+    if(initFirebase()){
+      toast("League sync connected.", "ok");
+      const shared = await fetchSharedScan();
+      if(shared && (!lastScanResults || shared.ts > lastScanResults.ts)){
+        lastScanResults = shared; saveLastScan();
+        renderPicks(shared.picks);
+        $("scanTs").textContent = new Date(shared.ts).toLocaleTimeString();
+        $("emptyScan").style.display = "none";
+      }
+    } else {
+      toast("Config saved but connection failed — check the values.", "err");
+    }
+  });
+  $("disconnectFbBtn").addEventListener("click", () => {
+    fbConfig = null; fbApp = null; fbDb = null; fbReady = false;
+    localStorage.removeItem(LS.FB);
+    $("fbConfigInput").value = "";
+    updateFbStatus();
+    toast("League sync disconnected. Running local-only.", "ok");
+  });
+
+  // connect Firebase if we have a saved config, then auto-load the latest shared scan
+  if(fbConfig && initFirebase()){
+    fetchSharedScan().then(shared => {
+      if(shared && (!lastScanResults || shared.ts > lastScanResults.ts)){
+        lastScanResults = shared; saveLastScan();
+        renderPicks(shared.picks);
+        $("scanTs").textContent = new Date(shared.ts).toLocaleTimeString();
+        $("emptyScan").style.display = "none";
+        toast("Loaded latest league scan.", "ok");
+      }
+    });
+  }
+
   updateStatusBar();
+  updateFbStatus();
   setInterval(updateStatusBar, 1000);
   buildTicker();
   updatePfCount();
