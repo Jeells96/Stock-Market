@@ -1070,6 +1070,11 @@ function switchTab(name){
 }
 
 function init(){
+  // discard a half-saved scan (timestamp but no usable picks) so we show a clean empty state
+  if(lastScanResults && (!lastScanResults.picks || !lastScanResults.picks.length)){
+    lastScanResults = null;
+    localStorage.removeItem(LS.LAST_SCAN);
+  }
   if(lastScanResults?.picks){
     renderPicks(lastScanResults.picks);
     $("scanTs").textContent = new Date(lastScanResults.ts).toLocaleTimeString();
@@ -1079,7 +1084,7 @@ function init(){
   $("apiKeyInput").value = apiKey;
   $("riskSel").value = risk;
   $$(".tab").forEach(t => t.addEventListener("click", () => switchTab(t.dataset.view)));
-  $("scanBtn").addEventListener("click", runScan);
+  $("scanBtn").addEventListener("click", () => runScan({background: false}));
   $("cancelScanBtn").addEventListener("click", () => { scanCancelRequested = true; toast("Cancelling scan…", "err"); });
   $("refreshPfBtn").addEventListener("click", async () => {
     if(portfolio.length === 0){ toast("No positions to refresh.", "err"); return; }
@@ -1192,20 +1197,24 @@ function init(){
   const TICK_MS  = 30 * 1000;       // check every 30s
   setInterval(async () => {
     if(!autoRefresh || scanInProgress || !apiKey) return;
-    // 1) prefer a fresher scan from the league (nearly free)
+    // 1) prefer a fresher scan from the league (nearly free — one read)
     if(fbReady){
-      const shared = await fetchSharedScan();
-      if(shared && (!lastScanResults || shared.ts > lastScanResults.ts)){
-        lastScanResults = shared; saveLastScan();
-        renderPicks(shared.picks);
-        $("scanTs").textContent = new Date(shared.ts).toLocaleTimeString();
-        $("emptyScan").style.display = "none";
-        return;
-      }
+      try {
+        const shared = await fetchSharedScan();
+        if(shared && (!lastScanResults || shared.ts > lastScanResults.ts)){
+          lastScanResults = shared; saveLastScan();
+          renderPicks(shared.picks);
+          $("scanTs").textContent = new Date(shared.ts).toLocaleTimeString();
+          $("emptyScan").style.display = "none";
+          return;
+        }
+      } catch(e){ /* ignore, fall through */ }
     }
-    // 2) if nothing fresher available and ours is stale, refresh in the background
-    const age = lastScanResults ? Date.now() - lastScanResults.ts : Infinity;
-    if(age > STALE_MS){
+    // 2) background re-scan ONLY if we already have picks (never cold-start a scan)
+    //    and there's enough budget headroom so we don't fight the ticker.
+    if(!lastScanResults || !lastScanResults.picks || !lastScanResults.picks.length) return;
+    const age = Date.now() - lastScanResults.ts;
+    if(age > STALE_MS && RL.remaining() >= 45){
       runScan({background: true});
     }
   }, TICK_MS);
