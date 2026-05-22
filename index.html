@@ -242,7 +242,7 @@
   </div>
   <h1>Jaren's Stock Market Tracker</h1>
   <div class="subtitle">Intelligence · Conviction · Capital</div>
-  <div class="est">Est. MMXXVI · Powered by Finnhub · <span id="verTag">v1.2</span></div>
+  <div class="est">Est. MMXXVI · Powered by Finnhub · <span id="verTag">v1.3</span></div>
 </header>
 
 <nav class="tabs">
@@ -399,11 +399,11 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <footer>
-  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v1.2</span>
+  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v1.3</span>
 </footer>
 
 <script>
-const APP_VERSION = "1.2";
+const APP_VERSION = "1.3";
 const UNIVERSES = {
   sp: ["AAPL","MSFT","GOOGL","GOOG","AMZN","NVDA","META","TSLA","BRK.B","JPM","V","UNH","XOM","JNJ","WMT","MA","PG","LLY","HD","CVX","ABBV","KO","PEP","MRK","AVGO","COST","BAC","ADBE","ACN","CRM","TMO","CSCO","NFLX","ABT","MCD","DHR","WFC","TXN","NEE","ORCL","DIS","AMD","PM","CMCSA","VZ","NKE","UPS","RTX","PFE","INTC","HON","INTU","AMGN","T","COP","UNP","LOW","SPGI","LIN","CAT","GS","MS","ISRG","BLK","NOW","BKNG","DE","AXP","SCHW","TJX","C","BMY","SYK","MMC","BA","ELV","GE","MDT","ADP","PLD","LMT","REGN","VRTX","GILD","BSX","TMUS","CI","CB","ZTS","SO","DUK","MO","PGR","MDLZ","SLB","ETN","ADI","FI","ICE","CME","SHW","KLAC","APD","NSC","HCA","FCX","WM","BDX","CL","EOG","FDX","ITW","CSX","EQIX","NOC","MMM","PNC","TGT","EMR","MPC","PSX","AON","ORLY","HUM","MCK","PSA","ROP","MSI","USB","CARR","COF","APH","AJG","TFC","GD","SRE","D","NXPI","AZO","KMB","MAR","AIG","WMB","TT","ECL","WELL","O","FIS","OKE","KMI","ROST","CCI","TRV","CHTR","GIS","ALL","HLT","STZ","ANET","FTNT","KHC","SYY","BIIB","DOW","KDP","LRCX","ABNB","CTAS","BK","AFL","NUE","IDXX","JCI","VLO","MET","OXY","PCAR","SPG","AMP","PAYX","EW","TEL","HSY","CMG","DXCM","CTSH","A","PRU","DLR","LEN","DHI","CNC","MNST","DD","CRWD","DG","KR","WBA","YUM","ADM","EXC","XEL","FAST","SBUX","WEC","ED","ROK","BKR","HAL","RSG","VRSK","TROW","CDNS","SNPS","WST","ANSS","CDW","WTW","GWW","ALGN","ZBH","TYL","KEYS","NDAQ","NTAP","STT","STE","RJF","PFG","PHM","HBAN","RF","CFG","TSCO","ULTA","DRI","HAS"],
   momentum: ["GME","AMC","BB","CLOV","SOFI","PLTR","HOOD","COIN","MSTR","MARA","RIOT","CLSK","WULF","HUT","BTBT","BITF","CIFR","HIVE","ARM","SMCI","AI","BBAI","SOUN","UPST","LCID","RIVN","FSR","NKLA","RIDE","QS","ENPH","SEDG","RUN","FSLR","SPWR","NOVA","ARRY","BE","PLUG","FCEL","BLDP","BEEM","SHLS","STEM","DQ","JKS","CSIQ","SOL","TSLA","NVDA","TSM","INTC","MU","ON","MCHP","SWKS","QRVO","LSCC","CRWD","ZS","NET","SNOW","DDOG","MDB","OKTA","DOCN","ESTC","FROG","CFLT","S","TENB","RPD","CYBR","VRNS","FTNT","PANW","CHKP","BSY","GTLB","NEWR","DT","PCTY","PAYC","WDAY","ZUO","BL","APPN","APPS","SE","GRAB","MELI","NU","STNE","PAGS","CART","RDDT","KSPI","HIMS","TLRY","CGC","ACB","CRON","SNDL","HEXO","OGI","VFF"],
@@ -545,11 +545,41 @@ async function fetchSharedScan(){
 }
 
 // Write a completed scan as the new shared scan for the league.
+// Keep only the fields needed to render a pick — strips bulky raw Finnhub
+// payloads (recommendation/insider/news arrays) so the shared doc stays tiny
+// and well under Firestore's 1MB limit.
+function slimPick(p){
+  return {
+    sym: p.sym,
+    price: p.price,
+    changePct: p.changePct,
+    name: (p.profile && p.profile.name) ? p.profile.name : "",
+    totalScore: p.totalScore,
+    conviction: p.conviction,
+    f_momentum: p.f_momentum,
+    f_analyst: p.f_analyst,
+    f_insider: p.f_insider,
+    f_news: p.f_news,
+    thesis: p.thesis,
+    targetPrice: p.targetPrice,
+    stopPrice: p.stopPrice
+  };
+}
+
 async function publishSharedScan(scan){
   if(!fbReady) return;
   try {
-    await fbDb.collection("scans").doc("latest").set(scan);
-  } catch(e){ console.warn("publishSharedScan failed", e); }
+    const slim = {
+      ts: scan.ts,
+      universe: scan.universe,
+      coveredSyms: scan.coveredSyms || [],
+      picks: (scan.picks || []).map(slimPick)
+    };
+    await fbDb.collection("scans").doc("latest").set(slim);
+  } catch(e){
+    console.warn("publishSharedScan failed", e);
+    toast("League sync write failed — check Firestore rules. " + (e.code || e.message || ""), "err");
+  }
 }
 
 // Check the GLOBAL scan cap — removed. Auto-refresh now relies on the per-minute
@@ -926,7 +956,7 @@ function renderPicks(picks){
     <div class="pick" data-sym="${p.sym}">
       <div class="pick-rank"><span class="num">${String(i+1).padStart(2,'0')}</span></div>
       <div class="pick-sym">${p.sym}</div>
-      <div class="pick-name">${p.profile?.name || ""}</div>
+      <div class="pick-name">${p.profile?.name || p.name || ""}</div>
       <div class="pick-px-row">
         <span class="pick-px">${fmt$(p.price)}</span>
         <span class="pick-chg ${up?'up':'down'}">${up?'▲':'▼'} ${(p.changePct>=0?'+':'')}${p.changePct.toFixed(2)}%</span>
