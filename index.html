@@ -142,6 +142,18 @@
   .factor-fill{height:100%;background:linear-gradient(90deg,var(--navy-light),var(--gold));transition:width .4s}
   .factor-val{font-size:10px;color:var(--cream);min-width:32px;text-align:right}
   .pick-thesis{font-size:11px;color:var(--cream);line-height:1.5;margin:10px 0;padding:8px 10px;background:rgba(8,17,31,0.4);border-left:2px solid var(--gold-dim);font-style:italic;}
+  .pick-conflict{font-size:10px;color:#fca5a5;background:rgba(220,38,38,0.12);border:1px solid var(--red-dim);border-radius:2px;padding:6px 9px;margin:8px 0;letter-spacing:.03em;line-height:1.4}
+  .pick-why{margin:10px 0;padding:8px 10px;background:rgba(8,17,31,0.35);border-radius:2px;display:flex;flex-direction:column;gap:5px}
+  .why-row{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+  .why-lbl{color:var(--gold-dim);text-transform:uppercase;letter-spacing:.1em;font-size:9px}
+  .why-val{color:var(--ivory);font-weight:500}
+  .why-val .up{color:var(--green)}
+  .why-val .down{color:var(--red)}
+  .risk-Low{color:var(--green)}
+  .risk-Moderate{color:var(--gold-bright)}
+  .risk-High{color:#f59e0b}
+  .risk-VeryHigh{color:var(--red)}
+  .risk-Unknown{color:var(--gold-dim)}
   .pick-targets{display:flex;gap:8px;margin:10px 0;font-size:10px}
   .target-cell{flex:1;text-align:center;padding:6px;background:rgba(8,17,31,0.4);border:1px solid var(--border)}
   .target-cell .lbl{display:block;color:var(--gold-dim);font-size:9px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
@@ -242,12 +254,13 @@
   </div>
   <h1>Jaren's Stock Market Tracker</h1>
   <div class="subtitle">Intelligence · Conviction · Capital</div>
-  <div class="est">Est. MMXXVI · Powered by Finnhub · <span id="verTag">v1.5</span></div>
+  <div class="est">Est. MMXXVI · Powered by Finnhub · <span id="verTag">v1.6</span></div>
 </header>
 
 <nav class="tabs">
   <button class="tab active" data-view="scan">Scanner</button>
   <button class="tab" data-view="portfolio">Portfolio <span class="count" id="pfCount">0</span></button>
+  <button class="tab" data-view="track">Track Record</button>
   <button class="tab" data-view="settings">Settings</button>
 </nav>
 
@@ -313,6 +326,20 @@
     </div>
     <div class="portfolio-summary" id="pfSummary"></div>
     <div id="pfTableWrap"></div>
+  </section>
+
+  <section class="view" id="view-track">
+    <div class="scan-header">
+      <div>
+        <div class="scan-title">Model Track Record
+          <span class="sub">Real outcomes of past picks · builds over time</span>
+        </div>
+      </div>
+      <div class="scan-actions">
+        <button class="btn ghost" id="refreshTrackBtn">↻ Refresh</button>
+      </div>
+    </div>
+    <div id="trackBody"></div>
   </section>
 
   <section class="view" id="view-settings">
@@ -399,11 +426,11 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <footer>
-  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v1.5</span>
+  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v1.6</span>
 </footer>
 
 <script>
-const APP_VERSION = "1.5";
+const APP_VERSION = "1.6";
 const UNIVERSES = {
   sp: ["AAPL","MSFT","GOOGL","GOOG","AMZN","NVDA","META","TSLA","BRK.B","JPM","V","UNH","XOM","JNJ","WMT","MA","PG","LLY","HD","CVX","ABBV","KO","PEP","MRK","AVGO","COST","BAC","ADBE","ACN","CRM","TMO","CSCO","NFLX","ABT","MCD","DHR","WFC","TXN","NEE","ORCL","DIS","AMD","PM","CMCSA","VZ","NKE","UPS","RTX","PFE","INTC","HON","INTU","AMGN","T","COP","UNP","LOW","SPGI","LIN","CAT","GS","MS","ISRG","BLK","NOW","BKNG","DE","AXP","SCHW","TJX","C","BMY","SYK","MMC","BA","ELV","GE","MDT","ADP","PLD","LMT","REGN","VRTX","GILD","BSX","TMUS","CI","CB","ZTS","SO","DUK","MO","PGR","MDLZ","SLB","ETN","ADI","FI","ICE","CME","SHW","KLAC","APD","NSC","HCA","FCX","WM","BDX","CL","EOG","FDX","ITW","CSX","EQIX","NOC","MMM","PNC","TGT","EMR","MPC","PSX","AON","ORLY","HUM","MCK","PSA","ROP","MSI","USB","CARR","COF","APH","AJG","TFC","GD","SRE","D","NXPI","AZO","KMB","MAR","AIG","WMB","TT","ECL","WELL","O","FIS","OKE","KMI","ROST","CCI","TRV","CHTR","GIS","ALL","HLT","STZ","ANET","FTNT","KHC","SYY","BIIB","DOW","KDP","LRCX","ABNB","CTAS","BK","AFL","NUE","IDXX","JCI","VLO","MET","OXY","PCAR","SPG","AMP","PAYX","EW","TEL","HSY","CMG","DXCM","CTSH","A","PRU","DLR","LEN","DHI","CNC","MNST","DD","CRWD","DG","KR","WBA","YUM","ADM","EXC","XEL","FAST","SBUX","WEC","ED","ROK","BKR","HAL","RSG","VRSK","TROW","CDNS","SNPS","WST","ANSS","CDW","WTW","GWW","ALGN","ZBH","TYL","KEYS","NDAQ","NTAP","STT","STE","RJF","PFG","PHM","HBAN","RF","CFG","TSCO","ULTA","DRI","HAS"],
   momentum: ["GME","AMC","BB","CLOV","SOFI","PLTR","HOOD","COIN","MSTR","MARA","RIOT","CLSK","WULF","HUT","BTBT","BITF","CIFR","HIVE","ARM","SMCI","AI","BBAI","SOUN","UPST","LCID","RIVN","FSR","NKLA","RIDE","QS","ENPH","SEDG","RUN","FSLR","SPWR","NOVA","ARRY","BE","PLUG","FCEL","BLDP","BEEM","SHLS","STEM","DQ","JKS","CSIQ","SOL","TSLA","NVDA","TSM","INTC","MU","ON","MCHP","SWKS","QRVO","LSCC","CRWD","ZS","NET","SNOW","DDOG","MDB","OKTA","DOCN","ESTC","FROG","CFLT","S","TENB","RPD","CYBR","VRNS","FTNT","PANW","CHKP","BSY","GTLB","NEWR","DT","PCTY","PAYC","WDAY","ZUO","BL","APPN","APPS","SE","GRAB","MELI","NU","STNE","PAGS","CART","RDDT","KSPI","HIMS","TLRY","CGC","ACB","CRON","SNDL","HEXO","OGI","VFF"],
@@ -550,6 +577,7 @@ async function fetchSharedScan(){
 // and well under Firestore's 1MB limit.
 function slimPick(p){
   const num = (v, d=0) => (typeof v === "number" && isFinite(v)) ? v : d;
+  const numN = (v) => (typeof v === "number" && isFinite(v)) ? v : null;
   return {
     sym: String(p.sym || ""),
     price: num(p.price),
@@ -563,7 +591,17 @@ function slimPick(p){
     f_news: num(p.f_news, 50),
     thesis: String(p.thesis || ""),
     targetPrice: num(p.targetPrice),
-    stopPrice: num(p.stopPrice)
+    stopPrice: num(p.stopPrice),
+    // #2 why + #5 risk + #4 flags
+    analystTarget: numN(p.analystTarget),
+    analystUpside: numN(p.analystUpside),
+    high52: numN(p.high52),
+    low52: numN(p.low52),
+    peRatio: numN(p.peRatio),
+    beta: numN(p.beta),
+    riskTier: String(p.riskTier || "Unknown"),
+    conflict: !!p.conflict,
+    conflictNote: String(p.conflictNote || "")
   };
 }
 
@@ -584,8 +622,103 @@ async function publishSharedScan(scan){
   }
 }
 
-// Check the GLOBAL scan cap — removed. Auto-refresh now relies on the per-minute
-// token bucket plus league-sync (load a teammate's fresh scan instead of re-scanning).
+// ===================== #1 BACKTEST RECORDER =====================
+// Records the top picks of a scan with their score, then measures actual price
+// outcomes at 1-day / 1-week / 1-month checkpoints. Stored in Firebase so the
+// track record persists and is shared across the league. Outcome checks run
+// opportunistically whenever someone opens the app (client-side, no server).
+const TRACK_WINDOWS = [
+  {key:"d1", ms: 1*86400000, label:"1-Day"},
+  {key:"w1", ms: 7*86400000, label:"1-Week"},
+  {key:"m1", ms: 30*86400000, label:"1-Month"},
+];
+
+// only record once per calendar day to keep the dataset clean and small
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+
+async function recordPicksForTracking(picks){
+  if(!fbReady || !picks || !picks.length) return;
+  try {
+    const dateKey = todayKey();
+    // one doc per day; skip if we already recorded today
+    const ref = fbDb.collection("track").doc(dateKey);
+    const existing = await ref.get();
+    if(existing.exists) return; // already logged today's picks
+
+    // record the top 10 picks only — enough for a meaningful sample without bloat
+    const top = picks.slice(0, 10).map(p => ({
+      sym: p.sym,
+      score: (typeof p.totalScore==="number") ? p.totalScore : 0,
+      conviction: p.conviction || "WATCH",
+      entryPrice: (typeof p.price==="number") ? p.price : 0,
+      recordedAt: Date.now(),
+      outcomes: {} // filled in later: {d1:{price,pct,at}, w1:{...}, m1:{...}}
+    }));
+    await ref.set({ dateKey, recordedAt: Date.now(), picks: top });
+    console.log("recorded", top.length, "picks for tracking on", dateKey);
+  } catch(e){ console.warn("recordPicksForTracking failed", e); }
+}
+
+// Walk tracked days; for any pick whose checkpoint is due and unmeasured, fetch
+// the current price and store the outcome. Runs quietly in the background.
+async function processTrackingOutcomes(){
+  if(!fbReady) return;
+  try {
+    const snap = await fbDb.collection("track").get();
+    const now = Date.now();
+    for(const doc of snap.docs){
+      const data = doc.data();
+      if(!data || !data.picks) continue;
+      let changed = false;
+      for(const p of data.picks){
+        for(const w of TRACK_WINDOWS){
+          if(p.outcomes && p.outcomes[w.key]) continue;       // already measured
+          if(now - p.recordedAt < w.ms) continue;             // not due yet
+          if(RL.remaining() < 6) return;                      // protect budget; resume later
+          try {
+            const q = await getQuote(p.sym);
+            if(q && q.c){
+              p.outcomes = p.outcomes || {};
+              p.outcomes[w.key] = {
+                price: q.c,
+                pct: p.entryPrice ? (q.c - p.entryPrice)/p.entryPrice : 0,
+                at: now,
+                elapsedDays: Math.round((now - p.recordedAt)/86400000)
+              };
+              changed = true;
+            }
+          } catch(e){ /* try again next time */ }
+        }
+      }
+      if(changed){ await fbDb.collection("track").doc(doc.id).set(data); }
+    }
+  } catch(e){ console.warn("processTrackingOutcomes failed", e); }
+}
+
+// Aggregate the track record into hit-rates by conviction tier and window.
+async function computeTrackRecord(){
+  const stats = {}; // stats[conviction][windowKey] = {n, wins, sumPct}
+  if(!fbReady) return stats;
+  try {
+    const snap = await fbDb.collection("track").get();
+    snap.docs.forEach(doc => {
+      const data = doc.data();
+      (data.picks||[]).forEach(p => {
+        const conv = p.conviction || "WATCH";
+        stats[conv] = stats[conv] || {};
+        TRACK_WINDOWS.forEach(w => {
+          const o = p.outcomes && p.outcomes[w.key];
+          if(!o) return;
+          stats[conv][w.key] = stats[conv][w.key] || {n:0, wins:0, sumPct:0};
+          const s = stats[conv][w.key];
+          s.n++; if(o.pct > 0) s.wins++; s.sumPct += o.pct;
+        });
+      });
+    });
+  } catch(e){ console.warn("computeTrackRecord failed", e); }
+  return stats;
+}
+// ================================================================
 
 function setRefreshing(on){
   const el = $("refreshPill");
@@ -634,6 +767,11 @@ async function getInsiderSentiment(sym){
   return finn("/stock/insider-sentiment", {symbol: sym, from: fromDt, to}, 24*3600*1000);
 }
 async function getNewsSentiment(sym){ return finn("/news-sentiment", {symbol: sym}, 6*3600*1000); }
+// /stock/metric returns valuation, 52-week range, beta (volatility), and more — one call
+// that feeds both the "why" (#2) and risk context (#5). Cached 12h since these move slowly.
+async function getMetrics(sym){ return finn("/stock/metric", {symbol: sym, metric: "all"}, 12*3600*1000); }
+// price target consensus (analyst targets) — part of the "why" (#2)
+async function getPriceTarget(sym){ return finn("/stock/price-target", {symbol: sym}, 24*3600*1000); }
 
 function updateStatusBar(){
   const remaining = RL.remaining();
@@ -884,15 +1022,29 @@ function scoreMomentum(c){
   c.momentumScore = (c.changePct * 0.7) + (positionInRange * 100 * 0.3);
 }
 
-// full deep-dive: pulls analyst/insider/news and computes the conviction score
+// full deep-dive: pulls analyst/insider/news/metrics/target and computes the conviction score
 async function deepDive(c){
-  const [profile, rec, ins, newsSent] = await Promise.allSettled([
-    getProfile(c.sym), getRecommendation(c.sym), getInsiderSentiment(c.sym), getNewsSentiment(c.sym),
+  const [profile, rec, ins, newsSent, metrics, ptarget] = await Promise.allSettled([
+    getProfile(c.sym), getRecommendation(c.sym), getInsiderSentiment(c.sym),
+    getNewsSentiment(c.sym), getMetrics(c.sym), getPriceTarget(c.sym),
   ]);
   c.profile = profile.status==="fulfilled" ? profile.value : c.profile || null;
   c.recommendation = rec.status==="fulfilled" ? rec.value : c.recommendation || null;
   c.insider = ins.status==="fulfilled" ? ins.value : c.insider || null;
   c.newsSent = newsSent.status==="fulfilled" ? newsSent.value : c.newsSent || null;
+
+  // --- derive the "why" + risk fields (#2 and #5) ---
+  const m = (metrics.status==="fulfilled" && metrics.value && metrics.value.metric) ? metrics.value.metric : {};
+  c.beta = (typeof m.beta === "number") ? m.beta : null;                    // volatility proxy
+  c.high52 = (typeof m["52WeekHigh"] === "number") ? m["52WeekHigh"] : null;
+  c.low52  = (typeof m["52WeekLow"]  === "number") ? m["52WeekLow"]  : null;
+  c.peRatio = (typeof m.peTTM === "number") ? m.peTTM : null;
+
+  const pt = (ptarget.status==="fulfilled" && ptarget.value) ? ptarget.value : null;
+  c.analystTarget = (pt && typeof pt.targetMean === "number" && pt.targetMean > 0) ? pt.targetMean : null;
+  // implied upside to the analyst consensus target
+  c.analystUpside = (c.analystTarget && c.price) ? (c.analystTarget - c.price)/c.price : null;
+
   scoreFinalist(c);
 }
 
@@ -909,6 +1061,7 @@ async function commitScan(picks, coveredSet){
   $("emptyScan").style.display = "none";
   $("scanTs").textContent = new Date().toLocaleTimeString();
   await publishSharedScan(lastScanResults);
+  recordPicksForTracking(picks);
 }
 
 function scoreFinalist(c){
@@ -938,6 +1091,48 @@ function scoreFinalist(c){
   const profile = RISK_PROFILES[risk];
   c.targetPrice = c.price * (1 + profile.target);
   c.stopPrice = c.price * (1 - profile.stop);
+  computeFactorFlags(c);
+  computeRisk(c);
+}
+
+// #4 — classify each factor as bull/neutral/bear and flag internal conflicts
+function factorState(v){
+  if(v >= 62) return "bull";
+  if(v <= 38) return "bear";
+  return "neutral";
+}
+function computeFactorFlags(c){
+  c.flags = {
+    momentum: factorState(c.f_momentum),
+    analyst:  factorState(c.f_analyst),
+    insider:  factorState(c.f_insider),
+    news:     factorState(c.f_news),
+  };
+  const states = Object.values(c.flags);
+  const bulls = states.filter(s => s === "bull").length;
+  const bears = states.filter(s => s === "bear").length;
+  // a conflict = at least one strong bull AND one strong bear signal disagreeing
+  c.conflict = (bulls > 0 && bears > 0);
+  // build a short, honest conflict note naming the disagreement
+  if(c.conflict){
+    const bullNames = Object.keys(c.flags).filter(k => c.flags[k]==="bull");
+    const bearNames = Object.keys(c.flags).filter(k => c.flags[k]==="bear");
+    c.conflictNote = `${bullNames.join(" & ")} positive, but ${bearNames.join(" & ")} negative`;
+  } else {
+    c.conflictNote = "";
+  }
+}
+
+// #5 — risk context from beta (volatility) + the dollar downside to the stop
+function computeRisk(c){
+  // beta-based volatility tier
+  if(c.beta == null) c.riskTier = "Unknown";
+  else if(c.beta < 0.8) c.riskTier = "Low";
+  else if(c.beta < 1.3) c.riskTier = "Moderate";
+  else if(c.beta < 1.8) c.riskTier = "High";
+  else c.riskTier = "Very High";
+  // downside % to stop (per-share risk if stopped out from entry)
+  c.downsidePct = (c.price && c.stopPrice) ? (c.stopPrice - c.price)/c.price : null;
 }
 
 function generateThesis(c){
@@ -982,6 +1177,13 @@ function renderPicks(picks){
         ${factorBar("News", p.f_news)}
       </div>
       <div class="pick-thesis">${p.thesis}</div>
+      ${p.conflict ? `<div class="pick-conflict">⚠ Mixed signals: ${p.conflictNote}</div>` : ""}
+      <div class="pick-why">
+        ${p.analystTarget ? `<div class="why-row"><span class="why-lbl">Analyst Target</span><span class="why-val">${fmt$(p.analystTarget)} <span class="${(p.analystUpside||0)>=0?'up':'down'}">(${(p.analystUpside>=0?'+':'')}${((p.analystUpside||0)*100).toFixed(0)}%)</span></span></div>` : ""}
+        ${(p.high52 && p.low52) ? `<div class="why-row"><span class="why-lbl">52-Wk Range</span><span class="why-val">${fmt$(p.low52)} – ${fmt$(p.high52)}</span></div>` : ""}
+        ${p.peRatio ? `<div class="why-row"><span class="why-lbl">P/E (TTM)</span><span class="why-val">${p.peRatio.toFixed(1)}</span></div>` : ""}
+        <div class="why-row"><span class="why-lbl">Volatility</span><span class="why-val risk-${(p.riskTier||'Unknown').replace(/\s/g,'')}">${p.riskTier || "Unknown"}${p.beta!=null?` · β ${p.beta.toFixed(2)}`:""}</span></div>
+      </div>
       <div class="pick-targets">
         <div class="target-cell entry"><span class="lbl">Entry</span><span class="val">${fmt$(p.price)}</span></div>
         <div class="target-cell tgt"><span class="lbl">Target</span><span class="val">${fmt$(p.targetPrice)}</span></div>
@@ -1171,6 +1373,46 @@ function switchTab(name){
   $$(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + name));
   if(name === "portfolio"){ renderPortfolio(); startPfAutoRefresh(); }
   else { stopPfAutoRefresh(); }
+  if(name === "track") renderTrackRecord();
+}
+
+async function renderTrackRecord(){
+  const body = $("trackBody");
+  if(!fbReady){
+    body.innerHTML = `<div class="empty"><div class="big">League Sync Off</div><div class="small">Track record needs Firebase connected to store outcomes</div></div>`;
+    return;
+  }
+  body.innerHTML = `<div class="empty"><div class="small">Loading track record…</div></div>`;
+  await processTrackingOutcomes(); // catch up any due checkpoints first
+  const stats = await computeTrackRecord();
+  const tiers = ["STRONG","BUY","HOLD","WATCH"];
+  const haveAny = tiers.some(t => stats[t] && Object.keys(stats[t]).length);
+  if(!haveAny){
+    body.innerHTML = `<div class="empty"><div class="big">Building…</div><div class="small">Picks are being recorded. Outcomes appear after the first day/week/month elapses.</div></div>`;
+    return;
+  }
+  let html = `<div style="font-size:11px;color:var(--gold-dim);margin-bottom:14px;line-height:1.6">
+    Win rate = % of recorded picks that were up at each checkpoint. Avg = mean return.
+    This is real forward-tested data from past scans — the more scans run, the more reliable it gets.</div>`;
+  html += `<div style="overflow-x:auto"><table class="holdings-table"><thead><tr>
+    <th>Conviction</th>${TRACK_WINDOWS.map(w=>`<th class="r">${w.label} Win%</th><th class="r">${w.label} Avg</th>`).join("")}<th class="r">Samples</th>
+    </tr></thead><tbody>`;
+  tiers.forEach(t => {
+    if(!stats[t] || !Object.keys(stats[t]).length) return;
+    let maxN = 0;
+    const cells = TRACK_WINDOWS.map(w => {
+      const s = stats[t][w.key];
+      if(!s || !s.n) return `<td class="r">—</td><td class="r">—</td>`;
+      maxN = Math.max(maxN, s.n);
+      const winPct = (s.wins/s.n*100).toFixed(0);
+      const avgPct = (s.sumPct/s.n*100);
+      const cls = avgPct>=0?"up":"down";
+      return `<td class="r">${winPct}%</td><td class="r ${cls}">${avgPct>=0?'+':''}${avgPct.toFixed(1)}%</td>`;
+    }).join("");
+    html += `<tr><td><span class="signal-pill conv-${t}" style="border:1px solid currentColor">${t}</span></td>${cells}<td class="r">${maxN}</td></tr>`;
+  });
+  html += `</tbody></table></div>`;
+  body.innerHTML = html;
 }
 
 function init(){
@@ -1282,7 +1524,10 @@ function init(){
         toast("Loaded latest league scan.", "ok");
       }
     });
+    // catch up any due backtest checkpoints quietly in the background
+    setTimeout(() => processTrackingOutcomes(), 12000);
   }
+  $("refreshTrackBtn").addEventListener("click", renderTrackRecord);
 
   // ===== Auto-refresh =====
   // Keeps picks as current as possible without every device hammering Finnhub.
