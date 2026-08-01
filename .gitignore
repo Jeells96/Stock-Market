@@ -1,0 +1,4 @@
+# generated per-run, consumed by the workflow's commit step — never committed
+data/commit_msg.txt
+__pycache__/
+*.pyc
