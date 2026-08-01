@@ -314,3 +314,30 @@ if fails:
     print(f"{fails} FINAL FAILURES")
     sys.exit(1)
 print("ALL FINAL TESTS PASSED")
+
+# ---------- test 16: price store merge, overwrite, cap ----------
+def t16():
+    store = {"AAA": [["2026-01-01", 10.0], ["2026-01-02", 11.0]]}
+    bars = {"AAA": mk_hist([11.5, 12.0]), "BBB": mk_hist([5.0])}
+    # mk_hist uses DAYS dates (2026-07-*) — merge should append and keep order
+    adv.merge_into_store(store, bars)
+    assert store["AAA"][0][0] == "2026-01-01"
+    assert store["AAA"][-1][1] == 12.0
+    assert store["BBB"] == [[DAYS[0], 5.0]]
+    # overwrite same date with corrected close
+    adv.merge_into_store(store, {"BBB": mk_hist([5.5])})
+    assert store["BBB"] == [[DAYS[0], 5.5]]
+    # cap at STORE_MAX_SESSIONS
+    long_rows = [[f"2025-{m:02d}-{d:02d}", 1.0] for m in range(1, 13) for d in range(1, 29)]
+    store["CCC"] = long_rows
+    adv.merge_into_store(store, {"CCC": mk_hist([2.0])})
+    assert len(store["CCC"]) <= adv.STORE_MAX_SESSIONS
+    h = adv.store_history(store, "AAA")
+    assert h["dates"][-1] == DAYS[1] and h["has_events"] is False
+check("price store merge/overwrite/cap", t16)
+
+print()
+if fails:
+    print(f"{fails} STORE FAILURES")
+    sys.exit(1)
+print("ALL STORE TESTS PASSED")

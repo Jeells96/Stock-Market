@@ -155,8 +155,6 @@ STRATEGY_META = {
 
 # aggressive won't re-enter a symbol for this many days after exiting it
 COOLDOWN_DAYS = 7
-# abort the run (leaving state untouched) if fetch coverage drops below this
-MIN_FETCH_COVERAGE = 0.5
 
 # ---------------------------------------------------------------- data fetch
 
@@ -682,13 +680,50 @@ def bootstrap_state(as_of):
     }
 
 
-def save_json(path, obj):
+def save_json(path, obj, compact=False):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     tmp = path + ".tmp"
     with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(obj, f, indent=1, sort_keys=False)
+        if compact:
+            json.dump(obj, f, separators=(",", ":"), sort_keys=True)
+        else:
+            json.dump(obj, f, indent=1, sort_keys=False)
         f.write("\n")
     os.replace(tmp, path)
+
+
+# ---------------------------------------------------------------- price store
+# A rolling daily-close store committed to the repo. External history APIs
+# (Yahoo, Stooq) block datacenter IPs unpredictably, but Finnhub's quote
+# endpoint always works — so the store gets seeded once with a year of
+# history and then grows itself by one close per session, forever. Ranking
+# indicators read from here whenever richer live history isn't available.
+
+PRICES_PATH = os.path.join(DATA_DIR, "prices.json")
+STORE_MAX_SESSIONS = 280
+
+
+def load_price_store():
+    if os.path.exists(PRICES_PATH):
+        with open(PRICES_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    return {}
+
+
+def merge_into_store(store, bars):
+    for sym, h in bars.items():
+        merged = {r[0]: r[1] for r in store.get(sym, [])}
+        for d in h["dates"]:
+            merged[d] = round(h["close"][d], 4)
+        store[sym] = [[d, merged[d]] for d in sorted(merged)][-STORE_MAX_SESSIONS:]
+
+
+def store_history(store, sym):
+    rows = store.get(sym) or []
+    if not rows:
+        return None
+    return {"dates": [r[0] for r in rows], "close": {r[0]: r[1] for r in rows},
+            "volume": {}, "name": sym, "divs": {}, "splits": {}, "has_events": False}
 
 # ---------------------------------------------------------------- portfolio replay
 
@@ -1052,7 +1087,7 @@ def compute_stats(closed, equity_series, bench_return_pct):
     }
 
 
-def build_site_payload(state, bars, as_of, new_picks):
+def build_site_payload(state, bars, as_of, new_picks, data_source):
     hist = state["equity_history"]
     dates = sorted(hist.keys())
     curves = {"dates": dates}
@@ -1109,7 +1144,7 @@ def build_site_payload(state, bars, as_of, new_picks):
         },
         "strategies": strategies,
         "equity_curves": curves,
-        "data_source": "Yahoo Finance daily closes (split-adjusted; dividends credited as cash)",
+        "data_source": data_source,
         "methodology_note": (
             "All trades are simulated with paper money at daily closing prices. "
             "Picks are committed to git before outcomes are known — the commit history is the proof. "
@@ -1279,24 +1314,47 @@ def main():
     if missing_held:
         print(f"  warning: no data for held positions: {missing_held}")
 
-    # 2) wide scanning universe (batched closes) — a bad day here only means
-    #    we skip opening NEW positions; existing ones are still managed
+    # 2) wide scanning universe. Live batched closes when Yahoo/Stooq work;
+    #    in floor mode, one Finnhub quote per symbol (60/min) still captures
+    #    today's close for every universe name so the price store keeps growing.
+    universe_syms = [s for s in dict.fromkeys(MOMENTUM + SP_CORE) if s not in bars_critical]
     if finnhub_floor:
-        # no indicator history available anyway — don't burn 10 minutes on
-        # blocked endpoints; manage existing positions and stop there
-        bars_universe, universe_syms = {}, []
-        universe_ok = False
-        print("  (Finnhub floor mode: skipping universe scan — no new picks this run.)")
+        print("  (floor mode: quoting the universe via Finnhub to feed the price store…)")
+        bars_universe = finnhub_close_bars(universe_syms)
     else:
-        universe_syms = [s for s in dict.fromkeys(MOMENTUM + SP_CORE) if s not in bars_critical]
         bars_universe = fetch_universe(universe_syms)
-        universe_ok = len(bars_universe) >= len(universe_syms) * MIN_FETCH_COVERAGE
-        if not universe_ok:
-            print(f"  warning: universe coverage too low ({len(bars_universe)}/{len(universe_syms)}) — "
-                  "no new positions will be opened this run.")
 
-    bars = {**bars_universe, **bars_critical}  # full-history data wins
-    trim_partial_session(bars)
+    bars_live = {**bars_universe, **bars_critical}  # full-history data wins
+    trim_partial_session(bars_live)
+
+    # 3) fold everything into the rolling price store, then build the working
+    #    bars: live history with events when we have it, store depth otherwise
+    store = load_price_store()
+    merge_into_store(store, bars_live)
+    save_json(PRICES_PATH, store, compact=True)
+    bars = {}
+    for sym in set(list(store.keys()) + list(bars_live.keys())):
+        live = bars_live.get(sym)
+        if live and live.get("has_events", True):
+            bars[sym] = live
+        else:
+            bars[sym] = store_history(store, sym) or live
+    src_bits = []
+    if any(h.get("has_events") for h in bars_live.values()):
+        src_bits.append("Yahoo/Stooq daily history with div+split events")
+    if finnhub_floor:
+        src_bits.append("Finnhub official end-of-day closes")
+    src_bits.append(f"rolling price store ({len(store)} symbols)")
+    data_source = " + ".join(src_bits)
+    print(f"  data sources this run: {data_source}")
+
+    fresh_deep = sum(
+        1 for s in universe_syms
+        if bars.get(s) and len(bars[s]["dates"]) >= 65)
+    universe_ok = fresh_deep >= 80
+    if not universe_ok:
+        print(f"  warning: only {fresh_deep} universe symbols have 65+ sessions of history — "
+              "no new momentum/growth picks this run (store grows daily until ranking unlocks).")
 
     calendar = bars[BENCHMARK_SYMBOL]["dates"]
     if not calendar:
@@ -1407,7 +1465,7 @@ def main():
     trades_today = sum(
         1 for k in ("aggressive", "growth") for t in state["strategies"][k]["closed"]
         if t["exit_date"] == as_of) + sum(len(v) for v in new_picks.values())
-    site = build_site_payload(state, bars, as_of, new_picks)
+    site = build_site_payload(state, bars, as_of, new_picks, data_source)
 
     save_json(STATE_PATH, state)
     save_json(SITE_PATH, site)
