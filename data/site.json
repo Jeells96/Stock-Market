@@ -1,10 +1,10 @@
 {
  "version": 1,
- "generated_at_utc": "2026-08-01T18:29:29Z",
+ "generated_at_utc": "2026-08-01T19:01:19Z",
  "as_of_date": "2026-07-31",
  "inception_date": "2026-07-31",
  "starting_capital": 10000.0,
- "runs": 1,
+ "runs": 2,
  "benchmark": {
   "symbol": "SPY",
   "equity": 10000.0,
@@ -20,6 +20,7 @@
    "risk_note": "Very high risk. Expect large swings and frequent losing trades \u2014 the bet is that winners outrun losers.",
    "equity": 10000.0,
    "cash": 10000.0,
+   "max_hold_bars": 15,
    "total_return_pct": 0.0,
    "vs_spy_pct": 0.0,
    "max_drawdown_pct": 0.0,
@@ -40,6 +41,7 @@
    "risk_note": "Moderate risk. Rides established trends and steps aside when a trend breaks.",
    "equity": 10000.0,
    "cash": 10000.0,
+   "max_hold_bars": null,
    "total_return_pct": 0.0,
    "vs_spy_pct": 0.0,
    "max_drawdown_pct": 0.0,
@@ -60,6 +62,7 @@
    "risk_note": "Lower risk. Boring on purpose \u2014 broad diversification and compounding do the work.",
    "equity": 10000.0,
    "cash": 0.0,
+   "max_hold_bars": null,
    "total_return_pct": 0.0,
    "vs_spy_pct": 0.0,
    "max_drawdown_pct": 0.0,
@@ -79,6 +82,7 @@
      "pnl_pct": 0.0,
      "target_price": null,
      "stop_price": null,
+     "bars_held": 0,
      "thesis": "S&P 500 core \u2014 owns the 500 biggest US companies",
      "is_new": false
     },
@@ -93,6 +97,7 @@
      "pnl_pct": 0.0,
      "target_price": null,
      "stop_price": null,
+     "bars_held": 0,
      "thesis": "Nasdaq-100 \u2014 concentrated big-tech growth",
      "is_new": false
     },
@@ -107,6 +112,7 @@
      "pnl_pct": 0.0,
      "target_price": null,
      "stop_price": null,
+     "bars_held": 0,
      "thesis": "Dividend quality \u2014 cash-generating value companies",
      "is_new": false
     },
@@ -121,6 +127,7 @@
      "pnl_pct": 0.0,
      "target_price": null,
      "stop_price": null,
+     "bars_held": 0,
      "thesis": "International \u2014 diversification outside the US",
      "is_new": false
     },
@@ -135,6 +142,7 @@
      "pnl_pct": 0.0,
      "target_price": null,
      "stop_price": null,
+     "bars_held": 0,
      "thesis": "Bonds \u2014 ballast that cushions stock drawdowns",
      "is_new": false
     }
@@ -165,6 +173,6 @@
    10000.0
   ]
  },
- "data_source": "Yahoo Finance daily closes (split-adjusted; dividends credited as cash)",
+ "data_source": "Finnhub official end-of-day closes + rolling price store (327 symbols)",
  "methodology_note": "All trades are simulated with paper money at daily closing prices. Picks are committed to git before outcomes are known \u2014 the commit history is the proof. Not financial advice."
 }

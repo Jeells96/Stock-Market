@@ -44,7 +44,8 @@
      "last_price": 686.65,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "QQQ",
@@ -58,7 +59,8 @@
      "last_price": 687.99,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "SCHD",
@@ -72,7 +74,8 @@
      "last_price": 33.47,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "VXUS",
@@ -86,7 +89,8 @@
      "last_price": 84.59,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "BND",
@@ -100,7 +104,8 @@
      "last_price": 72.23,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     }
    ],
    "closed": [],
@@ -122,6 +127,6 @@
    "benchmark": 10000.0
   }
  },
- "runs": 1,
- "last_run_utc": "2026-08-01T18:29:29Z"
+ "runs": 2,
+ "last_run_utc": "2026-08-01T19:01:19Z"
 }
