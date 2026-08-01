@@ -44,6 +44,9 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
+      - name: Pre-flight — engine money-math self-test (offline, synthetic data)
+        run: python scripts/test_advisor.py
+
       - name: Run advisor engine
         env:
           FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}

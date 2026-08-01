@@ -605,16 +605,18 @@ def close_position(strat, pos, exit_date, exit_price, reason):
     strat["cooldown"][pos["symbol"]] = exit_date
 
 
-def apply_pending_splits(pos, h, as_of, activity):
+def apply_pending_splits(pos, h, activity):
     """Yahoo retro-adjusts the ENTIRE price series the moment a split takes
     effect, so the stored position must be converted BEFORE the day walk —
     otherwise pre-split stops/targets get compared against post-split prices.
-    A per-position ledger makes this idempotent and lets a split that was
-    invisible during a data outage be applied late (self-healing)."""
+    If the event appears in the payload, the payload's prices are already
+    adjusted — regardless of whether the ex-date is past as_of — so apply
+    immediately. A per-position ledger makes this idempotent and lets a split
+    that was invisible during a data outage be applied late (self-healing)."""
     applied = set(pos.get("splits_applied") or [])
     for s_date in sorted(h["splits"]):
         ratio = h["splits"][s_date]
-        if s_date <= pos["entry_date"] or s_date > as_of or s_date in applied or ratio <= 0:
+        if s_date <= pos["entry_date"] or s_date in applied or ratio <= 0:
             continue
         pos["shares"] *= ratio
         pos["entry_price"] /= ratio
@@ -639,12 +641,11 @@ def replay_strategy(key, strat, bars, calendar, as_of):
     exit rules, and a daily equity mark. Mutates strat, returns equity marks."""
     meta = STRATEGY_META[key]
     start = strat.get("last_eval_date") or as_of
-    if as_of <= start:
-        # nothing new — also refuses to roll the window backwards on a stale feed
-        strat["last_eval_date"] = max(start, as_of)
-        return {}
 
-    # --- once-per-run position maintenance (NOT once per replayed day) ---
+    # --- once-per-run position maintenance (NOT once per replayed day). Runs
+    # BEFORE the no-new-days early-out: a run on a split's ex-date morning has
+    # no new session yet, but the fetched series is already retro-adjusted, so
+    # the position must be converted before today's equity mark is taken.
     kept = []
     for pos in strat["positions"]:
         h = bars.get(pos["symbol"])
@@ -656,9 +657,28 @@ def replay_strategy(key, strat, bars, calendar, as_of):
                 continue
         else:
             pos["missing_runs"] = 0
-            apply_pending_splits(pos, h, as_of, strat["activity"])
+            apply_pending_splits(pos, h, strat["activity"])
+            # back-credit dividends whose ex-dates were already replayed but
+            # went uncredited (event-less fallback data at the time) — the
+            # ledger makes the day-walk and this path mutually exclusive
+            credited = set(pos.get("divs_credited") or [])
+            for d_ex in sorted(h["divs"]):
+                amt = h["divs"][d_ex]
+                if d_ex <= pos["entry_date"] or d_ex > start or d_ex in credited:
+                    continue
+                strat["cash"] += pos["shares"] * amt
+                credited.add(d_ex)
+                strat["activity"].append(
+                    {"date": d_ex, "text": f"{pos['symbol']} back-credited ${amt:.2f}/sh dividend "
+                     f"missed during a data outage (+${pos['shares'] * amt:.2f})"})
+            pos["divs_credited"] = sorted(credited)
         kept.append(pos)
     strat["positions"] = kept
+
+    if as_of <= start:
+        # nothing new — also refuses to roll the window backwards on a stale feed
+        strat["last_eval_date"] = max(start, as_of)
+        return {}
 
     days = [d for d in calendar if start < d <= as_of]
     marks = {}
@@ -670,12 +690,17 @@ def replay_strategy(key, strat, bars, calendar, as_of):
                 still_open.append(pos)
                 continue
             # dividends: credit cash on ex-date (amounts arrive split-adjusted,
-            # consistent with the adjusted share count)
+            # consistent with the adjusted share count); the ledger prevents
+            # any double-credit with the back-credit path
             amt = h["divs"].get(d)
             if amt and d > pos["entry_date"]:
-                strat["cash"] += pos["shares"] * amt
-                strat["activity"].append(
-                    {"date": d, "text": f"{pos['symbol']} paid ${amt:.2f}/sh dividend (+${pos['shares'] * amt:.2f})"})
+                credited = set(pos.get("divs_credited") or [])
+                if d not in credited:
+                    strat["cash"] += pos["shares"] * amt
+                    credited.add(d)
+                    pos["divs_credited"] = sorted(credited)
+                    strat["activity"].append(
+                        {"date": d, "text": f"{pos['symbol']} paid ${amt:.2f}/sh dividend (+${pos['shares'] * amt:.2f})"})
             px = h["close"].get(d)
             if px is None:
                 still_open.append(pos)
@@ -685,7 +710,7 @@ def replay_strategy(key, strat, bars, calendar, as_of):
             # stored basis and fire a false stop/target. On a split-sized move,
             # defer this position until real event data confirms what happened.
             prev = pos.get("last_price")
-            if not h.get("has_events", True) and prev and (px < prev * 0.55 or px > prev * 1.8):
+            if not h.get("has_events", True) and prev and (px < prev * 0.88 or px > prev * 1.12):
                 still_open.append(pos)
                 continue
             pos["last_price"] = px
@@ -744,23 +769,38 @@ def replay_benchmark(bench, bars, calendar, as_of, can_trade):
             bench["cash"] = 0.0
             bench["entry_date"] = as_of
             bench["entry_price"] = px
+    # splits are applied up-front — the fetched series is already post-split —
+    # and BEFORE the no-new-days early-out, same as replay_strategy
+    # (apply on a position-shaped view, then copy back)
+    if bench.get("entry_date"):
+        view = {"symbol": bench["symbol"], "entry_date": bench["entry_date"],
+                "splits_applied": bench.get("splits_applied") or [],
+                "shares": bench["shares"], "entry_price": bench.get("entry_price") or 0.0}
+        apply_pending_splits(view, h, [])
+        bench["shares"] = view["shares"]
+        bench["entry_price"] = view["entry_price"]
+        bench["splits_applied"] = view["splits_applied"]
+        # back-credit dividends missed during event-less fallback windows
+        credited = set(bench.get("divs_credited") or [])
+        for d_ex in sorted(h["divs"]):
+            amt = h["divs"][d_ex]
+            if d_ex <= bench["entry_date"] or d_ex > start or d_ex in credited:
+                continue
+            bench["cash"] += bench["shares"] * amt
+            credited.add(d_ex)
+        bench["divs_credited"] = sorted(credited)
     if as_of <= start:
         bench["last_eval_date"] = max(start, as_of)
         return marks
-    # splits are applied up-front — the fetched series is already post-split
-    # (apply on a position-shaped view, then copy back)
-    view = {"symbol": bench["symbol"], "entry_date": bench.get("entry_date") or as_of,
-            "splits_applied": bench.get("splits_applied") or [],
-            "shares": bench["shares"], "entry_price": bench.get("entry_price") or 0.0}
-    apply_pending_splits(view, h, as_of, [])
-    bench["shares"] = view["shares"]
-    bench["entry_price"] = view["entry_price"]
-    bench["splits_applied"] = view["splits_applied"]
     days = [d for d in calendar if start < d <= as_of]
     for d in days:
         amt = h["divs"].get(d)
         if amt and bench.get("entry_date") and d > bench["entry_date"]:
-            bench["cash"] += bench["shares"] * amt
+            credited = set(bench.get("divs_credited") or [])
+            if d not in credited:
+                bench["cash"] += bench["shares"] * amt
+                credited.add(d)
+                bench["divs_credited"] = sorted(credited)
         px = h["close"].get(d)
         if px is not None:
             marks[d] = bench["cash"] + bench["shares"] * px
@@ -777,6 +817,7 @@ def open_position(strat, cand, as_of, budget, target_pct=None, stop_pct=None):
         "target_price": px * (1 + target_pct) if target_pct else None,
         "stop_price": px * (1 - stop_pct) if stop_pct else None,
         "thesis": cand.get("thesis", ""), "last_price": px, "bars_held": 0,
+        "splits_applied": [], "divs_credited": [],
     }
     strat["cash"] -= budget
     strat["positions"].append(pos)
@@ -832,6 +873,7 @@ def manage_longterm(strat, bars, as_of, can_trade):
                 "entry_price": prices[sym], "entry_date": as_of,
                 "target_price": None, "stop_price": None,
                 "thesis": role, "last_price": prices[sym], "bars_held": 0,
+                "splits_applied": [], "divs_credited": [],
             })
             strat["cash"] -= budget
         strat["activity"].append({"date": as_of, "text": f"Inception buy — ${equity:,.0f} across {len(LONGTERM_ALLOCATION)} ETFs"})
@@ -856,6 +898,7 @@ def manage_longterm(strat, bars, as_of, can_trade):
                     "entry_price": prices[sym], "entry_date": as_of,
                     "target_price": None, "stop_price": None,
                     "thesis": role, "last_price": prices[sym], "bars_held": 0,
+                    "splits_applied": [], "divs_credited": [],
                 })
         strat["cash"] = equity - sum(equity * w for w, _ in LONGTERM_ALLOCATION.values())
         strat["activity"].append({"date": as_of, "text": "Rebalanced back to target weights"})
