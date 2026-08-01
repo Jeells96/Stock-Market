@@ -1,0 +1,127 @@
+{
+ "schema": 1,
+ "inception_date": "2026-07-31",
+ "starting_capital": 10000.0,
+ "benchmark": {
+  "symbol": "SPY",
+  "shares": 13.386343252613685,
+  "cash": 0.0,
+  "entry_date": "2026-07-31",
+  "last_eval_date": "2026-07-31",
+  "entry_price": 747.03,
+  "splits_applied": [],
+  "divs_credited": []
+ },
+ "strategies": {
+  "aggressive": {
+   "cash": 10000.0,
+   "positions": [],
+   "closed": [],
+   "cooldown": {},
+   "last_eval_date": "2026-07-31",
+   "activity": []
+  },
+  "growth": {
+   "cash": 10000.0,
+   "positions": [],
+   "closed": [],
+   "cooldown": {},
+   "last_eval_date": "2026-07-31",
+   "activity": []
+  },
+  "longterm": {
+   "cash": 0.0,
+   "positions": [
+    {
+     "symbol": "VOO",
+     "name": "VOO",
+     "shares": 5.825384111264837,
+     "entry_price": 686.65,
+     "entry_date": "2026-07-31",
+     "target_price": null,
+     "stop_price": null,
+     "thesis": "S&P 500 core \u2014 owns the 500 biggest US companies",
+     "last_price": 686.65,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "QQQ",
+     "name": "QQQ",
+     "shares": 2.9070189973691476,
+     "entry_price": 687.99,
+     "entry_date": "2026-07-31",
+     "target_price": null,
+     "stop_price": null,
+     "thesis": "Nasdaq-100 \u2014 concentrated big-tech growth",
+     "last_price": 687.99,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "SCHD",
+     "name": "SCHD",
+     "shares": 59.755004481625335,
+     "entry_price": 33.47,
+     "entry_date": "2026-07-31",
+     "target_price": null,
+     "stop_price": null,
+     "thesis": "Dividend quality \u2014 cash-generating value companies",
+     "last_price": 33.47,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "VXUS",
+     "name": "VXUS",
+     "shares": 11.821728336682822,
+     "entry_price": 84.59,
+     "entry_date": "2026-07-31",
+     "target_price": null,
+     "stop_price": null,
+     "thesis": "International \u2014 diversification outside the US",
+     "last_price": 84.59,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "BND",
+     "name": "BND",
+     "shares": 13.844662882458811,
+     "entry_price": 72.23,
+     "entry_date": "2026-07-31",
+     "target_price": null,
+     "stop_price": null,
+     "thesis": "Bonds \u2014 ballast that cushions stock drawdowns",
+     "last_price": 72.23,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    }
+   ],
+   "closed": [],
+   "cooldown": {},
+   "last_eval_date": "2026-07-31",
+   "activity": [
+    {
+     "date": "2026-07-31",
+     "text": "Inception buy \u2014 $10,000 across 5 ETFs"
+    }
+   ]
+  }
+ },
+ "equity_history": {
+  "2026-07-31": {
+   "aggressive": 10000.0,
+   "growth": 10000.0,
+   "longterm": 10000.0,
+   "benchmark": 10000.0
+  }
+ },
+ "runs": 1,
+ "last_run_utc": "2026-08-01T18:29:29Z"
+}

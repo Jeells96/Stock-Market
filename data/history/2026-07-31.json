@@ -1,0 +1,170 @@
+{
+ "version": 1,
+ "generated_at_utc": "2026-08-01T18:29:29Z",
+ "as_of_date": "2026-07-31",
+ "inception_date": "2026-07-31",
+ "starting_capital": 10000.0,
+ "runs": 1,
+ "benchmark": {
+  "symbol": "SPY",
+  "equity": 10000.0,
+  "total_return_pct": 0.0
+ },
+ "strategies": {
+  "aggressive": {
+   "key": "aggressive",
+   "label": "Get Rich Quick",
+   "icon": "\ud83d\ude80",
+   "tagline": "High-octane momentum swings. Big targets, hard stops, fast exits.",
+   "horizon": "Days to weeks",
+   "risk_note": "Very high risk. Expect large swings and frequent losing trades \u2014 the bet is that winners outrun losers.",
+   "equity": 10000.0,
+   "cash": 10000.0,
+   "total_return_pct": 0.0,
+   "vs_spy_pct": 0.0,
+   "max_drawdown_pct": 0.0,
+   "closed_trades": 0,
+   "win_rate_pct": null,
+   "avg_win_pct": null,
+   "avg_loss_pct": null,
+   "positions": [],
+   "recent_trades": [],
+   "recent_activity": []
+  },
+  "growth": {
+   "key": "growth",
+   "label": "Dependable Growth",
+   "icon": "\ud83d\udcc8",
+   "tagline": "Quality large caps in confirmed uptrends. Steady compounding.",
+   "horizon": "Weeks to months",
+   "risk_note": "Moderate risk. Rides established trends and steps aside when a trend breaks.",
+   "equity": 10000.0,
+   "cash": 10000.0,
+   "total_return_pct": 0.0,
+   "vs_spy_pct": 0.0,
+   "max_drawdown_pct": 0.0,
+   "closed_trades": 0,
+   "win_rate_pct": null,
+   "avg_win_pct": null,
+   "avg_loss_pct": null,
+   "positions": [],
+   "recent_trades": [],
+   "recent_activity": []
+  },
+  "longterm": {
+   "key": "longterm",
+   "label": "Long-Term Success",
+   "icon": "\ud83c\udfdb\ufe0f",
+   "tagline": "Diversified ETF portfolio, rebalanced automatically. Time in the market.",
+   "horizon": "Years",
+   "risk_note": "Lower risk. Boring on purpose \u2014 broad diversification and compounding do the work.",
+   "equity": 10000.0,
+   "cash": 0.0,
+   "total_return_pct": 0.0,
+   "vs_spy_pct": 0.0,
+   "max_drawdown_pct": 0.0,
+   "closed_trades": 0,
+   "win_rate_pct": null,
+   "avg_win_pct": null,
+   "avg_loss_pct": null,
+   "positions": [
+    {
+     "symbol": "VOO",
+     "name": "VOO",
+     "entry_date": "2026-07-31",
+     "entry_price": 686.65,
+     "shares": 5.8254,
+     "current_price": 686.65,
+     "current_value": 4000.0,
+     "pnl_pct": 0.0,
+     "target_price": null,
+     "stop_price": null,
+     "thesis": "S&P 500 core \u2014 owns the 500 biggest US companies",
+     "is_new": false
+    },
+    {
+     "symbol": "QQQ",
+     "name": "QQQ",
+     "entry_date": "2026-07-31",
+     "entry_price": 687.99,
+     "shares": 2.907,
+     "current_price": 687.99,
+     "current_value": 2000.0,
+     "pnl_pct": 0.0,
+     "target_price": null,
+     "stop_price": null,
+     "thesis": "Nasdaq-100 \u2014 concentrated big-tech growth",
+     "is_new": false
+    },
+    {
+     "symbol": "SCHD",
+     "name": "SCHD",
+     "entry_date": "2026-07-31",
+     "entry_price": 33.47,
+     "shares": 59.755,
+     "current_price": 33.47,
+     "current_value": 2000.0,
+     "pnl_pct": 0.0,
+     "target_price": null,
+     "stop_price": null,
+     "thesis": "Dividend quality \u2014 cash-generating value companies",
+     "is_new": false
+    },
+    {
+     "symbol": "VXUS",
+     "name": "VXUS",
+     "entry_date": "2026-07-31",
+     "entry_price": 84.59,
+     "shares": 11.8217,
+     "current_price": 84.59,
+     "current_value": 1000.0,
+     "pnl_pct": 0.0,
+     "target_price": null,
+     "stop_price": null,
+     "thesis": "International \u2014 diversification outside the US",
+     "is_new": false
+    },
+    {
+     "symbol": "BND",
+     "name": "BND",
+     "entry_date": "2026-07-31",
+     "entry_price": 72.23,
+     "shares": 13.8447,
+     "current_price": 72.23,
+     "current_value": 1000.0,
+     "pnl_pct": 0.0,
+     "target_price": null,
+     "stop_price": null,
+     "thesis": "Bonds \u2014 ballast that cushions stock drawdowns",
+     "is_new": false
+    }
+   ],
+   "recent_trades": [],
+   "recent_activity": [
+    {
+     "date": "2026-07-31",
+     "text": "Inception buy \u2014 $10,000 across 5 ETFs"
+    }
+   ]
+  }
+ },
+ "equity_curves": {
+  "dates": [
+   "2026-07-31"
+  ],
+  "aggressive": [
+   10000.0
+  ],
+  "growth": [
+   10000.0
+  ],
+  "longterm": [
+   10000.0
+  ],
+  "benchmark": [
+   10000.0
+  ]
+ },
+ "data_source": "Yahoo Finance daily closes (split-adjusted; dividends credited as cash)",
+ "methodology_note": "All trades are simulated with paper money at daily closing prices. Picks are committed to git before outcomes are known \u2014 the commit history is the proof. Not financial advice."
+}
