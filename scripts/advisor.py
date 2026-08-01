@@ -148,8 +148,6 @@ STRATEGY_META = {
 
 # aggressive won't re-enter a symbol for this many days after exiting it
 COOLDOWN_DAYS = 7
-# refuse to open new positions if the freshest market data is older than this
-MAX_DATA_AGE_DAYS = 5
 # abort the run (leaving state untouched) if fetch coverage drops below this
 MIN_FETCH_COVERAGE = 0.5
 
@@ -187,7 +185,7 @@ def fetch_history(sym, range_="1y"):
     """
     q = urllib.parse.urlencode({"range": range_, "interval": "1d", "events": "div,split"})
     last_err = None
-    backoffs = [5, 20, 45]
+    backoffs = [4, 10, 20]
     for attempt in range(4):
         host = YAHOO_HOSTS[attempt % len(YAHOO_HOSTS)]
         url = f"{host}/v8/finance/chart/{urllib.parse.quote(yahoo_symbol(sym))}?{q}"
@@ -236,6 +234,7 @@ def fetch_history(sym, range_="1y"):
                 "name": meta.get("shortName") or meta.get("longName") or sym,
                 "divs": divs,
                 "splits": splits,
+                "has_events": True,
             }
         except Exception as e:  # noqa: BLE001 — any fetch error → retry
             last_err = e
@@ -257,6 +256,31 @@ def market_date(unix_ts, tz_name):
         return datetime.fromtimestamp(unix_ts, ZoneInfo(tz_name)).strftime("%Y-%m-%d")
     except Exception:  # noqa: BLE001
         return datetime.fromtimestamp(unix_ts, timezone.utc).strftime("%Y-%m-%d")
+
+
+def trim_partial_session(bars):
+    """Yahoo's daily series includes the in-progress session (with the live
+    price as its 'close') once trading starts. Scheduled runs are timed to
+    avoid market hours, but GitHub cron can fire late and manual runs can
+    happen any time — so before 16:10 ET, drop today's bar everywhere. All
+    fills and marks must come from completed sessions only."""
+    try:
+        from zoneinfo import ZoneInfo
+        now_ny = datetime.now(ZoneInfo("America/New_York"))
+    except Exception:  # noqa: BLE001 — worst case assume EDT
+        now_ny = datetime.now(timezone.utc) - timedelta(hours=4)
+    if (now_ny.hour, now_ny.minute) >= (16, 10):
+        return
+    today_ny = now_ny.strftime("%Y-%m-%d")
+    trimmed = 0
+    for h in bars.values():
+        if h["dates"] and h["dates"][-1] == today_ny:
+            d = h["dates"].pop()
+            h["close"].pop(d, None)
+            h["volume"].pop(d, None)
+            trimmed += 1
+    if trimmed:
+        print(f"  trimmed in-progress session bar ({today_ny}) from {trimmed} symbols")
 
 
 def finnhub_quote(sym):
@@ -283,10 +307,17 @@ def fetch_portfolio_bars(symbols):
     out = {}
     symbols = list(dict.fromkeys(symbols))
     print(f"Fetching {len(symbols)} portfolio symbols (full history + events)…")
+    fail_streak = 0
     for i, sym in enumerate(symbols):
+        if fail_streak >= 3:
+            print("  chart endpoint failing repeatedly — skipping straight to spark fallback")
+            break
         h = fetch_history(sym)
         if h:
             out[sym] = h
+            fail_streak = 0
+        else:
+            fail_streak += 1
         if i < len(symbols) - 1:
             time.sleep(1.2)
     missing = [s for s in symbols if s not in out]
@@ -328,7 +359,8 @@ def fetch_spark_batch(symbols):
                     close_map[d] = float(c)
                 if dates:
                     out[sym] = {"dates": dates, "close": close_map, "volume": {},
-                                "name": sym, "divs": {}, "splits": {}}
+                                "name": sym, "divs": {}, "splits": {},
+                                "has_events": False}
             return out
         except Exception as e:  # noqa: BLE001
             last_err = e
@@ -417,11 +449,13 @@ def zscores(values):
 # ---------------------------------------------------------------- candidate scoring
 
 
-def score_aggressive(bars):
+def score_aggressive(bars, as_of):
     """Rank the momentum universe (close-based only — the curated universe is
     already liquid, and the batched data source doesn't carry volume)."""
     rows = []
     for sym, h in bars.items():
+        if not h["dates"] or h["dates"][-1] != as_of:
+            continue  # stale/halted symbol — never buy at an old price
         closes = [h["close"][d] for d in h["dates"]]
         if len(closes) < 65:
             continue
@@ -455,9 +489,11 @@ def score_aggressive(bars):
     return rows
 
 
-def score_growth(bars):
+def score_growth(bars, as_of):
     rows = []
     for sym, h in bars.items():
+        if not h["dates"] or h["dates"][-1] != as_of:
+            continue  # stale/halted symbol — never buy at an old price
         closes = [h["close"][d] for d in h["dates"]]
         if len(closes) < 210:
             continue
@@ -569,11 +605,61 @@ def close_position(strat, pos, exit_date, exit_price, reason):
     strat["cooldown"][pos["symbol"]] = exit_date
 
 
+def apply_pending_splits(pos, h, as_of, activity):
+    """Yahoo retro-adjusts the ENTIRE price series the moment a split takes
+    effect, so the stored position must be converted BEFORE the day walk —
+    otherwise pre-split stops/targets get compared against post-split prices.
+    A per-position ledger makes this idempotent and lets a split that was
+    invisible during a data outage be applied late (self-healing)."""
+    applied = set(pos.get("splits_applied") or [])
+    for s_date in sorted(h["splits"]):
+        ratio = h["splits"][s_date]
+        if s_date <= pos["entry_date"] or s_date > as_of or s_date in applied or ratio <= 0:
+            continue
+        pos["shares"] *= ratio
+        pos["entry_price"] /= ratio
+        if pos.get("target_price"):
+            pos["target_price"] /= ratio
+        if pos.get("stop_price"):
+            pos["stop_price"] /= ratio
+        if pos.get("last_price"):
+            pos["last_price"] /= ratio
+        applied.add(s_date)
+        activity.append({"date": s_date, "text": f"{pos['symbol']} split {ratio:g}:1 — position adjusted"})
+    pos["splits_applied"] = sorted(applied)
+
+
+def sessions_between(calendar, after, upto):
+    """Number of trading sessions in calendar strictly after `after`, up to `upto`."""
+    return sum(1 for d in calendar if after < d <= upto)
+
+
 def replay_strategy(key, strat, bars, calendar, as_of):
     """Replay each trading day since last evaluation: dividends, splits,
     exit rules, and a daily equity mark. Mutates strat, returns equity marks."""
     meta = STRATEGY_META[key]
     start = strat.get("last_eval_date") or as_of
+    if as_of <= start:
+        # nothing new — also refuses to roll the window backwards on a stale feed
+        strat["last_eval_date"] = max(start, as_of)
+        return {}
+
+    # --- once-per-run position maintenance (NOT once per replayed day) ---
+    kept = []
+    for pos in strat["positions"]:
+        h = bars.get(pos["symbol"])
+        if h is None:
+            pos["missing_runs"] = pos.get("missing_runs", 0) + 1
+            if pos["missing_runs"] >= 3:
+                close_position(strat, pos, as_of, pos.get("last_price") or pos["entry_price"],
+                               "data unavailable")
+                continue
+        else:
+            pos["missing_runs"] = 0
+            apply_pending_splits(pos, h, as_of, strat["activity"])
+        kept.append(pos)
+    strat["positions"] = kept
+
     days = [d for d in calendar if start < d <= as_of]
     marks = {}
     for d in days:
@@ -581,25 +667,10 @@ def replay_strategy(key, strat, bars, calendar, as_of):
         for pos in strat["positions"]:
             h = bars.get(pos["symbol"])
             if h is None:
-                pos["missing_runs"] = pos.get("missing_runs", 0) + 1
-                if pos["missing_runs"] >= 3:
-                    close_position(strat, pos, d, pos.get("last_price") or pos["entry_price"],
-                                   "data unavailable")
-                    continue
                 still_open.append(pos)
                 continue
-            pos["missing_runs"] = 0
-            # splits: adjust recorded prices/shares so history stays comparable
-            ratio = h["splits"].get(d)
-            if ratio and d > pos["entry_date"]:
-                pos["shares"] *= ratio
-                pos["entry_price"] /= ratio
-                if pos.get("target_price"):
-                    pos["target_price"] /= ratio
-                if pos.get("stop_price"):
-                    pos["stop_price"] /= ratio
-                strat["activity"].append({"date": d, "text": f"{pos['symbol']} split {ratio:g}:1 — position adjusted"})
-            # dividends: credit cash on ex-date
+            # dividends: credit cash on ex-date (amounts arrive split-adjusted,
+            # consistent with the adjusted share count)
             amt = h["divs"].get(d)
             if amt and d > pos["entry_date"]:
                 strat["cash"] += pos["shares"] * amt
@@ -607,6 +678,14 @@ def replay_strategy(key, strat, bars, calendar, as_of):
                     {"date": d, "text": f"{pos['symbol']} paid ${amt:.2f}/sh dividend (+${pos['shares'] * amt:.2f})"})
             px = h["close"].get(d)
             if px is None:
+                still_open.append(pos)
+                continue
+            # Event-less fallback data (spark) is still retro-split-adjusted, so
+            # an unreported split would look like a giant one-day gap versus our
+            # stored basis and fire a false stop/target. On a split-sized move,
+            # defer this position until real event data confirms what happened.
+            prev = pos.get("last_price")
+            if not h.get("has_events", True) and prev and (px < prev * 0.55 or px > prev * 1.8):
                 still_open.append(pos)
                 continue
             pos["last_price"] = px
@@ -637,36 +716,55 @@ def replay_strategy(key, strat, bars, calendar, as_of):
             val, _ = position_value(pos, bars, d)
             total += val
         marks[d] = total
-    strat["last_eval_date"] = as_of
+
+    # --- halted/suspended/delisted: a symbol whose history exists but whose
+    # last bar is >10 sessions old will never trigger a close-based exit —
+    # force-exit at the last known price so it can't freeze a slot forever
+    for pos in list(strat["positions"]):
+        h = bars.get(pos["symbol"])
+        if h and h["dates"] and sessions_between(calendar, h["dates"][-1], as_of) > 10:
+            strat["positions"].remove(pos)
+            close_position(strat, pos, as_of, pos.get("last_price") or pos["entry_price"],
+                           "halted/delisted")
+
+    strat["last_eval_date"] = max(start, as_of)
     return marks
 
 
-def replay_benchmark(bench, bars, calendar, as_of):
+def replay_benchmark(bench, bars, calendar, as_of, can_trade):
     h = bars.get(bench["symbol"])
     marks = {}
     if h is None:
         return marks
     start = bench.get("last_eval_date") or as_of
-    if bench["shares"] == 0.0 and bench["cash"] > 0:
+    if bench["shares"] == 0.0 and bench["cash"] > 0 and can_trade:
         px = last_close_at(h, as_of)
         if px:
             bench["shares"] = bench["cash"] / px
             bench["cash"] = 0.0
             bench["entry_date"] = as_of
             bench["entry_price"] = px
+    if as_of <= start:
+        bench["last_eval_date"] = max(start, as_of)
+        return marks
+    # splits are applied up-front — the fetched series is already post-split
+    # (apply on a position-shaped view, then copy back)
+    view = {"symbol": bench["symbol"], "entry_date": bench.get("entry_date") or as_of,
+            "splits_applied": bench.get("splits_applied") or [],
+            "shares": bench["shares"], "entry_price": bench.get("entry_price") or 0.0}
+    apply_pending_splits(view, h, as_of, [])
+    bench["shares"] = view["shares"]
+    bench["entry_price"] = view["entry_price"]
+    bench["splits_applied"] = view["splits_applied"]
     days = [d for d in calendar if start < d <= as_of]
     for d in days:
-        ratio = h["splits"].get(d)
-        if ratio and bench.get("entry_date") and d > bench["entry_date"]:
-            bench["shares"] *= ratio
-            bench["entry_price"] = (bench.get("entry_price") or 0) / ratio
         amt = h["divs"].get(d)
         if amt and bench.get("entry_date") and d > bench["entry_date"]:
             bench["cash"] += bench["shares"] * amt
         px = h["close"].get(d)
         if px is not None:
             marks[d] = bench["cash"] + bench["shares"] * px
-    bench["last_eval_date"] = as_of
+    bench["last_eval_date"] = max(start, as_of)
     return marks
 
 
@@ -686,12 +784,10 @@ def open_position(strat, cand, as_of, budget, target_pct=None, stop_pct=None):
     return pos
 
 
-def fill_slots(key, strat, ranked, as_of, today):
+def fill_slots(key, strat, ranked, as_of, can_trade):
     """Fill empty slots with the best-ranked candidates not held / cooling down."""
     meta = STRATEGY_META[key]
-    # stale-data guard: never open new trades on old data
-    age = (datetime.strptime(today, "%Y-%m-%d") - datetime.strptime(as_of, "%Y-%m-%d")).days
-    if age > MAX_DATA_AGE_DAYS:
+    if not can_trade:
         return []
     held = {p["symbol"] for p in strat["positions"]}
     cutoff = (datetime.strptime(as_of, "%Y-%m-%d") - timedelta(days=COOLDOWN_DAYS)).strftime("%Y-%m-%d")
@@ -714,8 +810,10 @@ def fill_slots(key, strat, ranked, as_of, today):
     return opened
 
 
-def manage_longterm(strat, bars, as_of):
+def manage_longterm(strat, bars, as_of, can_trade):
     """Buy the fixed allocation at inception; afterwards rebalance on drift."""
+    if not can_trade:
+        return
     prices = {}
     for sym in LONGTERM_ALLOCATION:
         h = bars.get(sym)
@@ -982,7 +1080,6 @@ def build_commit_message(site, trades_today):
 
 
 def main():
-    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     print(f"=== Advisor run {datetime.now(timezone.utc).isoformat()} ===")
 
     state = load_state()
@@ -994,6 +1091,12 @@ def main():
     # 1) critical symbols (full history + div/split events) — must succeed
     critical = list(dict.fromkeys([BENCHMARK_SYMBOL] + list(LONGTERM_ALLOCATION) + held_syms))
     bars_critical = fetch_portfolio_bars(critical)
+    if BENCHMARK_SYMBOL not in bars_critical:
+        # Yahoo rate-limit penalties are usually minutes-long; wait one long
+        # beat and try again before failing the run
+        print("Benchmark fetch failed — cooling down 180s before one more attempt…")
+        time.sleep(180)
+        bars_critical = fetch_portfolio_bars(critical)
     if BENCHMARK_SYMBOL not in bars_critical:
         print("FATAL: no benchmark data — aborting without touching state.")
         sys.exit(1)
@@ -1011,14 +1114,40 @@ def main():
               "no new positions will be opened this run.")
 
     bars = {**bars_universe, **bars_critical}  # full-history data wins
+    trim_partial_session(bars)
 
     calendar = bars[BENCHMARK_SYMBOL]["dates"]
+    if not calendar:
+        print("FATAL: benchmark has no completed sessions — aborting without touching state.")
+        sys.exit(1)
     as_of = calendar[-1]
     print(f"Market data as of {as_of} ({len(calendar)} sessions, {len(bars)} symbols)")
+
+    # Entries only happen when the freshest completed session is TODAY — i.e.
+    # on the post-close run, at a close that printed minutes ago. A pre-open or
+    # weekend run trading at the previous session's close would book
+    # overnight/weekend gaps nobody could capture. The one exception is the
+    # very first run (inception): every portfolio INCLUDING the SPY benchmark
+    # enters at the same last close, so the comparison starts fair and the
+    # commit still precedes every outcome.
+    try:
+        from zoneinfo import ZoneInfo
+        ny_today = datetime.now(ZoneInfo("America/New_York")).strftime("%Y-%m-%d")
+    except Exception:  # noqa: BLE001
+        ny_today = (datetime.now(timezone.utc) - timedelta(hours=4)).strftime("%Y-%m-%d")
+    can_trade = (as_of == ny_today) or state is None
+    if not can_trade:
+        print(f"Trading disabled this run (last session {as_of} != NY today {ny_today}) — "
+              "evaluate/publish only; entries happen on the post-close run.")
 
     if state is None:
         print("Bootstrapping fresh state (inception day).")
         state = bootstrap_state(as_of)
+    else:
+        recorded = sorted(state["equity_history"].keys())
+        if recorded and as_of < recorded[-1]:
+            print(f"Feed is stale (as_of {as_of} < last recorded {recorded[-1]}) — nothing to do.")
+            sys.exit(0)
 
     # 1) replay portfolios day-by-day since last run
     for key in ("aggressive", "growth", "longterm"):
@@ -1031,25 +1160,25 @@ def main():
         for t in closed_now:
             print(f"  {STRATEGY_META[key]['icon']} closed {t['symbol']}: {t['pnl_pct']:+.2f}% ({t['reason']})")
 
-    bench_marks = replay_benchmark(state["benchmark"], bars, calendar, as_of)
+    bench_marks = replay_benchmark(state["benchmark"], bars, calendar, as_of, can_trade)
     for d, v in bench_marks.items():
         state["equity_history"].setdefault(d, {})["benchmark"] = round(v, 2)
 
     # 2) longterm allocation management (inception buy / drift rebalance)
-    manage_longterm(state["strategies"]["longterm"], bars, as_of)
+    manage_longterm(state["strategies"]["longterm"], bars, as_of, can_trade)
 
     # 3) fill empty aggressive/growth slots with freshly ranked picks
     new_picks = {"aggressive": [], "growth": [], "longterm": []}
     if universe_ok:
         agg_universe = {s: h for s, h in bars.items() if s in set(MOMENTUM)}
         gro_universe = {s: h for s, h in bars.items() if s in set(SP_CORE)}
-        ranked_agg = score_aggressive(agg_universe)
-        ranked_gro = score_growth(gro_universe)
+        ranked_agg = score_aggressive(agg_universe, as_of)
+        ranked_gro = score_growth(gro_universe, as_of)
         print(f"Ranked candidates: aggressive {len(ranked_agg)}, growth {len(ranked_gro)}")
         new_picks["aggressive"] = fill_slots(
-            "aggressive", state["strategies"]["aggressive"], ranked_agg, as_of, today)
+            "aggressive", state["strategies"]["aggressive"], ranked_agg, as_of, can_trade)
         new_picks["growth"] = fill_slots(
-            "growth", state["strategies"]["growth"], ranked_gro, as_of, today)
+            "growth", state["strategies"]["growth"], ranked_gro, as_of, can_trade)
         # upgrade fresh picks with full history (real company name + div/split
         # events) so the next replay has proper accounting from day one
         fresh_syms = [p["symbol"] for picks in new_picks.values() for p in picks

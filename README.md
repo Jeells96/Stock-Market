@@ -25,12 +25,16 @@ honest yardstick.
 A scheduled GitHub Action ([`.github/workflows/advisor.yml`](.github/workflows/advisor.yml))
 runs [`scripts/advisor.py`](scripts/advisor.py) twice every trading day:
 
-- **Pre-open (~9:10am ET)** — publishes the day's picks *before the market opens*
-- **Post-close (~4:45pm ET)** — marks outcomes, applies stops/targets, updates the record
+- **Post-close (~5:45pm ET)** — the trading run: marks outcomes on the session that just
+  ended, applies stops/targets, and enters new picks at that day's closing price. The
+  commit lands while tomorrow's outcome is still unknown — that's the proof.
+- **Pre-open (~9:10am ET)** — a catch-up run: replays anything a failed evening run
+  missed. It never opens positions (the engine refuses to trade at a stale close, so
+  overnight gaps can't be gamed and a delayed cron firing mid-session is harmless).
 
 Each run fetches free Yahoo Finance data (no API key needed), replays every trading day
 since the previous run — crediting dividends, applying splits, checking stops and targets
-on daily closes — then commits the updated record to this repository.
+on daily closes only — then commits the updated record to this repository.
 
 > **To activate:** this workflow must be on the `main` branch (GitHub only fires schedules
 > from the default branch). It can also be triggered manually from the **Actions** tab →

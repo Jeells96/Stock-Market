@@ -228,7 +228,7 @@
   footer .ornament{color:var(--gold);font-size:14px;margin:0 8px}
 
   /* ===== Autonomous Advisor ===== */
-  .adv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:18px;margin-bottom:18px}
+  .adv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:18px;margin-bottom:18px}
   .adv-card{background:linear-gradient(180deg,rgba(22,43,82,0.75),rgba(15,31,61,0.75));border:1px solid var(--border);border-radius:2px;padding:20px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:12px}
   .adv-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent,#c9a961),transparent)}
   .adv-card.agg{--accent:#ff8c42}
@@ -606,6 +606,10 @@ const RL = {
 };
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+// escape any string that reaches innerHTML from outside this file (league
+// Firestore docs, Yahoo names, site.json) — league docs especially are
+// writable by anyone holding the public Firebase config
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $ = id => document.getElementById(id);
 const $$ = sel => document.querySelectorAll(sel);
 const fmt$ = n => n==null||isNaN(n) ? "—" : "$" + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -1260,20 +1264,20 @@ function renderPicks(picks){
   const html = picks.map((p, i) => {
     const up = p.changePct >= 0;
     return `
-    <div class="pick" data-sym="${p.sym}">
+    <div class="pick" data-sym="${esc(p.sym)}">
       <div class="pick-rank"><span class="num">${String(i+1).padStart(2,'0')}</span></div>
-      <div class="pick-sym">${p.sym}</div>
-      <div class="pick-name">${p.profile?.name || p.name || ""}</div>
+      <div class="pick-sym">${esc(p.sym)}</div>
+      <div class="pick-name">${esc(p.profile?.name || p.name || "")}</div>
       <div class="pick-px-row">
         <span class="pick-px">${fmt$(p.price)}</span>
         <span class="pick-chg ${up?'up':'down'}">${up?'▲':'▼'} ${(p.changePct>=0?'+':'')}${p.changePct.toFixed(2)}%</span>
       </div>
       <div class="pick-score-row">
         <div>
-          <div class="pick-score">${p.totalScore}</div>
+          <div class="pick-score">${esc(p.totalScore)}</div>
           <div class="pick-score-lbl">Conviction</div>
         </div>
-        <div class="pick-conv conv-${p.conviction}">${p.conviction}</div>
+        <div class="pick-conv conv-${esc(String(p.conviction||'WATCH').replace(/[^A-Z]/g,''))}">${esc(p.conviction)}</div>
       </div>
       <div class="pick-factors">
         ${factorBar("Momentum", p.f_momentum)}
@@ -1281,13 +1285,13 @@ function renderPicks(picks){
         ${factorBar("Insiders", p.f_insider)}
         ${factorBar("News", p.f_news)}
       </div>
-      <div class="pick-thesis">${p.thesis}</div>
-      ${p.conflict ? `<div class="pick-conflict">⚠ Mixed signals: ${p.conflictNote}</div>` : ""}
+      <div class="pick-thesis">${esc(p.thesis)}</div>
+      ${p.conflict ? `<div class="pick-conflict">⚠ Mixed signals: ${esc(p.conflictNote)}</div>` : ""}
       <div class="pick-why">
         ${p.analystTarget ? `<div class="why-row"><span class="why-lbl">Analyst Target</span><span class="why-val">${fmt$(p.analystTarget)} <span class="${(p.analystUpside||0)>=0?'up':'down'}">(${(p.analystUpside>=0?'+':'')}${((p.analystUpside||0)*100).toFixed(0)}%)</span></span></div>` : ""}
         ${(p.high52 && p.low52) ? `<div class="why-row"><span class="why-lbl">52-Wk Range</span><span class="why-val">${fmt$(p.low52)} – ${fmt$(p.high52)}</span></div>` : ""}
         ${p.peRatio ? `<div class="why-row"><span class="why-lbl">P/E (TTM)</span><span class="why-val">${p.peRatio.toFixed(1)}</span></div>` : ""}
-        <div class="why-row"><span class="why-lbl">Volatility</span><span class="why-val risk-${(p.riskTier||'Unknown').replace(/\s/g,'')}">${p.riskTier || "Unknown"}${p.beta!=null?` · β ${p.beta.toFixed(2)}`:""}</span></div>
+        <div class="why-row"><span class="why-lbl">Volatility</span><span class="why-val risk-${esc((p.riskTier||'Unknown').replace(/[^A-Za-z]/g,''))}">${esc(p.riskTier || "Unknown")}${p.beta!=null?` · β ${p.beta.toFixed(2)}`:""}</span></div>
       </div>
       <div class="pick-targets">
         <div class="target-cell entry"><span class="lbl">Entry</span><span class="val">${fmt$(p.price)}</span></div>
@@ -1532,6 +1536,7 @@ const ADV_CARD_CLASS = {aggressive:"agg", growth:"gro", longterm:"lt"};
 let advisorData = null;
 let advisorFetchedAt = 0;
 
+let advisorLoadOk = false;
 async function loadAdvisorData(force=false){
   if(!force && advisorData && Date.now() - advisorFetchedAt < 60000) return advisorData;
   try{
@@ -1539,7 +1544,9 @@ async function loadAdvisorData(force=false){
     if(!res.ok) throw new Error("HTTP " + res.status);
     advisorData = await res.json();
     advisorFetchedAt = Date.now();
+    advisorLoadOk = true;
   } catch(e){
+    advisorLoadOk = false;
     console.warn("advisor data load failed", e);
     if(!advisorData){
       const msg = `<div class="empty"><div class="big">No Advisor Data Yet</div>
@@ -1592,14 +1599,14 @@ function renderAdvisor(){
     const vsCls = pctCls(s.vs_spy_pct);
     const posRows = (s.positions||[]).map((p,i) => {
       const detail = p.target_price
-        ? `in ${p.entry_date} @ ${fmt$(p.entry_price)} · tgt ${fmt$(p.target_price)} / stop ${fmt$(p.stop_price)}`
-        : `${p.name && p.name !== p.symbol ? p.name : "since " + p.entry_date} · ${fmt$(p.entry_price)}`;
+        ? `in ${esc(p.entry_date)} @ ${fmt$(p.entry_price)} · tgt ${fmt$(p.target_price)} / stop ${fmt$(p.stop_price)}`
+        : `${p.name && p.name !== p.symbol ? esc(p.name) : "since " + esc(p.entry_date)} · ${fmt$(p.entry_price)}`;
       return `<div class="adv-pos-row expand" data-k="${key}" data-i="${i}">
-        <span class="sym">${p.symbol}${p.is_new ? '<span class="new">NEW</span>' : ""}</span>
+        <span class="sym">${esc(p.symbol)}${p.is_new ? '<span class="new">NEW</span>' : ""}</span>
         <span class="detail">${detail}</span>
         <span class="px">${fmt$(p.current_price)}</span>
         <span class="pnl ${pctCls(p.pnl_pct)}">${pctTxt(p.pnl_pct)}</span>
-        <span class="adv-pos-thesis">${p.thesis || "—"}</span>
+        <span class="adv-pos-thesis">${esc(p.thesis || "—")}</span>
       </div>`;
     }).join("") || `<div class="adv-pos-row"><span class="detail">All cash — waiting for qualified setups</span></div>`;
     const wr = s.win_rate_pct != null ? s.win_rate_pct.toFixed(0) + "%" : "—";
@@ -1608,7 +1615,7 @@ function renderAdvisor(){
         <div class="adv-title"><span class="icon">${s.icon}</span>${s.label}</div>
         <span class="adv-horizon">${s.horizon}</span>
       </div>
-      <div class="adv-tagline">${s.tagline}</div>
+      <div class="adv-tagline">${esc(s.tagline)}</div>
       <div class="adv-equity-row">
         <span class="adv-equity">${fmt$(s.equity)}</span>
         <span class="adv-ret ${pctCls(s.total_return_pct)}">${pctTxt(s.total_return_pct)}</span>
@@ -1623,7 +1630,7 @@ function renderAdvisor(){
       </div>
       <div class="adv-sec-lbl">Positions</div>
       <div class="adv-pos">${posRows}</div>
-      <div class="adv-risk">⚠ ${s.risk_note}</div>
+      <div class="adv-risk">⚠ ${esc(s.risk_note)}</div>
     </div>`;
   }).join("");
 
@@ -1740,6 +1747,7 @@ function renderTrackMain(){
   const bench = d.benchmark || {};
   const rows = ["aggressive","growth","longterm"].map(key => {
     const s = d.strategies[key];
+    if(!s) return "";
     const wr = s.win_rate_pct != null ? s.win_rate_pct.toFixed(0) + "%" : "—";
     const aw = s.avg_win_pct != null ? pctTxt(s.avg_win_pct) : "—";
     const al = s.avg_loss_pct != null ? pctTxt(s.avg_loss_pct) : "—";
@@ -1765,33 +1773,35 @@ function renderTrackMain(){
   const trades = [];
   ["aggressive","growth","longterm"].forEach(key => {
     const s = d.strategies[key];
+    if(!s) return;
     (s.recent_trades||[]).forEach(t => trades.push({...t, icon:s.icon, key}));
   });
   trades.sort((a,b) => (b.exit_date||"").localeCompare(a.exit_date||""));
   const tradeRows = trades.slice(0,30).map(t => `<div class="trade-row">
       <span class="icon">${t.icon}</span>
-      <span class="sym">${t.symbol}</span>
-      <span class="detail">${t.entry_date} ${fmt$(t.entry_price)} → ${t.exit_date} ${fmt$(t.exit_price)}</span>
+      <span class="sym">${esc(t.symbol)}</span>
+      <span class="detail">${esc(t.entry_date)} ${fmt$(t.entry_price)} → ${esc(t.exit_date)} ${fmt$(t.exit_price)}</span>
       <span class="pnl ${pctCls(t.pnl_pct)}">${pctTxt(t.pnl_pct)}</span>
-      <span class="reason">${t.reason}</span>
+      <span class="reason">${esc(t.reason)}</span>
     </div>`).join("") || `<div class="empty" style="padding:24px"><div class="small">No closed trades yet — the record builds with every exit.</div></div>`;
 
   const acts = [];
   ["aggressive","growth","longterm"].forEach(key => {
     const s = d.strategies[key];
+    if(!s) return;
     (s.recent_activity||[]).forEach(a => acts.push({...a, icon:s.icon}));
   });
   acts.sort((a,b) => (b.date||"").localeCompare(a.date||""));
   const actRows = acts.slice(0,10).map(a => `<div class="trade-row" style="grid-template-columns:auto auto 1fr">
-      <span class="icon">${a.icon}</span><span class="detail">${a.date}</span><span class="detail" style="color:var(--cream)">${a.text}</span>
+      <span class="icon">${a.icon}</span><span class="detail">${esc(a.date)}</span><span class="detail" style="color:var(--cream)">${esc(a.text)}</span>
     </div>`).join("");
 
   el.innerHTML = `
     <div class="adv-meta">
       <span>Inception <b>${d.inception_date}</b></span>
       <span>As of <b>${d.as_of_date}</b></span>
-      <span>Runs <b>#${d.runs}</b></span>
-      <span>Source <b>${d.data_source || "Yahoo Finance daily closes"}</b></span>
+      <span>Runs <b>#${esc(d.runs)}</b></span>
+      <span>Source <b>${esc(d.data_source || "Yahoo Finance daily closes")}</b></span>
     </div>
     <div class="chart-wrap">
       <div class="chart-legend">
@@ -1810,7 +1820,7 @@ function renderTrackMain(){
     <div class="adv-sec-lbl" style="margin:20px 0 8px">Closed Trades</div>
     <div class="trades-feed">${tradeRows}</div>
     ${actRows ? `<div class="adv-sec-lbl" style="margin:20px 0 8px">Dividends · Rebalances · Events</div><div class="trades-feed">${actRows}</div>` : ""}
-    <div class="adv-disclaimer">${d.methodology_note || "Simulated paper-money portfolios. Not financial advice."}</div>`;
+    <div class="adv-disclaimer">${esc(d.methodology_note || "Simulated paper-money portfolios. Not financial advice.")}</div>`;
   const cv = $("equityChart");
   if(cv) drawEquityChart(cv, d.equity_curves || {dates:[]});
 }
@@ -1940,7 +1950,7 @@ function init(){
   $("refreshTrackBtn").addEventListener("click", async () => {
     await loadAdvisorData(true);
     renderTrackMain();
-    toast("Track record refreshed.", "ok");
+    toast(advisorLoadOk ? "Track record refreshed." : "Couldn't reach the data feed — showing last known.", advisorLoadOk ? "ok" : "err");
   });
   document.querySelector("details.league-legacy")?.addEventListener("toggle", (e) => {
     if(e.target.open) renderLeagueRecord();
@@ -1948,7 +1958,7 @@ function init(){
   $("advReloadBtn").addEventListener("click", async () => {
     await loadAdvisorData(true);
     renderAdvisor();
-    toast("Advisor data refreshed.", "ok");
+    toast(advisorLoadOk ? "Advisor data refreshed." : "Couldn't reach the data feed — showing last known.", advisorLoadOk ? "ok" : "err");
   });
   // load advisor data immediately — it's the landing view
   loadAdvisorData().then(() => { if(advisorData) renderAdvisor(); });

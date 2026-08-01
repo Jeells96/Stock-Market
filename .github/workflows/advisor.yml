@@ -1,10 +1,14 @@
 name: Autonomous Investment Advisor
 
 # Fires by itself — no browser, no human:
-#   • 13:10 UTC weekdays  → pre-open run (9:10am EDT / 8:10am EST): publishes the
-#     day's picks BEFORE the market opens, timestamped by the git commit.
-#   • 21:45 UTC weekdays  → post-close run (5:45pm EDT / 4:45pm EST): marks
-#     outcomes, applies stops/targets, updates the track record.
+#   • 21:45 UTC weekdays  → THE trading run (5:45pm EDT / 4:45pm EST): marks
+#     outcomes on the just-completed session, applies stops/targets, and enters
+#     new picks at that day's closing price — committed while tomorrow's
+#     outcome is still unknown, which is what makes the record verifiable.
+#   • 13:10 UTC weekdays  → catch-up run (9:10am EDT / 8:10am EST): replays any
+#     sessions a failed evening run missed. Never opens new positions (the
+#     engine refuses to trade at a stale close), so a late cron firing during
+#     market hours is harmless.
 # Manual runs are available from the Actions tab via "Run workflow".
 #
 # NOTE: GitHub only fires scheduled workflows from the DEFAULT branch — merge
@@ -27,7 +31,7 @@ concurrency:
 jobs:
   advise:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -59,10 +63,11 @@ jobs:
           else
             git commit -m "chore: advisor run $(date -u +%Y-%m-%dT%H:%MZ)"
           fi
-          # retry push in case of a concurrent update
+          # retry push in case of a concurrent update (|| true keeps bash -e
+          # from killing the loop on a transient pull failure)
           for i in 1 2 3; do
             if git push; then exit 0; fi
-            git pull --rebase
+            git pull --rebase || true
             sleep 5
           done
           git push
