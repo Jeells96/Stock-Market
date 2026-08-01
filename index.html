@@ -265,6 +265,28 @@
   .adv-pos-row.open .adv-pos-thesis{display:block}
   .adv-risk{font-size:10px;color:var(--gold-dim);line-height:1.5;border-top:1px dashed var(--border);padding-top:10px;margin-top:auto}
   .adv-disclaimer{margin-top:22px;padding:12px 16px;border:1px dashed var(--border);font-size:10px;color:var(--gold-dim);line-height:1.6;text-align:center;letter-spacing:.03em}
+  /* Today's Calls — plain buy/sell instructions */
+  .calls-panel{border:1px solid var(--border-strong);border-radius:2px;margin-bottom:20px;background:linear-gradient(180deg,rgba(22,43,82,0.8),rgba(15,31,61,0.8));overflow:hidden}
+  .calls-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:rgba(201,169,97,0.07)}
+  .calls-head .t{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--ivory)}
+  .calls-head .d{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-dim);margin-left:auto}
+  .call-row{display:grid;grid-template-columns:auto minmax(56px,auto) 1fr;gap:12px;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(201,169,97,0.1);font-size:12px}
+  .call-row:last-child{border-bottom:none}
+  .call-verb{font-size:11px;font-weight:700;letter-spacing:.15em;padding:5px 12px;border-radius:1px;text-transform:uppercase}
+  .call-verb.buy{background:rgba(74,222,128,0.15);color:var(--green);border:1px solid var(--green-dim)}
+  .call-verb.sell{background:rgba(248,113,113,0.15);color:var(--red);border:1px solid var(--red-dim)}
+  .call-verb.hold{background:rgba(201,169,97,0.12);color:var(--gold-bright);border:1px solid var(--gold-dim)}
+  .call-row .sym{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:var(--ivory)}
+  .call-row .why{color:var(--cream);line-height:1.5}
+  .call-row .why b{color:var(--ivory)}
+  .call-row .strat-tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);display:block;margin-top:2px}
+  .adv-ifyou{font-size:12px;line-height:1.6;color:var(--cream);background:rgba(8,17,31,0.5);border-left:2px solid var(--accent,#c9a961);padding:10px 12px;border-radius:1px}
+  .adv-ifyou b{color:var(--ivory)} .adv-ifyou .up{color:var(--green);font-weight:700} .adv-ifyou .down{color:var(--red);font-weight:700}
+  .pos-act{font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:2px 6px;border-radius:1px;margin-left:6px;vertical-align:2px}
+  .pos-act.buy{background:rgba(74,222,128,0.2);color:var(--green)}
+  .pos-act.hold{background:rgba(201,169,97,0.15);color:var(--gold-bright)}
+  .adv-pos-rule{grid-column:1/-1;font-size:10px;color:var(--gold-dim);line-height:1.45;padding-top:3px}
+  .adv-pos-rule b{color:var(--cream);font-weight:600}
   .live-chip{display:inline-flex;align-items:center;gap:5px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-bright);border:1px solid var(--gold-dim);padding:3px 8px;border-radius:1px;cursor:help}
   .live-chip .dot{width:5px;height:5px;border-radius:50%;background:#dc2626;box-shadow:0 0 6px #dc2626;animation:pulse 1.6s infinite}
   .fresh-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:6px 10px;border:1px solid var(--border);border-radius:1px}
@@ -323,7 +345,7 @@
   </div>
   <h1>Jaren's Stock Market Tracker</h1>
   <div class="subtitle">Intelligence · Conviction · Capital</div>
-  <div class="est">Est. MMXXVI · Autonomous Engine + Live Scanner · <span id="verTag">v2.1</span></div>
+  <div class="est">Est. MMXXVI · Autonomous Engine + Live Scanner · <span id="verTag">v2.2</span></div>
 </header>
 
 <nav class="tabs">
@@ -532,12 +554,12 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <footer>
-  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v2.1</span><br>
+  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v2.2</span><br>
   <span style="letter-spacing:.05em;text-transform:none">Paper-money model portfolios · not financial advice</span>
 </footer>
 
 <script>
-const APP_VERSION = "2.1";
+const APP_VERSION = "2.2";
 const UNIVERSES = {
   sp: ["AAPL","MSFT","GOOGL","GOOG","AMZN","NVDA","META","TSLA","BRK.B","JPM","V","UNH","XOM","JNJ","WMT","MA","PG","LLY","HD","CVX","ABBV","KO","PEP","MRK","AVGO","COST","BAC","ADBE","ACN","CRM","TMO","CSCO","NFLX","ABT","MCD","DHR","WFC","TXN","NEE","ORCL","DIS","AMD","PM","CMCSA","VZ","NKE","UPS","RTX","PFE","INTC","HON","INTU","AMGN","T","COP","UNP","LOW","SPGI","LIN","CAT","GS","MS","ISRG","BLK","NOW","BKNG","DE","AXP","SCHW","TJX","C","BMY","SYK","MMC","BA","ELV","GE","MDT","ADP","PLD","LMT","REGN","VRTX","GILD","BSX","TMUS","CI","CB","ZTS","SO","DUK","MO","PGR","MDLZ","SLB","ETN","ADI","FI","ICE","CME","SHW","KLAC","APD","NSC","HCA","FCX","WM","BDX","CL","EOG","FDX","ITW","CSX","EQIX","NOC","MMM","PNC","TGT","EMR","MPC","PSX","AON","ORLY","HUM","MCK","PSA","ROP","MSI","USB","CARR","COF","APH","AJG","TFC","GD","SRE","D","NXPI","AZO","KMB","MAR","AIG","WMB","TT","ECL","WELL","O","FIS","OKE","KMI","ROST","CCI","TRV","CHTR","GIS","ALL","HLT","STZ","ANET","FTNT","KHC","SYY","BIIB","DOW","KDP","LRCX","ABNB","CTAS","BK","AFL","NUE","IDXX","JCI","VLO","MET","OXY","PCAR","SPG","AMP","PAYX","EW","TEL","HSY","CMG","DXCM","CTSH","A","PRU","DLR","LEN","DHI","CNC","MNST","DD","CRWD","DG","KR","WBA","YUM","ADM","EXC","XEL","FAST","SBUX","WEC","ED","ROK","BKR","HAL","RSG","VRSK","TROW","CDNS","SNPS","WST","ANSS","CDW","WTW","GWW","ALGN","ZBH","TYL","KEYS","NDAQ","NTAP","STT","STE","RJF","PFG","PHM","HBAN","RF","CFG","TSCO","ULTA","DRI","HAS"],
   momentum: ["GME","AMC","BB","CLOV","SOFI","PLTR","HOOD","COIN","MSTR","MARA","RIOT","CLSK","WULF","HUT","BTBT","BITF","CIFR","HIVE","ARM","SMCI","AI","BBAI","SOUN","UPST","LCID","RIVN","FSR","NKLA","RIDE","QS","ENPH","SEDG","RUN","FSLR","SPWR","NOVA","ARRY","BE","PLUG","FCEL","BLDP","BEEM","SHLS","STEM","DQ","JKS","CSIQ","SOL","TSLA","NVDA","TSM","INTC","MU","ON","MCHP","SWKS","QRVO","LSCC","CRWD","ZS","NET","SNOW","DDOG","MDB","OKTA","DOCN","ESTC","FROG","CFLT","S","TENB","RPD","CYBR","VRNS","FTNT","PANW","CHKP","BSY","GTLB","NEWR","DT","PCTY","PAYC","WDAY","ZUO","BL","APPN","APPS","SE","GRAB","MELI","NU","STNE","PAGS","CART","RDDT","KSPI","HIMS","TLRY","CGC","ACB","CRON","SNDL","HEXO","OGI","VFF"],
@@ -1596,22 +1618,66 @@ function renderAdvisor(){
     <span>S&P 500 benchmark <b>${pctTxt(bench.total_return_pct)}</b></span>
   </div>`;
 
+  // ---- Today's Calls: plain buy/sell instructions across all strategies ----
+  const calls = [];
+  ["aggressive","growth","longterm"].forEach(key => {
+    const s = d.strategies[key];
+    if(!s) return;
+    (s.positions||[]).forEach(p => {
+      if(p.is_new) calls.push({verb:"buy", sym:p.symbol, strat:`${s.icon} ${s.label}`,
+        why:`Bought at <b>${fmt$(p.entry_price)}</b> (the ${esc(p.entry_date)} close). To copy it, buy near that price. `
+           + (p.target_price ? `Plan: sell above <b>${fmt$(p.target_price)}</b> (profit) or below <b>${fmt$(p.stop_price)}</b> (protect).` : `Long-term hold.`)});
+    });
+    (s.recent_trades||[]).forEach(t => {
+      if(t.exit_date === d.as_of_date) calls.push({verb:"sell", sym:t.symbol, strat:`${s.icon} ${s.label}`,
+        why:`Sold at <b>${fmt$(t.exit_price)}</b> — ${esc(t.reason)}. Result: <b class="${pctCls(t.pnl_pct)}">${pctTxt(t.pnl_pct)}</b> since ${esc(t.entry_date)}.`});
+    });
+  });
+  const callRows = calls.length ? calls.map(c => `<div class="call-row">
+      <span class="call-verb ${c.verb}">${c.verb}</span>
+      <span class="sym">${esc(c.sym)}<span class="strat-tag">${c.strat}</span></span>
+      <span class="why">${c.why}</span>
+    </div>`).join("")
+    : `<div class="call-row">
+        <span class="call-verb hold">Hold</span>
+        <span class="sym">—</span>
+        <span class="why">No new action right now. Keep the positions below — each one lists exactly when to sell it. New decisions are made automatically at every market close.</span>
+      </div>`;
+  const callsPanel = `<div class="calls-panel">
+    <div class="calls-head"><span>📣</span><span class="t">Today's Calls</span><span class="d">as of the ${esc(d.as_of_date)} close</span></div>
+    ${callRows}
+  </div>`;
+
   const cards = ["aggressive","growth","longterm"].map(key => {
     const s = d.strategies[key];
     if(!s) return "";
     const vsCls = pctCls(s.vs_spy_pct);
+    const startCap = d.starting_capital || 10000;
+    const spyTxt = `<span class="${pctCls(bench.total_return_pct)}">${pctTxt(bench.total_return_pct)}</span>`;
+    const ifYou = `<div class="adv-ifyou">If you had copied every call since <b>${esc(d.inception_date)}</b> with
+      $${startCap.toLocaleString()}, you'd have <b>${fmt$(s.equity)}</b> today —
+      <span class="${pctCls(s.total_return_pct)}">${pctTxt(s.total_return_pct)}</span> profit.
+      The same money in the S&P 500: ${spyTxt}.</div>`;
     const posRows = (s.positions||[]).map((p,i) => {
-      const detail = p.target_price
-        ? `in ${esc(p.entry_date)} @ ${fmt$(p.entry_price)} · tgt ${fmt$(p.target_price)} / stop ${fmt$(p.stop_price)}`
-        : `${p.name && p.name !== p.symbol ? esc(p.name) : "since " + esc(p.entry_date)} · ${fmt$(p.entry_price)}`;
+      const held = p.name && p.name !== p.symbol ? esc(p.name) : `bought ${esc(p.entry_date)}`;
+      let rule;
+      if(p.target_price){
+        const daysLeft = (s.max_hold_bars && p.bars_held != null) ? s.max_hold_bars - p.bars_held : null;
+        rule = `<b>Sell</b> when it closes above <b>${fmt$(p.target_price)}</b> (take profit) or below <b>${fmt$(p.stop_price)}</b> (cut loss)`
+             + (daysLeft != null ? ` — or automatically in <b>${Math.max(daysLeft,0)} trading day${daysLeft===1?"":"s"}</b>.` : `.`);
+      } else {
+        rule = `<b>Hold.</b> Sells only to rebalance — this is the compounding sleeve.`;
+      }
+      const act = p.is_new ? '<span class="pos-act buy">Buy</span>' : '<span class="pos-act hold">Hold</span>';
       return `<div class="adv-pos-row expand" data-k="${key}" data-i="${i}">
-        <span class="sym">${esc(p.symbol)}${p.is_new ? '<span class="new">NEW</span>' : ""}</span>
-        <span class="detail">${detail}</span>
+        <span class="sym">${esc(p.symbol)}${act}</span>
+        <span class="detail">${held} @ ${fmt$(p.entry_price)}</span>
         <span class="px">${fmt$(p.current_price)}</span>
         <span class="pnl ${pctCls(p.pnl_pct)}">${pctTxt(p.pnl_pct)}</span>
+        <span class="adv-pos-rule">${rule}</span>
         <span class="adv-pos-thesis">${esc(p.thesis || "—")}</span>
       </div>`;
-    }).join("") || `<div class="adv-pos-row"><span class="detail">All cash — waiting for qualified setups</span></div>`;
+    }).join("") || `<div class="adv-pos-row"><span class="detail">All cash — the model found no qualified setups yet. It re-decides at every market close and new buys appear in Today's Calls.</span></div>`;
     const wr = s.win_rate_pct != null ? s.win_rate_pct.toFixed(0) + "%" : "—";
     return `<div class="adv-card ${ADV_CARD_CLASS[key]}">
       <div class="adv-head">
@@ -1624,6 +1690,7 @@ function renderAdvisor(){
         <span class="adv-ret ${pctCls(s.total_return_pct)}">${pctTxt(s.total_return_pct)}</span>
         <span class="adv-vs">vs S&P <b class="${vsCls}">${pctTxt(s.vs_spy_pct)}</b></span>
       </div>
+      ${ifYou}
       <canvas class="adv-spark" id="spark-${key}"></canvas>
       <div class="adv-stats">
         <div class="adv-stat"><span class="lbl">Win Rate</span><span class="val">${wr}</span></div>
@@ -1637,7 +1704,7 @@ function renderAdvisor(){
     </div>`;
   }).join("");
 
-  body.innerHTML = meta + `<div class="adv-grid">${cards}</div>`;
+  body.innerHTML = meta + callsPanel + `<div class="adv-grid">${cards}</div>`;
   body.querySelectorAll(".adv-pos-row.expand").forEach(row => {
     row.addEventListener("click", () => row.classList.toggle("open"));
   });

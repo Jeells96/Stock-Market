@@ -1116,6 +1116,7 @@ def build_site_payload(state, bars, as_of, new_picks, data_source):
                 "pnl_pct": round((px / pos["entry_price"] - 1.0) * 100.0, 2) if pos["entry_price"] else 0.0,
                 "target_price": round(pos["target_price"], 2) if pos.get("target_price") else None,
                 "stop_price": round(pos["stop_price"], 2) if pos.get("stop_price") else None,
+                "bars_held": pos.get("bars_held", 0),
                 "thesis": pos.get("thesis", ""),
                 "is_new": pos["entry_date"] == as_of and any(
                     p["symbol"] == pos["symbol"] for p in new_picks.get(key, [])),
@@ -1125,6 +1126,7 @@ def build_site_payload(state, bars, as_of, new_picks, data_source):
             "key": key, "label": meta["label"], "icon": meta["icon"],
             "tagline": meta["tagline"], "horizon": meta["horizon"], "risk_note": meta["risk_note"],
             "equity": round(equity, 2), "cash": round(strat["cash"], 2),
+            "max_hold_bars": meta.get("max_hold_bars"),
             **stats,
             "positions": positions,
             "recent_trades": strat["closed"][-12:][::-1],
