@@ -59,6 +59,10 @@ COMMIT_MSG_PATH = os.path.join(DATA_DIR, "commit_msg.txt")  # gitignored
 
 STARTING_CAPITAL = 10_000.0
 FINNHUB_KEY = os.environ.get("FINNHUB_API_KEY", "").strip()
+# Skip the (expensive, aggressively rate-limited) chart endpoint entirely and
+# run on batched spark closes alone. Dividends/splits are then invisible for
+# the run, but the per-position ledgers back-fill them on the next full run.
+SPARK_ONLY = os.environ.get("ADVISOR_SPARK_ONLY", "") == "1"
 
 # ---------------------------------------------------------------- universes
 
@@ -306,6 +310,12 @@ def fetch_portfolio_bars(symbols):
     endpoint recovers (ex-dates are quarterly, so overlap is rare)."""
     out = {}
     symbols = list(dict.fromkeys(symbols))
+    if SPARK_ONLY:
+        print(f"Fetching {len(symbols)} portfolio symbols (spark-only mode)…")
+        for b in range(0, len(symbols), SPARK_BATCH):
+            out.update(fetch_spark_batch(symbols[b:b + SPARK_BATCH]))
+        print(f"  {len(out)}/{len(symbols)} ok")
+        return out
     print(f"Fetching {len(symbols)} portfolio symbols (full history + events)…")
     fail_streak = 0
     for i, sym in enumerate(symbols):
@@ -657,6 +667,9 @@ def replay_strategy(key, strat, bars, calendar, as_of):
                 continue
         else:
             pos["missing_runs"] = 0
+            # heal a symbol-as-name from an event-less bootstrap
+            if pos.get("name") == pos["symbol"] and h.get("name") and h["name"] != pos["symbol"]:
+                pos["name"] = h["name"]
             apply_pending_splits(pos, h, strat["activity"])
             # back-credit dividends whose ex-dates were already replayed but
             # went uncredited (event-less fallback data at the time) — the
@@ -1224,8 +1237,9 @@ def main():
             "growth", state["strategies"]["growth"], ranked_gro, as_of, can_trade)
         # upgrade fresh picks with full history (real company name + div/split
         # events) so the next replay has proper accounting from day one
-        fresh_syms = [p["symbol"] for picks in new_picks.values() for p in picks
-                      if p["symbol"] not in bars_critical]
+        fresh_syms = [] if SPARK_ONLY else [
+            p["symbol"] for picks in new_picks.values() for p in picks
+            if p["symbol"] not in bars_critical]
         for sym in fresh_syms:
             time.sleep(1.2)
             h = fetch_history(sym)
