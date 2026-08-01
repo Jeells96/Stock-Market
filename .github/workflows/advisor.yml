@@ -1,0 +1,68 @@
+name: Autonomous Investment Advisor
+
+# Fires by itself — no browser, no human:
+#   • 13:10 UTC weekdays  → pre-open run (9:10am EDT / 8:10am EST): publishes the
+#     day's picks BEFORE the market opens, timestamped by the git commit.
+#   • 21:45 UTC weekdays  → post-close run (5:45pm EDT / 4:45pm EST): marks
+#     outcomes, applies stops/targets, updates the track record.
+# Manual runs are available from the Actions tab via "Run workflow".
+#
+# NOTE: GitHub only fires scheduled workflows from the DEFAULT branch — merge
+# this to main to activate. GitHub also auto-disables schedules after 60 days
+# without repo activity, but the advisor's own daily commits keep it alive.
+
+on:
+  schedule:
+    - cron: "10 13 * * 1-5"
+    - cron: "45 21 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: advisor
+  cancel-in-progress: false
+
+jobs:
+  advise:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Run advisor engine
+        env:
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+        run: python scripts/advisor.py
+
+      - name: Commit and push results
+        run: |
+          git config user.name "advisor-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data REPORT.md README.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit (market closed or nothing new)."
+            exit 0
+          fi
+          if [ -f data/commit_msg.txt ]; then
+            git commit -F data/commit_msg.txt
+          else
+            git commit -m "chore: advisor run $(date -u +%Y-%m-%dT%H:%MZ)"
+          fi
+          # retry push in case of a concurrent update
+          for i in 1 2 3; do
+            if git push; then exit 0; fi
+            git pull --rebase
+            sleep 5
+          done
+          git push
