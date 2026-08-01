@@ -265,6 +265,8 @@
   .adv-pos-row.open .adv-pos-thesis{display:block}
   .adv-risk{font-size:10px;color:var(--gold-dim);line-height:1.5;border-top:1px dashed var(--border);padding-top:10px;margin-top:auto}
   .adv-disclaimer{margin-top:22px;padding:12px 16px;border:1px dashed var(--border);font-size:10px;color:var(--gold-dim);line-height:1.6;text-align:center;letter-spacing:.03em}
+  .live-chip{display:inline-flex;align-items:center;gap:5px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-bright);border:1px solid var(--gold-dim);padding:3px 8px;border-radius:1px;cursor:help}
+  .live-chip .dot{width:5px;height:5px;border-radius:50%;background:#dc2626;box-shadow:0 0 6px #dc2626;animation:pulse 1.6s infinite}
   .fresh-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:6px 10px;border:1px solid var(--border);border-radius:1px}
   .fresh-badge.ok{color:var(--green);border-color:var(--green-dim)}
   .fresh-badge.warn{color:#f59e0b;border-color:#f59e0b}
@@ -321,7 +323,7 @@
   </div>
   <h1>Jaren's Stock Market Tracker</h1>
   <div class="subtitle">Intelligence · Conviction · Capital</div>
-  <div class="est">Est. MMXXVI · Autonomous Engine + Live Scanner · <span id="verTag">v2.0</span></div>
+  <div class="est">Est. MMXXVI · Autonomous Engine + Live Scanner · <span id="verTag">v2.1</span></div>
 </header>
 
 <nav class="tabs">
@@ -530,12 +532,12 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <footer>
-  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v2.0</span><br>
+  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v2.1</span><br>
   <span style="letter-spacing:.05em;text-transform:none">Paper-money model portfolios · not financial advice</span>
 </footer>
 
 <script>
-const APP_VERSION = "2.0";
+const APP_VERSION = "2.1";
 const UNIVERSES = {
   sp: ["AAPL","MSFT","GOOGL","GOOG","AMZN","NVDA","META","TSLA","BRK.B","JPM","V","UNH","XOM","JNJ","WMT","MA","PG","LLY","HD","CVX","ABBV","KO","PEP","MRK","AVGO","COST","BAC","ADBE","ACN","CRM","TMO","CSCO","NFLX","ABT","MCD","DHR","WFC","TXN","NEE","ORCL","DIS","AMD","PM","CMCSA","VZ","NKE","UPS","RTX","PFE","INTC","HON","INTU","AMGN","T","COP","UNP","LOW","SPGI","LIN","CAT","GS","MS","ISRG","BLK","NOW","BKNG","DE","AXP","SCHW","TJX","C","BMY","SYK","MMC","BA","ELV","GE","MDT","ADP","PLD","LMT","REGN","VRTX","GILD","BSX","TMUS","CI","CB","ZTS","SO","DUK","MO","PGR","MDLZ","SLB","ETN","ADI","FI","ICE","CME","SHW","KLAC","APD","NSC","HCA","FCX","WM","BDX","CL","EOG","FDX","ITW","CSX","EQIX","NOC","MMM","PNC","TGT","EMR","MPC","PSX","AON","ORLY","HUM","MCK","PSA","ROP","MSI","USB","CARR","COF","APH","AJG","TFC","GD","SRE","D","NXPI","AZO","KMB","MAR","AIG","WMB","TT","ECL","WELL","O","FIS","OKE","KMI","ROST","CCI","TRV","CHTR","GIS","ALL","HLT","STZ","ANET","FTNT","KHC","SYY","BIIB","DOW","KDP","LRCX","ABNB","CTAS","BK","AFL","NUE","IDXX","JCI","VLO","MET","OXY","PCAR","SPG","AMP","PAYX","EW","TEL","HSY","CMG","DXCM","CTSH","A","PRU","DLR","LEN","DHI","CNC","MNST","DD","CRWD","DG","KR","WBA","YUM","ADM","EXC","XEL","FAST","SBUX","WEC","ED","ROK","BKR","HAL","RSG","VRSK","TROW","CDNS","SNPS","WST","ANSS","CDW","WTW","GWW","ALGN","ZBH","TYL","KEYS","NDAQ","NTAP","STT","STE","RJF","PFG","PHM","HBAN","RF","CFG","TSCO","ULTA","DRI","HAS"],
   momentum: ["GME","AMC","BB","CLOV","SOFI","PLTR","HOOD","COIN","MSTR","MARA","RIOT","CLSK","WULF","HUT","BTBT","BITF","CIFR","HIVE","ARM","SMCI","AI","BBAI","SOUN","UPST","LCID","RIVN","FSR","NKLA","RIDE","QS","ENPH","SEDG","RUN","FSLR","SPWR","NOVA","ARRY","BE","PLUG","FCEL","BLDP","BEEM","SHLS","STEM","DQ","JKS","CSIQ","SOL","TSLA","NVDA","TSM","INTC","MU","ON","MCHP","SWKS","QRVO","LSCC","CRWD","ZS","NET","SNOW","DDOG","MDB","OKTA","DOCN","ESTC","FROG","CFLT","S","TENB","RPD","CYBR","VRNS","FTNT","PANW","CHKP","BSY","GTLB","NEWR","DT","PCTY","PAYC","WDAY","ZUO","BL","APPN","APPS","SE","GRAB","MELI","NU","STNE","PAGS","CART","RDDT","KSPI","HIMS","TLRY","CGC","ACB","CRON","SNDL","HEXO","OGI","VFF"],
@@ -1482,7 +1484,8 @@ function switchTab(name){
   $$(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + name));
   if(name === "portfolio"){ renderPortfolio(); startPfAutoRefresh(); }
   else { stopPfAutoRefresh(); }
-  if(name === "advisor") renderAdvisor();
+  if(name === "advisor"){ renderAdvisor(); startLiveOverlay(); }
+  else { stopLiveOverlay(); }
   if(name === "track") renderTrackMain();
 }
 
@@ -1825,6 +1828,66 @@ function renderTrackMain(){
   if(cv) drawEquityChart(cv, d.equity_curves || {dates:[]});
 }
 
+/* ===== Live overlay =====
+   The committed record trades and marks at official daily closes — that's
+   what keeps it verifiable. But while you're LOOKING at the Advisor tab,
+   positions and equity update with real-time Finnhub quotes (the free key
+   resets every minute), refreshed every 60s. */
+let liveTimer = null;
+async function applyLiveOverlay(){
+  if(!advisorData || !apiKey) return;
+  const strategies = ["aggressive","growth","longterm"];
+  const syms = [...new Set(strategies.flatMap(k => (advisorData.strategies[k]?.positions||[]).map(p => p.symbol)))];
+  if(!syms.length) return;
+  const quotes = {};
+  for(const sym of syms){
+    try { const q = await finn("/quote", {symbol: sym}, 55*1000); if(q && q.c) quotes[sym] = q; }
+    catch(e){ /* keep official close for this one */ }
+  }
+  if(!Object.keys(quotes).length) return;
+  strategies.forEach(key => {
+    const s = advisorData.strategies[key];
+    if(!s) return;
+    let equity = s.cash ?? 0;
+    (s.positions||[]).forEach((p,i) => {
+      const q = quotes[p.symbol];
+      const px = q ? q.c : p.current_price;
+      equity += (p.shares || 0) * px;
+      const row = document.querySelector(`.adv-pos-row[data-k="${key}"][data-i="${i}"]`);
+      if(row && q && p.entry_price){
+        const pnl = (q.c / p.entry_price - 1) * 100;
+        row.querySelector(".px").textContent = fmt$(q.c);
+        const el = row.querySelector(".pnl");
+        el.textContent = pctTxt(pnl);
+        el.className = "pnl " + pctCls(pnl);
+      }
+    });
+    const card = document.querySelector(`.adv-card.${ADV_CARD_CLASS[key]}`);
+    if(card && (s.positions||[]).length){
+      const ret = (equity / (advisorData.starting_capital || 10000) - 1) * 100;
+      card.querySelector(".adv-equity").textContent = fmt$(equity);
+      const retEl = card.querySelector(".adv-ret");
+      retEl.textContent = pctTxt(ret);
+      retEl.className = "adv-ret " + pctCls(ret);
+      if(!card.querySelector(".live-chip")){
+        const chip = document.createElement("span");
+        chip.className = "live-chip";
+        chip.innerHTML = '<span class="dot"></span>Live';
+        chip.title = "Live Finnhub prices, refreshed every minute while this tab is open. The committed track record still uses official daily closes.";
+        card.querySelector(".adv-equity-row").appendChild(chip);
+      }
+    }
+  });
+}
+function startLiveOverlay(){
+  stopLiveOverlay();
+  applyLiveOverlay();
+  liveTimer = setInterval(applyLiveOverlay, 60000);
+}
+function stopLiveOverlay(){
+  if(liveTimer){ clearInterval(liveTimer); liveTimer = null; }
+}
+
 let advResizeTimer = null;
 window.addEventListener("resize", () => {
   clearTimeout(advResizeTimer);
@@ -1961,7 +2024,7 @@ function init(){
     toast(advisorLoadOk ? "Advisor data refreshed." : "Couldn't reach the data feed — showing last known.", advisorLoadOk ? "ok" : "err");
   });
   // load advisor data immediately — it's the landing view
-  loadAdvisorData().then(() => { if(advisorData) renderAdvisor(); });
+  loadAdvisorData().then(() => { if(advisorData){ renderAdvisor(); startLiveOverlay(); } });
 
   // ===== Auto-refresh =====
   // Keeps picks as current as possible without every device hammering Finnhub.

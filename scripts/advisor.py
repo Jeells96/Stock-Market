@@ -58,7 +58,10 @@ README_PATH = os.path.join(REPO_ROOT, "README.md")
 COMMIT_MSG_PATH = os.path.join(DATA_DIR, "commit_msg.txt")  # gitignored
 
 STARTING_CAPITAL = 10_000.0
-FINNHUB_KEY = os.environ.get("FINNHUB_API_KEY", "").strip()
+# The public free-tier key already shipped in index.html — an env secret
+# overrides it. 60 calls/min, resets every minute.
+FINNHUB_KEY = os.environ.get("FINNHUB_API_KEY", "").strip() or \
+    "d874rh1r01ql0hsk9qogd874rh1r01ql0hsk9qp0"
 # Skip the (expensive, aggressively rate-limited) chart endpoint entirely and
 # run on batched spark closes alone. Dividends/splits are then invisible for
 # the run, but the per-position ledgers back-fill them on the next full run.
@@ -288,7 +291,7 @@ def trim_partial_session(bars):
 
 
 def finnhub_quote(sym):
-    """Fallback current quote (used only to sanity-check, never required)."""
+    """Current quote from Finnhub: {'c': last price, 't': last trade unix ts}."""
     if not FINNHUB_KEY:
         return None
     try:
@@ -296,10 +299,91 @@ def finnhub_quote(sym):
             f"https://finnhub.io/api/v1/quote?symbol={urllib.parse.quote(sym)}&token={FINNHUB_KEY}",
             timeout=10,
         )
-        c = j.get("c")
-        return float(c) if isinstance(c, (int, float)) and c > 0 else None
+        c, t = j.get("c"), j.get("t")
+        if isinstance(c, (int, float)) and c > 0 and isinstance(t, (int, float)) and t > 0:
+            return {"c": float(c), "t": int(t)}
     except Exception:  # noqa: BLE001
-        return None
+        pass
+    return None
+
+
+def ny_now():
+    try:
+        from zoneinfo import ZoneInfo
+        return datetime.now(ZoneInfo("America/New_York"))
+    except Exception:  # noqa: BLE001
+        return datetime.now(timezone.utc) - timedelta(hours=4)
+
+
+def finnhub_close_bars(symbols):
+    """Absolute-floor data source: outside market hours, Finnhub's quote price
+    IS the most recent completed session's official close. Builds single-bar
+    histories good for marks, exits, and same-day entries — no indicator
+    history, no div/split events (the ledgers heal those later). Never used
+    while the market is open, so a live price can't masquerade as a close."""
+    now = ny_now()
+    if now.weekday() < 5 and (9, 25) <= (now.hour, now.minute) < (16, 10):
+        print("  Finnhub floor unavailable mid-session — no completed close to read.")
+        return {}
+    out = {}
+    print(f"Fetching {len(symbols)} end-of-day closes from Finnhub…")
+    for sym in symbols:
+        q = finnhub_quote(sym)
+        if q:
+            d = market_date(q["t"], "America/New_York")
+            out[sym] = {"dates": [d], "close": {d: q["c"]}, "volume": {},
+                        "name": sym, "divs": {}, "splits": {}, "has_events": False}
+        time.sleep(1.1)  # free tier: 60 calls/min
+    print(f"  {len(out)}/{len(symbols)} ok")
+    return out
+
+
+STOOQ_HOSTS = ["https://stooq.com", "https://stooq.pl"]
+
+
+def fetch_history_stooq(sym):
+    """Daily close history from Stooq's free CSV endpoint (no key). Prices are
+    split-adjusted; no div/split events, so has_events=False and the ledgers
+    heal events when a Yahoo fetch next succeeds."""
+    mapped = sym.lower().replace(".", "-") + ".us"
+    for host in STOOQ_HOSTS:
+        try:
+            url = f"{host}/q/d/l/?s={mapped}&i=d"
+            if requests is not None:
+                r = requests.get(url, headers=UA, timeout=15)
+                r.raise_for_status()
+                text = r.text
+            else:
+                req = urllib.request.Request(url, headers=UA)
+                with urllib.request.urlopen(req, timeout=15) as resp:
+                    text = resp.read().decode("utf-8", "replace")
+            lines = text.strip().splitlines()
+            if not lines or not lines[0].lower().startswith("date"):
+                continue
+            dates, close_map, vol_map = [], {}, {}
+            for line in lines[-280:]:
+                parts = line.split(",")
+                if len(parts) < 5 or parts[0].lower() == "date":
+                    continue
+                d, c = parts[0], parts[4]
+                try:
+                    px = float(c)
+                except ValueError:
+                    continue
+                if px <= 0 or len(d) != 10:
+                    continue
+                dates.append(d)
+                close_map[d] = px
+                try:
+                    vol_map[d] = float(parts[5]) if len(parts) > 5 and parts[5] else 0.0
+                except ValueError:
+                    vol_map[d] = 0.0
+            if len(dates) >= 2:
+                return {"dates": dates, "close": close_map, "volume": vol_map,
+                        "name": sym, "divs": {}, "splits": {}, "has_events": False}
+        except Exception:  # noqa: BLE001
+            continue
+    return None
 
 
 def fetch_portfolio_bars(symbols):
@@ -335,6 +419,15 @@ def fetch_portfolio_bars(symbols):
         print(f"  chart endpoint gave {len(out)}/{len(symbols)} — spark fallback for {missing}")
         for b in range(0, len(missing), SPARK_BATCH):
             out.update(fetch_spark_batch(missing[b:b + SPARK_BATCH]))
+    missing = [s for s in symbols if s not in out]
+    if missing:
+        print(f"  spark gave {len(out)}/{len(symbols)} — Stooq fallback for {missing}")
+        for i, sym in enumerate(missing):
+            h = fetch_history_stooq(sym)
+            if h:
+                out[sym] = h
+            if i < len(missing) - 1:
+                time.sleep(0.3)
     print(f"  {len(out)}/{len(symbols)} ok")
     return out
 
@@ -392,6 +485,23 @@ def fetch_universe(symbols):
         out.update(fetch_spark_batch(chunk))
         if b < n_batches - 1:
             time.sleep(2.0)
+    missing = [s for s in symbols if s not in out]
+    if missing and len(missing) <= 250:
+        print(f"  spark gave {len(out)}/{len(symbols)} — Stooq gap-fill for {len(missing)} symbols")
+        for i, sym in enumerate(missing):
+            h = fetch_history_stooq(sym)
+            if h:
+                out[sym] = h
+            if i < len(missing) - 1:
+                time.sleep(0.25)
+    elif missing:
+        # spark failed wholesale — try Stooq for the entire universe, capped
+        print(f"  spark gave only {len(out)}/{len(symbols)} — Stooq sweep (capped at 250)")
+        for i, sym in enumerate(missing[:250]):
+            h = fetch_history_stooq(sym)
+            if h:
+                out[sym] = h
+            time.sleep(0.25)
     print(f"  {len(out)}/{len(symbols)} ok")
     return out
 
@@ -1153,6 +1263,15 @@ def main():
         print("Benchmark fetch failed — cooling down 180s before one more attempt…")
         time.sleep(180)
         bars_critical = fetch_portfolio_bars(critical)
+    finnhub_floor = False
+    if BENCHMARK_SYMBOL not in bars_critical and FINNHUB_KEY:
+        # absolute floor: end-of-day closes from Finnhub keep the daily record
+        # alive even when every history source is blocked
+        print("History sources down — falling back to Finnhub end-of-day closes.")
+        floor_bars = finnhub_close_bars(critical)
+        if BENCHMARK_SYMBOL in floor_bars:
+            bars_critical = floor_bars
+            finnhub_floor = True
     if BENCHMARK_SYMBOL not in bars_critical:
         print("FATAL: no benchmark data — aborting without touching state.")
         sys.exit(1)
@@ -1162,12 +1281,19 @@ def main():
 
     # 2) wide scanning universe (batched closes) — a bad day here only means
     #    we skip opening NEW positions; existing ones are still managed
-    universe_syms = [s for s in dict.fromkeys(MOMENTUM + SP_CORE) if s not in bars_critical]
-    bars_universe = fetch_universe(universe_syms)
-    universe_ok = len(bars_universe) >= len(universe_syms) * MIN_FETCH_COVERAGE
-    if not universe_ok:
-        print(f"  warning: universe coverage too low ({len(bars_universe)}/{len(universe_syms)}) — "
-              "no new positions will be opened this run.")
+    if finnhub_floor:
+        # no indicator history available anyway — don't burn 10 minutes on
+        # blocked endpoints; manage existing positions and stop there
+        bars_universe, universe_syms = {}, []
+        universe_ok = False
+        print("  (Finnhub floor mode: skipping universe scan — no new picks this run.)")
+    else:
+        universe_syms = [s for s in dict.fromkeys(MOMENTUM + SP_CORE) if s not in bars_critical]
+        bars_universe = fetch_universe(universe_syms)
+        universe_ok = len(bars_universe) >= len(universe_syms) * MIN_FETCH_COVERAGE
+        if not universe_ok:
+            print(f"  warning: universe coverage too low ({len(bars_universe)}/{len(universe_syms)}) — "
+                  "no new positions will be opened this run.")
 
     bars = {**bars_universe, **bars_critical}  # full-history data wins
     trim_partial_session(bars)
