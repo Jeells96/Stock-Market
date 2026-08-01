@@ -1149,8 +1149,10 @@ def build_site_payload(state, bars, as_of, new_picks, data_source):
         "data_source": data_source,
         "methodology_note": (
             "All trades are simulated with paper money at daily closing prices. "
-            "Picks are committed to git before outcomes are known — the commit history is the proof. "
-            "Not financial advice."
+            "Every position is re-checked at every market close without exception; a sell enters the "
+            "record only when the model actually fires the signal, booked at that day's real closing "
+            "price — never at the planned target or stop. Picks are committed to git before outcomes "
+            "are known — the commit history is the proof. Not financial advice."
         ),
     }
 

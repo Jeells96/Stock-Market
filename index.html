@@ -287,6 +287,13 @@
   .pos-act.hold{background:rgba(201,169,97,0.15);color:var(--gold-bright)}
   .adv-pos-rule{grid-column:1/-1;font-size:10px;color:var(--gold-dim);line-height:1.45;padding-top:3px}
   .adv-pos-rule b{color:var(--cream);font-weight:600}
+  .adv-pos-row.breach-stop{background:rgba(220,38,38,0.14);border-left-color:var(--red);animation:glowStop 2s ease-in-out infinite}
+  .adv-pos-row.breach-target{background:rgba(74,222,128,0.12);border-left-color:var(--green);animation:glowProfit 2s ease-in-out infinite}
+  .sellnow{font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:2px 6px;border-radius:1px;margin-left:6px;vertical-align:2px;animation:pulse 1.4s infinite}
+  .sellnow.stop{background:var(--red-dim);color:#fff}
+  .sellnow.target{background:var(--green-dim);color:#06220f}
+  .live-alerts{border:1px solid var(--red-dim);border-radius:2px;margin-bottom:16px;background:rgba(220,38,38,0.08);padding:2px 0}
+  .live-alerts .call-row{border-bottom-color:rgba(220,38,38,0.15)}
   .live-chip{display:inline-flex;align-items:center;gap:5px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-bright);border:1px solid var(--gold-dim);padding:3px 8px;border-radius:1px;cursor:help}
   .live-chip .dot{width:5px;height:5px;border-radius:50%;background:#dc2626;box-shadow:0 0 6px #dc2626;animation:pulse 1.6s infinite}
   .fresh-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:6px 10px;border:1px solid var(--border);border-radius:1px}
@@ -345,7 +352,7 @@
   </div>
   <h1>Jaren's Stock Market Tracker</h1>
   <div class="subtitle">Intelligence · Conviction · Capital</div>
-  <div class="est">Est. MMXXVI · Autonomous Engine + Live Scanner · <span id="verTag">v2.2</span></div>
+  <div class="est">Est. MMXXVI · Autonomous Engine + Live Scanner · <span id="verTag">v2.3</span></div>
 </header>
 
 <nav class="tabs">
@@ -456,7 +463,8 @@
     <div class="track-verify">
       <span class="shield">🛡️</span>
       <span>Picks are committed to the repository <b>before</b> their outcomes are known, so this record
-      can't be rewritten after the fact. Audit any day yourself:
+      can't be rewritten after the fact. Sells are booked at the <b>actual closing price</b> on the day the
+      model fires the signal — never at the planned target or stop. Audit any day yourself:
       <a href="https://github.com/jeells96/Stock-Market/commits/main/data" target="_blank" rel="noopener">commit history</a> ·
       <a href="https://github.com/jeells96/Stock-Market/tree/main/data/history" target="_blank" rel="noopener">daily snapshots</a> ·
       <a href="https://github.com/jeells96/Stock-Market/blob/main/REPORT.md" target="_blank" rel="noopener">latest report</a></span>
@@ -554,12 +562,12 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <footer>
-  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v2.2</span><br>
+  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v2.3</span><br>
   <span style="letter-spacing:.05em;text-transform:none">Paper-money model portfolios · not financial advice</span>
 </footer>
 
 <script>
-const APP_VERSION = "2.2";
+const APP_VERSION = "2.3";
 const UNIVERSES = {
   sp: ["AAPL","MSFT","GOOGL","GOOG","AMZN","NVDA","META","TSLA","BRK.B","JPM","V","UNH","XOM","JNJ","WMT","MA","PG","LLY","HD","CVX","ABBV","KO","PEP","MRK","AVGO","COST","BAC","ADBE","ACN","CRM","TMO","CSCO","NFLX","ABT","MCD","DHR","WFC","TXN","NEE","ORCL","DIS","AMD","PM","CMCSA","VZ","NKE","UPS","RTX","PFE","INTC","HON","INTU","AMGN","T","COP","UNP","LOW","SPGI","LIN","CAT","GS","MS","ISRG","BLK","NOW","BKNG","DE","AXP","SCHW","TJX","C","BMY","SYK","MMC","BA","ELV","GE","MDT","ADP","PLD","LMT","REGN","VRTX","GILD","BSX","TMUS","CI","CB","ZTS","SO","DUK","MO","PGR","MDLZ","SLB","ETN","ADI","FI","ICE","CME","SHW","KLAC","APD","NSC","HCA","FCX","WM","BDX","CL","EOG","FDX","ITW","CSX","EQIX","NOC","MMM","PNC","TGT","EMR","MPC","PSX","AON","ORLY","HUM","MCK","PSA","ROP","MSI","USB","CARR","COF","APH","AJG","TFC","GD","SRE","D","NXPI","AZO","KMB","MAR","AIG","WMB","TT","ECL","WELL","O","FIS","OKE","KMI","ROST","CCI","TRV","CHTR","GIS","ALL","HLT","STZ","ANET","FTNT","KHC","SYY","BIIB","DOW","KDP","LRCX","ABNB","CTAS","BK","AFL","NUE","IDXX","JCI","VLO","MET","OXY","PCAR","SPG","AMP","PAYX","EW","TEL","HSY","CMG","DXCM","CTSH","A","PRU","DLR","LEN","DHI","CNC","MNST","DD","CRWD","DG","KR","WBA","YUM","ADM","EXC","XEL","FAST","SBUX","WEC","ED","ROK","BKR","HAL","RSG","VRSK","TROW","CDNS","SNPS","WST","ANSS","CDW","WTW","GWW","ALGN","ZBH","TYL","KEYS","NDAQ","NTAP","STT","STE","RJF","PFG","PHM","HBAN","RF","CFG","TSCO","ULTA","DRI","HAS"],
   momentum: ["GME","AMC","BB","CLOV","SOFI","PLTR","HOOD","COIN","MSTR","MARA","RIOT","CLSK","WULF","HUT","BTBT","BITF","CIFR","HIVE","ARM","SMCI","AI","BBAI","SOUN","UPST","LCID","RIVN","FSR","NKLA","RIDE","QS","ENPH","SEDG","RUN","FSLR","SPWR","NOVA","ARRY","BE","PLUG","FCEL","BLDP","BEEM","SHLS","STEM","DQ","JKS","CSIQ","SOL","TSLA","NVDA","TSM","INTC","MU","ON","MCHP","SWKS","QRVO","LSCC","CRWD","ZS","NET","SNOW","DDOG","MDB","OKTA","DOCN","ESTC","FROG","CFLT","S","TENB","RPD","CYBR","VRNS","FTNT","PANW","CHKP","BSY","GTLB","NEWR","DT","PCTY","PAYC","WDAY","ZUO","BL","APPN","APPS","SE","GRAB","MELI","NU","STNE","PAGS","CART","RDDT","KSPI","HIMS","TLRY","CGC","ACB","CRON","SNDL","HEXO","OGI","VFF"],
@@ -1626,7 +1634,7 @@ function renderAdvisor(){
     (s.positions||[]).forEach(p => {
       if(p.is_new) calls.push({verb:"buy", sym:p.symbol, strat:`${s.icon} ${s.label}`,
         why:`Bought at <b>${fmt$(p.entry_price)}</b> (the ${esc(p.entry_date)} close). To copy it, buy near that price. `
-           + (p.target_price ? `Plan: sell above <b>${fmt$(p.target_price)}</b> (profit) or below <b>${fmt$(p.stop_price)}</b> (protect).` : `Long-term hold.`)});
+           + (p.target_price ? `Watched at every close — you'll get an explicit SELL call the day it closes above <b>${fmt$(p.target_price)}</b> or below <b>${fmt$(p.stop_price)}</b>, booked at that day's real closing price.` : `Long-term hold.`)});
     });
     (s.recent_trades||[]).forEach(t => {
       if(t.exit_date === d.as_of_date) calls.push({verb:"sell", sym:t.symbol, strat:`${s.icon} ${s.label}`,
@@ -1663,8 +1671,9 @@ function renderAdvisor(){
       let rule;
       if(p.target_price){
         const daysLeft = (s.max_hold_bars && p.bars_held != null) ? s.max_hold_bars - p.bars_held : null;
-        rule = `<b>Sell</b> when it closes above <b>${fmt$(p.target_price)}</b> (take profit) or below <b>${fmt$(p.stop_price)}</b> (cut loss)`
-             + (daysLeft != null ? ` — or automatically in <b>${Math.max(daysLeft,0)} trading day${daysLeft===1?"":"s"}</b>.` : `.`);
+        rule = `Becomes a <b>SELL call</b> the day it closes above <b>${fmt$(p.target_price)}</b> (take profit) or below <b>${fmt$(p.stop_price)}</b> (cut loss)`
+             + (daysLeft != null ? ` — or automatically in <b>${Math.max(daysLeft,0)} trading day${daysLeft===1?"":"s"}</b>.` : `.`)
+             + ` The record books the real closing price that fires the signal — never the planned number.`;
       } else {
         rule = `<b>Hold.</b> Sells only to rebalance — this is the compounding sleeve.`;
       }
@@ -1912,6 +1921,7 @@ async function applyLiveOverlay(){
     catch(e){ /* keep official close for this one */ }
   }
   if(!Object.keys(quotes).length) return;
+  const breaches = [];
   strategies.forEach(key => {
     const s = advisorData.strategies[key];
     if(!s) return;
@@ -1927,6 +1937,21 @@ async function applyLiveOverlay(){
         const el = row.querySelector(".pnl");
         el.textContent = pctTxt(pnl);
         el.className = "pnl " + pctCls(pnl);
+        // real-time breach watch: raise the alarm the moment the live price
+        // crosses a stop or target — don't wait for the closing bell
+        row.classList.remove("breach-stop", "breach-target");
+        row.querySelector(".sellnow")?.remove();
+        let breach = null;
+        if(p.stop_price && q.c <= p.stop_price) breach = "stop";
+        else if(p.target_price && q.c >= p.target_price) breach = "target";
+        if(breach){
+          row.classList.add("breach-" + breach);
+          const chip = document.createElement("span");
+          chip.className = "sellnow " + breach;
+          chip.textContent = "SELL NOW";
+          row.querySelector(".sym").appendChild(chip);
+          breaches.push({key, s, p, q, breach});
+        }
       }
     });
     const card = document.querySelector(`.adv-card.${ADV_CARD_CLASS[key]}`);
@@ -1945,6 +1970,23 @@ async function applyLiveOverlay(){
       }
     }
   });
+  // live SELL NOW strip — surfaced above everything the moment a breach exists
+  document.getElementById("liveAlerts")?.remove();
+  const wrap = $("advisorBody");
+  if(breaches.length && wrap){
+    const div = document.createElement("div");
+    div.id = "liveAlerts";
+    div.className = "live-alerts";
+    div.innerHTML = breaches.map(b => `<div class="call-row">
+      <span class="call-verb sell">Sell now</span>
+      <span class="sym">${esc(b.p.symbol)}<span class="strat-tag">${b.s.icon} ${esc(b.s.label)}</span></span>
+      <span class="why">Live at <b>${fmt$(b.q.c)}</b> — ${b.breach === "stop"
+        ? `below the <b>${fmt$(b.p.stop_price)}</b> stop. If you're copying this strategy, sell now to cut the loss;`
+        : `above the <b>${fmt$(b.p.target_price)}</b> target. If you're copying this strategy, sell now to lock the profit;`}
+      the official record books it at today's actual closing price.</span>
+    </div>`).join("");
+    wrap.prepend(div);
+  }
 }
 function startLiveOverlay(){
   stopLiveOverlay();
