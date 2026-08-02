@@ -7,6 +7,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta name="description" content="Four automatic strategies invest pretend money and tell you exactly what to do — with a public, tamper-proof track record." />
+<meta name="theme-color" content="#0a1628" />
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="apple-touch-icon.png" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230f1f3d%22/><path d=%22M18 72 L38 56 L50 62 L82 30%22 stroke=%22%23e6c878%22 stroke-width=%229%22 fill=%22none%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22/><path d=%22M84 28 L84 46 L66 28 Z%22 fill=%22%23e6c878%22/></svg>" />
 <style>
   /* ============ Four tabs, old navy-and-gold soul ============ */
   :root{
@@ -74,6 +81,18 @@
   .tabbtn[data-tab="growth"]{--accent:var(--steady)}
   .tabbtn[data-tab="longterm"]{--accent:var(--nest)}
 
+  .leader{position:absolute;top:-10px;right:-6px;font-size:16px;filter:drop-shadow(0 0 4px rgba(0,0,0,0.6))}
+  .tabbtn{position:relative}
+  .combined{text-align:center;font-size:13px;color:var(--cream);margin:-8px 0 18px;position:relative;z-index:2}
+  .combined b{color:#fff}
+  .stale{background:rgba(220,38,38,0.12);border:1px solid var(--down);border-radius:8px;color:var(--ivory);
+    padding:12px 16px;margin-bottom:18px;font-size:13px;position:relative;z-index:2}
+  @media (prefers-reduced-motion: reduce){
+    .ticker-track{animation:none}
+    .alertcard{animation:none}
+    .ticker-label .dot{animation:none}
+  }
+
   /* ---- cards ---- */
   .card{background:linear-gradient(180deg,rgba(22,43,82,0.7),rgba(15,31,61,0.7));border:1px solid var(--line);border-radius:8px;
         padding:24px 26px;margin-bottom:20px;position:relative;z-index:2}
@@ -129,6 +148,9 @@
   <button class="tabbtn" data-tab="growth"><span class="icon">📈</span><span class="name">Steady Climber</span><span class="val" id="tabval-growth">…</span></button>
   <button class="tabbtn" data-tab="longterm"><span class="icon">🏛️</span><span class="name">Nest Egg</span><span class="val" id="tabval-longterm">…</span></button>
 </div>
+
+<p class="combined" id="combined"></p>
+<div id="staleWarn"></div>
 
 <main id="content">
   <div class="card"><h2>One moment…</h2><p>Fetching the latest report from the machine.</p></div>
@@ -224,9 +246,25 @@ function liveEquity(key){
 /* ---------- rendering ---------- */
 function renderTabs(){
   const startCap = DATA?.starting_capital || START_CAP_FALLBACK;
+  // crown the current leader (only once someone is actually ahead)
+  let best = null, bestEq = -Infinity, total = 0, n = 0;
+  ORDER.forEach(k=>{
+    if(!DATA?.strategies[k]) return;
+    const eq = liveEquity(k);
+    total += eq; n++;
+    if(eq > bestEq){ bestEq = eq; best = k; }
+  });
+  const crowned = best && bestEq > startCap + 0.5 ? best : null;
   document.querySelectorAll(".tabbtn").forEach(btn=>{
     const key = btn.dataset.tab;
     btn.classList.toggle("active", key===currentTab);
+    btn.querySelector(".leader")?.remove();
+    if(key === crowned){
+      const c = document.createElement("span");
+      c.className = "leader"; c.textContent = "🏆";
+      c.title = "Currently in the lead";
+      btn.appendChild(c);
+    }
     const el = $("tabval-"+key);
     if(el && DATA?.strategies[key]){
       const eq = liveEquity(key);
@@ -235,6 +273,16 @@ function renderTabs(){
       el.style.color = Math.abs(diff)<0.5 ? "" : (diff>0 ? "var(--up)" : "var(--down)");
     }
   });
+  if(n){
+    const startAll = n * startCap;
+    $("combined").innerHTML = `All four together: <b>${money(total)}</b> — ${gainWords(total, startAll)}`;
+  }
+  // stale-feed warning: the machine reports every market day; silence means trouble
+  const days = DATA ? Math.floor((Date.now() - new Date(DATA.as_of_date + "T21:00:00Z").getTime()) / 86400000) : 0;
+  $("staleWarn").innerHTML = days > 4
+    ? `<div class="stale"><b>Heads up:</b> the machine hasn't reported since ${fmtDate(DATA.as_of_date)} —
+       that's longer than normal. The numbers below are from its last report.</div>`
+    : "";
 }
 
 function todayCalls(key){
@@ -434,6 +482,12 @@ window.addEventListener("hashchange", ()=>{
   if(ORDER.includes(k) && k!==currentTab){ currentTab=k; renderTabs(); render(); }
 });
 window.addEventListener("resize", ()=>{ if(DATA) drawChart(currentTab); });
+document.addEventListener("visibilitychange", async ()=>{
+  if(document.visibilityState === "visible" && DATA){
+    if(await loadData()){ renderTabs(); render(); }
+    refreshQuotes();
+  }
+});
 
 (async ()=>{
   if(await loadData()){
