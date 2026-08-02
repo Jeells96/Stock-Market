@@ -4,96 +4,120 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1.0" />
 <title>Jaren's Stock Market Adviser</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  /* ============ A site a 70-year-old can read at arm's length ============
-     One column. Book type. Four big tabs, one per strategy. Every tab
-     answers two questions: "What do I do today?" and "Why should I listen?"
-  ======================================================================== */
+  /* ============ Four tabs, old navy-and-gold soul ============ */
   :root{
-    --bg:#f7f2e7;          /* warm cream */
-    --card:#fffdf7;
-    --ink:#1f2a3d;         /* dark navy text */
-    --muted:#5b6472;
-    --line:#e3dcc8;
-    --up:#15803d;
-    --down:#b91c1c;
-    --gold:#8a6d3b;
+    --navy-deep:#0a1628; --navy:#0f1f3d; --navy-mid:#162b52;
+    --gold:#c9a961; --gold-bright:#e6c878; --gold-dim:#8a7340;
+    --ivory:#f4ead5; --cream:#e8dcc0;
+    --up:#4ade80; --down:#f87171;
+    --line:rgba(201,169,97,0.25); --line-strong:rgba(201,169,97,0.55);
+    --card:rgba(15,31,61,0.65);
     /* strategy accents — validated for this surface */
-    --day:#a21caf; --fast:#c2410c; --steady:#15803d; --nest:#0369a1;
+    --day:#c026d3; --fast:#ea580c; --steady:#16a34a; --nest:#0284c7;
   }
-  *{box-sizing:border-box;margin:0;padding:0}
-  html{background:var(--bg)}
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html{background:var(--navy-deep)}
   body{
-    font-family:Georgia,'Times New Roman',serif;
-    font-size:19px; line-height:1.75; color:var(--ink);
-    max-width:820px; margin:0 auto; padding:20px 16px 60px;
+    font-family:'JetBrains Mono',monospace;
+    font-size:15px; line-height:1.8; color:var(--ivory);
+    max-width:860px; margin:0 auto; padding:0 16px 60px;
+    background-image:
+      radial-gradient(ellipse at top, rgba(201,169,97,0.08), transparent 50%),
+      radial-gradient(ellipse at bottom, rgba(31,58,102,0.5), transparent 60%),
+      linear-gradient(180deg,#08111f 0%,#0a1628 100%);
+    background-attachment:fixed;
   }
-  h1{font-size:34px;line-height:1.2;text-align:center;margin:18px 0 6px}
-  .subtitle{text-align:center;color:var(--muted);font-size:17px;margin-bottom:6px}
-  .statusline{text-align:center;color:var(--muted);font-size:15px;font-style:italic;margin-bottom:22px}
-  b{color:#000}
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.04'/></svg>");
+    mix-blend-mode:overlay;
+  }
+  h1{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(30px,6vw,42px);line-height:1.15;text-align:center;margin:22px 0 6px;position:relative;z-index:2}
+  .subtitle{text-align:center;color:var(--gold-dim);font-size:13px;margin-bottom:6px;position:relative;z-index:2}
+  .statusline{text-align:center;color:var(--cream);font-size:13px;font-style:italic;margin-bottom:22px;position:relative;z-index:2}
+  b{color:#fff}
   .up{color:var(--up);font-weight:bold}
   .down{color:var(--down);font-weight:bold}
 
+  /* ---- live ticker ---- */
+  .ticker-bar{position:sticky;top:0;z-index:50;margin:0 -16px;background:linear-gradient(180deg,#06101e,#0a1628);border-bottom:1px solid var(--line-strong);overflow:hidden;height:42px;display:flex;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.5)}
+  .ticker-label{flex-shrink:0;padding:0 14px;height:100%;display:flex;align-items:center;background:linear-gradient(90deg,var(--gold-dim),transparent);border-right:1px solid var(--line);font-family:'Cormorant Garamond',serif;font-weight:700;font-size:14px;color:#08111f;letter-spacing:.18em;text-transform:uppercase}
+  .ticker-label .dot{width:6px;height:6px;border-radius:50%;background:#dc2626;margin-right:8px;box-shadow:0 0 8px #dc2626;animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .ticker-track{display:flex;animation:scroll 90s linear infinite;flex-shrink:0;will-change:transform}
+  .ticker-track:hover{animation-play-state:paused}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 18px;font-size:12px;white-space:nowrap;border-right:1px solid rgba(201,169,97,0.08)}
+  .ticker-sym{color:var(--gold-bright);font-weight:600}
+  .ticker-px{color:var(--ivory)}
+  .ticker-chg.up,.ticker-chg.down{font-weight:500}
+
   /* ---- the four tabs ---- */
-  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px}
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;position:relative;z-index:2}
   .tabbtn{
-    font-family:inherit;cursor:pointer;background:var(--card);
-    border:2px solid var(--line);border-radius:10px;padding:14px 6px 12px;
+    font-family:inherit;cursor:pointer;background:var(--card);color:var(--ivory);
+    border:2px solid var(--line);border-radius:6px;padding:14px 6px 12px;
     text-align:center;transition:transform .1s;
   }
-  .tabbtn:hover{transform:translateY(-1px)}
-  .tabbtn .icon{font-size:30px;display:block;line-height:1.2}
-  .tabbtn .name{font-size:17px;font-weight:bold;display:block;margin-top:2px}
-  .tabbtn .val{font-size:14px;color:var(--muted);display:block;margin-top:2px}
-  .tabbtn.active{border-color:var(--accent);background:color-mix(in srgb, var(--accent) 7%, var(--card));}
-  .tabbtn.active .name{color:var(--accent)}
+  .tabbtn:hover{transform:translateY(-1px);border-color:var(--gold)}
+  .tabbtn .icon{font-size:28px;display:block;line-height:1.2}
+  .tabbtn .name{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;display:block;margin-top:2px}
+  .tabbtn .val{font-size:12px;color:var(--gold-dim);display:block;margin-top:2px}
+  .tabbtn.active{border-color:var(--accent);box-shadow:0 0 14px color-mix(in srgb, var(--accent) 35%, transparent)}
+  .tabbtn.active .name{color:var(--gold-bright)}
   .tabbtn[data-tab="daytrade"]{--accent:var(--day)}
   .tabbtn[data-tab="aggressive"]{--accent:var(--fast)}
   .tabbtn[data-tab="growth"]{--accent:var(--steady)}
   .tabbtn[data-tab="longterm"]{--accent:var(--nest)}
 
   /* ---- cards ---- */
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;
-        padding:26px 28px;margin-bottom:20px;box-shadow:0 1px 3px rgba(31,42,61,0.06)}
-  .card h2{font-size:26px;margin-bottom:12px}
+  .card{background:linear-gradient(180deg,rgba(22,43,82,0.7),rgba(15,31,61,0.7));border:1px solid var(--line);border-radius:8px;
+        padding:24px 26px;margin-bottom:20px;position:relative;z-index:2}
+  .card h2{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:700;color:var(--gold-bright);margin-bottom:12px}
   .card p{margin-bottom:12px}
   .card p:last-child{margin-bottom:0}
-  .todo{border-left:6px solid var(--gold)}
+  .todo{border-left:5px solid var(--gold)}
   .todo.has-buy{border-left-color:var(--up)}
   .todo.has-sell{border-left-color:var(--down)}
-  .alertcard{border:3px solid var(--down);background:#fdf1f0}
+  .alertcard{border:2px solid var(--down);background:rgba(220,38,38,0.12);animation:glowStop 2s ease-in-out infinite}
   .alertcard h2{color:var(--down)}
-  .bignum{font-size:clamp(38px,8vw,50px);font-weight:bold;line-height:1.15;margin:6px 0 10px}
-  .bignum .chg{font-size:24px}
+  @keyframes glowStop{0%,100%{background:rgba(220,38,38,0.09)}50%{background:rgba(220,38,38,0.18)}}
+  .bignum{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,8vw,50px);font-weight:700;line-height:1.15;margin:6px 0 10px;color:#fff}
+  .bignum .chg{font-size:22px;font-family:'JetBrains Mono',monospace}
   .hold{padding:13px 0;border-top:1px solid var(--line)}
   .hold:first-of-type{border-top:none}
   .hold p{margin:0}
-  .trade{padding:10px 0;border-top:1px solid var(--line);font-size:17px}
+  .trade{padding:10px 0;border-top:1px solid var(--line);font-size:13px;color:var(--cream)}
   .trade:first-of-type{border-top:none}
-  .smallnote{font-size:15px;color:var(--muted)}
-  .prooflink{display:inline-block;margin-top:6px;font-size:16px}
-  a{color:#0a5c8c}
+  .smallnote{font-size:12px;color:var(--gold-dim)}
+  a{color:var(--gold-bright)}
 
   /* ---- chart ---- */
-  .chartwrap{position:relative;margin:14px 0 4px}
+  .chartwrap{position:relative;margin:14px 0 4px;background:rgba(8,17,31,0.5);border:1px solid var(--line);border-radius:6px;padding:10px}
   .chartwrap canvas{width:100%;height:230px;display:block}
-  .chart-tip{position:absolute;pointer-events:none;background:#fff;border:1px solid var(--line);
-    border-radius:8px;padding:8px 12px;font-size:14px;line-height:1.5;box-shadow:0 2px 8px rgba(31,42,61,0.15);
+  .chart-tip{position:absolute;pointer-events:none;background:#162b52;border:1px solid var(--gold);color:var(--ivory);
+    border-radius:6px;padding:8px 12px;font-size:12px;line-height:1.6;box-shadow:0 4px 16px rgba(0,0,0,0.5);
     display:none;white-space:nowrap;z-index:5}
-  .chart-note{font-size:14px;color:var(--muted);text-align:center}
-
-  footer{margin-top:34px;text-align:center;font-size:14px;color:var(--muted);line-height:2}
+  .chart-note{font-size:12px;color:var(--gold-dim);text-align:center}
 
   @media (max-width:640px){
-    body{font-size:18px;padding:12px 12px 50px}
+    body{font-size:14px;padding:0 12px 50px}
+    .ticker-bar{margin:0 -12px}
     .tabs{grid-template-columns:repeat(2,1fr)}
-    .card{padding:20px 18px}
-    h1{font-size:28px}
+    .card{padding:18px 16px}
   }
 </style>
 </head>
-<body data-palette="#a21caf,#c2410c,#15803d,#0369a1">
+<body data-palette="#c026d3,#ea580c,#16a34a,#0284c7">
+
+<div class="ticker-bar">
+  <div class="ticker-label"><span class="dot"></span>Live</div>
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
 
 <h1>Jaren's Stock Market Adviser</h1>
 <p class="subtitle">Four automatic strategies invest pretend money and tell you exactly what they do.</p>
@@ -110,12 +134,6 @@
   <div class="card"><h2>One moment…</h2><p>Fetching the latest report from the machine.</p></div>
 </main>
 
-<footer>
-  All of this uses <b>pretend money</b> — it is a public experiment, not financial advice.<br>
-  Every decision is <a href="https://github.com/jeells96/Stock-Market/commits/main" target="_blank" rel="noopener">recorded publicly</a>
-  the moment it happens and can never be quietly changed.<br>
-  <a href="legacy.html">Old website</a> · <span id="ver">v3.0</span>
-</footer>
 
 <script>
 "use strict";
@@ -124,25 +142,13 @@ const REPO_COMMITS = "https://github.com/jeells96/Stock-Market/commits/main";
 
 const STRATS = {
   daytrade:{
-    icon:"⚡", name:"Day Trader", accent:"#a21caf", flavor:"the wildest one",
-    what:"It buys stocks that are jumping up during the day and sells them again within hours — always before the market closes, so it never keeps anything overnight. It checks prices about every 20 minutes while the market is open.",
-    honest:"This is the riskiest strategy. Most day traders lose money; this one exists to prove — publicly — whether the machine can do better."
-  },
+    icon:"⚡", name:"Day Trader", accent:"#c026d3" },
   aggressive:{
-    icon:"🚀", name:"Fast Mover", accent:"#c2410c", flavor:"very risky",
-    what:"It buys stocks that have been rising fast over recent weeks, hoping to sell about 20% higher. If a stock drops 8% it sells immediately to protect the money, and it never keeps any stock longer than about three weeks.",
-    honest:"Expect big swings and frequent small losses — the bet is that the occasional big winner pays for them."
-  },
+    icon:"🚀", name:"Fast Mover", accent:"#ea580c" },
   growth:{
-    icon:"📈", name:"Steady Climber", accent:"#15803d", flavor:"medium risk",
-    what:"It buys large, healthy companies whose price has been climbing steadily for months, and simply stays with them while the climb continues. If the trend breaks, it steps aside.",
-    honest:"Slower than the flashy strategies, but built on the oldest rule in investing: let winners keep winning."
-  },
+    icon:"📈", name:"Steady Climber", accent:"#16a34a" },
   longterm:{
-    icon:"🏛️", name:"Nest Egg", accent:"#0369a1", flavor:"the calm one",
-    what:"It owns a little of everything — America's 500 biggest companies, technology, dividend payers, foreign companies, and bonds — and simply sits patiently, rebalancing itself now and then. This is how retirement money is usually invested.",
-    honest:"The most boring strategy here, and historically the hardest one to beat."
-  },
+    icon:"🏛️", name:"Nest Egg", accent:"#0284c7" },
 };
 const ORDER = ["daytrade","aggressive","growth","longterm"];
 const START_CAP_FALLBACK = 10000;
@@ -299,9 +305,6 @@ function render(){
     ${wins}</p>
     <div class="chartwrap"><canvas id="chart"></canvas><div class="chart-tip" id="chartTip"></div></div>
     <p class="chart-note">Your ${money(startCap)} following this strategy (solid) versus the overall market (dashed), day by day.</p>
-    <p>Don't take this page's word for it: every number above comes from a
-    <a href="${REPO_COMMITS}" target="_blank" rel="noopener">public record</a> that is stamped the moment each
-    decision happens and cannot be quietly rewritten. Anyone can check it, any day.</p>
   </div>`;
 
   // --- 3. holdings ---
@@ -319,17 +322,13 @@ function render(){
       the right opportunity. When it buys, the instruction appears under <b>“What to do today.”</b></p></div>`;
   const holdingsHtml = `<div class="card"><h2>What it's holding right now</h2>${holds}</div>`;
 
-  // --- 4. how it works + recent decisions ---
+  // --- 4. recent decisions ---
   const trades = (s.recent_trades||[]).slice(0,5).map(t=>
     `<div class="trade">${fmtDate(t.exit_date)} — sold <b>${esc(t.symbol)}</b> at ${price(t.exit_price)}
      (bought ${fmtDate(t.entry_date)} at ${price(t.entry_price)}): ${pctWords(t.pnl_pct)} · ${esc(t.reason)}</div>`).join("");
-  const howHtml = `<div class="card"><h2>How it works</h2>
-    <p>${meta.what}</p>
-    <p><i>${meta.honest}</i></p>
-    ${trades ? `<h2 style="margin-top:18px">Its last few decisions</h2>${trades}` : ""}
-  </div>`;
+  const tradesHtml = trades ? `<div class="card"><h2>Its last few decisions</h2>${trades}</div>` : "";
 
-  $("content").innerHTML = alarmHtml + todoHtml + proofHtml + holdingsHtml + howHtml;
+  $("content").innerHTML = alarmHtml + todoHtml + proofHtml + holdingsHtml + tradesHtml;
   drawChart(key);
 }
 
@@ -348,7 +347,7 @@ function drawChart(key){
   const ctx = cv.getContext("2d");
   ctx.scale(dpr,dpr);
   const pts = dates.map((d,i)=>({d, s:sSeries[i], b:bSeries[i]})).filter(p=>p.s!=null||p.b!=null);
-  if(!pts.length){ ctx.font="15px Georgia"; ctx.fillStyle="#5b6472"; ctx.fillText("The chart begins with the first market day.", 20, h/2); return; }
+  if(!pts.length){ ctx.font="13px 'JetBrains Mono',monospace"; ctx.fillStyle="rgba(201,169,97,0.7)"; ctx.fillText("The chart begins with the first market day.", 20, h/2); return; }
   let lo=Infinity, hi=-Infinity;
   pts.forEach(p=>{ [p.s,p.b].forEach(v=>{ if(v!=null){ lo=Math.min(lo,v); hi=Math.max(hi,v);} }); });
   const pad = Math.max((hi-lo)*0.1, hi*0.004); lo-=pad; hi+=pad;
@@ -356,7 +355,7 @@ function drawChart(key){
   const X = i => pts.length>1 ? ML + i/(pts.length-1)*(w-ML-MR) : (ML+w-MR)/2;
   const Y = v => MT + (1-(v-lo)/(hi-lo))*(h-MT-MB);
   // recessive grid + $ labels
-  ctx.font="13px Georgia"; ctx.fillStyle="#8a8f98"; ctx.strokeStyle="#eee7d5"; ctx.lineWidth=1;
+  ctx.font="11px 'JetBrains Mono',monospace"; ctx.fillStyle="rgba(201,169,97,0.7)"; ctx.strokeStyle="rgba(201,169,97,0.12)"; ctx.lineWidth=1;
   for(let g=0; g<=3; g++){
     const v = lo + (hi-lo)*g/3, y = Y(v);
     ctx.beginPath(); ctx.moveTo(ML,y); ctx.lineTo(w-MR,y); ctx.stroke();
@@ -379,7 +378,7 @@ function drawChart(key){
   ctx.stroke();
   if(lastI>=0){ ctx.beginPath(); ctx.arc(X(lastI),Y(pts[lastI].s),4,0,Math.PI*2); ctx.fillStyle=accent; ctx.fill(); }
   // direct labels (identity is never color alone)
-  ctx.font="bold 13px Georgia";
+  ctx.font="bold 12px 'JetBrains Mono',monospace";
   if(lastI>=0){ ctx.fillStyle=accent; ctx.fillText("This strategy", Math.min(X(lastI)+8,w-92), Y(pts[lastI].s)-8); }
   const lastB = [...pts].reverse().find(p=>p.b!=null);
   if(lastB){ ctx.fillStyle="#6b7280"; ctx.fillText("The market", Math.min(X(pts.indexOf(lastB))+8,w-84), Y(lastB.b)+16); }
@@ -395,6 +394,30 @@ function drawChart(key){
     tip.innerHTML = `<b>${fmtDate(p.d)}</b><br>This strategy: ${p.s!=null?money(p.s):"—"}<br>The market: ${p.b!=null?money(p.b):"—"}`;
   };
   cv.onmouseleave = ()=>{ tip.style.display="none"; };
+}
+
+
+/* ---------- live ticker ---------- */
+const TICKER_SYMS = ["AAPL","MSFT","NVDA","GOOGL","AMZN","META","TSLA","JPM","V","UNH","XOM","WMT","LLY","AVGO","JNJ","MA","PG","HD","COST","BAC","NFLX","KO","CRM","ORCL","AMD","DIS","SPY","QQQ","COIN","PLTR"];
+let tickerData = TICKER_SYMS.map(s => ({sym:s, px:null, chg:0}));
+function renderTicker(){
+  const items = [...tickerData, ...tickerData].map(d => {
+    if(d.px == null) return `<div class="ticker-item"><span class="ticker-sym">${d.sym}</span><span class="ticker-px">&mdash;</span></div>`;
+    const up = (d.chg||0) >= 0;
+    return `<div class="ticker-item"><span class="ticker-sym">${d.sym}</span><span class="ticker-px">$${d.px.toFixed(2)}</span><span class="ticker-chg ${up?"up":"down"}">${up?"\u25b2":"\u25bc"} ${(d.chg>=0?"+":"")}${(d.chg||0).toFixed(2)}%</span></div>`;
+  }).join("");
+  $("tickerTrack").innerHTML = items;
+}
+async function fillTicker(){
+  renderTicker();
+  for(let i = 0; i < tickerData.length; i++){
+    try{
+      const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=${TICKER_SYMS[i]}&token=${FINNHUB_KEY}`);
+      const j = await r.json();
+      if(j && j.c){ tickerData[i] = {sym:TICKER_SYMS[i], px:j.c, chg:j.dp||0}; renderTicker(); }
+    }catch(e){ /* leave dash */ }
+    await new Promise(r => setTimeout(r, 1100));
+  }
 }
 
 /* ---------- boot ---------- */
@@ -415,7 +438,8 @@ window.addEventListener("resize", ()=>{ if(DATA) drawChart(currentTab); });
 (async ()=>{
   if(await loadData()){
     renderTabs(); render();
-    refreshQuotes();
+    await refreshQuotes();
+    fillTicker();
     setInterval(refreshQuotes, 60000);
     setInterval(async ()=>{ if(await loadData()){ renderTabs(); render(); } }, 5*60000);
   }
