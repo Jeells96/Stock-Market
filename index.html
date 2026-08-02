@@ -124,6 +124,8 @@
   /* ---- chart ---- */
   .chartwrap{position:relative;margin:14px 0 4px;background:rgba(8,17,31,0.5);border:1px solid var(--line);border-radius:6px;padding:10px}
   .chartwrap canvas{width:100%;height:230px;display:block}
+  .ddwrap{margin-top:-2px;padding-top:4px;padding-bottom:4px}
+  .ddwrap canvas{height:56px}
   .chart-tip{position:absolute;pointer-events:none;background:#162b52;border:1px solid var(--gold);color:var(--ivory);
     border-radius:6px;padding:8px 12px;font-size:12px;line-height:1.6;box-shadow:0 4px 16px rgba(0,0,0,0.5);
     display:none;white-space:nowrap;z-index:5}
@@ -358,6 +360,7 @@ function render(){
     <p>The same money left in the overall market would be ${pctWords(bench.total_return_pct)}.
     ${wins}</p>
     <div class="chartwrap"><canvas id="chart"></canvas><div class="chart-tip" id="chartTip"></div></div>
+    <div class="chartwrap ddwrap"><canvas id="ddChart"></canvas></div>
     <p class="chart-note">Your ${money(startCap)} following this strategy (solid) versus the overall market (dashed), day by day.</p>
   </div>`;
 
@@ -373,12 +376,26 @@ function render(){
       ${proCell("Alpha (ann.)", pro.alpha_ann_pct, "%", "Return above what market exposure alone would explain. The skill number.")}
       ${proCell("Return (ann.)", pro.ann_return_pct, "%", "The yearly pace of growth. Only shown after 20+ trading days of history.")}
       ${proCell("Profit factor", pro.profit_factor, "", "Gross winnings divided by gross losses across finished trades. Above 1.5 is healthy. Needs 5+ trades.")}
+      ${proCell("Sortino ratio", pro.sortino, "", "Like Sharpe, but only penalizes downside swings. Above 1.5 is strong.")}
+      ${proCell("Calmar ratio", pro.calmar, "", "Annualized return divided by the worst dip. Above 1 means the pain was worth it.")}
       ${proCell("Worst dip", s.max_drawdown_pct != null ? Math.abs(s.max_drawdown_pct).toFixed(1) : null, "%", "Largest fall from a peak so far, using daily closing values.")}
+      ${proCell("Underwater", pro.underwater_days, " days", "Longest stretch spent below a previous peak. Recovery speed matters as much as depth.")}
+      ${proCell("Best day", pro.best_day_pct, "%", "Single best daily move so far.")}
+      ${proCell("Worst day", pro.worst_day_pct, "%", "Single worst daily move so far.")}
+      ${proCell("Turnover", pro.turnover_yr, "\u00d7/yr", "Roughly how many times a year each slot of money gets recycled into a new trade.")}
       ${proCell("Win rate", s.win_rate_pct != null ? s.win_rate_pct.toFixed(0) : null, "%", "Share of finished trades that made money.")}
     </div>
-    <p class="smallnote">Gross results: fills at official closing prices (the Day Trader at live quoted prices),
-    no commissions or slippage modeled, pretend money. A dash means not enough history yet &mdash; these numbers
-    have to be earned. Hover any figure for plain English.</p>
+    <p class="smallnote">${(() => {
+      const t = pro.t_stat, n = pro.sample_days || 0;
+      if(n < 20) return `Statistical verdict: <b>far too early</b> \u2014 ${n} trading day${n===1?"":"s"} of history proves nothing either way.`;
+      if(t == null || Math.abs(t) < 1) return `Statistical verdict: after ${n} trading days, results are <b>indistinguishable from luck</b> (t = ${t ?? "\u2014"}).`;
+      if(Math.abs(t) < 2) return `Statistical verdict: after ${n} trading days there is <b>weak evidence</b> of ${t > 0 ? "skill" : "underperformance"} (t = ${t}) \u2014 not yet conclusive.`;
+      return `Statistical verdict: after ${n} trading days the edge over the market is <b>statistically meaningful</b> (t = ${t}).`;
+    })()}</p>
+    <p class="smallnote">Results are NET of modeled slippage: 0.05% per fill (0.10% for day trades).
+    Commissions are $0, matching modern retail brokers; the S&amp;P 500 benchmark is frictionless by convention.
+    Pretend money. A dash means not enough history yet &mdash; these numbers have to be earned.
+    Hover any figure for plain English.</p>
   </div>`;
 
   // --- 3. holdings ---
@@ -468,6 +485,53 @@ function drawChart(key){
     tip.innerHTML = `<b>${fmtDate(p.d)}</b><br>This strategy: ${p.s!=null?money(p.s):"—"}<br>The market: ${p.b!=null?money(p.b):"—"}`;
   };
   cv.onmouseleave = ()=>{ tip.style.display="none"; };
+  drawDrawdown(key, pts, ML, MR);
+}
+
+function drawDrawdown(key, pts, ML, MR){
+  const cv = $("ddChart");
+  if(!cv) return;
+  const dpr = window.devicePixelRatio || 1;
+  const w = cv.clientWidth || 600, h = cv.clientHeight || 56;
+  cv.width = w*dpr; cv.height = h*dpr;
+  const ctx = cv.getContext("2d");
+  ctx.scale(dpr,dpr);
+  // running drawdown of the strategy series
+  let peak = -Infinity;
+  const dd = pts.map(p=>{
+    if(p.s == null) return null;
+    peak = Math.max(peak, p.s);
+    return peak > 0 ? (p.s/peak - 1) * 100 : 0;
+  });
+  const worst = Math.min(-0.5, ...dd.filter(v=>v!=null));
+  const X = i => pts.length>1 ? ML + i/(pts.length-1)*(w-ML-MR) : (ML+w-MR)/2;
+  const Y = v => 6 + (v/worst) * (h-14);   // 0 at top, worst at bottom
+  ctx.font="10px 'JetBrains Mono',monospace";
+  ctx.fillStyle="rgba(201,169,97,0.6)";
+  ctx.strokeStyle="rgba(201,169,97,0.12)";
+  ctx.beginPath(); ctx.moveTo(ML, Y(0)); ctx.lineTo(w-MR, Y(0)); ctx.stroke();
+  ctx.fillText("0%", 8, Y(0)+3);
+  ctx.fillText(worst.toFixed(1)+"%", 8, h-4);
+  ctx.beginPath();
+  let started = false;
+  dd.forEach((v,i)=>{
+    if(v == null) return;
+    const x = X(i), y = Y(v);
+    if(!started){ ctx.moveTo(x, Y(0)); started = true; }
+    ctx.lineTo(x, y);
+  });
+  if(started){
+    ctx.lineTo(X(dd.length-1), Y(0));
+    ctx.closePath();
+    ctx.fillStyle = "rgba(248,113,113,0.35)";
+    ctx.fill();
+    ctx.strokeStyle = "#f87171";
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    let st2 = false;
+    dd.forEach((v,i)=>{ if(v==null) return; st2 ? ctx.lineTo(X(i),Y(v)) : ctx.moveTo(X(i),Y(v)); st2 = true; });
+    ctx.stroke();
+  }
 }
 
 

@@ -172,8 +172,9 @@ STRATEGY_META = {
         "risk_note": (
             "Extreme risk, smallest edges. Buys only 2-8% morning gaps that are still climbing "
             "20 minutes after first sighting, and only when the broad market is steady. Checks run "
-            "about every 20 minutes; fills book at the exact quoted price of the check, timestamped "
-            "by the git commit. Stop jumps to breakeven once up 1.5%. Never holds overnight."
+            "about every 20 minutes; fills book at the quoted price of the check minus 10 bps modeled "
+            "slippage, timestamped by the git commit. Stop jumps to breakeven once up 1.5%. "
+            "Never holds overnight."
         ),
         "slots": 3,
         # ±1%/2% sat inside normal 20-minute noise for these names — widened so
@@ -199,6 +200,12 @@ STRATEGY_KEYS = ("daytrade", "aggressive", "growth", "longterm")
 
 # aggressive won't re-enter a symbol for this many days after exiting it
 COOLDOWN_DAYS = 7
+# modeled slippage per fill, in basis points (1 bp = 0.01%). Commissions are
+# zero at modern retail brokers, so this is the only modeled friction. The
+# intraday sleeve pays double — momentum names have wider effective spreads.
+# The SPY benchmark is left frictionless, the standard convention.
+SLIPPAGE_BPS_DAILY = 5
+SLIPPAGE_BPS_INTRADAY = 10
 
 # ---------------------------------------------------------------- data fetch
 
@@ -817,13 +824,20 @@ def position_value(pos, bars, d):
     return pos["shares"] * px, px
 
 
-def close_position(strat, pos, exit_date, exit_price, reason):
-    pnl_pct = (exit_price / pos["entry_price"] - 1.0) * 100.0 if pos["entry_price"] else 0.0
-    strat["cash"] += pos["shares"] * exit_price
+def close_position(strat, pos, exit_date, exit_price, reason, slippage_bps=None):
+    """Book an exit NET of modeled slippage: the observed price is haircut by
+    slippage_bps (defaults to SLIPPAGE_BPS_DAILY). Commissions are zero — the
+    modern retail reality — so slippage is the only modeled friction. The raw
+    observed price is kept on the trade record for auditability."""
+    bps = SLIPPAGE_BPS_DAILY if slippage_bps is None else slippage_bps
+    fill = exit_price * (1.0 - bps / 10000.0)
+    pnl_pct = (fill / pos["entry_price"] - 1.0) * 100.0 if pos["entry_price"] else 0.0
+    strat["cash"] += pos["shares"] * fill
     strat["closed"].append({
         "symbol": pos["symbol"], "name": pos.get("name", pos["symbol"]),
         "entry_date": pos["entry_date"], "entry_price": round(pos["entry_price"], 4),
-        "exit_date": exit_date, "exit_price": round(exit_price, 4),
+        "exit_date": exit_date, "exit_price": round(fill, 4),
+        "raw_exit_price": round(exit_price, 4), "slippage_bps": bps,
         "pnl_pct": round(pnl_pct, 2), "reason": reason,
     })
     strat["cooldown"][pos["symbol"]] = exit_date
@@ -1004,7 +1018,8 @@ def consolidate_daytrade(strat, bars, calendar, as_of):
         h = bars.get(pos["symbol"])
         px = (last_close_at(h, as_of) if h else None) or pos.get("last_price") or pos["entry_price"]
         strat["positions"].remove(pos)
-        close_position(strat, pos, as_of, px, "overnight safety flat")
+        close_position(strat, pos, as_of, px, "overnight safety flat",
+                       slippage_bps=SLIPPAGE_BPS_INTRADAY)
     for d in calendar:
         if start < d <= as_of:
             marks[d] = strat["cash"]
@@ -1066,10 +1081,13 @@ def replay_benchmark(bench, bars, calendar, as_of, can_trade):
 
 def open_position(strat, cand, as_of, budget, target_pct=None, stop_pct=None):
     px = cand["price"]
-    shares = budget / px
+    # entries pay modeled slippage too: fill slightly above the observed close
+    fill = px * (1.0 + SLIPPAGE_BPS_DAILY / 10000.0)
+    shares = budget / fill
     pos = {
         "symbol": cand["symbol"], "name": cand.get("name", cand["symbol"]),
-        "shares": shares, "entry_price": px, "entry_date": as_of,
+        "shares": shares, "entry_price": fill, "entry_date": as_of,
+        "raw_entry_price": px,
         "target_price": px * (1 + target_pct) if target_pct else None,
         "stop_price": px * (1 - stop_pct) if stop_pct else None,
         "thesis": cand.get("thesis", ""), "last_price": px, "bars_held": 0,
@@ -1121,12 +1139,13 @@ def manage_longterm(strat, bars, as_of, can_trade):
         return  # missing data — try again next run
     held = {p["symbol"]: p for p in strat["positions"]}
     equity = strat["cash"] + sum(p["shares"] * prices[p["symbol"]] for p in strat["positions"])
-    if not held:  # inception buy
+    if not held:  # inception buy — entries pay modeled slippage
         for sym, (w, role) in LONGTERM_ALLOCATION.items():
             budget = equity * w
+            fill = prices[sym] * (1.0 + SLIPPAGE_BPS_DAILY / 10000.0)
             strat["positions"].append({
-                "symbol": sym, "name": bars[sym]["name"], "shares": budget / prices[sym],
-                "entry_price": prices[sym], "entry_date": as_of,
+                "symbol": sym, "name": bars[sym]["name"], "shares": budget / fill,
+                "entry_price": fill, "raw_entry_price": prices[sym], "entry_date": as_of,
                 "target_price": None, "stop_price": None,
                 "thesis": role, "last_price": prices[sym], "bars_held": 0,
                 "splits_applied": [], "divs_credited": [],
@@ -1156,8 +1175,13 @@ def manage_longterm(strat, bars, as_of, can_trade):
                     "thesis": role, "last_price": prices[sym], "bars_held": 0,
                     "splits_applied": [], "divs_credited": [],
                 })
-        strat["cash"] = equity - sum(equity * w for w, _ in LONGTERM_ALLOCATION.values())
-        strat["activity"].append({"date": as_of, "text": "Rebalanced back to target weights"})
+        # rebalancing trades pay slippage on the notional actually traded
+        traded = sum(abs(equity * w - (held[s]["shares"] * prices[s] if s in held else 0.0))
+                     for s, (w, _) in LONGTERM_ALLOCATION.items())
+        cost = traded * SLIPPAGE_BPS_DAILY / 10000.0
+        strat["cash"] = equity - sum(equity * w for w, _ in LONGTERM_ALLOCATION.values()) - cost
+        strat["activity"].append({"date": as_of, "text":
+            f"Rebalanced back to target weights (${cost:,.2f} modeled slippage)"})
 
 # ---------------------------------------------------------------- stats & output
 
@@ -1185,7 +1209,7 @@ def compute_stats(closed, equity_series, bench_return_pct):
     }
 
 
-def pro_metrics(dates, hist, key, closed):
+def pro_metrics(dates, hist, key, closed, slots=None):
     """Institutional-grade statistics from the daily equity marks, computed
     only when there is enough sample to mean anything (else null → shown as
     an em dash, never a fake number).
@@ -1204,7 +1228,9 @@ def pro_metrics(dates, hist, key, closed):
             pairs.append((s / prev[0] - 1.0, b / prev[1] - 1.0))
         prev = (s, b)
     out = {"ann_vol_pct": None, "sharpe": None, "beta": None, "alpha_ann_pct": None,
-           "ann_return_pct": None, "profit_factor": None, "sample_days": len(pairs)}
+           "ann_return_pct": None, "profit_factor": None, "sample_days": len(pairs),
+           "sortino": None, "calmar": None, "best_day_pct": None, "worst_day_pct": None,
+           "underwater_days": None, "turnover_yr": None, "t_stat": None}
     n = len(pairs)
     if n >= 5:
         rs = [p[0] for p in pairs]
@@ -1222,6 +1248,36 @@ def pro_metrics(dates, hist, key, closed):
             beta = cov / var_b
             out["beta"] = round(beta, 2)
             out["alpha_ann_pct"] = round((mean_s - beta * mean_b) * 252 * 100, 1)
+        # Sortino: penalize only downside deviation
+        downs = [r for r in rs if r < 0]
+        if downs:
+            dd_dev = math.sqrt(sum(r * r for r in downs) / n)
+            if dd_dev > 0:
+                out["sortino"] = round(mean_s / dd_dev * math.sqrt(252), 2)
+        out["best_day_pct"] = round(max(rs) * 100, 2)
+        out["worst_day_pct"] = round(min(rs) * 100, 2)
+        # t-statistic of daily excess return vs the benchmark — the honest
+        # "is this luck?" number. |t| < 2 means the record proves nothing yet.
+        ex = [rs[i] - rb[i] for i in range(n)]
+        mean_ex = sum(ex) / n
+        var_ex = sum((e - mean_ex) ** 2 for e in ex) / (n - 1)
+        if var_ex > 0:
+            out["t_stat"] = round(mean_ex / math.sqrt(var_ex / n), 2)
+        # longest underwater stretch (sessions spent below a prior equity peak)
+        curve = []
+        for d in dates:
+            v = hist[d].get(key)
+            if v is not None:
+                curve.append(v)
+        peak, streak, worst_streak = -1.0, 0, 0
+        for v in curve:
+            if v >= peak:
+                peak = v
+                streak = 0
+            else:
+                streak += 1
+                worst_streak = max(worst_streak, streak)
+        out["underwater_days"] = worst_streak
     if n >= 20:
         first = None
         for d in dates:
@@ -1239,6 +1295,19 @@ def pro_metrics(dates, hist, key, closed):
     losses = -sum(t["pnl_pct"] for t in closed if t["pnl_pct"] < 0)
     if losses > 0 and len(closed) >= 5:
         out["profit_factor"] = round(wins / losses, 2)
+    if out["ann_return_pct"] is not None:
+        # Calmar: annualized return over worst drawdown (needs both to exist)
+        curve = [hist[d][key] for d in dates if hist[d].get(key) is not None]
+        peak, mdd = -1.0, 0.0
+        for v in curve:
+            peak = max(peak, v)
+            if peak > 0:
+                mdd = min(mdd, v / peak - 1.0)
+        if mdd < -0.001:
+            out["calmar"] = round((out["ann_return_pct"] / 100.0) / abs(mdd), 2)
+    if n >= 20 and slots and len(closed) >= 3:
+        # rough annualized turnover: round trips per year, scaled by slot share
+        out["turnover_yr"] = round(len(closed) * (252.0 / n) / slots, 1)
     return out
 
 
@@ -1287,7 +1356,7 @@ def build_site_payload(state, bars, as_of, new_picks, data_source):
             "positions": positions,
             "recent_trades": strat["closed"][-12:][::-1],
             "recent_activity": strat["activity"][-8:][::-1],
-            "pro": pro_metrics(dates, hist, key, strat["closed"]),
+            "pro": pro_metrics(dates, hist, key, strat["closed"], slots=meta.get("slots")),
         }
     return {
         "version": 1,
@@ -1305,7 +1374,10 @@ def build_site_payload(state, bars, as_of, new_picks, data_source):
         "equity_curves": curves,
         "data_source": data_source,
         "methodology_note": (
-            "All trades are simulated with paper money at daily closing prices. "
+            "All trades are simulated with paper money and booked NET of modeled slippage "
+            "(5 bps per fill, 10 bps intraday; commissions are zero, matching modern retail; "
+            "the SPY benchmark is frictionless by convention). Daily strategies fill at official "
+            "closing prices. "
             "Every position is re-checked at every market close without exception; a sell enters the "
             "record only when the model actually fires the signal, booked at that day's real closing "
             "price — never at the planned target or stop. Picks are committed to git before outcomes "
@@ -1534,7 +1606,7 @@ def run_intraday():
             reason = "end of day — flat by the close"
         if reason:
             strat["positions"].remove(pos)
-            close_position(strat, pos, today, px, reason)
+            close_position(strat, pos, today, px, reason, slippage_bps=SLIPPAGE_BPS_INTRADAY)
             t = strat["closed"][-1]
             t["entry_time"] = pos.get("entry_time")
             t["exit_time"] = time_str
@@ -1578,9 +1650,11 @@ def run_intraday():
             if budget < 100:
                 break
             px = cand["px"]
+            fill = px * (1.0 + SLIPPAGE_BPS_INTRADAY / 10000.0)
             pos = {
                 "symbol": cand["symbol"], "name": cand["symbol"],
-                "shares": budget / px, "entry_price": px, "entry_date": today,
+                "shares": budget / fill, "entry_price": fill, "entry_date": today,
+                "raw_entry_price": px,
                 "entry_time": time_str,
                 "target_price": px * (1 + meta["target_pct"]),
                 "stop_price": px * (1 - meta["stop_pct"]),

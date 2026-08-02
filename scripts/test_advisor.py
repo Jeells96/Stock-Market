@@ -56,12 +56,13 @@ def t1():
     t = strat["closed"][0]
     assert t["reason"] == "stop loss", t["reason"]
     assert t["exit_date"] == DAYS[2], t["exit_date"]
-    approx(t["exit_price"], 90.0)
-    approx(strat["cash"], 9000.0)          # 100 sh × $90
-    approx(t["pnl_pct"], -10.0)
+    approx(t["exit_price"], 89.955)        # $90 close net of 5 bps slippage
+    approx(t["raw_exit_price"], 90.0)
+    approx(strat["cash"], 8995.5)          # 100 sh × $89.955
+    approx(t["pnl_pct"], -10.05, tol=0.02)
     approx(marks[DAYS[1]], 9500.0)         # marked at day-2 close pre-exit
-    approx(marks[DAYS[2]], 9000.0)
-    approx(marks[DAYS[4]], 9000.0)         # all cash after exit
+    approx(marks[DAYS[2]], 8995.5)
+    approx(marks[DAYS[4]], 8995.5)         # all cash after exit
 check("stop-loss exit at close, cash conserved", t1)
 
 # ---------- test 2: dividend credit ----------
@@ -153,9 +154,9 @@ def t7():
     adv.manage_longterm(strat, bars, DAYS[4], True)
     approx(strat["cash"], 0.0, tol=0.5)
     total = sum(p["shares"] * 100 for p in strat["positions"])
-    approx(total, 10000.0, tol=0.5)
+    approx(total, 10000.0 / 1.0005, tol=0.5)   # net of 5 bps entry slippage
     voo = next(p for p in strat["positions"] if p["symbol"] == "VOO")
-    approx(voo["shares"] * 100, 4000.0, tol=0.5)
+    approx(voo["shares"] * 100, 4000.0 / 1.0005, tol=0.5)
     # drift: QQQ doubles → rebalance back to weights
     bars2 = {s: mk_hist([100, 100, 100, 100, 200 if s == "QQQ" else 100], name=s)
              for s in adv.LONGTERM_ALLOCATION}
@@ -224,7 +225,7 @@ def t10():
     adv.replay_strategy("aggressive", strat, {"HLT": h}, cal, cal[-1])
     assert len(strat["closed"]) == 1, "halted position not force-exited"
     assert strat["closed"][0]["reason"] == "halted/delisted"
-    approx(strat["cash"], 510.0)  # 10 sh × last known $51
+    approx(strat["cash"], 509.745)  # 10 sh × $51 net of 5 bps
 check("halted symbol force-exit at last known price", t10)
 
 # ---------- test 11: stale feed cannot roll the window backwards ----------
@@ -355,7 +356,7 @@ def t17():
     marks = adv.consolidate_daytrade(strat, bars, DAYS, DAYS[3])
     assert strat["positions"] == [], "leftover day-trade position not flattened"
     assert strat["closed"][0]["reason"] == "overnight safety flat"
-    approx(strat["cash"], 4000.0 + 100 * 62.0)   # flattened at the as-of close
+    approx(strat["cash"], 4000.0 + 100 * 62.0 * 0.999)   # as-of close net of 10 bps
     approx(marks[DAYS[2]], strat["cash"])
     approx(marks[DAYS[3]], strat["cash"])
     assert strat["last_eval_date"] == DAYS[3]
@@ -392,8 +393,8 @@ def t18b():
     assert len(strat["closed"]) == 1, strat["positions"]
     t = strat["closed"][0]
     assert t["reason"] == "breakeven stop", t["reason"]
-    approx(t["exit_price"], 99.0)          # out near entry, NOT at the old −8% stop
-    approx(t["pnl_pct"], -1.0)
+    approx(t["exit_price"], 99.0 * 0.9995) # out near entry (net), NOT at the old −8% stop
+    approx(t["pnl_pct"], -1.05, tol=0.02)
     assert any("breakeven" in a["text"] for a in strat["activity"])
 check("aggressive: winner ratchets stop to breakeven, never a full loss", t18b)
 
