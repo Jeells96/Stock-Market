@@ -1,0 +1,2258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0" />
+<title>Jaren's Stock Market Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!-- Firebase (compat SDK — no build step, works on GitHub Pages + iOS Safari) -->
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy-deep:#0a1628;
+    --navy:#0f1f3d;
+    --navy-mid:#162b52;
+    --navy-light:#1f3a66;
+    --gold:#c9a961;
+    --gold-bright:#e6c878;
+    --gold-dim:#8a7340;
+    --ivory:#f4ead5;
+    --cream:#e8dcc0;
+    --green:#4ade80;
+    --green-dim:#22c55e;
+    --red:#f87171;
+    --red-dim:#ef4444;
+    --border:rgba(201,169,97,0.25);
+    --border-strong:rgba(201,169,97,0.55);
+    --panel:rgba(15,31,61,0.65);
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{background:var(--navy-deep);color:var(--ivory);font-family:'JetBrains Mono',monospace;font-size:14px;min-height:100vh;overflow-x:hidden}
+  body{
+    background-image:
+      radial-gradient(ellipse at top, rgba(201,169,97,0.08), transparent 50%),
+      radial-gradient(ellipse at bottom, rgba(31,58,102,0.5), transparent 60%),
+      linear-gradient(180deg, #08111f 0%, #0a1628 100%);
+    background-attachment:fixed;
+  }
+  body::before{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='200' height='200'><filter id='n'><feTurbulence baseFrequency='0.85' numOctaves='2'/></filter><rect width='200' height='200' filter='url(%23n)' opacity='0.04'/></svg>");
+    mix-blend-mode:overlay;
+  }
+  button{font-family:inherit;color:inherit;background:none;border:none;cursor:pointer}
+  input,select,textarea{font-family:inherit;color:var(--ivory);background:rgba(8,17,31,0.6);border:1px solid var(--border);padding:8px 10px;border-radius:2px;font-size:13px}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--gold)}
+
+  .ticker-bar{position:sticky;top:0;z-index:50;background:linear-gradient(180deg,#06101e,#0a1628);border-bottom:1px solid var(--border-strong);overflow:hidden;height:42px;display:flex;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.5);}
+  .ticker-label{flex-shrink:0;padding:0 14px;height:100%;display:flex;align-items:center;background:linear-gradient(90deg,var(--gold-dim),transparent);border-right:1px solid var(--border);font-family:'Cormorant Garamond',serif;font-weight:700;font-size:14px;color:#08111f;letter-spacing:.18em;text-transform:uppercase;}
+  .ticker-label .dot{width:6px;height:6px;border-radius:50%;background:#dc2626;margin-right:8px;box-shadow:0 0 8px #dc2626;animation:pulse 1.6s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+  .ticker-track{display:flex;animation:scroll 90s linear infinite;flex-shrink:0;will-change:transform}
+  .ticker-track:hover{animation-play-state:paused}
+  @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 18px;font-size:12px;white-space:nowrap;border-right:1px solid rgba(201,169,97,0.08)}
+  .ticker-sym{color:var(--gold-bright);font-weight:600;letter-spacing:.05em}
+  .ticker-px{color:var(--ivory)}
+  .ticker-chg.up{color:var(--green)}
+  .ticker-chg.down{color:var(--red)}
+  .ticker-arrow{font-size:9px}
+
+  .header{position:relative;z-index:5;padding:28px 20px 18px;text-align:center;border-bottom:1px solid var(--border);background:linear-gradient(180deg,rgba(15,31,61,0.4),transparent);}
+  .crest{display:inline-flex;align-items:center;gap:12px;margin-bottom:6px;font-family:'Cormorant Garamond',serif;}
+  .crest-line{height:1px;width:40px;background:linear-gradient(90deg,transparent,var(--gold))}
+  .crest-line.r{background:linear-gradient(90deg,var(--gold),transparent)}
+  .crest-mark{color:var(--gold);font-size:18px}
+  h1{font-family:'Cormorant Garamond',serif;font-weight:700;font-size:clamp(28px,6vw,42px);letter-spacing:.02em;color:var(--ivory);line-height:1;}
+  .subtitle{margin-top:8px;font-size:10px;letter-spacing:.4em;color:var(--gold-dim);text-transform:uppercase;}
+  .est{font-size:9px;color:var(--gold-dim);letter-spacing:.3em;margin-top:4px}
+
+  .tabs{display:flex;justify-content:center;gap:0;border-bottom:1px solid var(--border);background:rgba(8,17,31,0.4);position:sticky;top:42px;z-index:40;backdrop-filter:blur(8px);}
+  .tab{padding:14px 18px;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);position:relative;transition:color .2s;border-bottom:2px solid transparent;}
+  .tab:hover{color:var(--gold-bright)}
+  .tab.active{color:var(--gold-bright);border-bottom-color:var(--gold)}
+  .tab .count{display:inline-block;margin-left:6px;background:var(--gold);color:#08111f;font-size:10px;padding:1px 6px;border-radius:8px;font-weight:700;}
+
+  main{position:relative;z-index:5;padding:20px;max-width:1400px;margin:0 auto}
+  .view{display:none}
+  .view.active{display:block;animation:fadeIn .35s ease}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+
+  .scan-header{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:18px;flex-wrap:wrap;}
+  .scan-title{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--ivory);font-weight:600}
+  .scan-title .sub{display:block;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.3em;color:var(--gold-dim);margin-top:4px;text-transform:uppercase}
+  .scan-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .auto-toggle{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-dim);cursor:pointer;user-select:none}
+  .auto-toggle input{width:auto;accent-color:var(--gold)}
+  .spin{display:inline-block;animation:spin 1.1s linear infinite}
+  @keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}
+  .btn{padding:10px 16px;border:1px solid var(--border-strong);background:linear-gradient(180deg,rgba(201,169,97,0.08),rgba(201,169,97,0.02));color:var(--gold-bright);font-size:11px;letter-spacing:.18em;text-transform:uppercase;transition:all .2s;border-radius:2px;}
+  .btn:hover{background:linear-gradient(180deg,rgba(201,169,97,0.18),rgba(201,169,97,0.05));border-color:var(--gold);box-shadow:0 0 14px rgba(201,169,97,0.2)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+  .btn.primary{background:linear-gradient(180deg,var(--gold),var(--gold-dim));color:#08111f;border-color:var(--gold)}
+  .btn.primary:hover{background:linear-gradient(180deg,var(--gold-bright),var(--gold))}
+  .btn.ghost{background:transparent;border-color:var(--border)}
+  .btn.danger{color:var(--red);border-color:var(--red-dim)}
+
+  .status-bar{display:flex;gap:14px;flex-wrap:wrap;align-items:center;padding:10px 14px;background:rgba(8,17,31,0.5);border:1px solid var(--border);border-radius:2px;margin-bottom:18px;font-size:11px;}
+  .status-item{display:flex;align-items:center;gap:6px;color:var(--cream)}
+  .status-item .lbl{color:var(--gold-dim);letter-spacing:.15em;text-transform:uppercase;font-size:10px}
+  .budget-bar{flex:1;min-width:120px;height:6px;background:rgba(8,17,31,0.8);border:1px solid var(--border);border-radius:3px;overflow:hidden;position:relative}
+  .budget-fill{height:100%;background:linear-gradient(90deg,var(--green),var(--gold));transition:width .4s}
+  .budget-fill.warn{background:linear-gradient(90deg,var(--gold),#f59e0b)}
+  .budget-fill.danger{background:linear-gradient(90deg,#f59e0b,var(--red))}
+
+  .progress{display:none;margin:14px 0;padding:14px;background:rgba(15,31,61,0.5);border:1px solid var(--border);border-radius:2px;}
+  .progress.show{display:block}
+  .progress-text{font-size:12px;color:var(--cream);margin-bottom:8px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
+  .progress-text .stage{color:var(--gold-bright);letter-spacing:.15em;text-transform:uppercase;font-size:10px}
+  .progress-bar{height:4px;background:rgba(8,17,31,0.8);border-radius:2px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--gold-dim),var(--gold-bright));transition:width .3s;width:0}
+  .progress-actions{display:flex;justify-content:flex-end;margin-top:10px}
+
+  .picks-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+  .pick{background:linear-gradient(180deg,rgba(22,43,82,0.7),rgba(15,31,61,0.7));border:1px solid var(--border);border-radius:2px;padding:18px;position:relative;transition:all .25s;overflow:hidden;}
+  .pick:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.4),0 0 0 1px rgba(201,169,97,0.3)}
+  .pick::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);opacity:0;transition:opacity .25s;}
+  .pick:hover::before{opacity:1}
+  .pick-rank{position:absolute;top:14px;right:14px;font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);opacity:.35;font-style:italic;line-height:1;}
+  .pick-rank .num{font-size:32px}
+  .pick-sym{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;color:var(--ivory);letter-spacing:.04em}
+  .pick-name{font-size:10px;color:var(--gold-dim);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;height:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pick-px-row{display:flex;align-items:baseline;gap:10px;margin-top:12px}
+  .pick-px{font-size:22px;font-weight:600;color:var(--ivory)}
+  .pick-chg{font-size:12px;font-weight:500}
+  .pick-chg.up{color:var(--green)}
+  .pick-chg.down{color:var(--red)}
+  .pick-score-row{display:flex;align-items:center;gap:10px;margin:14px 0 10px;padding:10px;background:rgba(8,17,31,0.5);border-radius:2px;border-left:2px solid var(--gold)}
+  .pick-score{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--gold-bright);line-height:1}
+  .pick-score-lbl{font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim)}
+  .pick-conv{flex:1;text-align:right;font-size:10px;letter-spacing:.15em;text-transform:uppercase}
+  .conv-STRONG{color:var(--green)}
+  .conv-BUY{color:var(--green-dim)}
+  .conv-HOLD{color:var(--gold)}
+  .conv-WATCH{color:var(--cream)}
+  .pick-factors{display:flex;flex-direction:column;gap:6px;margin:10px 0}
+  .factor{display:flex;align-items:center;gap:8px;font-size:11px}
+  .factor-lbl{flex-shrink:0;width:70px;color:var(--gold-dim);font-size:10px;letter-spacing:.05em;text-transform:uppercase}
+  .factor-bar{flex:1;height:5px;background:rgba(8,17,31,0.6);border-radius:2px;overflow:hidden}
+  .factor-fill{height:100%;background:linear-gradient(90deg,var(--navy-light),var(--gold));transition:width .4s}
+  .factor-val{font-size:10px;color:var(--cream);min-width:32px;text-align:right}
+  .pick-thesis{font-size:11px;color:var(--cream);line-height:1.5;margin:10px 0;padding:8px 10px;background:rgba(8,17,31,0.4);border-left:2px solid var(--gold-dim);font-style:italic;}
+  .pick-conflict{font-size:10px;color:#fca5a5;background:rgba(220,38,38,0.12);border:1px solid var(--red-dim);border-radius:2px;padding:6px 9px;margin:8px 0;letter-spacing:.03em;line-height:1.4}
+  .pick-why{margin:10px 0;padding:8px 10px;background:rgba(8,17,31,0.35);border-radius:2px;display:flex;flex-direction:column;gap:5px}
+  .why-row{display:flex;justify-content:space-between;align-items:center;font-size:11px}
+  .why-lbl{color:var(--gold-dim);text-transform:uppercase;letter-spacing:.1em;font-size:9px}
+  .why-val{color:var(--ivory);font-weight:500}
+  .why-val .up{color:var(--green)}
+  .why-val .down{color:var(--red)}
+  .risk-Low{color:var(--green)}
+  .risk-Moderate{color:var(--gold-bright)}
+  .risk-High{color:#f59e0b}
+  .risk-VeryHigh{color:var(--red)}
+  .risk-Unknown{color:var(--gold-dim)}
+  .pick-targets{display:flex;gap:8px;margin:10px 0;font-size:10px}
+  .target-cell{flex:1;text-align:center;padding:6px;background:rgba(8,17,31,0.4);border:1px solid var(--border)}
+  .target-cell .lbl{display:block;color:var(--gold-dim);font-size:9px;letter-spacing:.1em;text-transform:uppercase;margin-bottom:2px}
+  .target-cell .val{color:var(--ivory);font-weight:600;font-size:12px}
+  .target-cell.entry .val{color:var(--gold-bright)}
+  .target-cell.tgt .val{color:var(--green)}
+  .target-cell.stop .val{color:var(--red)}
+  .pick-actions{display:flex;gap:8px;margin-top:12px}
+  .pick-actions .btn{flex:1;padding:8px;font-size:10px}
+
+  .portfolio-summary{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:20px;}
+  .summary-tile{background:linear-gradient(180deg,rgba(22,43,82,0.7),rgba(15,31,61,0.7));border:1px solid var(--border);padding:14px;border-radius:2px;text-align:center;}
+  .summary-tile .lbl{font-size:10px;color:var(--gold-dim);letter-spacing:.2em;text-transform:uppercase}
+  .summary-tile .val{font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:600;color:var(--ivory);margin-top:6px;line-height:1}
+  .summary-tile .val.up{color:var(--green)}
+  .summary-tile .val.down{color:var(--red)}
+  .summary-tile .sub{font-size:11px;color:var(--cream);margin-top:4px}
+
+  .holdings-table{width:100%;border-collapse:collapse;font-size:12px}
+  .holdings-table th{text-align:left;padding:10px 8px;font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-dim);border-bottom:1px solid var(--border);font-weight:500;}
+  .holdings-table th.r,.holdings-table td.r{text-align:right}
+  .holdings-table td{padding:12px 8px;border-bottom:1px solid rgba(201,169,97,0.1)}
+  .holdings-table tr:hover{background:rgba(201,169,97,0.03)}
+  /* row alerts — pulse a glow when a position hits target or stop */
+  .holdings-table tr.row-alert-profit{background:rgba(74,222,128,0.10);box-shadow:inset 3px 0 0 var(--green);animation:glowProfit 2s ease-in-out infinite}
+  .holdings-table tr.row-alert-profit:hover{background:rgba(74,222,128,0.16)}
+  .holdings-table tr.row-alert-stop{background:rgba(220,38,38,0.12);box-shadow:inset 3px 0 0 var(--red);animation:glowStop 2s ease-in-out infinite}
+  .holdings-table tr.row-alert-stop:hover{background:rgba(220,38,38,0.18)}
+  @keyframes glowProfit{0%,100%{background:rgba(74,222,128,0.08)}50%{background:rgba(74,222,128,0.18)}}
+  @keyframes glowStop{0%,100%{background:rgba(220,38,38,0.10)}50%{background:rgba(220,38,38,0.22)}}
+  .holdings-table .sym{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:var(--ivory)}
+  .holdings-table .up{color:var(--green)}
+  .holdings-table .down{color:var(--red)}
+  .signal-pill{display:inline-block;padding:3px 10px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;border-radius:1px;font-weight:600;}
+  .signal-HOLD{background:rgba(201,169,97,0.15);color:var(--gold-bright);border:1px solid var(--gold-dim)}
+  .signal-SELL{background:rgba(248,113,113,0.15);color:var(--red);border:1px solid var(--red-dim)}
+  .signal-TAKE_PROFIT{background:rgba(74,222,128,0.15);color:var(--green);border:1px solid var(--green-dim)}
+  .signal-STOP_LOSS{background:rgba(220,38,38,0.25);color:#fca5a5;border:1px solid var(--red-dim)}
+  .signal-WATCH{background:rgba(232,220,192,0.1);color:var(--cream);border:1px solid var(--border)}
+  .row-actions{display:flex;gap:6px;justify-content:flex-end}
+  .icon-btn{padding:4px 8px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);border:1px solid var(--border)}
+  .icon-btn:hover{color:var(--red);border-color:var(--red)}
+
+  .empty{text-align:center;padding:60px 20px;color:var(--gold-dim);border:1px dashed var(--border);border-radius:2px;}
+  .empty .big{font-family:'Cormorant Garamond',serif;font-size:32px;color:var(--gold);margin-bottom:8px;font-style:italic}
+  .empty .small{font-size:12px;letter-spacing:.1em}
+
+  .settings-card{max-width:600px;margin:0 auto;padding:24px;background:linear-gradient(180deg,rgba(22,43,82,0.7),rgba(15,31,61,0.7));border:1px solid var(--border);border-radius:2px;}
+  .settings-card h2{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:600;color:var(--ivory);margin-bottom:18px}
+  .field{margin-bottom:18px}
+  .field label{display:block;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:6px}
+  .field input{width:100%}
+  .field .hint{font-size:10px;color:var(--gold-dim);margin-top:6px;font-style:italic}
+  .key-row{display:flex;gap:8px}
+  .key-row input{flex:1;font-family:'JetBrains Mono',monospace;font-size:11px}
+
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(6,16,30,0.85);z-index:100;backdrop-filter:blur(4px);padding:20px;overflow-y:auto;}
+  .modal-bg.show{display:flex;align-items:flex-start;justify-content:center}
+  .modal{background:linear-gradient(180deg,#162b52,#0f1f3d);border:1px solid var(--gold);border-radius:2px;padding:24px;max-width:520px;width:100%;margin:auto;box-shadow:0 0 40px rgba(201,169,97,0.2);}
+  .modal h3{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:600;color:var(--ivory);margin-bottom:6px}
+  .modal .modal-sub{font-size:11px;color:var(--gold-dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:18px}
+  .modal-actions{display:flex;gap:10px;margin-top:18px}
+  .modal-actions .btn{flex:1}
+
+  .toast-wrap{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:8px}
+  .toast{padding:12px 16px;background:linear-gradient(180deg,#162b52,#0f1f3d);border:1px solid var(--gold);border-left:3px solid var(--gold);color:var(--ivory);font-size:12px;border-radius:2px;box-shadow:0 4px 20px rgba(0,0,0,0.5);max-width:320px;animation:slideIn .25s ease;}
+  .toast.err{border-color:var(--red);border-left-color:var(--red)}
+  .toast.ok{border-color:var(--green);border-left-color:var(--green)}
+  @keyframes slideIn{from{transform:translateX(20px);opacity:0}to{transform:none;opacity:1}}
+
+  footer{text-align:center;padding:30px 20px;margin-top:40px;border-top:1px solid var(--border);font-size:10px;color:var(--gold-dim);letter-spacing:.2em;text-transform:uppercase;}
+  footer .ornament{color:var(--gold);font-size:14px;margin:0 8px}
+
+  /* ===== Autonomous Advisor ===== */
+  .adv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:18px;margin-bottom:18px}
+  .adv-card{background:linear-gradient(180deg,rgba(22,43,82,0.75),rgba(15,31,61,0.75));border:1px solid var(--border);border-radius:2px;padding:20px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:12px}
+  .adv-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent,#c9a961),transparent)}
+  .adv-card.day{--accent:#e879f9}
+  .adv-card.agg{--accent:#ff8c42}
+  .adv-card.gro{--accent:#4ade80}
+  .adv-card.lt{--accent:#7dd3fc}
+  .adv-head{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+  .adv-title{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;color:var(--ivory);line-height:1.1}
+  .adv-title .icon{margin-right:8px}
+  .adv-horizon{flex-shrink:0;font-size:9px;letter-spacing:.15em;text-transform:uppercase;color:var(--accent,#c9a961);border:1px solid var(--accent,#c9a961);padding:3px 8px;border-radius:1px;opacity:.85}
+  .adv-tagline{font-size:12px;color:var(--cream);line-height:1.5;font-style:italic;min-height:32px}
+  .adv-equity-row{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+  .adv-equity{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;color:var(--ivory);line-height:1}
+  .adv-ret{font-size:14px;font-weight:600}
+  .adv-ret.up{color:var(--green)} .adv-ret.down{color:var(--red)}
+  .adv-vs{font-size:10px;letter-spacing:.08em;color:var(--gold-dim);text-transform:uppercase}
+  .adv-vs b.up{color:var(--green)} .adv-vs b.down{color:var(--red)}
+  .adv-spark{width:100%;height:52px;display:block}
+  .adv-stats{display:flex;gap:0;border:1px solid var(--border);border-radius:1px;overflow:hidden}
+  .adv-stat{flex:1;text-align:center;padding:7px 4px;background:rgba(8,17,31,0.45)}
+  .adv-stat+.adv-stat{border-left:1px solid var(--border)}
+  .adv-stat .lbl{display:block;font-size:8px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:3px}
+  .adv-stat .val{font-size:12px;font-weight:600;color:var(--ivory)}
+  .adv-sec-lbl{font-size:9px;letter-spacing:.25em;text-transform:uppercase;color:var(--gold-dim);margin-top:2px}
+  .adv-pos{display:flex;flex-direction:column;gap:6px}
+  .adv-pos-row{display:grid;grid-template-columns:minmax(64px,auto) 1fr auto auto;gap:8px;align-items:center;padding:7px 9px;background:rgba(8,17,31,0.45);border-radius:1px;border-left:2px solid var(--accent,#c9a961);font-size:12px}
+  .adv-pos-row .sym{font-family:'Cormorant Garamond',serif;font-size:16px;font-weight:700;color:var(--ivory)}
+  .adv-pos-row .sym .new{font-size:8px;letter-spacing:.1em;background:var(--gold);color:#08111f;padding:1px 5px;border-radius:1px;vertical-align:2px;margin-left:5px;font-family:'JetBrains Mono',monospace;font-weight:700}
+  .adv-pos-row .detail{font-size:10px;color:var(--gold-dim);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .adv-pos-row .px{color:var(--cream);text-align:right}
+  .adv-pos-row .pnl{font-weight:600;text-align:right;min-width:56px}
+  .adv-pos-row .pnl.up{color:var(--green)} .adv-pos-row .pnl.down{color:var(--red)}
+  .adv-pos-row.expand{cursor:pointer}
+  .adv-pos-thesis{display:none;grid-column:1/-1;font-size:10px;color:var(--cream);line-height:1.5;font-style:italic;padding-top:4px;border-top:1px dashed rgba(201,169,97,0.2)}
+  .adv-pos-row.open .adv-pos-thesis{display:block}
+  .adv-risk{font-size:10px;color:var(--gold-dim);line-height:1.5;border-top:1px dashed var(--border);padding-top:10px;margin-top:auto}
+  .adv-disclaimer{margin-top:22px;padding:12px 16px;border:1px dashed var(--border);font-size:10px;color:var(--gold-dim);line-height:1.6;text-align:center;letter-spacing:.03em}
+  /* ===== Plain view (Advisor tab) — written for humans, set in a book face ===== */
+  .pv{max-width:820px;margin:0 auto;font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:1.75;color:var(--ivory)}
+  .pv p{margin:0 0 12px}
+  .pv b{color:#fff}
+  .pv .up{color:var(--green);font-weight:700}
+  .pv .down{color:var(--red);font-weight:700}
+  .pv-card{background:linear-gradient(180deg,rgba(22,43,82,0.75),rgba(15,31,61,0.75));border:1px solid var(--border);border-radius:4px;padding:26px 28px;margin-bottom:20px}
+  .pv-card h2{font-family:'Cormorant Garamond',serif;font-size:29px;font-weight:700;color:var(--gold-bright);margin:0 0 12px;line-height:1.2}
+  .pv-bignum{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,8vw,54px);font-weight:700;color:#fff;line-height:1.1;margin:4px 0 10px}
+  .pv-bignum .chg{font-size:22px;font-family:Georgia,serif}
+  .pv-muted{font-size:15px;color:var(--cream);opacity:.85}
+  .pv-todo-item{padding:16px 18px;border-left:4px solid var(--gold);background:rgba(8,17,31,0.5);border-radius:3px;margin-bottom:12px}
+  .pv-todo-item.buy{border-left-color:var(--green)}
+  .pv-todo-item.sell{border-left-color:var(--red)}
+  .pv-todo-item p{margin:0}
+  .pv-strat{border-left:5px solid var(--accent,#c9a961)}
+  .pv-strat.day{--accent:#e879f9} .pv-strat.agg{--accent:#ff8c42} .pv-strat.gro{--accent:#4ade80} .pv-strat.lt{--accent:#7dd3fc}
+  .pv-risk{display:inline-block;font-size:14px;font-style:italic;color:var(--cream);opacity:.9;margin-left:8px}
+  .pv-hold{padding:12px 0;border-top:1px solid rgba(201,169,97,0.15)}
+  .pv-hold:first-of-type{border-top:none}
+  .pv-hold p{margin:0}
+  .pv-spark{width:100%;height:44px;display:block;margin-top:12px;opacity:.9}
+  .pv-alert{border:2px solid var(--red);background:rgba(220,38,38,0.12);animation:glowStop 2s ease-in-out infinite}
+  .pv-alert h2{color:var(--red)}
+  .pv-proof{font-size:15px;color:var(--cream);opacity:.9;text-align:center;padding:8px 20px;line-height:1.8}
+  .pv-proof a{color:var(--gold-bright)}
+  @media (max-width:640px){ .pv{font-size:17px} .pv-card{padding:20px 18px} }
+
+  /* At-a-glance hero */
+  .adv-hero{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:18px 20px;margin-bottom:16px;background:linear-gradient(180deg,rgba(22,43,82,0.85),rgba(15,31,61,0.85));border:1px solid var(--border-strong);border-radius:2px}
+  .adv-hero .big{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,7vw,46px);font-weight:700;color:var(--ivory);line-height:1}
+  .adv-hero .delta{font-size:17px;font-weight:700}
+  .adv-hero .lbl{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-dim);display:block;margin-bottom:4px}
+  .adv-hero .status{flex:1;min-width:230px;font-size:13px;line-height:1.65;color:var(--cream)}
+  .adv-hero .status b{color:var(--ivory)}
+  details.howto{border:1px dashed var(--border);border-radius:2px;margin-bottom:16px;font-size:13px;color:var(--cream)}
+  details.howto summary{cursor:pointer;padding:11px 16px;color:var(--gold-bright);font-size:12px;letter-spacing:.08em}
+  details.howto .inner{padding:2px 18px 14px;line-height:1.8}
+  details.howto b{color:var(--ivory)}
+
+  /* Today's Calls — plain buy/sell instructions */
+  .calls-panel{border:1px solid var(--border-strong);border-radius:2px;margin-bottom:20px;background:linear-gradient(180deg,rgba(22,43,82,0.8),rgba(15,31,61,0.8));overflow:hidden}
+  .calls-head{padding:12px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:rgba(201,169,97,0.07)}
+  .calls-head .t{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:var(--ivory)}
+  .calls-head .d{font-size:10px;letter-spacing:.15em;text-transform:uppercase;color:var(--gold-dim);margin-left:auto}
+  .call-row{display:grid;grid-template-columns:auto minmax(56px,auto) 1fr;gap:12px;align-items:center;padding:13px 16px;border-bottom:1px solid rgba(201,169,97,0.1);font-size:13px}
+  .call-row:last-child{border-bottom:none}
+  .call-verb{font-size:11px;font-weight:700;letter-spacing:.15em;padding:5px 12px;border-radius:1px;text-transform:uppercase}
+  .call-verb.buy{background:rgba(74,222,128,0.15);color:var(--green);border:1px solid var(--green-dim)}
+  .call-verb.sell{background:rgba(248,113,113,0.15);color:var(--red);border:1px solid var(--red-dim)}
+  .call-verb.hold{background:rgba(201,169,97,0.12);color:var(--gold-bright);border:1px solid var(--gold-dim)}
+  .call-row .sym{font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:700;color:var(--ivory)}
+  .call-row .why{color:var(--cream);line-height:1.5}
+  .call-row .why b{color:var(--ivory)}
+  .call-row .strat-tag{font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);display:block;margin-top:2px}
+  .adv-ifyou{font-size:13px;line-height:1.6;color:var(--cream);background:rgba(8,17,31,0.5);border-left:2px solid var(--accent,#c9a961);padding:10px 12px;border-radius:1px}
+  .adv-ifyou b{color:var(--ivory)} .adv-ifyou .up{color:var(--green);font-weight:700} .adv-ifyou .down{color:var(--red);font-weight:700}
+  .pos-act{font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:2px 6px;border-radius:1px;margin-left:6px;vertical-align:2px}
+  .pos-act.buy{background:rgba(74,222,128,0.2);color:var(--green)}
+  .pos-act.hold{background:rgba(201,169,97,0.15);color:var(--gold-bright)}
+  .adv-pos-rule{grid-column:1/-1;font-size:11px;color:var(--gold-dim);line-height:1.45;padding-top:3px}
+  .adv-pos-rule b{color:var(--cream);font-weight:600}
+  .adv-pos-row.breach-stop{background:rgba(220,38,38,0.14);border-left-color:var(--red);animation:glowStop 2s ease-in-out infinite}
+  .adv-pos-row.breach-target{background:rgba(74,222,128,0.12);border-left-color:var(--green);animation:glowProfit 2s ease-in-out infinite}
+  .sellnow{font-size:8px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;padding:2px 6px;border-radius:1px;margin-left:6px;vertical-align:2px;animation:pulse 1.4s infinite}
+  .sellnow.stop{background:var(--red-dim);color:#fff}
+  .sellnow.target{background:var(--green-dim);color:#06220f}
+  .live-alerts{border:1px solid var(--red-dim);border-radius:2px;margin-bottom:16px;background:rgba(220,38,38,0.08);padding:2px 0}
+  .live-alerts .call-row{border-bottom-color:rgba(220,38,38,0.15)}
+  .live-chip{display:inline-flex;align-items:center;gap:5px;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-bright);border:1px solid var(--gold-dim);padding:3px 8px;border-radius:1px;cursor:help}
+  .live-chip .dot{width:5px;height:5px;border-radius:50%;background:#dc2626;box-shadow:0 0 6px #dc2626;animation:pulse 1.6s infinite}
+  .fresh-badge{display:inline-flex;align-items:center;gap:6px;font-size:10px;letter-spacing:.12em;text-transform:uppercase;padding:6px 10px;border:1px solid var(--border);border-radius:1px}
+  .fresh-badge.ok{color:var(--green);border-color:var(--green-dim)}
+  .fresh-badge.warn{color:#f59e0b;border-color:#f59e0b}
+  .fresh-badge.stale{color:var(--red);border-color:var(--red-dim)}
+  .adv-meta{display:flex;gap:16px;flex-wrap:wrap;font-size:10px;color:var(--gold-dim);letter-spacing:.05em;margin-bottom:16px}
+  .adv-meta b{color:var(--cream);font-weight:500}
+
+  /* ===== Track record ===== */
+  .track-verify{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px;background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.3);border-radius:2px;margin-bottom:18px;font-size:11px;color:var(--cream);line-height:1.5}
+  .track-verify .shield{font-size:20px}
+  .track-verify a{color:var(--green);font-weight:600}
+  .chart-wrap{background:rgba(8,17,31,0.5);border:1px solid var(--border);border-radius:2px;padding:16px;margin-bottom:18px}
+  .chart-legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:10px;font-size:10px;letter-spacing:.08em;text-transform:uppercase}
+  .chart-legend span{display:inline-flex;align-items:center;gap:6px;color:var(--cream)}
+  .chart-legend i{display:inline-block;width:14px;height:3px;border-radius:2px}
+  #equityChart{width:100%;height:300px;display:block}
+  .trades-feed{display:flex;flex-direction:column;gap:6px;margin-top:8px}
+  .trade-row{display:grid;grid-template-columns:auto minmax(60px,auto) 1fr auto auto;gap:10px;align-items:center;padding:8px 12px;background:rgba(8,17,31,0.45);border-radius:1px;font-size:11px}
+  .trade-row .icon{font-size:13px}
+  .trade-row .sym{font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:700;color:var(--ivory)}
+  .trade-row .detail{font-size:10px;color:var(--gold-dim)}
+  .trade-row .reason{font-size:9px;letter-spacing:.08em;text-transform:uppercase;color:var(--cream);text-align:right}
+  .trade-row .pnl{font-weight:600;text-align:right;min-width:60px}
+  .trade-row .pnl.up{color:var(--green)} .trade-row .pnl.down{color:var(--red)}
+  details.league-legacy{margin-top:26px;border:1px solid var(--border);border-radius:2px;padding:0}
+  details.league-legacy summary{cursor:pointer;padding:12px 16px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-dim)}
+  details.league-legacy .inner{padding:0 16px 16px}
+
+  @media (max-width:640px){
+    .adv-hero{padding:14px;gap:14px}
+    .call-row{grid-template-columns:auto 1fr;font-size:13px}
+    .call-row .why{grid-column:1/-1;font-size:13px}
+    .adv-ifyou{font-size:13px}
+    .adv-tagline{font-size:12px}
+    .adv-pos-row{font-size:12px}
+    .adv-pos-rule{font-size:11px}
+    .tab{padding:14px 8px}
+    .adv-equity{font-size:30px}
+    .ticker-label{padding:0 10px;font-size:11px}
+    .tab{padding:12px 10px;font-size:10px}
+    main{padding:14px}
+    .picks-grid{grid-template-columns:1fr}
+    .holdings-table{font-size:11px}
+    .holdings-table th,.holdings-table td{padding:8px 4px}
+    .holdings-table .sym{font-size:15px}
+    .summary-tile .val{font-size:20px}
+  }
+</style>
+</head>
+<body>
+
+<div class="ticker-bar">
+  <div class="ticker-label"><span class="dot"></span>Live</div>
+  <div class="ticker-track" id="tickerTrack"></div>
+</div>
+
+<header class="header">
+  <div class="crest">
+    <span class="crest-line"></span>
+    <span class="crest-mark">✦</span>
+    <span class="crest-line r"></span>
+  </div>
+  <h1>Jaren's Stock Market Tracker</h1>
+  <div class="subtitle">Intelligence · Conviction · Capital</div>
+  <div class="est">Est. MMXXVI · Autonomous Engine + Live Scanner · <span id="verTag">v2.6</span></div>
+</header>
+
+<nav class="tabs">
+  <button class="tab active" data-view="advisor">Advisor</button>
+  <button class="tab" data-view="scan">Scanner</button>
+  <button class="tab" data-view="portfolio">Portfolio <span class="count" id="pfCount">0</span></button>
+  <button class="tab" data-view="track">Track Record</button>
+  <button class="tab" data-view="settings">Settings</button>
+</nav>
+
+<main>
+  <section class="view active" id="view-advisor">
+    <div class="scan-header">
+      <div>
+        <div class="scan-title">Your Automatic Adviser
+          <span class="sub">It buys and sells by itself — this page tells you what it did · <span id="advAsOf">loading…</span></span>
+        </div>
+      </div>
+      <div class="scan-actions">
+        <span class="fresh-badge" id="advFresh" style="display:none"></span>
+        <a class="btn ghost" id="advVerifyLink" href="https://github.com/jeells96/Stock-Market/commits/main/data" target="_blank" rel="noopener" style="text-decoration:none">✓ Verify on GitHub</a>
+        <button class="btn" id="advReloadBtn">↻ Reload</button>
+      </div>
+    </div>
+    <div id="advisorBody">
+      <div class="empty"><div class="big">Loading Advisor…</div><div class="small">Fetching the latest autonomous run</div></div>
+    </div>
+    <div class="adv-disclaimer">
+      Automated model portfolios trading <b>simulated paper money</b> at daily closing prices.
+      Educational project — not financial advice. Past performance never guarantees future results.
+    </div>
+  </section>
+
+  <section class="view" id="view-scan">
+    <div class="scan-header">
+      <div>
+        <div class="scan-title">Top Conviction Picks
+          <span class="sub">Multi-factor model · Updated <span id="scanTs">—</span>
+            <span id="refreshPill" style="display:none;align-items:center;gap:5px;margin-left:8px;color:var(--gold-bright);text-transform:none;letter-spacing:0">
+              <span class="spin">⟳</span> updating…
+            </span>
+          </span>
+        </div>
+      </div>
+      <div class="scan-actions">
+        <label class="auto-toggle" title="Automatically refresh picks in the background">
+          <input type="checkbox" id="autoRefreshChk" checked /> Auto
+        </label>
+        <select id="universeSel">
+          <option value="mega">Mega Universe (~600)</option>
+          <option value="momentum">Momentum &amp; Meme</option>
+          <option value="sp">S&amp;P 500 Core</option>
+        </select>
+        <button class="btn primary" id="scanBtn">▸ Run Scan</button>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-item"><span class="lbl">API</span><span id="apiStatus">●</span></div>
+      <div class="status-item"><span class="lbl">Budget</span><span id="budgetTxt">60 / 60</span></div>
+      <div class="budget-bar"><div class="budget-fill" id="budgetFill" style="width:100%"></div></div>
+      <div class="status-item"><span class="lbl">Cached</span><span id="cacheCount">0</span></div>
+      <div class="status-item"><span class="lbl">Last Scan</span><span id="lastScanAge">never</span></div>
+    </div>
+
+    <div class="progress" id="progress">
+      <div class="progress-text"><span class="stage" id="progStage">Initializing</span><span id="progDetail">—</span></div>
+      <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+      <div class="progress-actions">
+        <button class="btn danger" id="cancelScanBtn" style="padding:6px 12px;font-size:10px">✕ Cancel Scan</button>
+      </div>
+    </div>
+
+    <div id="picksGrid" class="picks-grid"></div>
+    <div id="emptyScan" class="empty">
+      <div class="big">Loading Picks…</div>
+      <div class="small">Surfacing the day's highest-conviction opportunities — this runs automatically</div>
+    </div>
+  </section>
+
+  <section class="view" id="view-portfolio">
+    <div class="scan-header">
+      <div>
+        <div class="scan-title">Active Positions
+          <span class="sub">Real-time signals · auto-refreshed</span>
+        </div>
+      </div>
+      <div class="scan-actions">
+        <button class="btn ghost" id="refreshPfBtn">↻ Refresh</button>
+        <button class="btn" id="addManualBtn">+ Add Position</button>
+      </div>
+    </div>
+    <div class="portfolio-summary" id="pfSummary"></div>
+    <div id="pfTableWrap"></div>
+  </section>
+
+  <section class="view" id="view-track">
+    <div class="scan-header">
+      <div>
+        <div class="scan-title">Verified Track Record
+          <span class="sub">Every data point timestamped in public git history</span>
+        </div>
+      </div>
+      <div class="scan-actions">
+        <button class="btn ghost" id="refreshTrackBtn">↻ Refresh</button>
+      </div>
+    </div>
+    <div class="track-verify">
+      <span class="shield">🛡️</span>
+      <span>Picks are committed to the repository <b>before</b> their outcomes are known, so this record
+      can't be rewritten after the fact. Sells are booked at the <b>actual closing price</b> on the day the
+      model fires the signal — never at the planned target or stop. Audit any day yourself:
+      <a href="https://github.com/jeells96/Stock-Market/commits/main/data" target="_blank" rel="noopener">commit history</a> ·
+      <a href="https://github.com/jeells96/Stock-Market/tree/main/data/history" target="_blank" rel="noopener">daily snapshots</a> ·
+      <a href="https://github.com/jeells96/Stock-Market/blob/main/REPORT.md" target="_blank" rel="noopener">latest report</a></span>
+    </div>
+    <div id="trackMain">
+      <div class="empty"><div class="big">Loading…</div><div class="small">Fetching the verified record</div></div>
+    </div>
+    <details class="league-legacy">
+      <summary>Legacy — league scanner record (Firebase)</summary>
+      <div class="inner"><div id="trackBody"><div class="empty"><div class="small">Open to load…</div></div></div></div>
+    </details>
+  </section>
+
+  <section class="view" id="view-settings">
+    <div class="settings-card">
+      <h2>Configuration</h2>
+      <div class="field">
+        <label>Finnhub API Key</label>
+        <div class="key-row">
+          <input type="text" id="apiKeyInput" placeholder="Your finnhub.io key" autocomplete="off"/>
+          <button class="btn primary" id="saveKeyBtn">Save</button>
+        </div>
+        <div class="hint">Stored locally in your browser. Free plan: 60 calls/min. Get a key at finnhub.io.</div>
+      </div>
+      <div class="field">
+        <label>Risk Profile (affects targets &amp; stops)</label>
+        <select id="riskSel">
+          <option value="conservative">Conservative — 6% target / 3% stop</option>
+          <option value="balanced" selected>Balanced — 10% target / 5% stop</option>
+          <option value="aggressive">Aggressive — 18% target / 7% stop</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>League Sync — Firebase Config</label>
+        <textarea id="fbConfigInput" placeholder='Paste your Firebase config object here, e.g.&#10;{&#10;  "apiKey": "...",&#10;  "authDomain": "...",&#10;  "projectId": "...",&#10;  "storageBucket": "...",&#10;  "messagingSenderId": "...",&#10;  "appId": "..."&#10;}' style="width:100%;min-height:120px;font-family:'JetBrains Mono',monospace;font-size:11px;resize:vertical"></textarea>
+        <div class="key-row" style="margin-top:8px">
+          <button class="btn primary" id="saveFbBtn" style="flex:1">Connect League Sync</button>
+          <button class="btn ghost" id="disconnectFbBtn" style="flex:1">Disconnect</button>
+        </div>
+        <div class="hint" id="fbStatusHint">Not connected. Paste your Firebase config to share scans across the league and cut down on API usage. Scans are shared; portfolios stay private to each device.</div>
+      </div>
+      <div class="field">
+        <label>Cache &amp; Local Data</label>
+        <div class="key-row">
+          <button class="btn ghost" id="clearCacheBtn" style="flex:1">Clear Quote Cache</button>
+          <button class="btn ghost" id="clearAllBtn" style="flex:1">Wipe All Local Data</button>
+        </div>
+        <div class="hint">Quote cache TTL: 90 seconds. Fundamentals TTL: 12 hours. Portfolio persists separately.</div>
+      </div>
+      <div class="field">
+        <label>About the Model</label>
+        <div class="hint" style="font-style:normal;line-height:1.7;color:var(--cream)">
+          Multi-factor scoring across momentum (intraday position + day's change), analyst recommendation trend, insider sentiment (MSPR), and news sentiment.
+          The scanner uses a funnel: quote screen → top 30 momentum sort → top 10 deep-dive with analyst + insider + news data.
+          League sync shares the latest scan via Firebase so teammates don't all re-scan. Global limit: 2 scans per hour across the whole league.
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="modal-bg" id="addModal">
+  <div class="modal">
+    <h3 id="addModalTitle">Add to Portfolio</h3>
+    <div class="modal-sub" id="addModalSub">—</div>
+    <div class="field">
+      <label>Symbol</label>
+      <input type="text" id="addSymbol" placeholder="AAPL" style="text-transform:uppercase" />
+    </div>
+    <div class="field">
+      <label>Shares</label>
+      <input type="number" id="addShares" placeholder="10" min="0" step="0.0001" />
+    </div>
+    <div class="field">
+      <label>Entry Price ($)</label>
+      <input type="number" id="addEntry" placeholder="0.00" min="0" step="0.01" />
+    </div>
+    <div class="field" style="display:flex;gap:10px">
+      <div style="flex:1">
+        <label>Target ($) — optional</label>
+        <input type="number" id="addTarget" min="0" step="0.01" />
+      </div>
+      <div style="flex:1">
+        <label>Stop ($) — optional</label>
+        <input type="number" id="addStop" min="0" step="0.01" />
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn ghost" id="cancelAddBtn">Cancel</button>
+      <button class="btn primary" id="confirmAddBtn">Add Position</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-wrap" id="toastWrap"></div>
+
+<footer>
+  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v2.6</span><br>
+  <span style="letter-spacing:.05em;text-transform:none">Paper-money model portfolios · not financial advice</span>
+</footer>
+
+<script>
+const APP_VERSION = "2.6";
+const UNIVERSES = {
+  sp: ["AAPL","MSFT","GOOGL","GOOG","AMZN","NVDA","META","TSLA","BRK.B","JPM","V","UNH","XOM","JNJ","WMT","MA","PG","LLY","HD","CVX","ABBV","KO","PEP","MRK","AVGO","COST","BAC","ADBE","ACN","CRM","TMO","CSCO","NFLX","ABT","MCD","DHR","WFC","TXN","NEE","ORCL","DIS","AMD","PM","CMCSA","VZ","NKE","UPS","RTX","PFE","INTC","HON","INTU","AMGN","T","COP","UNP","LOW","SPGI","LIN","CAT","GS","MS","ISRG","BLK","NOW","BKNG","DE","AXP","SCHW","TJX","C","BMY","SYK","MMC","BA","ELV","GE","MDT","ADP","PLD","LMT","REGN","VRTX","GILD","BSX","TMUS","CI","CB","ZTS","SO","DUK","MO","PGR","MDLZ","SLB","ETN","ADI","FI","ICE","CME","SHW","KLAC","APD","NSC","HCA","FCX","WM","BDX","CL","EOG","FDX","ITW","CSX","EQIX","NOC","MMM","PNC","TGT","EMR","MPC","PSX","AON","ORLY","HUM","MCK","PSA","ROP","MSI","USB","CARR","COF","APH","AJG","TFC","GD","SRE","D","NXPI","AZO","KMB","MAR","AIG","WMB","TT","ECL","WELL","O","FIS","OKE","KMI","ROST","CCI","TRV","CHTR","GIS","ALL","HLT","STZ","ANET","FTNT","KHC","SYY","BIIB","DOW","KDP","LRCX","ABNB","CTAS","BK","AFL","NUE","IDXX","JCI","VLO","MET","OXY","PCAR","SPG","AMP","PAYX","EW","TEL","HSY","CMG","DXCM","CTSH","A","PRU","DLR","LEN","DHI","CNC","MNST","DD","CRWD","DG","KR","WBA","YUM","ADM","EXC","XEL","FAST","SBUX","WEC","ED","ROK","BKR","HAL","RSG","VRSK","TROW","CDNS","SNPS","WST","ANSS","CDW","WTW","GWW","ALGN","ZBH","TYL","KEYS","NDAQ","NTAP","STT","STE","RJF","PFG","PHM","HBAN","RF","CFG","TSCO","ULTA","DRI","HAS"],
+  momentum: ["GME","AMC","BB","CLOV","SOFI","PLTR","HOOD","COIN","MSTR","MARA","RIOT","CLSK","WULF","HUT","BTBT","BITF","CIFR","HIVE","ARM","SMCI","AI","BBAI","SOUN","UPST","LCID","RIVN","FSR","NKLA","RIDE","QS","ENPH","SEDG","RUN","FSLR","SPWR","NOVA","ARRY","BE","PLUG","FCEL","BLDP","BEEM","SHLS","STEM","DQ","JKS","CSIQ","SOL","TSLA","NVDA","TSM","INTC","MU","ON","MCHP","SWKS","QRVO","LSCC","CRWD","ZS","NET","SNOW","DDOG","MDB","OKTA","DOCN","ESTC","FROG","CFLT","S","TENB","RPD","CYBR","VRNS","FTNT","PANW","CHKP","BSY","GTLB","NEWR","DT","PCTY","PAYC","WDAY","ZUO","BL","APPN","APPS","SE","GRAB","MELI","NU","STNE","PAGS","CART","RDDT","KSPI","HIMS","TLRY","CGC","ACB","CRON","SNDL","HEXO","OGI","VFF"],
+  mega: null
+};
+const NASDAQ_EXTRA = ["ASML","ADSK","ABNB","ADBE","ADI","AEP","AMAT","AMD","AMGN","AMZN","ANSS","APP","ARM","ASND","AVGO","AZN","BIIB","BKNG","BKR","CDNS","CDW","CEG","CHTR","CMCSA","COST","CPRT","CRWD","CSCO","CSGP","CSX","CTAS","CTSH","DASH","DDOG","DXCM","EA","EXC","FANG","FAST","FTNT","GEHC","GFS","GILD","GOOG","GOOGL","HON","IDXX","INTC","INTU","ISRG","KDP","KHC","KLAC","LIN","LRCX","LULU","MAR","MCHP","MDB","MDLZ","MELI","META","MNST","MRNA","MRVL","MSFT","MU","NFLX","NVDA","NXPI","ODFL","ON","ORLY","PANW","PAYX","PCAR","PDD","PEP","PLTR","PYPL","QCOM","REGN","ROP","ROST","SBUX","SMCI","SNPS","TEAM","TMUS","TSLA","TTD","TTWO","TXN","VRSK","VRTX","WBA","WBD","WDAY","XEL","ZS"];
+UNIVERSES.mega = [...new Set([...UNIVERSES.sp, ...UNIVERSES.momentum, ...NASDAQ_EXTRA])];
+
+const TICKER_DISPLAY = ["AAPL","MSFT","NVDA","GOOGL","AMZN","META","TSLA","JPM","V","UNH","XOM","WMT","LLY","AVGO","JNJ","MA","PG","HD","COST","BAC","NFLX","ABBV","CVX","KO","CRM","ORCL","TMO","ADBE","PEP","AMD","MCD","CSCO","DIS","ABT","INTC","WFC","BA","GS","SMCI","PLTR","COIN","UBER","SHOP","SOFI","HOOD","MSTR","ARM","CRWD"];
+
+const LS = {KEY:"jstm.apiKey",PORTFOLIO:"jstm.portfolio",CACHE:"jstm.cache",LAST_SCAN:"jstm.lastScan",RISK:"jstm.risk",FB:"jstm.fbConfig",AUTO:"jstm.autoRefresh"};
+const RISK_PROFILES = {conservative:{target:0.06,stop:0.03},balanced:{target:0.10,stop:0.05},aggressive:{target:0.18,stop:0.07}};
+
+let apiKey = localStorage.getItem(LS.KEY) || "d874rh1r01ql0hsk9qogd874rh1r01ql0hsk9qp0";
+let portfolio = JSON.parse(localStorage.getItem(LS.PORTFOLIO) || "[]");
+let cache = JSON.parse(localStorage.getItem(LS.CACHE) || "{}");
+let lastScanResults = JSON.parse(localStorage.getItem(LS.LAST_SCAN) || "null");
+let risk = localStorage.getItem(LS.RISK) || "balanced";
+
+// ===== League sync (Firebase) state =====
+// Hardcoded league config — everyone using this build shares the same project automatically.
+const DEFAULT_FB_CONFIG = {
+  apiKey: "AIzaSyBQzn4hcka-PM4Ns70022p70gvQ4iQ4d08",
+  authDomain: "stocks-b13c5.firebaseapp.com",
+  projectId: "stocks-b13c5",
+  storageBucket: "stocks-b13c5.firebasestorage.app",
+  messagingSenderId: "1011539617993",
+  appId: "1:1011539617993:web:5ae58443d40dde4d634518"
+};
+let fbConfig = JSON.parse(localStorage.getItem(LS.FB) || "null") || DEFAULT_FB_CONFIG;
+let fbApp = null, fbDb = null, fbReady = false;
+
+let scanInProgress = false;
+let scanCancelRequested = false;
+
+const RL = {
+  capacity: 55, refillRate: 55/60, tokens: 55, lastRefill: Date.now(),
+  queue: [], draining: false, callTimes: [],
+  refill(){
+    const now = Date.now();
+    this.tokens = Math.min(this.capacity, this.tokens + (now - this.lastRefill)/1000 * this.refillRate);
+    this.lastRefill = now;
+    this.callTimes = this.callTimes.filter(t => t > now - 60000);
+  },
+  async acquire(){ return new Promise(resolve => { this.queue.push(resolve); this.drain(); }); },
+  async drain(){
+    if(this.draining) return;
+    this.draining = true;
+    while(this.queue.length){
+      this.refill();
+      if(this.tokens >= 1){
+        this.tokens -= 1;
+        this.callTimes.push(Date.now());
+        const r = this.queue.shift();
+        updateStatusBar();
+        r();
+        await sleep(18);
+      } else {
+        const waitMs = Math.ceil((1 - this.tokens)/this.refillRate * 1000) + 30;
+        updateStatusBar();
+        await sleep(waitMs);
+      }
+    }
+    this.draining = false;
+    updateStatusBar();
+  },
+  remaining(){ this.refill(); return Math.max(0, 60 - this.callTimes.length); }
+};
+
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+// escape any string that reaches innerHTML from outside this file (league
+// Firestore docs, Yahoo names, site.json) — league docs especially are
+// writable by anyone holding the public Firebase config
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const $ = id => document.getElementById(id);
+const $$ = sel => document.querySelectorAll(sel);
+const fmt$ = n => n==null||isNaN(n) ? "—" : "$" + n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtPct = n => n==null||isNaN(n) ? "—" : (n>=0?"+":"") + (n*100).toFixed(2) + "%";
+const clamp = (v,lo,hi) => Math.max(lo, Math.min(hi, v));
+
+function toast(msg, kind=""){
+  const t = document.createElement("div");
+  t.className = "toast" + (kind?" "+kind:"");
+  t.textContent = msg;
+  $("toastWrap").appendChild(t);
+  setTimeout(()=>{ t.style.opacity="0"; t.style.transition="opacity .3s"; setTimeout(()=>t.remove(),300); }, 3000);
+}
+
+function saveCache(){
+  const now = Date.now();
+  for(const k in cache){ if(cache[k].exp < now - 7*86400000) delete cache[k]; }
+  try{ localStorage.setItem(LS.CACHE, JSON.stringify(cache)); }
+  catch(e){ console.warn("cache save failed", e); cache = {}; }
+}
+function savePortfolio(){ localStorage.setItem(LS.PORTFOLIO, JSON.stringify(portfolio)); }
+function saveLastScan(){ localStorage.setItem(LS.LAST_SCAN, JSON.stringify(lastScanResults)); }
+
+/* ===================== LEAGUE SYNC (FIREBASE) =====================
+   - One shared Firestore doc: scans/latest  → holds most recent scan + timestamp
+   - One shared doc: scans/meta → holds rolling list of recent scan timestamps (for the global 2/hour cap)
+   - Portfolios are NOT synced; they stay local per device.
+   - If Firebase isn't configured/reachable, everything falls back to local-only.
+=================================================================== */
+function initFirebase(){
+  if(!fbConfig) { fbReady = false; updateFbStatus(); return false; }
+  try {
+    if(!fbApp){
+      fbApp = firebase.initializeApp(fbConfig);
+      fbDb = firebase.firestore();
+    }
+    fbReady = true;
+  } catch(e){
+    console.warn("Firebase init failed", e);
+    fbReady = false;
+  }
+  updateFbStatus();
+  return fbReady;
+}
+
+function updateFbStatus(){
+  const hint = $("fbStatusHint");
+  if(!hint) return;
+  if(fbReady){
+    hint.innerHTML = `<span style="color:var(--green)">● Connected</span> — scans shared across the league. Portfolios stay private to this device.`;
+  } else if(fbConfig){
+    hint.innerHTML = `<span style="color:var(--red)">● Config saved but not connected</span> — check the config object is valid.`;
+  } else {
+    hint.textContent = "Not connected. Paste your Firebase config to share scans across the league and cut down on API usage. Scans are shared; portfolios stay private to each device.";
+  }
+}
+
+// Pull the latest shared scan from Firebase. Returns scan obj or null.
+async function fetchSharedScan(){
+  if(!fbReady) return null;
+  try {
+    const doc = await fbDb.collection("scans").doc("latest").get();
+    if(doc.exists){
+      const data = doc.data();
+      if(data && data.picks) return data;
+    }
+  } catch(e){ console.warn("fetchSharedScan failed", e); }
+  return null;
+}
+
+// Write a completed scan as the new shared scan for the league.
+// Keep only the fields needed to render a pick — strips bulky raw Finnhub
+// payloads (recommendation/insider/news arrays) so the shared doc stays tiny
+// and well under Firestore's 1MB limit.
+function slimPick(p){
+  const num = (v, d=0) => (typeof v === "number" && isFinite(v)) ? v : d;
+  const numN = (v) => (typeof v === "number" && isFinite(v)) ? v : null;
+  return {
+    sym: String(p.sym || ""),
+    price: num(p.price),
+    changePct: num(p.changePct),
+    name: (p.profile && p.profile.name) ? String(p.profile.name) : String(p.name || ""),
+    totalScore: num(p.totalScore),
+    conviction: String(p.conviction || "WATCH"),
+    f_momentum: num(p.f_momentum, 50),
+    f_analyst: num(p.f_analyst, 50),
+    f_insider: num(p.f_insider, 50),
+    f_news: num(p.f_news, 50),
+    thesis: String(p.thesis || ""),
+    targetPrice: num(p.targetPrice),
+    stopPrice: num(p.stopPrice),
+    // #2 why + #5 risk + #4 flags
+    analystTarget: numN(p.analystTarget),
+    analystUpside: numN(p.analystUpside),
+    high52: numN(p.high52),
+    low52: numN(p.low52),
+    peRatio: numN(p.peRatio),
+    beta: numN(p.beta),
+    riskTier: String(p.riskTier || "Unknown"),
+    conflict: !!p.conflict,
+    conflictNote: String(p.conflictNote || "")
+  };
+}
+
+async function publishSharedScan(scan){
+  if(!fbReady){ console.warn("publish skipped — Firebase not ready"); return; }
+  try {
+    const slim = {
+      ts: scan.ts,
+      universe: scan.universe,
+      coveredSyms: scan.coveredSyms || [],
+      picks: (scan.picks || []).map(slimPick)
+    };
+    await fbDb.collection("scans").doc("latest").set(slim);
+    console.log("published shared scan:", slim.picks.length, "picks");
+  } catch(e){
+    console.warn("publishSharedScan failed", e);
+    toast("League sync write FAILED — Firestore rules likely blocking. " + (e.code || e.message || ""), "err");
+  }
+}
+
+// ===================== #1 BACKTEST RECORDER =====================
+// Records the top picks of a scan with their score, then measures actual price
+// outcomes at 1-day / 1-week / 1-month checkpoints. Stored in Firebase so the
+// track record persists and is shared across the league. Outcome checks run
+// opportunistically whenever someone opens the app (client-side, no server).
+const TRACK_WINDOWS = [
+  {key:"d1", ms: 1*86400000, label:"1-Day"},
+  {key:"w1", ms: 7*86400000, label:"1-Week"},
+  {key:"m1", ms: 30*86400000, label:"1-Month"},
+];
+
+// only record once per calendar day to keep the dataset clean and small
+function todayKey(){ return new Date().toISOString().slice(0,10); }
+
+async function recordPicksForTracking(picks){
+  if(!fbReady || !picks || !picks.length) return;
+  try {
+    const dateKey = todayKey();
+    // one doc per day; skip if we already recorded today
+    const ref = fbDb.collection("track").doc(dateKey);
+    const existing = await ref.get();
+    if(existing.exists) return; // already logged today's picks
+
+    // record the top 10 picks only — enough for a meaningful sample without bloat
+    const top = picks.slice(0, 10).map(p => ({
+      sym: p.sym,
+      score: (typeof p.totalScore==="number") ? p.totalScore : 0,
+      conviction: p.conviction || "WATCH",
+      entryPrice: (typeof p.price==="number") ? p.price : 0,
+      recordedAt: Date.now(),
+      outcomes: {} // filled in later: {d1:{price,pct,at}, w1:{...}, m1:{...}}
+    }));
+    await ref.set({ dateKey, recordedAt: Date.now(), picks: top });
+    console.log("recorded", top.length, "picks for tracking on", dateKey);
+  } catch(e){ console.warn("recordPicksForTracking failed", e); }
+}
+
+// Walk tracked days; for any pick whose checkpoint is due and unmeasured, fetch
+// the current price and store the outcome. Runs quietly in the background.
+async function processTrackingOutcomes(){
+  if(!fbReady) return;
+  try {
+    const snap = await fbDb.collection("track").get();
+    const now = Date.now();
+    for(const doc of snap.docs){
+      const data = doc.data();
+      if(!data || !data.picks) continue;
+      let changed = false;
+      for(const p of data.picks){
+        for(const w of TRACK_WINDOWS){
+          if(p.outcomes && p.outcomes[w.key]) continue;       // already measured
+          if(now - p.recordedAt < w.ms) continue;             // not due yet
+          if(RL.remaining() < 6) return;                      // protect budget; resume later
+          try {
+            const q = await getQuote(p.sym);
+            if(q && q.c){
+              p.outcomes = p.outcomes || {};
+              p.outcomes[w.key] = {
+                price: q.c,
+                pct: p.entryPrice ? (q.c - p.entryPrice)/p.entryPrice : 0,
+                at: now,
+                elapsedDays: Math.round((now - p.recordedAt)/86400000)
+              };
+              changed = true;
+            }
+          } catch(e){ /* try again next time */ }
+        }
+      }
+      if(changed){ await fbDb.collection("track").doc(doc.id).set(data); }
+    }
+  } catch(e){ console.warn("processTrackingOutcomes failed", e); }
+}
+
+// Aggregate the track record into hit-rates by conviction tier and window.
+async function computeTrackRecord(){
+  const stats = {}; // stats[conviction][windowKey] = {n, wins, sumPct}
+  if(!fbReady) return stats;
+  try {
+    const snap = await fbDb.collection("track").get();
+    snap.docs.forEach(doc => {
+      const data = doc.data();
+      (data.picks||[]).forEach(p => {
+        const conv = p.conviction || "WATCH";
+        stats[conv] = stats[conv] || {};
+        TRACK_WINDOWS.forEach(w => {
+          const o = p.outcomes && p.outcomes[w.key];
+          if(!o) return;
+          stats[conv][w.key] = stats[conv][w.key] || {n:0, wins:0, sumPct:0};
+          const s = stats[conv][w.key];
+          s.n++; if(o.pct > 0) s.wins++; s.sumPct += o.pct;
+        });
+      });
+    });
+  } catch(e){ console.warn("computeTrackRecord failed", e); }
+  return stats;
+}
+// ================================================================
+
+function setRefreshing(on){
+  const el = $("refreshPill");
+  if(el) el.style.display = on ? "inline-flex" : "none";
+}
+function cacheGet(key){
+  const c = cache[key];
+  if(!c) return null;
+  if(c.exp < Date.now()){ delete cache[key]; return null; }
+  return c.val;
+}
+function cacheSet(key, val, ttlMs){ cache[key] = {val, exp: Date.now() + ttlMs}; }
+
+async function finn(path, params={}, ttlMs=0){
+  const cacheKey = path + "?" + new URLSearchParams(params).toString();
+  if(ttlMs > 0){
+    const cached = cacheGet(cacheKey);
+    if(cached !== null) return cached;
+  }
+  await RL.acquire();
+  const url = `https://finnhub.io/api/v1${path}?${new URLSearchParams({...params, token: apiKey}).toString()}`;
+  try{
+    const res = await fetch(url);
+    if(res.status === 429){
+      await sleep(2500);
+      const res2 = await fetch(url);
+      if(!res2.ok) throw new Error("HTTP " + res2.status);
+      const j2 = await res2.json();
+      if(ttlMs > 0) cacheSet(cacheKey, j2, ttlMs);
+      return j2;
+    }
+    if(res.status === 401 || res.status === 403) throw new Error("Invalid API key");
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    const j = await res.json();
+    if(ttlMs > 0){ cacheSet(cacheKey, j, ttlMs); saveCache(); }
+    return j;
+  } catch(err){ console.warn("finn error", path, err); throw err; }
+}
+
+async function getQuote(sym){ return finn("/quote", {symbol: sym}, 90 * 1000); }
+async function getProfile(sym){ return finn("/stock/profile2", {symbol: sym}, 7 * 86400 * 1000); }
+async function getRecommendation(sym){ return finn("/stock/recommendation", {symbol: sym}, 12 * 3600 * 1000); }
+async function getInsiderSentiment(sym){
+  const to = new Date().toISOString().slice(0,10);
+  const fromDt = new Date(Date.now()-90*86400000).toISOString().slice(0,10);
+  return finn("/stock/insider-sentiment", {symbol: sym, from: fromDt, to}, 24*3600*1000);
+}
+async function getNewsSentiment(sym){ return finn("/news-sentiment", {symbol: sym}, 6*3600*1000); }
+// /stock/metric returns valuation, 52-week range, beta (volatility), and more — one call
+// that feeds both the "why" (#2) and risk context (#5). Cached 12h since these move slowly.
+async function getMetrics(sym){ return finn("/stock/metric", {symbol: sym, metric: "all"}, 12*3600*1000); }
+// price target consensus (analyst targets) — part of the "why" (#2)
+async function getPriceTarget(sym){ return finn("/stock/price-target", {symbol: sym}, 24*3600*1000); }
+
+function updateStatusBar(){
+  const remaining = RL.remaining();
+  $("budgetTxt").textContent = `${remaining} / 60`;
+  const pct = (remaining/60)*100;
+  const fill = $("budgetFill");
+  fill.style.width = pct + "%";
+  fill.className = "budget-fill" + (pct < 20 ? " danger" : pct < 50 ? " warn" : "");
+  $("cacheCount").textContent = Object.keys(cache).length;
+  $("apiStatus").textContent = apiKey ? "● Connected" : "● No Key";
+  $("apiStatus").style.color = apiKey ? "var(--green)" : "var(--red)";
+  if(lastScanResults?.ts){
+    const ageMin = Math.floor((Date.now() - lastScanResults.ts)/60000);
+    $("lastScanAge").textContent = ageMin < 1 ? "just now" : ageMin < 60 ? `${ageMin}m ago` : `${Math.floor(ageMin/60)}h ago`;
+  }
+}
+
+// TICKER: pauses during scans, 5-minute cache, only fires when >20 tokens free
+async function buildTicker(){
+  const tickerData = TICKER_DISPLAY.map(s => ({sym: s, px: null, chg: null}));
+  TICKER_DISPLAY.forEach((sym, i) => {
+    const cached = cacheGet(`/quote?symbol=${sym}`);
+    if(cached && cached.c) tickerData[i] = {sym, px: cached.c, chg: cached.dp || 0};
+  });
+  renderTicker(tickerData);
+
+  // Fill the ticker ONCE on load, then freeze. No background looping —
+  // keeps the budget/cache numbers steady once everything has loaded.
+  const fillOnce = async () => {
+    if(!apiKey) return;
+    for(let i = 0; i < TICKER_DISPLAY.length; i++){
+      // pause if a scan kicks off mid-fill so the scan gets priority
+      while(scanInProgress){ await sleep(2000); }
+      const sym = TICKER_DISPLAY[i];
+      // already seeded from cache above? skip the call
+      if(tickerData[i].px !== null) continue;
+      try{
+        const q = await finn("/quote", {symbol: sym}, 5*60*1000);
+        if(q && q.c){
+          tickerData[i] = { sym, px: q.c, chg: q.dp || 0 };
+          renderTicker(tickerData);
+        }
+      } catch(e){ /* silent */ }
+      await sleep(1200);
+    }
+    // done — ticker is now static until the page is reloaded
+  };
+  fillOnce();
+}
+
+function renderTicker(data){
+  const items = [...data, ...data].map(d => {
+    if(d.px === null) return `<div class="ticker-item"><span class="ticker-sym">${d.sym}</span><span class="ticker-px">—</span></div>`;
+    const up = (d.chg||0) >= 0;
+    return `<div class="ticker-item">
+      <span class="ticker-sym">${d.sym}</span>
+      <span class="ticker-px">$${d.px.toFixed(2)}</span>
+      <span class="ticker-chg ${up?'up':'down'}"><span class="ticker-arrow">${up?'▲':'▼'}</span> ${(d.chg>=0?'+':'')}${(d.chg||0).toFixed(2)}%</span>
+    </div>`;
+  }).join("");
+  $("tickerTrack").innerHTML = items;
+}
+
+function showProgress(stage, detail, pct){
+  $("progress").classList.add("show");
+  $("progStage").textContent = stage;
+  $("progDetail").textContent = detail;
+  $("progFill").style.width = pct + "%";
+}
+function hideProgress(){ setTimeout(()=>$("progress").classList.remove("show"), 800); }
+
+async function runScan(opts = {}){
+  const background = !!opts.background;
+  if(!apiKey){ if(!background) toast("Add your Finnhub API key in Settings first.", "err"); return; }
+  if(scanInProgress){ if(!background) toast("Scan already running.", "err"); return; }
+
+  scanInProgress = true;
+  scanCancelRequested = false;
+  $("scanBtn").disabled = true;
+
+  const universe = UNIVERSES[$("universeSel").value];
+  const MAX_PICKS = 100;          // hard cap on list size
+  const MIN_BUDGET_FOR_NEW = 8;   // keep this much budget free before deep-diving a new stock
+  const DEEP_CALLS = 4;           // calls per deep-dive (profile, rec, insider, news)
+
+  // Decide mode: a "grow/refresh" run if we already have picks, else a fresh first scan.
+  const existing = (lastScanResults && lastScanResults.picks && lastScanResults.picks.length) ? lastScanResults.picks.slice() : null;
+  const isRefresh = !!existing;
+
+  if(background){
+    setRefreshing(true);
+  } else if(!isRefresh){
+    $("emptyScan").style.display = "none";
+    $("picksGrid").innerHTML = "";
+  }
+
+  // track which universe symbols we've already deep-dived (persisted across runs)
+  let covered = new Set((lastScanResults && lastScanResults.coveredSyms) || []);
+
+  try {
+    /* ============================================================
+       PATH A — FIRST SCAN (no existing picks): top 10 fast
+    ============================================================ */
+    if(!isRefresh){
+      if(!background) showProgress("Stage 1 — Quote Screen", `0 / ${universe.length}`, 5);
+      const candidates = [];
+      let scanned = 0, uncachedCalls = 0, errCount = 0, lastErr = null;
+      const MAX_STAGE1_NEW_CALLS = 50;
+
+      for(const sym of universe){
+        if(scanCancelRequested) throw new Error("Cancelled by user");
+        const cached = cacheGet(`/quote?symbol=${sym}`);
+        let q;
+        if(cached) q = cached;
+        else if(uncachedCalls < MAX_STAGE1_NEW_CALLS){
+          try { q = await getQuote(sym); uncachedCalls++; }
+          catch(e){ errCount++; lastErr = e.message; continue; }
+        } else continue;
+
+        if(q && q.c && q.c > 0){
+          candidates.push({sym, price:q.c, changePct:q.dp||0, high:q.h, low:q.l, open:q.o, prevClose:q.pc});
+        }
+        scanned++;
+        if(!background && (scanned % 5 === 0 || scanned === universe.length)){
+          showProgress("Stage 1 — Quote Screen",
+            `${scanned}/${universe.length} screened · ${candidates.length} live · ${uncachedCalls} fresh calls`,
+            5 + (scanned/universe.length)*30);
+          await sleep(10);
+        }
+      }
+      if(candidates.length === 0){
+        if(lastErr) throw new Error(`All quote calls failed (${errCount}). Last error: ${lastErr}`);
+        throw new Error("No quotes returned. Verify your API key in Settings.");
+      }
+
+      candidates.forEach(scoreMomentum);
+      candidates.sort((a,b)=> b.momentumScore - a.momentumScore);
+
+      const deepCount = Math.min(10, candidates.length);
+      const finalists = candidates.slice(0, deepCount);
+
+      for(let i=0; i<finalists.length; i++){
+        if(scanCancelRequested) throw new Error("Cancelled by user");
+        const c = finalists[i];
+        if(!background) showProgress("Stage 2 — Deep Dive", `${c.sym} (${i+1}/${deepCount})`, 42 + (i/deepCount)*52);
+        await deepDive(c);
+        covered.add(c.sym);
+        if(!background){
+          renderPicks(finalists.filter(f=>f.totalScore!==undefined).sort((a,b)=>b.totalScore-a.totalScore));
+        }
+      }
+      finalists.sort((a,b)=> b.totalScore - a.totalScore);
+      await commitScan(finalists, covered);
+      if(!background) toast(`Scan complete. ${finalists.length} picks ranked.${fbReady?" Shared with the league.":""}`, "ok");
+      return;
+    }
+
+    /* ============================================================
+       PATH B — REFRESH/GROW (have picks already)
+       Priority 1: refresh existing picks.  Priority 2: add new ones.
+    ============================================================ */
+    // ---- Priority 1: refresh data on the stocks we already hold in the list ----
+    if(!background) showProgress("Refreshing", `Updating ${existing.length} current picks`, 10);
+    for(let i=0; i<existing.length; i++){
+      if(scanCancelRequested) throw new Error("Cancelled by user");
+      const c = existing[i];
+      // bust the quote cache so we get a fresh price, then re-deep-dive
+      delete cache[`/quote?symbol=${c.sym}`];
+      try {
+        const q = await getQuote(c.sym);
+        if(q && q.c && q.c > 0){ c.price=q.c; c.changePct=q.dp||0; c.high=q.h; c.low=q.l; c.open=q.o; c.prevClose=q.pc; }
+      } catch(e){ /* keep old price */ }
+      await deepDive(c); // refreshes analyst/insider/news (cached TTLs mean this is cheap if recent)
+      covered.add(c.sym);
+      if(!background) showProgress("Refreshing", `Updated ${c.sym} (${i+1}/${existing.length})`, 10 + (i/existing.length)*45);
+    }
+    // re-render refreshed list immediately so targets are current before we grow
+    existing.sort((a,b)=> b.totalScore - a.totalScore);
+    renderPicks(existing);
+
+    // ---- Priority 2: spend leftover budget adding NEW stocks, up to the cap ----
+    let added = 0;
+    if(existing.length < MAX_PICKS){
+      // build the pool of not-yet-covered universe symbols
+      const uncovered = universe.filter(s => !covered.has(s));
+      // quick-screen a chunk of them by momentum using budget that's available
+      const newCandidates = [];
+      for(const sym of uncovered){
+        if(scanCancelRequested) break;
+        if(RL.remaining() < MIN_BUDGET_FOR_NEW + DEEP_CALLS) break; // save room for at least one deep-dive
+        const cached = cacheGet(`/quote?symbol=${sym}`);
+        let q;
+        if(cached) q = cached;
+        else { try { q = await getQuote(sym); } catch(e){ continue; } }
+        if(q && q.c && q.c > 0){
+          const cand = {sym, price:q.c, changePct:q.dp||0, high:q.h, low:q.l, open:q.o, prevClose:q.pc};
+          scoreMomentum(cand);
+          newCandidates.push(cand);
+        }
+        covered.add(sym); // mark screened so we don't re-screen it next time
+      }
+      // best momentum first, then deep-dive as many as budget + cap allow
+      newCandidates.sort((a,b)=> b.momentumScore - a.momentumScore);
+      for(const cand of newCandidates){
+        if(scanCancelRequested) break;
+        if(existing.length >= MAX_PICKS) break;
+        if(RL.remaining() < MIN_BUDGET_FOR_NEW) break;
+        await deepDive(cand);
+        existing.push(cand);
+        added++;
+        existing.sort((a,b)=> b.totalScore - a.totalScore);
+        if(!background){
+          renderPicks(existing);
+          showProgress("Adding", `+${cand.sym} · ${existing.length}/${MAX_PICKS} tracked`, 60 + Math.min(38, added*3));
+        }
+      }
+    }
+
+    existing.sort((a,b)=> b.totalScore - a.totalScore);
+    await commitScan(existing, covered);
+    if(!background){
+      const caph = existing.length >= MAX_PICKS ? " (cap reached)" : "";
+      toast(`Refreshed ${existing.length} picks${added?`, added ${added}`:""}.${caph}`, "ok");
+    }
+
+  } catch(err){
+    console.error(err);
+    if(!background) toast("Scan: " + err.message, "err");
+    // If this was the very first scan (no picks yet) and it failed, retry shortly —
+    // the page must never stay stuck on the empty state once it's been used.
+    const stillEmpty = !(lastScanResults && lastScanResults.picks && lastScanResults.picks.length);
+    if(stillEmpty && err.message !== "Cancelled by user"){
+      setTimeout(() => { if(!scanInProgress) runScan({background: false}); }, 20000);
+    }
+  } finally {
+    scanInProgress = false;
+    scanCancelRequested = false;
+    $("scanBtn").disabled = false;
+    if(background) setRefreshing(false);
+    else hideProgress();
+    updateStatusBar();
+  }
+}
+
+// momentum-only quick score (used for screening)
+function scoreMomentum(c){
+  const positionInRange = c.high > c.low ? (c.price - c.low) / (c.high - c.low) : 0.5;
+  c.momentumScore = (c.changePct * 0.7) + (positionInRange * 100 * 0.3);
+}
+
+// full deep-dive: pulls analyst/insider/news/metrics/target and computes the conviction score
+async function deepDive(c){
+  const [profile, rec, ins, newsSent, metrics, ptarget] = await Promise.allSettled([
+    getProfile(c.sym), getRecommendation(c.sym), getInsiderSentiment(c.sym),
+    getNewsSentiment(c.sym), getMetrics(c.sym), getPriceTarget(c.sym),
+  ]);
+  c.profile = profile.status==="fulfilled" ? profile.value : c.profile || null;
+  c.recommendation = rec.status==="fulfilled" ? rec.value : c.recommendation || null;
+  c.insider = ins.status==="fulfilled" ? ins.value : c.insider || null;
+  c.newsSent = newsSent.status==="fulfilled" ? newsSent.value : c.newsSent || null;
+
+  // --- derive the "why" + risk fields (#2 and #5) ---
+  const m = (metrics.status==="fulfilled" && metrics.value && metrics.value.metric) ? metrics.value.metric : {};
+  c.beta = (typeof m.beta === "number") ? m.beta : null;                    // volatility proxy
+  c.high52 = (typeof m["52WeekHigh"] === "number") ? m["52WeekHigh"] : null;
+  c.low52  = (typeof m["52WeekLow"]  === "number") ? m["52WeekLow"]  : null;
+  c.peRatio = (typeof m.peTTM === "number") ? m.peTTM : null;
+
+  const pt = (ptarget.status==="fulfilled" && ptarget.value) ? ptarget.value : null;
+  c.analystTarget = (pt && typeof pt.targetMean === "number" && pt.targetMean > 0) ? pt.targetMean : null;
+  // implied upside to the analyst consensus target
+  c.analystUpside = (c.analystTarget && c.price) ? (c.analystTarget - c.price)/c.price : null;
+
+  scoreFinalist(c);
+}
+
+// persist + render a completed scan/refresh
+async function commitScan(picks, coveredSet){
+  lastScanResults = {
+    ts: Date.now(),
+    universe: $("universeSel").value,
+    picks,
+    coveredSyms: Array.from(coveredSet)
+  };
+  saveLastScan();
+  renderPicks(picks);
+  $("emptyScan").style.display = "none";
+  $("scanTs").textContent = new Date().toLocaleTimeString();
+  await publishSharedScan(lastScanResults);
+  recordPicksForTracking(picks);
+}
+
+function scoreFinalist(c){
+  const positionInRange = c.high > c.low ? (c.price - c.low) / (c.high - c.low) : 0.5;
+  c.f_momentum = clamp(50 + c.changePct * 8 + (positionInRange - 0.5) * 20, 0, 100);
+  if(c.recommendation && c.recommendation.length){
+    const latest = c.recommendation[0];
+    const total = latest.strongBuy + latest.buy + latest.hold + latest.sell + latest.strongSell;
+    if(total > 0){
+      const bullScore = (latest.strongBuy * 2 + latest.buy * 1 - latest.sell * 1 - latest.strongSell * 2) / total;
+      c.f_analyst = clamp(50 + bullScore * 35, 0, 100);
+    } else c.f_analyst = 50;
+  } else c.f_analyst = 50;
+  if(c.insider && c.insider.data && c.insider.data.length){
+    const recent = c.insider.data.slice(-3);
+    const avgMspr = recent.reduce((s,d)=>s+(d.mspr||0),0) / recent.length;
+    c.f_insider = clamp(50 + avgMspr * 0.5, 0, 100);
+  } else c.f_insider = 50;
+  if(c.newsSent && c.newsSent.companyNewsScore != null) c.f_news = clamp(c.newsSent.companyNewsScore * 100, 0, 100);
+  else c.f_news = 50;
+  c.totalScore = Math.round(c.f_momentum * 0.35 + c.f_analyst * 0.30 + c.f_insider * 0.20 + c.f_news * 0.15);
+  if(c.totalScore >= 75) c.conviction = "STRONG";
+  else if(c.totalScore >= 62) c.conviction = "BUY";
+  else if(c.totalScore >= 50) c.conviction = "HOLD";
+  else c.conviction = "WATCH";
+  c.thesis = generateThesis(c);
+  const profile = RISK_PROFILES[risk];
+  c.targetPrice = c.price * (1 + profile.target);
+  c.stopPrice = c.price * (1 - profile.stop);
+  computeFactorFlags(c);
+  computeRisk(c);
+}
+
+// #4 — classify each factor as bull/neutral/bear and flag internal conflicts
+function factorState(v){
+  if(v >= 62) return "bull";
+  if(v <= 38) return "bear";
+  return "neutral";
+}
+function computeFactorFlags(c){
+  c.flags = {
+    momentum: factorState(c.f_momentum),
+    analyst:  factorState(c.f_analyst),
+    insider:  factorState(c.f_insider),
+    news:     factorState(c.f_news),
+  };
+  const states = Object.values(c.flags);
+  const bulls = states.filter(s => s === "bull").length;
+  const bears = states.filter(s => s === "bear").length;
+  // a conflict = at least one strong bull AND one strong bear signal disagreeing
+  c.conflict = (bulls > 0 && bears > 0);
+  // build a short, honest conflict note naming the disagreement
+  if(c.conflict){
+    const bullNames = Object.keys(c.flags).filter(k => c.flags[k]==="bull");
+    const bearNames = Object.keys(c.flags).filter(k => c.flags[k]==="bear");
+    c.conflictNote = `${bullNames.join(" & ")} positive, but ${bearNames.join(" & ")} negative`;
+  } else {
+    c.conflictNote = "";
+  }
+}
+
+// #5 — risk context from beta (volatility) + the dollar downside to the stop
+function computeRisk(c){
+  // beta-based volatility tier
+  if(c.beta == null) c.riskTier = "Unknown";
+  else if(c.beta < 0.8) c.riskTier = "Low";
+  else if(c.beta < 1.3) c.riskTier = "Moderate";
+  else if(c.beta < 1.8) c.riskTier = "High";
+  else c.riskTier = "Very High";
+  // downside % to stop (per-share risk if stopped out from entry)
+  c.downsidePct = (c.price && c.stopPrice) ? (c.stopPrice - c.price)/c.price : null;
+}
+
+function generateThesis(c){
+  const parts = [];
+  if(c.f_momentum >= 70) parts.push("strong momentum");
+  else if(c.f_momentum >= 55) parts.push("constructive price action");
+  if(c.f_analyst >= 70) parts.push("bullish analyst consensus");
+  else if(c.f_analyst >= 55) parts.push("favorable analyst tilt");
+  if(c.f_insider >= 65) parts.push("insider buying");
+  else if(c.f_insider <= 35) parts.push("insider selling (caution)");
+  if(c.f_news >= 65) parts.push("positive news flow");
+  else if(c.f_news <= 35) parts.push("negative news flow (caution)");
+  if(parts.length === 0) return "Mixed signals — moderate conviction setup.";
+  const sector = c.profile?.finnhubIndustry || "the sector";
+  return `${capitalize(parts[0])}${parts.length>1 ? ", " + parts.slice(1).join(", ") : ""} in ${sector}.`;
+}
+function capitalize(s){ return s.charAt(0).toUpperCase() + s.slice(1); }
+
+function renderPicks(picks){
+  const html = picks.map((p, i) => {
+    const up = p.changePct >= 0;
+    return `
+    <div class="pick" data-sym="${esc(p.sym)}">
+      <div class="pick-rank"><span class="num">${String(i+1).padStart(2,'0')}</span></div>
+      <div class="pick-sym">${esc(p.sym)}</div>
+      <div class="pick-name">${esc(p.profile?.name || p.name || "")}</div>
+      <div class="pick-px-row">
+        <span class="pick-px">${fmt$(p.price)}</span>
+        <span class="pick-chg ${up?'up':'down'}">${up?'▲':'▼'} ${(p.changePct>=0?'+':'')}${p.changePct.toFixed(2)}%</span>
+      </div>
+      <div class="pick-score-row">
+        <div>
+          <div class="pick-score">${esc(p.totalScore)}</div>
+          <div class="pick-score-lbl">Conviction</div>
+        </div>
+        <div class="pick-conv conv-${esc(String(p.conviction||'WATCH').replace(/[^A-Z]/g,''))}">${esc(p.conviction)}</div>
+      </div>
+      <div class="pick-factors">
+        ${factorBar("Momentum", p.f_momentum)}
+        ${factorBar("Analysts", p.f_analyst)}
+        ${factorBar("Insiders", p.f_insider)}
+        ${factorBar("News", p.f_news)}
+      </div>
+      <div class="pick-thesis">${esc(p.thesis)}</div>
+      ${p.conflict ? `<div class="pick-conflict">⚠ Mixed signals: ${esc(p.conflictNote)}</div>` : ""}
+      <div class="pick-why">
+        ${p.analystTarget ? `<div class="why-row"><span class="why-lbl">Analyst Target</span><span class="why-val">${fmt$(p.analystTarget)} <span class="${(p.analystUpside||0)>=0?'up':'down'}">(${(p.analystUpside>=0?'+':'')}${((p.analystUpside||0)*100).toFixed(0)}%)</span></span></div>` : ""}
+        ${(p.high52 && p.low52) ? `<div class="why-row"><span class="why-lbl">52-Wk Range</span><span class="why-val">${fmt$(p.low52)} – ${fmt$(p.high52)}</span></div>` : ""}
+        ${p.peRatio ? `<div class="why-row"><span class="why-lbl">P/E (TTM)</span><span class="why-val">${p.peRatio.toFixed(1)}</span></div>` : ""}
+        <div class="why-row"><span class="why-lbl">Volatility</span><span class="why-val risk-${esc((p.riskTier||'Unknown').replace(/[^A-Za-z]/g,''))}">${esc(p.riskTier || "Unknown")}${p.beta!=null?` · β ${p.beta.toFixed(2)}`:""}</span></div>
+      </div>
+      <div class="pick-targets">
+        <div class="target-cell entry"><span class="lbl">Entry</span><span class="val">${fmt$(p.price)}</span></div>
+        <div class="target-cell tgt"><span class="lbl">Target</span><span class="val">${fmt$(p.targetPrice)}</span></div>
+        <div class="target-cell stop"><span class="lbl">Stop</span><span class="val">${fmt$(p.stopPrice)}</span></div>
+      </div>
+      <div class="pick-actions">
+        <button class="btn primary add-pick-btn" data-sym="${p.sym}">+ Add to Portfolio</button>
+      </div>
+    </div>`;
+  }).join("");
+  $("picksGrid").innerHTML = html;
+  $$(".add-pick-btn").forEach(btn => {
+    btn.addEventListener("click", (e) => {
+      const sym = e.target.dataset.sym;
+      const pick = picks.find(p => p.sym === sym);
+      addPickDirect(pick, e.target);
+    });
+  });
+}
+
+// Add a scanner pick straight to the portfolio — no modal, no shares prompt.
+function addPickDirect(pick, btnEl){
+  if(!pick) return;
+  if(portfolio.some(p => p.sym === pick.sym)){
+    toast(`${pick.sym} is already in your portfolio.`, "err");
+    return;
+  }
+  portfolio.push({
+    sym: pick.sym,
+    shares: 1,
+    entry: pick.price,
+    target: pick.targetPrice,
+    stop: pick.stopPrice,
+    addedAt: Date.now(),
+    currentPrice: pick.price,
+    lastUpdate: 0,
+  });
+  savePortfolio();
+  toast(`${pick.sym} added to portfolio.`, "ok");
+  updatePfCount();
+  if(btnEl){ btnEl.textContent = "✓ In Portfolio"; btnEl.disabled = true; }
+}
+function factorBar(label, val){
+  return `<div class="factor">
+    <span class="factor-lbl">${label}</span>
+    <div class="factor-bar"><div class="factor-fill" style="width:${val}%"></div></div>
+    <span class="factor-val">${Math.round(val)}</span>
+  </div>`;
+}
+
+function openAddModal(pick = null){
+  $("addModal").classList.add("show");
+  if(pick){
+    $("addModalTitle").textContent = "Add " + pick.sym + " to Portfolio";
+    $("addModalSub").textContent = (pick.profile?.name || "") + " · " + pick.conviction;
+    $("addSymbol").value = pick.sym;
+    $("addEntry").value = pick.price.toFixed(2);
+    $("addTarget").value = pick.targetPrice.toFixed(2);
+    $("addStop").value = pick.stopPrice.toFixed(2);
+  } else {
+    $("addModalTitle").textContent = "Add Position";
+    $("addModalSub").textContent = "Manual entry";
+    $("addSymbol").value = ""; $("addEntry").value = ""; $("addTarget").value = ""; $("addStop").value = "";
+  }
+  $("addShares").value = "";
+  setTimeout(()=> $("addShares").focus(), 100);
+}
+function closeAddModal(){ $("addModal").classList.remove("show"); }
+
+function confirmAdd(){
+  const sym = $("addSymbol").value.trim().toUpperCase();
+  const entry = parseFloat($("addEntry").value);
+  if(!sym || !entry || entry <= 0){
+    toast("Enter a symbol and entry price.", "err"); return;
+  }
+  if(portfolio.some(p => p.sym === sym)){
+    toast(`${sym} is already in your portfolio.`, "err"); return;
+  }
+  const shares = parseFloat($("addShares").value) || 1;
+  const profile = RISK_PROFILES[risk];
+  const tgt = parseFloat($("addTarget").value) || entry * (1 + profile.target);
+  const stop = parseFloat($("addStop").value) || entry * (1 - profile.stop);
+  portfolio.push({ sym, shares, entry, target: tgt, stop, addedAt: Date.now(), currentPrice: entry, lastUpdate: 0 });
+  savePortfolio();
+  closeAddModal();
+  toast(`${sym} added to portfolio.`, "ok");
+  updatePfCount();
+  renderPortfolio();
+}
+
+function updatePfCount(){ $("pfCount").textContent = portfolio.length; }
+
+async function renderPortfolio(){
+  updatePfCount();
+  if(portfolio.length === 0){
+    $("pfSummary").innerHTML = "";
+    $("pfTableWrap").innerHTML = `<div class="empty"><div class="big">No Positions</div><div class="small">Add picks from the Scanner or manually</div></div>`;
+    return;
+  }
+  await refreshPortfolioPrices();
+  let totCost = 0, totVal = 0;
+  portfolio.forEach(p => { totCost += p.shares * p.entry; totVal += p.shares * (p.currentPrice || p.entry); });
+  const pnl = totVal - totCost;
+  const pnlPct = totCost > 0 ? pnl/totCost : 0;
+  const winners = portfolio.filter(p => (p.currentPrice||p.entry) > p.entry).length;
+  $("pfSummary").innerHTML = `
+    <div class="summary-tile"><div class="lbl">Cost Basis</div><div class="val">${fmt$(totCost)}</div></div>
+    <div class="summary-tile"><div class="lbl">Market Value</div><div class="val">${fmt$(totVal)}</div></div>
+    <div class="summary-tile"><div class="lbl">Unrealized P&L</div><div class="val ${pnl>=0?'up':'down'}">${pnl>=0?'+':''}${fmt$(pnl)}</div><div class="sub" style="color:${pnl>=0?'var(--green)':'var(--red)'}">${fmtPct(pnlPct)}</div></div>
+    <div class="summary-tile"><div class="lbl">Winners</div><div class="val">${winners} <span style="font-size:14px;color:var(--gold-dim)">/ ${portfolio.length}</span></div></div>
+  `;
+  const rows = portfolio.map((p,i) => {
+    const cp = p.currentPrice || p.entry;
+    const posPnl = (cp - p.entry) * p.shares;
+    const posPnlPct = (cp - p.entry) / p.entry;
+    const signal = computeSignal(p, cp);
+    // row-level visual alert: green glow when target hit, red glow when stop hit
+    const rowAlert = signal.code === "TAKE_PROFIT" ? " row-alert-profit"
+                   : signal.code === "STOP_LOSS"   ? " row-alert-stop" : "";
+    return `<tr class="${rowAlert.trim()}">
+      <td><span class="sym">${p.sym}</span></td>
+      <td class="r">${p.shares.toLocaleString("en-US",{maximumFractionDigits:4})}</td>
+      <td class="r">${fmt$(p.entry)}</td>
+      <td class="r">${fmt$(cp)}</td>
+      <td class="r">${fmt$(p.target)}</td>
+      <td class="r">${fmt$(p.stop)}</td>
+      <td class="r ${posPnl>=0?'up':'down'}">${posPnl>=0?'+':''}${fmt$(posPnl)}<br><span style="font-size:10px">${fmtPct(posPnlPct)}</span></td>
+      <td class="r"><span class="signal-pill signal-${signal.code}">${signal.label}</span></td>
+      <td class="r"><div class="row-actions"><button class="icon-btn remove-pos-btn" data-idx="${i}">✕</button></div></td>
+    </tr>`;
+  }).join("");
+  $("pfTableWrap").innerHTML = `
+    <div style="overflow-x:auto">
+    <table class="holdings-table">
+      <thead><tr><th>Symbol</th><th class="r">Shares</th><th class="r">Entry</th><th class="r">Current</th><th class="r">Target</th><th class="r">Stop</th><th class="r">P&L</th><th class="r">Signal</th><th class="r"></th></tr></thead>
+      <tbody>${rows}</tbody>
+    </table></div>
+  `;
+  $$(".remove-pos-btn").forEach(b => {
+    b.addEventListener("click", e => {
+      const idx = +e.target.dataset.idx;
+      if(confirm(`Remove ${portfolio[idx].sym}?`)){
+        portfolio.splice(idx,1); savePortfolio(); renderPortfolio();
+      }
+    });
+  });
+}
+
+function computeSignal(pos, currentPrice){
+  if(currentPrice <= pos.stop) return {code:"STOP_LOSS", label:"Stop Hit · Sell"};
+  if(currentPrice >= pos.target) return {code:"TAKE_PROFIT", label:"Target Hit · Take Profit"};
+  const upside = (pos.target - currentPrice)/currentPrice;
+  const downside = (currentPrice - pos.stop)/currentPrice;
+  if(upside < 0.02 && upside > 0) return {code:"TAKE_PROFIT", label:"Near Target"};
+  if(downside < 0.015 && downside > 0) return {code:"SELL", label:"Near Stop"};
+  if((currentPrice - pos.entry)/pos.entry > 0.08) return {code:"WATCH", label:"Trim Watch"};
+  return {code:"HOLD", label:"Hold"};
+}
+
+async function refreshPortfolioPrices(){
+  if(portfolio.length === 0) return;
+  for(const pos of portfolio){
+    try { const q = await getQuote(pos.sym); if(q && q.c){ pos.currentPrice = q.c; pos.lastUpdate = Date.now(); } }
+    catch(e){ /* keep stale */ }
+  }
+  savePortfolio();
+}
+
+// auto-refresh portfolio every 60s, but only while the Portfolio tab is open
+let pfRefreshTimer = null;
+function startPfAutoRefresh(){
+  stopPfAutoRefresh();
+  pfRefreshTimer = setInterval(async () => {
+    // don't fight a running scan, and don't bother if nothing to track
+    if(scanInProgress || portfolio.length === 0) return;
+    // force fresh quotes so the 60s tick actually pulls new prices
+    portfolio.forEach(p => { delete cache[`/quote?symbol=${p.sym}`]; });
+    await renderPortfolio();
+  }, 60000);
+}
+function stopPfAutoRefresh(){
+  if(pfRefreshTimer){ clearInterval(pfRefreshTimer); pfRefreshTimer = null; }
+}
+
+function switchTab(name){
+  $$(".tab").forEach(t => t.classList.toggle("active", t.dataset.view === name));
+  $$(".view").forEach(v => v.classList.toggle("active", v.id === "view-" + name));
+  if(name === "portfolio"){ renderPortfolio(); startPfAutoRefresh(); }
+  else { stopPfAutoRefresh(); }
+  if(name === "advisor"){ renderAdvisor(); startLiveOverlay(); }
+  else { stopLiveOverlay(); }
+  if(name === "track") renderTrackMain();
+}
+
+async function renderLeagueRecord(){
+  const body = $("trackBody");
+  if(!fbReady){
+    body.innerHTML = `<div class="empty"><div class="big">League Sync Off</div><div class="small">Track record needs Firebase connected to store outcomes</div></div>`;
+    return;
+  }
+  body.innerHTML = `<div class="empty"><div class="small">Loading track record…</div></div>`;
+  await processTrackingOutcomes(); // catch up any due checkpoints first
+  const stats = await computeTrackRecord();
+  const tiers = ["STRONG","BUY","HOLD","WATCH"];
+  const haveAny = tiers.some(t => stats[t] && Object.keys(stats[t]).length);
+  if(!haveAny){
+    body.innerHTML = `<div class="empty"><div class="big">Building…</div><div class="small">Picks are being recorded. Outcomes appear after the first day/week/month elapses.</div></div>`;
+    return;
+  }
+  let html = `<div style="font-size:11px;color:var(--gold-dim);margin-bottom:14px;line-height:1.6">
+    Win rate = % of recorded picks that were up at each checkpoint. Avg = mean return.
+    This is real forward-tested data from past scans — the more scans run, the more reliable it gets.</div>`;
+  html += `<div style="overflow-x:auto"><table class="holdings-table"><thead><tr>
+    <th>Conviction</th>${TRACK_WINDOWS.map(w=>`<th class="r">${w.label} Win%</th><th class="r">${w.label} Avg</th>`).join("")}<th class="r">Samples</th>
+    </tr></thead><tbody>`;
+  tiers.forEach(t => {
+    if(!stats[t] || !Object.keys(stats[t]).length) return;
+    let maxN = 0;
+    const cells = TRACK_WINDOWS.map(w => {
+      const s = stats[t][w.key];
+      if(!s || !s.n) return `<td class="r">—</td><td class="r">—</td>`;
+      maxN = Math.max(maxN, s.n);
+      const winPct = (s.wins/s.n*100).toFixed(0);
+      const avgPct = (s.sumPct/s.n*100);
+      const cls = avgPct>=0?"up":"down";
+      return `<td class="r">${winPct}%</td><td class="r ${cls}">${avgPct>=0?'+':''}${avgPct.toFixed(1)}%</td>`;
+    }).join("");
+    html += `<tr><td><span class="signal-pill conv-${t}" style="border:1px solid currentColor">${t}</span></td>${cells}<td class="r">${maxN}</td></tr>`;
+  });
+  html += `</tbody></table></div>`;
+  body.innerHTML = html;
+}
+
+/* ===================== AUTONOMOUS ADVISOR =====================
+   Renders the output of scripts/advisor.py — three self-managing paper
+   portfolios whose every move is committed to git by a scheduled GitHub
+   Action. The site only READS data/site.json; nothing here can alter
+   the record, which is what makes it trustworthy.
+================================================================ */
+const ADV_COLORS = {daytrade:"#e879f9", aggressive:"#ff8c42", growth:"#4ade80", longterm:"#7dd3fc", benchmark:"#8a93a5"};
+const ADV_CARD_CLASS = {daytrade:"day", aggressive:"agg", growth:"gro", longterm:"lt"};
+let advisorData = null;
+let advisorFetchedAt = 0;
+
+let advisorLoadOk = false;
+async function loadAdvisorData(force=false){
+  if(!force && advisorData && Date.now() - advisorFetchedAt < 60000) return advisorData;
+  try{
+    const res = await fetch("data/site.json?t=" + Date.now(), {cache:"no-store"});
+    if(!res.ok) throw new Error("HTTP " + res.status);
+    advisorData = await res.json();
+    advisorFetchedAt = Date.now();
+    advisorLoadOk = true;
+  } catch(e){
+    advisorLoadOk = false;
+    console.warn("advisor data load failed", e);
+    if(!advisorData){
+      const msg = `<div class="empty"><div class="big">No Advisor Data Yet</div>
+        <div class="small" style="line-height:1.8">The autonomous engine hasn't published its first run to this branch.<br>
+        It runs on a schedule via GitHub Actions (see <b>.github/workflows/advisor.yml</b>) —<br>
+        merge to <b>main</b> and it fires by itself every trading day.</div></div>`;
+      const ab = $("advisorBody"); if(ab) ab.innerHTML = msg;
+      const tm = $("trackMain"); if(tm) tm.innerHTML = msg;
+    }
+  }
+  return advisorData;
+}
+
+function pctTxt(v, digits=2){
+  if(v == null || isNaN(v)) return "—";
+  return (v >= 0 ? "+" : "") + v.toFixed(digits) + "%";
+}
+function pctCls(v){ return (v == null || isNaN(v)) ? "" : (v >= 0 ? "up" : "down"); }
+
+function fmtDate(iso){
+  if(!iso || iso.length !== 10) return iso || "—";
+  const d = new Date(iso + "T12:00:00Z");
+  return d.toLocaleDateString("en-US", {month:"short", day:"numeric"});
+}
+
+const PV_STRATS = {
+  daytrade:{cls:"day", name:"The Day Trader", risk:"the wildest one",
+    desc:"Buys and sells within a single day and never keeps anything overnight. It checks prices about every 20 minutes while the market is open."},
+  aggressive:{cls:"agg", name:"The Fast Mover", risk:"very risky",
+    desc:"Buys stocks that are rising quickly, hoping to sell them about 20% higher. If a stock falls 8%, it sells to protect your money, and it never keeps one longer than about three weeks."},
+  growth:{cls:"gro", name:"The Steady Climber", risk:"medium risk",
+    desc:"Buys large, healthy companies that have been rising steadily for months, and stays with them for as long as the rise continues."},
+  longterm:{cls:"lt", name:"The Nest Egg", risk:"the calm one",
+    desc:"Owns a little of everything — big companies, technology, dividend payers, foreign companies, and bonds — and simply sits patiently. This is how retirement money is usually invested."}
+};
+
+function moneyTxt(v){
+  if(v == null || isNaN(v)) return "—";
+  return "$" + Math.round(v).toLocaleString("en-US");
+}
+function gainSpan(nowV, startV){
+  const diff = nowV - startV;
+  const pct = startV ? (diff / startV) * 100 : 0;
+  if(Math.abs(diff) < 0.5) return '<span class="up">exactly even so far</span>';
+  const word = diff >= 0 ? "up" : "down";
+  return `<span class="${diff >= 0 ? "up" : "down"}">${word} ${moneyTxt(Math.abs(diff))} (${Math.abs(pct).toFixed(1)}%)</span>`;
+}
+function pctWord(p){
+  if(p == null || isNaN(p)) return "even";
+  if(Math.abs(p) < 0.005) return "unchanged";
+  return `<span class="${p >= 0 ? "up" : "down"}">${p >= 0 ? "up" : "down"} ${Math.abs(p).toFixed(1)}%</span>`;
+}
+
+// One plain sentence about what the machine is doing right now, in ET terms.
+function marketStatusText(){
+  const now = new Date();
+  const et = new Date(now.toLocaleString("en-US", {timeZone:"America/New_York"}));
+  const day = et.getDay(), mins = et.getHours() * 60 + et.getMinutes();
+  if(day === 0 || day === 6)
+    return "The stock market is closed for the weekend. The system wakes up again on Monday and makes its next decisions when the market closes at 4 o'clock New York time. <b>Nothing needs your attention right now.</b>";
+  if(mins < 9*60+30)
+    return "The market opens at 9:30 New York time. The Day Trader starts working then; the other helpers make their decisions when the market closes at 4 o'clock.";
+  if(mins < 16*60)
+    return "<b>The market is open right now.</b> The Day Trader is checking prices about every 20 minutes, and the prices on this page refresh every minute while you watch.";
+  return "The market has closed for the day. Today's decisions are shown below. Nothing more happens until tomorrow.";
+}
+
+function advFreshness(asOf){
+  const days = Math.floor((Date.now() - new Date(asOf + "T21:00:00Z").getTime()) / 86400000);
+  if(days <= 3) return {cls:"ok", txt:"● Live · updated " + (days <= 0 ? "today" : days + "d ago")};
+  if(days <= 7) return {cls:"warn", txt:"● Data " + days + "d old"};
+  return {cls:"stale", txt:"● Stale (" + days + "d) — check Actions"};
+}
+
+function renderAdvisor(){
+  const body = $("advisorBody");
+  if(!body) return;
+  const d = advisorData;
+  if(!d){ loadAdvisorData().then(() => { if(advisorData) renderAdvisor(); }); return; }
+  body.classList.add("pv");
+  $("advAsOf").textContent = "as of " + fmtDate(d.as_of_date);
+  const fresh = advFreshness(d.as_of_date);
+  const fb = $("advFresh");
+  fb.style.display = "inline-flex";
+  fb.className = "fresh-badge " + fresh.cls;
+  fb.textContent = fresh.txt;
+
+  const bench = d.benchmark || {};
+  const keys = ["daytrade","aggressive","growth","longterm"].filter(k => d.strategies[k]);
+  const startCap = d.starting_capital || 10000;
+  const combined = keys.reduce((s,k) => s + (d.strategies[k].equity || 0), 0);
+  const combinedStart = keys.length * startCap;
+
+  const glance = `<div class="pv-card">
+    <h2>Your money at a glance</h2>
+    <div class="pv-bignum" id="pvCombined">${moneyTxt(combined)} <span class="chg">${gainSpan(combined, combinedStart)}</span></div>
+    <p>Four automatic helpers are each investing <b>${moneyTxt(startCap)}</b> of pretend money.
+    They started on <b>${fmtDate(d.inception_date)}</b>. For comparison, the same money left in the
+    overall stock market would be ${pctWord(bench.total_return_pct)} — that is the number to beat.</p>
+    <p>${marketStatusText()}</p>
+  </div>`;
+
+  const todos = [];
+  keys.forEach(key => {
+    const s = d.strategies[key];
+    const pv = PV_STRATS[key];
+    (s.positions||[]).forEach(p => {
+      if(p.is_new) todos.push({kind:"buy", html:
+        `<b>Buy ${esc(p.name && p.name !== p.symbol ? p.name : p.symbol)} (${esc(p.symbol)}).</b>
+         ${pv.name} bought it ${key === "daytrade" && p.entry_time ? "at " + esc(p.entry_time) + " New York time today" : "on " + fmtDate(p.entry_date)}
+         for <b>${fmt$(p.entry_price)}</b> a share. To copy it, buy near that price —
+         this page will tell you plainly when it is time to sell.`});
+    });
+    (s.recent_trades||[]).forEach(t => {
+      if(t.exit_date === d.as_of_date || (d.intraday_date && t.exit_date === d.intraday_date))
+        todos.push({kind:"sell", html:
+          `<b>Sell ${esc(t.symbol)}.</b> ${pv.name} sold it for <b>${fmt$(t.exit_price)}</b> a share
+           (${esc(t.reason)}). The result: ${pctWord(t.pnl_pct)} on that stock.`});
+    });
+  });
+  const todoHtml = todos.length
+    ? todos.map(t => `<div class="pv-todo-item ${t.kind}"><p>${t.html}</p></div>`).join("")
+    : `<div class="pv-todo-item"><p><b>Nothing today.</b> The system looked at the market and decided
+       to keep everything just as it is. When it wants you to buy or sell, a simple instruction
+       will appear right here — for example: <i>&ldquo;Buy Apple at about $210.&rdquo;</i></p></div>`;
+  const todo = `<div class="pv-card"><h2>What to do today</h2>${todoHtml}</div>`;
+
+  const sections = keys.map(key => {
+    const s = d.strategies[key];
+    const pv = PV_STRATS[key];
+    const holds = (s.positions||[]).map((p,i) => {
+      const nm = p.name && p.name !== p.symbol ? `${esc(p.name)} (${esc(p.symbol)})` : esc(p.symbol);
+      let sellRule;
+      if(key === "daytrade")
+        sellRule = `It sells by itself at ${fmt$(p.target_price)} (taking the profit), at ${fmt$(p.stop_price)} (protecting the money), or when the market closes today — whichever comes first.`;
+      else if(p.target_price)
+        sellRule = `It will say <b>sell</b> when the price finishes a day above ${fmt$(p.target_price)} (taking the profit) or below ${fmt$(p.stop_price)} (protecting the money).`;
+      else
+        sellRule = `This one is simply kept and looks after itself.`;
+      return `<div class="pv-hold"><p>Holds <b>${nm}</b>, bought ${key === "daytrade" && p.entry_time ? "today at " + esc(p.entry_time) : "on " + fmtDate(p.entry_date)}
+        at ${fmt$(p.entry_price)} — <span class="pv-now" data-k="${key}" data-i="${i}">now ${fmt$(p.current_price)}, ${pctWord(p.pnl_pct)}</span>. ${sellRule}</p></div>`;
+    }).join("") || `<div class="pv-hold"><p>Right now it is holding all of its money in cash, waiting
+      for the right moment. When it buys something, the instruction will appear under
+      <b>&ldquo;What to do today.&rdquo;</b></p></div>`;
+    const trades = s.closed_trades
+      ? ` So far it has finished ${s.closed_trades} trade${s.closed_trades === 1 ? "" : "s"}${s.win_rate_pct != null ? `, and ${s.win_rate_pct.toFixed(0)}% of them made money` : ""}.`
+      : "";
+    return `<div class="pv-card pv-strat ${pv.cls}">
+      <h2>${s.icon} ${pv.name}<span class="pv-risk">— ${pv.risk}</span></h2>
+      <p>${pv.desc}</p>
+      <p>It now looks after <b id="pv-worth-${key}">${moneyTxt(s.equity)}</b> — <span id="pv-gain-${key}">${gainSpan(s.equity, startCap)}</span> since the start.${trades}</p>
+      ${holds}
+      <canvas class="pv-spark" id="spark-${key}"></canvas>
+    </div>`;
+  }).join("");
+
+  const proof = `<p class="pv-proof">🛡️ Every decision is written into a public record the moment it
+    happens and can never be quietly changed afterward. The <b>Track Record</b> page shows the whole
+    history and how to check it yourself.</p>`;
+
+  body.innerHTML = glance + todo + sections + proof;
+  keys.forEach(key => {
+    const cv = $("spark-" + key);
+    if(cv) drawSpark(cv, d.equity_curves || {}, key);
+  });
+}
+
+function drawSpark(canvas, curves, key){
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth || 280, h = canvas.clientHeight || 52;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  const vals = (curves && curves[key]) ? curves[key].filter(v => v != null) : [];
+  const base = 10000;
+  const color = ADV_COLORS[key];
+  let lo = Math.min(base, ...vals), hi = Math.max(base, ...vals);
+  if(hi - lo < hi * 0.004){ const mid = (hi + lo) / 2; lo = mid * 0.995; hi = mid * 1.005; }
+  const X = i => vals.length > 1 ? (i / (vals.length - 1)) * (w - 6) + 3 : w / 2;
+  const Y = v => h - 4 - ((v - lo) / (hi - lo)) * (h - 8);
+  // baseline at starting capital
+  ctx.strokeStyle = "rgba(201,169,97,0.35)";
+  ctx.setLineDash([3,3]); ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(0, Y(base)); ctx.lineTo(w, Y(base)); ctx.stroke();
+  ctx.setLineDash([]);
+  if(vals.length === 0) return;
+  if(vals.length > 1){
+    const grad = ctx.createLinearGradient(0, 0, 0, h);
+    grad.addColorStop(0, color + "33"); grad.addColorStop(1, color + "00");
+    ctx.beginPath();
+    vals.forEach((v,i) => i === 0 ? ctx.moveTo(X(i), Y(v)) : ctx.lineTo(X(i), Y(v)));
+    ctx.lineTo(X(vals.length - 1), h); ctx.lineTo(X(0), h); ctx.closePath();
+    ctx.fillStyle = grad; ctx.fill();
+    ctx.beginPath();
+    vals.forEach((v,i) => i === 0 ? ctx.moveTo(X(i), Y(v)) : ctx.lineTo(X(i), Y(v)));
+    ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.stroke();
+  }
+  ctx.beginPath();
+  ctx.arc(X(vals.length - 1), Y(vals[vals.length - 1]), 2.5, 0, Math.PI * 2);
+  ctx.fillStyle = color; ctx.fill();
+}
+
+function drawEquityChart(canvas, curves){
+  const dpr = window.devicePixelRatio || 1;
+  const w = canvas.clientWidth || 600, h = canvas.clientHeight || 300;
+  canvas.width = w * dpr; canvas.height = h * dpr;
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  const keys = ["benchmark","longterm","growth","aggressive","daytrade"];
+  const dates = curves.dates || [];
+  let lo = Infinity, hi = -Infinity;
+  keys.forEach(k => (curves[k]||[]).forEach(v => { if(v != null){ lo = Math.min(lo,v); hi = Math.max(hi,v); } }));
+  if(!isFinite(lo)){ lo = 9500; hi = 10500; }
+  const pad = Math.max((hi - lo) * 0.08, hi * 0.003);
+  lo -= pad; hi += pad;
+  const ML = 52, MR = 12, MT = 10, MB = 22;
+  const X = i => dates.length > 1 ? ML + (i / (dates.length - 1)) * (w - ML - MR) : (ML + w - MR) / 2;
+  const Y = v => MT + (1 - (v - lo) / (hi - lo)) * (h - MT - MB);
+  // grid + y labels
+  ctx.font = "10px 'JetBrains Mono', monospace";
+  ctx.fillStyle = "rgba(201,169,97,0.6)";
+  ctx.strokeStyle = "rgba(201,169,97,0.12)";
+  ctx.lineWidth = 1;
+  for(let g = 0; g <= 4; g++){
+    const v = lo + (hi - lo) * g / 4;
+    const y = Y(v);
+    ctx.beginPath(); ctx.moveTo(ML, y); ctx.lineTo(w - MR, y); ctx.stroke();
+    ctx.fillText("$" + Math.round(v).toLocaleString(), 2, y + 3);
+  }
+  // x labels (up to 5)
+  const nTicks = Math.min(5, dates.length);
+  ctx.fillStyle = "rgba(201,169,97,0.55)";
+  for(let t = 0; t < nTicks; t++){
+    const i = nTicks === 1 ? 0 : Math.round(t * (dates.length - 1) / (nTicks - 1));
+    const lbl = (dates[i]||"").slice(5);
+    const x = clamp(X(i) - 12, ML, w - 34);
+    ctx.fillText(lbl, x, h - 6);
+  }
+  keys.forEach(k => {
+    const series = curves[k] || [];
+    const color = ADV_COLORS[k];
+    ctx.strokeStyle = color;
+    ctx.lineWidth = k === "benchmark" ? 1.5 : 2;
+    ctx.setLineDash(k === "benchmark" ? [5,4] : []);
+    ctx.beginPath();
+    let started = false, lastI = -1;
+    series.forEach((v,i) => {
+      if(v == null) return;
+      if(!started){ ctx.moveTo(X(i), Y(v)); started = true; }
+      else ctx.lineTo(X(i), Y(v));
+      lastI = i;
+    });
+    ctx.stroke();
+    ctx.setLineDash([]);
+    if(lastI >= 0){
+      ctx.beginPath();
+      ctx.arc(X(lastI), Y(series[lastI]), 3, 0, Math.PI * 2);
+      ctx.fillStyle = color; ctx.fill();
+    }
+  });
+}
+
+function renderTrackMain(){
+  const el = $("trackMain");
+  if(!el) return;
+  const d = advisorData;
+  if(!d){ loadAdvisorData().then(() => { if(advisorData) renderTrackMain(); }); return; }
+  const bench = d.benchmark || {};
+  const rows = ["daytrade","aggressive","growth","longterm"].map(key => {
+    const s = d.strategies[key];
+    if(!s) return "";
+    const wr = s.win_rate_pct != null ? s.win_rate_pct.toFixed(0) + "%" : "—";
+    const aw = s.avg_win_pct != null ? pctTxt(s.avg_win_pct) : "—";
+    const al = s.avg_loss_pct != null ? pctTxt(s.avg_loss_pct) : "—";
+    return `<tr>
+      <td><span style="color:${ADV_COLORS[key]}">${s.icon}</span> <span class="sym" style="font-size:15px">${s.label}</span></td>
+      <td class="r">${fmt$(s.equity)}</td>
+      <td class="r ${pctCls(s.total_return_pct)}">${pctTxt(s.total_return_pct)}</td>
+      <td class="r ${pctCls(s.vs_spy_pct)}">${pctTxt(s.vs_spy_pct)}</td>
+      <td class="r">${s.max_drawdown_pct.toFixed(1)}%</td>
+      <td class="r">${s.closed_trades}</td>
+      <td class="r">${wr}</td>
+      <td class="r up">${aw}</td>
+      <td class="r down">${al}</td>
+    </tr>`;
+  }).join("");
+  const benchRow = `<tr style="opacity:.75">
+    <td>🧭 <span class="sym" style="font-size:15px">S&P 500 (SPY)</span></td>
+    <td class="r">${fmt$(bench.equity)}</td>
+    <td class="r ${pctCls(bench.total_return_pct)}">${pctTxt(bench.total_return_pct)}</td>
+    <td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td><td class="r">—</td>
+  </tr>`;
+
+  const trades = [];
+  ["daytrade","aggressive","growth","longterm"].forEach(key => {
+    const s = d.strategies[key];
+    if(!s) return;
+    (s.recent_trades||[]).forEach(t => trades.push({...t, icon:s.icon, key}));
+  });
+  trades.sort((a,b) => (b.exit_date||"").localeCompare(a.exit_date||""));
+  const tradeRows = trades.slice(0,30).map(t => `<div class="trade-row">
+      <span class="icon">${t.icon}</span>
+      <span class="sym">${esc(t.symbol)}</span>
+      <span class="detail">${esc(t.entry_date)} ${fmt$(t.entry_price)} → ${esc(t.exit_date)} ${fmt$(t.exit_price)}</span>
+      <span class="pnl ${pctCls(t.pnl_pct)}">${pctTxt(t.pnl_pct)}</span>
+      <span class="reason">${esc(t.reason)}</span>
+    </div>`).join("") || `<div class="empty" style="padding:24px"><div class="small">No closed trades yet — the record builds with every exit.</div></div>`;
+
+  const acts = [];
+  ["daytrade","aggressive","growth","longterm"].forEach(key => {
+    const s = d.strategies[key];
+    if(!s) return;
+    (s.recent_activity||[]).forEach(a => acts.push({...a, icon:s.icon}));
+  });
+  acts.sort((a,b) => (b.date||"").localeCompare(a.date||""));
+  const actRows = acts.slice(0,10).map(a => `<div class="trade-row" style="grid-template-columns:auto auto 1fr">
+      <span class="icon">${a.icon}</span><span class="detail">${esc(a.date)}</span><span class="detail" style="color:var(--cream)">${esc(a.text)}</span>
+    </div>`).join("");
+
+  el.innerHTML = `
+    <div class="adv-meta">
+      <span>Inception <b>${d.inception_date}</b></span>
+      <span>As of <b>${d.as_of_date}</b></span>
+      <span>Runs <b>#${esc(d.runs)}</b></span>
+      <span>Source <b>${esc(d.data_source || "Yahoo Finance daily closes")}</b></span>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-legend">
+        <span><i style="background:${ADV_COLORS.daytrade}"></i>⚡ Day Trader</span>
+        <span><i style="background:${ADV_COLORS.aggressive}"></i>🚀 Get Rich Quick</span>
+        <span><i style="background:${ADV_COLORS.growth}"></i>📈 Dependable Growth</span>
+        <span><i style="background:${ADV_COLORS.longterm}"></i>🏛️ Long-Term Success</span>
+        <span><i style="background:${ADV_COLORS.benchmark}"></i>🧭 S&P 500</span>
+      </div>
+      <canvas id="equityChart"></canvas>
+    </div>
+    <div style="overflow-x:auto"><table class="holdings-table">
+      <thead><tr><th>Strategy</th><th class="r" title="What $10,000 became">Value</th><th class="r" title="Total profit or loss">Profit</th><th class="r" title="How much better or worse than simply buying the S&P 500">vs Market</th>
+      <th class="r" title="Biggest peak-to-bottom dip">Worst dip</th><th class="r">Trades</th><th class="r" title="Share of finished trades that made money">Wins</th><th class="r">Avg Win</th><th class="r">Avg Loss</th></tr></thead>
+      <tbody>${rows}${benchRow}</tbody>
+    </table></div>
+    <div class="adv-sec-lbl" style="margin:20px 0 8px">Closed Trades</div>
+    <div class="trades-feed">${tradeRows}</div>
+    ${actRows ? `<div class="adv-sec-lbl" style="margin:20px 0 8px">Dividends · Rebalances · Events</div><div class="trades-feed">${actRows}</div>` : ""}
+    <div class="adv-disclaimer">${esc(d.methodology_note || "Simulated paper-money portfolios. Not financial advice.")}</div>`;
+  const cv = $("equityChart");
+  if(cv) drawEquityChart(cv, d.equity_curves || {dates:[]});
+}
+
+/* ===== Live overlay =====
+   The committed record trades and marks at official daily closes — that's
+   what keeps it verifiable. But while you're LOOKING at the Advisor tab,
+   positions and equity update with real-time Finnhub quotes (the free key
+   resets every minute), refreshed every 60s. */
+let liveTimer = null;
+async function applyLiveOverlay(){
+  if(!advisorData || !apiKey) return;
+  const keys = ["daytrade","aggressive","growth","longterm"].filter(k => advisorData.strategies[k]);
+  const syms = [...new Set(keys.flatMap(k => (advisorData.strategies[k].positions||[]).map(p => p.symbol)))];
+  if(!syms.length) return;
+  const quotes = {};
+  for(const sym of syms){
+    try { const q = await finn("/quote", {symbol: sym}, 55*1000); if(q && q.c) quotes[sym] = q; }
+    catch(e){ /* keep the recorded price for this one */ }
+  }
+  if(!Object.keys(quotes).length) return;
+  const startCap = advisorData.starting_capital || 10000;
+  let combined = 0;
+  const breaches = [];
+  keys.forEach(key => {
+    const s = advisorData.strategies[key];
+    let equity = s.cash ?? 0;
+    (s.positions||[]).forEach((p,i) => {
+      const q = quotes[p.symbol];
+      const px = q ? q.c : p.current_price;
+      equity += (p.shares || 0) * px;
+      const el = document.querySelector(`.pv-now[data-k="${key}"][data-i="${i}"]`);
+      if(el && q && p.entry_price){
+        el.innerHTML = `now ${fmt$(q.c)}, ${pctWord((q.c / p.entry_price - 1) * 100)}`;
+      }
+      if(q){
+        if(p.stop_price && q.c <= p.stop_price) breaches.push({p, q, s, kind:"protection", line:p.stop_price});
+        else if(p.target_price && q.c >= p.target_price) breaches.push({p, q, s, kind:"profit", line:p.target_price});
+      }
+    });
+    const worth = $("pv-worth-" + key);
+    if(worth) worth.textContent = moneyTxt(equity);
+    const gain = $("pv-gain-" + key);
+    if(gain) gain.innerHTML = gainSpan(equity, startCap);
+    combined += equity;
+  });
+  const comb = $("pvCombined");
+  if(comb) comb.innerHTML = `${moneyTxt(combined)} <span class="chg">${gainSpan(combined, keys.length * startCap)}</span>`;
+  document.getElementById("pvAlert")?.remove();
+  if(breaches.length){
+    const div = document.createElement("div");
+    div.id = "pvAlert";
+    div.className = "pv-card pv-alert";
+    div.innerHTML = `<h2>⚠ Time to sell — right now</h2>` + breaches.map(b =>
+      `<p><b>Sell ${esc(b.p.symbol)}.</b> The price is ${fmt$(b.q.c)} — it has
+       ${b.kind === "profit" ? "reached the profit point" : "fallen to the protection point"}
+       (${fmt$(b.line)}). If you own it, sell it now. The official record will note the sale
+       at today's closing price.</p>`).join("");
+    $("advisorBody").prepend(div);
+  }
+}
+function startLiveOverlay(){
+  stopLiveOverlay();
+  applyLiveOverlay();
+  liveTimer = setInterval(applyLiveOverlay, 60000);
+}
+function stopLiveOverlay(){
+  if(liveTimer){ clearInterval(liveTimer); liveTimer = null; }
+}
+
+let advResizeTimer = null;
+window.addEventListener("resize", () => {
+  clearTimeout(advResizeTimer);
+  advResizeTimer = setTimeout(() => {
+    if(!advisorData) return;
+    if($("view-advisor").classList.contains("active")) renderAdvisor();
+    if($("view-track").classList.contains("active")) renderTrackMain();
+  }, 200);
+});
+
+function init(){
+  // discard a half-saved scan (timestamp but no usable picks) so we show a clean empty state
+  if(lastScanResults && (!lastScanResults.picks || !lastScanResults.picks.length)){
+    lastScanResults = null;
+    localStorage.removeItem(LS.LAST_SCAN);
+  }
+  if(lastScanResults?.picks){
+    renderPicks(lastScanResults.picks);
+    $("scanTs").textContent = new Date(lastScanResults.ts).toLocaleTimeString();
+    $("emptyScan").style.display = "none";
+    $("universeSel").value = lastScanResults.universe || "mega";
+  }
+  $("apiKeyInput").value = apiKey;
+  $("riskSel").value = risk;
+  $$(".tab").forEach(t => t.addEventListener("click", () => switchTab(t.dataset.view)));
+  $("scanBtn").addEventListener("click", () => runScan({background: false}));
+  $("cancelScanBtn").addEventListener("click", () => { scanCancelRequested = true; toast("Cancelling scan…", "err"); });
+  $("refreshPfBtn").addEventListener("click", async () => {
+    if(portfolio.length === 0){ toast("No positions to refresh.", "err"); return; }
+    portfolio.forEach(p => { delete cache[`/quote?symbol=${p.sym}`]; });
+    await renderPortfolio();
+    toast("Portfolio refreshed.", "ok");
+  });
+  $("addManualBtn").addEventListener("click", () => openAddModal());
+  $("cancelAddBtn").addEventListener("click", closeAddModal);
+  $("confirmAddBtn").addEventListener("click", confirmAdd);
+  $("addModal").addEventListener("click", (e) => { if(e.target.id === "addModal") closeAddModal(); });
+  $("saveKeyBtn").addEventListener("click", () => {
+    const v = $("apiKeyInput").value.trim();
+    if(!v){ toast("Key cannot be empty.", "err"); return; }
+    apiKey = v;
+    localStorage.setItem(LS.KEY, v);
+    toast("API key saved.", "ok");
+    updateStatusBar();
+  });
+  $("riskSel").addEventListener("change", () => {
+    risk = $("riskSel").value;
+    localStorage.setItem(LS.RISK, risk);
+    toast("Risk profile: " + risk, "ok");
+  });
+  $("clearCacheBtn").addEventListener("click", () => { cache = {}; saveCache(); toast("Cache cleared.", "ok"); updateStatusBar(); });
+  $("clearAllBtn").addEventListener("click", () => {
+    if(!confirm("This wipes portfolio, cache, and scan history. Continue?")) return;
+    [LS.PORTFOLIO, LS.CACHE, LS.LAST_SCAN].forEach(k => localStorage.removeItem(k));
+    portfolio = []; cache = {}; lastScanResults = null;
+    renderPortfolio();
+    $("picksGrid").innerHTML = "";
+    $("emptyScan").style.display = "block";
+    updateStatusBar();
+    toast("Local data wiped.", "ok");
+  });
+
+  // ===== League Sync (Firebase) settings =====
+  if(fbConfig) $("fbConfigInput").value = JSON.stringify(fbConfig, null, 2);
+  $("saveFbBtn").addEventListener("click", async () => {
+    const raw = $("fbConfigInput").value.trim();
+    if(!raw){ toast("Paste your Firebase config first.", "err"); return; }
+    let parsed;
+    try {
+      // tolerate JS-style config (unquoted keys) by trying JSON first, then a loose eval-free clean
+      parsed = JSON.parse(raw);
+    } catch(e){
+      try {
+        // strip trailing commas + wrap to coerce common copy-paste forms
+        const cleaned = raw.replace(/^\s*const\s+\w+\s*=\s*/,"").replace(/;?\s*$/,"").replace(/(\w+):/g,'"$1":').replace(/'/g,'"').replace(/,(\s*[}\]])/g,"$1");
+        parsed = JSON.parse(cleaned);
+      } catch(e2){
+        toast("Couldn't parse that config. Paste the JSON object with apiKey, projectId, etc.", "err");
+        return;
+      }
+    }
+    if(!parsed.projectId || !parsed.apiKey){
+      toast("Config needs at least apiKey and projectId.", "err"); return;
+    }
+    fbConfig = parsed;
+    localStorage.setItem(LS.FB, JSON.stringify(fbConfig));
+    fbApp = null; // force re-init
+    if(initFirebase()){
+      toast("League sync connected.", "ok");
+      const shared = await fetchSharedScan();
+      if(shared && (!lastScanResults || shared.ts > lastScanResults.ts)){
+        lastScanResults = shared; saveLastScan();
+        renderPicks(shared.picks);
+        $("scanTs").textContent = new Date(shared.ts).toLocaleTimeString();
+        $("emptyScan").style.display = "none";
+      }
+    } else {
+      toast("Config saved but connection failed — check the values.", "err");
+    }
+  });
+  $("disconnectFbBtn").addEventListener("click", () => {
+    fbConfig = null; fbApp = null; fbDb = null; fbReady = false;
+    localStorage.removeItem(LS.FB);
+    $("fbConfigInput").value = "";
+    updateFbStatus();
+    toast("League sync disconnected. Running local-only.", "ok");
+  });
+
+  // connect Firebase if we have a saved config, then auto-load the latest shared scan
+  if(fbConfig && initFirebase()){
+    fetchSharedScan().then(shared => {
+      if(shared && (!lastScanResults || shared.ts > lastScanResults.ts)){
+        lastScanResults = shared; saveLastScan();
+        renderPicks(shared.picks);
+        $("scanTs").textContent = new Date(shared.ts).toLocaleTimeString();
+        $("emptyScan").style.display = "none";
+        toast("Loaded latest league scan.", "ok");
+      }
+    });
+    // catch up any due backtest checkpoints quietly in the background
+    setTimeout(() => processTrackingOutcomes(), 12000);
+  }
+  $("refreshTrackBtn").addEventListener("click", async () => {
+    await loadAdvisorData(true);
+    renderTrackMain();
+    toast(advisorLoadOk ? "Track record refreshed." : "Couldn't reach the data feed — showing last known.", advisorLoadOk ? "ok" : "err");
+  });
+  document.querySelector("details.league-legacy")?.addEventListener("toggle", (e) => {
+    if(e.target.open) renderLeagueRecord();
+  });
+  $("advReloadBtn").addEventListener("click", async () => {
+    await loadAdvisorData(true);
+    renderAdvisor();
+    toast(advisorLoadOk ? "Advisor data refreshed." : "Couldn't reach the data feed — showing last known.", advisorLoadOk ? "ok" : "err");
+  });
+  // load advisor data immediately — it's the landing view
+  loadAdvisorData().then(() => { if(advisorData){ renderAdvisor(); startLiveOverlay(); } });
+
+  // ===== Auto-refresh =====
+  // Keeps picks as current as possible without every device hammering Finnhub.
+  // Each tick: if a teammate published a newer scan, load it (1 cheap read).
+  // Otherwise, if our picks are getting stale, run a background scan (old data stays
+  // on screen until the new set is ready) and share it with the league.
+  let autoRefresh = (localStorage.getItem(LS.AUTO) ?? "true") === "true";
+  $("autoRefreshChk").checked = autoRefresh;
+  $("autoRefreshChk").addEventListener("change", () => {
+    autoRefresh = $("autoRefreshChk").checked;
+    localStorage.setItem(LS.AUTO, autoRefresh);
+    toast(autoRefresh ? "Auto-refresh on." : "Auto-refresh paused.", "ok");
+  });
+
+  const STALE_MS = 60 * 1000;    // refresh picks roughly every minute
+  const TICK_MS  = 60 * 1000;    // run every 60s while the app is open
+  setInterval(async () => {
+    if(!autoRefresh || scanInProgress || !apiKey) return;
+    // 1) prefer a fresher scan from the league (nearly free — one read)
+    if(fbReady){
+      try {
+        const shared = await fetchSharedScan();
+        if(shared && (!lastScanResults || shared.ts > lastScanResults.ts)){
+          lastScanResults = shared; saveLastScan();
+          renderPicks(shared.picks);
+          $("scanTs").textContent = new Date(shared.ts).toLocaleTimeString();
+          $("emptyScan").style.display = "none";
+          return;
+        }
+      } catch(e){ /* ignore, fall through */ }
+    }
+    // 2) refresh in the background. If we have no picks yet, this auto-runs the first
+    //    scan (cold start) as long as there's budget headroom so we don't fight the ticker.
+    const hasPicks = lastScanResults && lastScanResults.picks && lastScanResults.picks.length;
+    const age = hasPicks ? Date.now() - lastScanResults.ts : Infinity;
+    const belowCap = !hasPicks || lastScanResults.picks.length < 100;
+    if((age > STALE_MS || belowCap) && RL.remaining() >= 45){
+      runScan({background: true});
+    }
+  }, TICK_MS);
+
+  // Auto-kickoff: ensure picks ALWAYS appear after load. Try Firebase first (handled
+  // above), and if we still have no picks a few seconds in, run a real foreground scan.
+  // No budget guard here — the first scan is essential, so it takes priority over the ticker.
+  setTimeout(async () => {
+    const hasPicks = lastScanResults && lastScanResults.picks && lastScanResults.picks.length;
+    if(hasPicks || scanInProgress || !apiKey) return;
+    // one more Firebase attempt in case the connection was slow on first try
+    if(fbReady){
+      const shared = await fetchSharedScan();
+      if(shared && shared.picks && shared.picks.length){
+        lastScanResults = shared; saveLastScan();
+        renderPicks(shared.picks);
+        $("scanTs").textContent = new Date(shared.ts).toLocaleTimeString();
+        $("emptyScan").style.display = "none";
+        return;
+      }
+    }
+    // nothing shared yet — run our own first scan (foreground, shows progress)
+    runScan({background: false});
+  }, 5000);
+
+  $("verTag").textContent = "v" + APP_VERSION;
+  $("verTagFoot").textContent = "v" + APP_VERSION;
+  updateStatusBar();
+  updateFbStatus();
+  setInterval(updateStatusBar, 1000);
+  buildTicker();
+  updatePfCount();
+}
+
+init();
+</script>
+</body>
+</html>
