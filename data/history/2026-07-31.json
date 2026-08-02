@@ -1,10 +1,10 @@
 {
  "version": 1,
- "generated_at_utc": "2026-08-01T19:01:19Z",
+ "generated_at_utc": "2026-08-02T03:18:16Z",
  "as_of_date": "2026-07-31",
  "inception_date": "2026-07-31",
  "starting_capital": 10000.0,
- "runs": 2,
+ "runs": 3,
  "benchmark": {
   "symbol": "SPY",
   "equity": 10000.0,
@@ -83,6 +83,7 @@
      "target_price": null,
      "stop_price": null,
      "bars_held": 0,
+     "entry_time": null,
      "thesis": "S&P 500 core \u2014 owns the 500 biggest US companies",
      "is_new": false
     },
@@ -98,6 +99,7 @@
      "target_price": null,
      "stop_price": null,
      "bars_held": 0,
+     "entry_time": null,
      "thesis": "Nasdaq-100 \u2014 concentrated big-tech growth",
      "is_new": false
     },
@@ -113,6 +115,7 @@
      "target_price": null,
      "stop_price": null,
      "bars_held": 0,
+     "entry_time": null,
      "thesis": "Dividend quality \u2014 cash-generating value companies",
      "is_new": false
     },
@@ -128,6 +131,7 @@
      "target_price": null,
      "stop_price": null,
      "bars_held": 0,
+     "entry_time": null,
      "thesis": "International \u2014 diversification outside the US",
      "is_new": false
     },
@@ -143,6 +147,7 @@
      "target_price": null,
      "stop_price": null,
      "bars_held": 0,
+     "entry_time": null,
      "thesis": "Bonds \u2014 ballast that cushions stock drawdowns",
      "is_new": false
     }
@@ -154,11 +159,40 @@
      "text": "Inception buy \u2014 $10,000 across 5 ETFs"
     }
    ]
+  },
+  "daytrade": {
+   "key": "daytrade",
+   "label": "Day Trader",
+   "icon": "\u26a1",
+   "tagline": "Intraday momentum bursts. In and out the same day \u2014 always flat by the close.",
+   "horizon": "Minutes to hours",
+   "risk_note": "Extreme risk, smallest edges. Checks run about every 20 minutes during market hours; fills book at the exact quoted price of the check, timestamped by the git commit. Never holds overnight.",
+   "equity": 10000.0,
+   "cash": 10000.0,
+   "max_hold_bars": null,
+   "total_return_pct": 0.0,
+   "vs_spy_pct": 0.0,
+   "max_drawdown_pct": 0.0,
+   "closed_trades": 0,
+   "win_rate_pct": null,
+   "avg_win_pct": null,
+   "avg_loss_pct": null,
+   "positions": [],
+   "recent_trades": [],
+   "recent_activity": [
+    {
+     "date": "2026-07-31",
+     "text": "Day Trader sleeve started with $10,000"
+    }
+   ]
   }
  },
  "equity_curves": {
   "dates": [
    "2026-07-31"
+  ],
+  "daytrade": [
+   10000.0
   ],
   "aggressive": [
    10000.0
@@ -174,5 +208,5 @@
   ]
  },
  "data_source": "Finnhub official end-of-day closes + rolling price store (327 symbols)",
- "methodology_note": "All trades are simulated with paper money at daily closing prices. Picks are committed to git before outcomes are known \u2014 the commit history is the proof. Not financial advice."
+ "methodology_note": "All trades are simulated with paper money at daily closing prices. Every position is re-checked at every market close without exception; a sell enters the record only when the model actually fires the signal, booked at that day's real closing price \u2014 never at the planned target or stop. Picks are committed to git before outcomes are known \u2014 the commit history is the proof. Not financial advice."
 }

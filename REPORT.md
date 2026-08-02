@@ -1,13 +1,18 @@
 # 📊 Advisor Daily Report
 
-**As of 2026-07-31** · generated 2026-08-01T19:01:19Z · run #2 · inception 2026-07-31 · each portfolio started with $10,000 of paper money
+**As of 2026-07-31** · generated 2026-08-02T03:18:16Z · run #3 · inception 2026-07-31 · each portfolio started with $10,000 of paper money
 
 | Strategy | Equity | Total Return | vs S&P 500 | Max Drawdown | Trades | Win Rate |
 |---|---|---|---|---|---|---|
+| ⚡ **Day Trader** | $10,000.00 | +0.00% | +0.00% | 0.00% | 0 | — |
 | 🚀 **Get Rich Quick** | $10,000.00 | +0.00% | +0.00% | 0.00% | 0 | — |
 | 📈 **Dependable Growth** | $10,000.00 | +0.00% | +0.00% | 0.00% | 0 | — |
 | 🏛️ **Long-Term Success** | $10,000.00 | +0.00% | +0.00% | 0.00% | 0 | — |
 | 🧭 S&P 500 (SPY) benchmark | $10,000.00 | +0.00% | — | — | — | — |
+
+## ⚡ Day Trader — $10,000.00 (+0.00%)
+
+_No open positions (all cash)._
 
 ## 🚀 Get Rich Quick — $10,000.00 (+0.00%)
 

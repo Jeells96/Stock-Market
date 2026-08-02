@@ -117,6 +117,19 @@
      "text": "Inception buy \u2014 $10,000 across 5 ETFs"
     }
    ]
+  },
+  "daytrade": {
+   "cash": 10000.0,
+   "positions": [],
+   "closed": [],
+   "cooldown": {},
+   "last_eval_date": "2026-07-31",
+   "activity": [
+    {
+     "date": "2026-07-31",
+     "text": "Day Trader sleeve started with $10,000"
+    }
+   ]
   }
  },
  "equity_history": {
@@ -124,9 +137,10 @@
    "aggressive": 10000.0,
    "growth": 10000.0,
    "longterm": 10000.0,
-   "benchmark": 10000.0
+   "benchmark": 10000.0,
+   "daytrade": 10000.0
   }
  },
- "runs": 2,
- "last_run_utc": "2026-08-01T19:01:19Z"
+ "runs": 3,
+ "last_run_utc": "2026-08-02T03:18:16Z"
 }
