@@ -120,6 +120,16 @@ LONGTERM_ALLOCATION = {
 
 BENCHMARK_SYMBOL = "SPY"
 
+# ⚡ Day Trader watchlist: the most liquid high-beta movers. Small on purpose —
+# one Finnhub quote each per intraday check stays well inside 60 calls/min.
+DAYTRADE_WATCHLIST = [
+    "TSLA", "NVDA", "AMD", "SMCI", "COIN", "MSTR", "MARA", "RIOT", "PLTR", "HOOD",
+    "SOFI", "GME", "AMC", "RDDT", "DKNG", "CVNA", "AFRM", "UPST", "IONQ", "RGTI",
+    "ASTS", "RKLB", "ACHR", "JOBY", "HIMS", "CELH", "ELF", "DUOL", "SNOW", "NET",
+    "CRWD", "MDB", "DDOG", "ROKU", "TTD", "SE", "MELI", "NU", "U", "PATH",
+    "VRT", "SQ", "SHOP", "ARM", "MU",
+]
+
 STRATEGY_META = {
     "aggressive": {
         "label": "Get Rich Quick",
@@ -151,7 +161,28 @@ STRATEGY_META = {
         "risk_note": "Lower risk. Boring on purpose — broad diversification and compounding do the work.",
         "slots": len(LONGTERM_ALLOCATION),
     },
+    "daytrade": {
+        "label": "Day Trader",
+        "icon": "⚡",
+        "tagline": "Intraday momentum bursts. In and out the same day — always flat by the close.",
+        "horizon": "Minutes to hours",
+        "risk_note": (
+            "Extreme risk, smallest edges. Checks run about every 20 minutes during market hours; "
+            "fills book at the exact quoted price of the check, timestamped by the git commit. "
+            "Never holds overnight."
+        ),
+        "slots": 3,
+        "target_pct": 0.02,
+        "stop_pct": 0.01,
+        # entry rule: up at least this much vs yesterday's close
+        "min_gap": 0.02,
+        # no NEW entries after this ET time; everything is flattened at eod_flat
+        "entry_cutoff": (15, 0),
+        "eod_flat": (15, 40),
+    },
 }
+
+STRATEGY_KEYS = ("daytrade", "aggressive", "growth", "longterm")
 
 # aggressive won't re-enter a symbol for this many days after exiting it
 COOLDOWN_DAYS = 7
@@ -668,16 +699,26 @@ def bootstrap_state(as_of):
         "benchmark": {"symbol": BENCHMARK_SYMBOL, "shares": 0.0, "cash": STARTING_CAPITAL,
                       "entry_date": None, "last_eval_date": as_of},
         "strategies": {
-            "aggressive": {"cash": STARTING_CAPITAL, "positions": [], "closed": [],
-                           "cooldown": {}, "last_eval_date": as_of, "activity": []},
-            "growth": {"cash": STARTING_CAPITAL, "positions": [], "closed": [],
-                       "cooldown": {}, "last_eval_date": as_of, "activity": []},
-            "longterm": {"cash": STARTING_CAPITAL, "positions": [], "closed": [],
-                         "cooldown": {}, "last_eval_date": as_of, "activity": []},
+            key: {"cash": STARTING_CAPITAL, "positions": [], "closed": [],
+                  "cooldown": {}, "last_eval_date": as_of, "activity": []}
+            for key in STRATEGY_KEYS
         },
         "equity_history": {},
         "runs": 0,
     }
+
+
+def ensure_strategies(state, as_of):
+    """Migration: states created before a strategy existed gain it here,
+    seeded with fresh capital from the day it first appears."""
+    for key in STRATEGY_KEYS:
+        if key not in state["strategies"]:
+            state["strategies"][key] = {
+                "cash": STARTING_CAPITAL, "positions": [], "closed": [],
+                "cooldown": {}, "last_eval_date": as_of, "activity": [
+                    {"date": as_of, "text": f"{STRATEGY_META[key]['label']} sleeve started with "
+                     f"${STARTING_CAPITAL:,.0f}"}],
+            }
 
 
 def save_json(path, obj, compact=False):
@@ -914,6 +955,25 @@ def replay_strategy(key, strat, bars, calendar, as_of):
     return marks
 
 
+def consolidate_daytrade(strat, bars, calendar, as_of):
+    """Daily-mode bookkeeping for the intraday sleeve. Day trades open and
+    close within a session via the intraday runs; here we only (a) safety-flat
+    anything left open — should never happen, but the sleeve must NEVER hold
+    overnight — and (b) record one equity mark per session (cash, since flat)."""
+    start = strat.get("last_eval_date") or as_of
+    marks = {}
+    for pos in list(strat["positions"]):
+        h = bars.get(pos["symbol"])
+        px = (last_close_at(h, as_of) if h else None) or pos.get("last_price") or pos["entry_price"]
+        strat["positions"].remove(pos)
+        close_position(strat, pos, as_of, px, "overnight safety flat")
+    for d in calendar:
+        if start < d <= as_of:
+            marks[d] = strat["cash"]
+    strat["last_eval_date"] = max(start, as_of)
+    return marks
+
+
 def replay_benchmark(bench, bars, calendar, as_of, can_trade):
     h = bars.get(bench["symbol"])
     marks = {}
@@ -1091,7 +1151,7 @@ def build_site_payload(state, bars, as_of, new_picks, data_source):
     hist = state["equity_history"]
     dates = sorted(hist.keys())
     curves = {"dates": dates}
-    for k in ("aggressive", "growth", "longterm", "benchmark"):
+    for k in ("daytrade", "aggressive", "growth", "longterm", "benchmark"):
         curves[k] = [round(hist[d].get(k), 2) if hist[d].get(k) is not None else None for d in dates]
     bench_equity = None
     for d in reversed(dates):
@@ -1117,9 +1177,10 @@ def build_site_payload(state, bars, as_of, new_picks, data_source):
                 "target_price": round(pos["target_price"], 2) if pos.get("target_price") else None,
                 "stop_price": round(pos["stop_price"], 2) if pos.get("stop_price") else None,
                 "bars_held": pos.get("bars_held", 0),
+                "entry_time": pos.get("entry_time"),
                 "thesis": pos.get("thesis", ""),
-                "is_new": pos["entry_date"] == as_of and any(
-                    p["symbol"] == pos["symbol"] for p in new_picks.get(key, [])),
+                "is_new": any(np["symbol"] == pos["symbol"] and np.get("entry_date") == pos["entry_date"]
+                               for np in new_picks.get(key, [])),
             })
         equity = strat["cash"] + sum(p["current_value"] for p in positions)
         strategies[key] = {
@@ -1174,7 +1235,7 @@ def build_report(site):
         "| Strategy | Equity | Total Return | vs S&P 500 | Max Drawdown | Trades | Win Rate |",
         "|---|---|---|---|---|---|---|",
     ]
-    for key in ("aggressive", "growth", "longterm"):
+    for key in STRATEGY_KEYS:
         st = s[key]
         wr = f"{st['win_rate_pct']:.0f}%" if st["win_rate_pct"] is not None else "—"
         lines.append(
@@ -1183,7 +1244,7 @@ def build_report(site):
     lines.append(
         f"| 🧭 S&P 500 (SPY) benchmark | ${b['equity']:,.2f} | {fmt_ret(b['total_return_pct'])} | — | — | — | — |")
     lines.append("")
-    for key in ("aggressive", "growth", "longterm"):
+    for key in STRATEGY_KEYS:
         st = s[key]
         lines.append(f"## {st['icon']} {st['label']} — ${st['equity']:,.2f} ({fmt_ret(st['total_return_pct'])})")
         lines.append("")
@@ -1242,7 +1303,7 @@ def update_readme(site):
         "| Strategy | Equity | Return | vs S&P 500 | Win Rate |",
         "|---|---|---|---|---|",
     ]
-    for key in ("aggressive", "growth", "longterm"):
+    for key in STRATEGY_KEYS:
         st = s[key]
         wr = f"{st['win_rate_pct']:.0f}%" if st["win_rate_pct"] is not None else "—"
         block.append(f"| {st['icon']} {st['label']} | ${st['equity']:,.2f} | {fmt_ret(st['total_return_pct'])} "
@@ -1268,12 +1329,12 @@ def update_readme(site):
 def build_commit_message(site, trades_today):
     s = site["strategies"]
     b = site["benchmark"]
-    parts = [f"{s[k]['icon']} {fmt_ret(s[k]['total_return_pct'])}" for k in ("aggressive", "growth", "longterm")]
+    parts = [f"{s[k]['icon']} {fmt_ret(s[k]['total_return_pct'])}" for k in STRATEGY_KEYS]
     msg = f"📊 {site['as_of_date']}: " + " | ".join(parts) + f" | SPY {fmt_ret(b['total_return_pct'])}"
     if trades_today:
         msg += f" · {trades_today} trade{'s' if trades_today != 1 else ''}"
     lines = [msg, ""]
-    for key in ("aggressive", "growth", "longterm"):
+    for key in STRATEGY_KEYS:
         st = s[key]
         pos_txt = ", ".join(
             f"{p['symbol']} {fmt_ret(p['pnl_pct'])}" for p in st["positions"][:6]) or "all cash"
@@ -1284,7 +1345,153 @@ def build_commit_message(site, trades_today):
 # ---------------------------------------------------------------- main
 
 
+# ---------------------------------------------------------------- intraday mode
+
+
+def daytrade_entry_signal(px, prev_close, min_gap):
+    """True when the live price is up at least min_gap vs yesterday's close."""
+    return prev_close > 0 and (px / prev_close - 1.0) >= min_gap
+
+
+def run_intraday():
+    """⚡ Day Trader loop — runs every ~20 minutes during market hours from its
+    own schedule. Touches ONLY the daytrade sleeve: quotes the watchlist, exits
+    on ±target/stop at the live quoted price, force-flattens everything in the
+    last minutes of the session, and enters fresh gap-momentum names before the
+    cutoff. Exits 0 without changes when the market is closed."""
+    meta = STRATEGY_META["daytrade"]
+    now = ny_now()
+    hm = (now.hour, now.minute)
+    if now.weekday() >= 5 or hm < (9, 35) or hm >= (16, 0):
+        print(f"Market closed (NY {now:%a %H:%M}) — nothing to do.")
+        return
+    today = now.strftime("%Y-%m-%d")
+
+    spy = finnhub_quote(BENCHMARK_SYMBOL)
+    if not spy or market_date(spy["t"], "America/New_York") != today:
+        print("SPY quote missing or stale (holiday?) — nothing to do.")
+        return
+
+    state = load_state()
+    if state is None:
+        print("No state yet — the daily engine bootstraps first. Nothing to do.")
+        return
+    ensure_strategies(state, today)
+    strat = state["strategies"]["daytrade"]
+    store = load_price_store()
+    changed = False
+    events = []
+    time_str = now.strftime("%H:%M")
+
+    # -- exits first: stop / target / end-of-day flat, at live quoted prices
+    eod = hm >= meta["eod_flat"]
+    for pos in list(strat["positions"]):
+        q = finnhub_quote(pos["symbol"])
+        time.sleep(1.1)
+        if not q:
+            continue
+        px = q["c"]
+        pos["last_price"] = px
+        reason = None
+        if px <= pos["stop_price"]:
+            reason = "stop −1%"
+        elif px >= pos["target_price"]:
+            reason = "target +2%"
+        elif eod:
+            reason = "end of day — flat by the close"
+        if reason:
+            strat["positions"].remove(pos)
+            close_position(strat, pos, today, px, reason)
+            t = strat["closed"][-1]
+            t["entry_time"] = pos.get("entry_time")
+            t["exit_time"] = time_str
+            events.append(f"sold {pos['symbol']} @ ${px:,.2f} ({t['pnl_pct']:+.2f}%, {reason})")
+            changed = True
+
+    # -- entries: gap-momentum, before the cutoff, one shot per symbol per day
+    traded_today = {t["symbol"] for t in strat["closed"] if t["exit_date"] == today}
+    held = {p["symbol"] for p in strat["positions"]}
+    if hm < meta["entry_cutoff"] and len(strat["positions"]) < meta["slots"] and strat["cash"] > 100:
+        candidates = []
+        for sym in DAYTRADE_WATCHLIST:
+            if sym in held or sym in traded_today:
+                continue
+            rows = store.get(sym) or []
+            prev_close = None
+            for d, c in reversed(rows):
+                if d < today:
+                    prev_close = c
+                    break
+            if not prev_close:
+                continue
+            q = finnhub_quote(sym)
+            time.sleep(1.1)
+            if not q or market_date(q["t"], "America/New_York") != today:
+                continue
+            if daytrade_entry_signal(q["c"], prev_close, meta["min_gap"]):
+                candidates.append({"symbol": sym, "px": q["c"],
+                                   "gap": q["c"] / prev_close - 1.0})
+        candidates.sort(key=lambda c: c["gap"], reverse=True)
+        empty = meta["slots"] - len(strat["positions"])
+        for cand in candidates[:empty]:
+            budget = min(strat["cash"] / empty, strat["cash"])
+            if budget < 100:
+                break
+            px = cand["px"]
+            pos = {
+                "symbol": cand["symbol"], "name": cand["symbol"],
+                "shares": budget / px, "entry_price": px, "entry_date": today,
+                "entry_time": time_str,
+                "target_price": px * (1 + meta["target_pct"]),
+                "stop_price": px * (1 - meta["stop_pct"]),
+                "thesis": (f"Up {cand['gap'] * 100:.1f}% on the day at {time_str} ET. "
+                           f"Intraday momentum — out at +2%, −1%, or the closing bell, "
+                           f"whichever comes first."),
+                "last_price": px, "bars_held": 0,
+                "splits_applied": [], "divs_credited": [],
+            }
+            strat["cash"] -= budget
+            strat["positions"].append(pos)
+            strat["activity"].append(
+                {"date": today, "text": f"⚡ {time_str} ET BUY {cand['symbol']} @ ${px:,.2f} "
+                 f"(+{cand['gap'] * 100:.1f}% gap)"})
+            events.append(f"bought {cand['symbol']} @ ${px:,.2f} (+{cand['gap'] * 100:.1f}% gap)")
+            empty -= 1
+            changed = True
+
+    open_mv = sum(p["shares"] * (p.get("last_price") or p["entry_price"]) for p in strat["positions"])
+    equity = strat["cash"] + open_mv
+    if not changed and not strat["positions"]:
+        print(f"⚡ {time_str} ET — no signals, flat. Equity ${equity:,.2f}. No commit needed.")
+        return
+
+    # positions are marked to the live quote; the daily equity curve still only
+    # gets one point per session (recorded flat at the daily run)
+    strat["activity"] = strat["activity"][-60:]
+    state["last_run_utc"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    new_picks = {"daytrade": [p for p in strat["positions"] if p["entry_date"] == today]}
+    site = build_site_payload(
+        state, {}, max(state["equity_history"].keys(), default=today), new_picks,
+        "live Finnhub quotes (intraday) + rolling price store")
+    site["intraday_date"] = today
+    site["intraday_equity"] = round(equity, 2)
+    save_json(STATE_PATH, state)
+    save_json(SITE_PATH, site)
+    day_pnl = sum(t["pnl_pct"] for t in strat["closed"] if t["exit_date"] == today)
+    msg = f"⚡ {time_str} ET: " + ("; ".join(events) if events else "marking positions")
+    msg += f" · equity ${equity:,.2f}"
+    if day_pnl:
+        msg += f" · day trades net {day_pnl:+.2f}%"
+    with open(COMMIT_MSG_PATH, "w", encoding="utf-8") as f:
+        f.write(msg)
+    print(msg)
+
+
 def main():
+    if "--intraday" in sys.argv or os.environ.get("ADVISOR_INTRADAY") == "1":
+        print(f"=== Day-trader intraday check {datetime.now(timezone.utc).isoformat()} ===")
+        run_intraday()
+        return
     print(f"=== Advisor run {datetime.now(timezone.utc).isoformat()} ===")
 
     state = load_state()
@@ -1392,9 +1599,10 @@ def main():
         if recorded and as_of < recorded[-1]:
             print(f"Feed is stale (as_of {as_of} < last recorded {recorded[-1]}) — nothing to do.")
             sys.exit(0)
+    ensure_strategies(state, as_of)
 
     # 1) replay portfolios day-by-day since last run
-    for key in ("aggressive", "growth", "longterm"):
+    for key in STRATEGY_KEYS:
         strat = state["strategies"][key]
         n_before = len(strat["closed"])
         marks = replay_strategy(key, strat, bars, calendar, as_of)
@@ -1403,6 +1611,12 @@ def main():
         closed_now = strat["closed"][n_before:]
         for t in closed_now:
             print(f"  {STRATEGY_META[key]['icon']} closed {t['symbol']}: {t['pnl_pct']:+.2f}% ({t['reason']})")
+
+    # the ⚡ intraday sleeve trades via its own schedule; the daily run just
+    # safety-flattens anything left open and records one equity point per session
+    dt_marks = consolidate_daytrade(state["strategies"]["daytrade"], bars, calendar, as_of)
+    for d, v in dt_marks.items():
+        state["equity_history"].setdefault(d, {})["daytrade"] = round(v, 2)
 
     bench_marks = replay_benchmark(state["benchmark"], bars, calendar, as_of, can_trade)
     for d, v in bench_marks.items():
@@ -1443,7 +1657,7 @@ def main():
 
     # 4) refresh today's equity marks after entries/rebalance (cash↔stock is neutral,
     #    but recompute so held-position last_price fields are current)
-    for key in ("aggressive", "growth", "longterm"):
+    for key in STRATEGY_KEYS:
         strat = state["strategies"][key]
         total = strat["cash"]
         for pos in strat["positions"]:
@@ -1467,7 +1681,7 @@ def main():
 
     # 5) outputs
     trades_today = sum(
-        1 for k in ("aggressive", "growth") for t in state["strategies"][k]["closed"]
+        1 for k in ("daytrade", "aggressive", "growth") for t in state["strategies"][k]["closed"]
         if t["exit_date"] == as_of) + sum(len(v) for v in new_picks.values())
     site = build_site_payload(state, bars, as_of, new_picks, data_source)
 
@@ -1483,7 +1697,7 @@ def main():
         f.write(build_commit_message(site, trades_today))
 
     print("Run complete.")
-    for key in ("aggressive", "growth", "longterm"):
+    for key in STRATEGY_KEYS:
         st = site["strategies"][key]
         print(f"  {st['icon']} {st['label']}: ${st['equity']:,.2f} ({fmt_ret(st['total_return_pct'])})")
     print(f"  🧭 SPY: ${site['benchmark']['equity']:,.2f} ({fmt_ret(site['benchmark']['total_return_pct'])})")

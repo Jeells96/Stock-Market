@@ -28,6 +28,7 @@ honest yardstick.
 | 🚀 | **Get Rich Quick** | Short-term momentum swings on high-beta names. Ranked by 1-week + 1-month momentum, RSI-capped. Target +20%, hard stop −8%, forced exit after 15 trading days. | Very high |
 | 📈 | **Dependable Growth** | Quality large caps in confirmed uptrends (price above rising 50- and 200-day averages, positive 6-month return, volatility-capped). Target +15%, stop −10%, exits on a 200-day trend break. | Moderate |
 | 🏛️ | **Long-Term Success** | Fixed diversified ETF allocation — 40% VOO, 20% QQQ, 20% SCHD, 10% VXUS, 10% BND — bought once and rebalanced automatically when weights drift. | Lower |
+| ⚡ | **Day Trader** | Intraday gap-momentum on a 45-name high-beta watchlist, checked ~every 20 minutes during market hours. +2% target, −1% stop, always flat by the close — never holds overnight. Fills book at the live quoted price of the check, timestamped by the commit. | Extreme |
 
 ## How it fires by itself
 
@@ -44,6 +45,12 @@ runs [`scripts/advisor.py`](scripts/advisor.py) twice every trading day:
 Each run fetches free Yahoo Finance data (no API key needed), replays every trading day
 since the previous run — crediting dividends, applying splits, checking stops and targets
 on daily closes only — then commits the updated record to this repository.
+
+The ⚡ Day Trader sleeve has its own schedule
+([`.github/workflows/daytrader.yml`](.github/workflows/daytrader.yml)): checks roughly
+every 20 minutes during market hours, trading at live quoted prices and committing every
+action as it happens. The daily engine safety-flattens anything it might leave open, so
+the sleeve can never hold a position overnight.
 
 > **To activate:** this workflow must be on the `main` branch (GitHub only fires schedules
 > from the default branch). It can also be triggered manually from the **Actions** tab →

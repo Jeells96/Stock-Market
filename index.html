@@ -231,6 +231,7 @@
   .adv-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr));gap:18px;margin-bottom:18px}
   .adv-card{background:linear-gradient(180deg,rgba(22,43,82,0.75),rgba(15,31,61,0.75));border:1px solid var(--border);border-radius:2px;padding:20px;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:12px}
   .adv-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--accent,#c9a961),transparent)}
+  .adv-card.day{--accent:#e879f9}
   .adv-card.agg{--accent:#ff8c42}
   .adv-card.gro{--accent:#4ade80}
   .adv-card.lt{--accent:#7dd3fc}
@@ -352,7 +353,7 @@
   </div>
   <h1>Jaren's Stock Market Tracker</h1>
   <div class="subtitle">Intelligence · Conviction · Capital</div>
-  <div class="est">Est. MMXXVI · Autonomous Engine + Live Scanner · <span id="verTag">v2.3</span></div>
+  <div class="est">Est. MMXXVI · Autonomous Engine + Live Scanner · <span id="verTag">v2.4</span></div>
 </header>
 
 <nav class="tabs">
@@ -562,12 +563,12 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <footer>
-  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v2.3</span><br>
+  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v2.4</span><br>
   <span style="letter-spacing:.05em;text-transform:none">Paper-money model portfolios · not financial advice</span>
 </footer>
 
 <script>
-const APP_VERSION = "2.3";
+const APP_VERSION = "2.4";
 const UNIVERSES = {
   sp: ["AAPL","MSFT","GOOGL","GOOG","AMZN","NVDA","META","TSLA","BRK.B","JPM","V","UNH","XOM","JNJ","WMT","MA","PG","LLY","HD","CVX","ABBV","KO","PEP","MRK","AVGO","COST","BAC","ADBE","ACN","CRM","TMO","CSCO","NFLX","ABT","MCD","DHR","WFC","TXN","NEE","ORCL","DIS","AMD","PM","CMCSA","VZ","NKE","UPS","RTX","PFE","INTC","HON","INTU","AMGN","T","COP","UNP","LOW","SPGI","LIN","CAT","GS","MS","ISRG","BLK","NOW","BKNG","DE","AXP","SCHW","TJX","C","BMY","SYK","MMC","BA","ELV","GE","MDT","ADP","PLD","LMT","REGN","VRTX","GILD","BSX","TMUS","CI","CB","ZTS","SO","DUK","MO","PGR","MDLZ","SLB","ETN","ADI","FI","ICE","CME","SHW","KLAC","APD","NSC","HCA","FCX","WM","BDX","CL","EOG","FDX","ITW","CSX","EQIX","NOC","MMM","PNC","TGT","EMR","MPC","PSX","AON","ORLY","HUM","MCK","PSA","ROP","MSI","USB","CARR","COF","APH","AJG","TFC","GD","SRE","D","NXPI","AZO","KMB","MAR","AIG","WMB","TT","ECL","WELL","O","FIS","OKE","KMI","ROST","CCI","TRV","CHTR","GIS","ALL","HLT","STZ","ANET","FTNT","KHC","SYY","BIIB","DOW","KDP","LRCX","ABNB","CTAS","BK","AFL","NUE","IDXX","JCI","VLO","MET","OXY","PCAR","SPG","AMP","PAYX","EW","TEL","HSY","CMG","DXCM","CTSH","A","PRU","DLR","LEN","DHI","CNC","MNST","DD","CRWD","DG","KR","WBA","YUM","ADM","EXC","XEL","FAST","SBUX","WEC","ED","ROK","BKR","HAL","RSG","VRSK","TROW","CDNS","SNPS","WST","ANSS","CDW","WTW","GWW","ALGN","ZBH","TYL","KEYS","NDAQ","NTAP","STT","STE","RJF","PFG","PHM","HBAN","RF","CFG","TSCO","ULTA","DRI","HAS"],
   momentum: ["GME","AMC","BB","CLOV","SOFI","PLTR","HOOD","COIN","MSTR","MARA","RIOT","CLSK","WULF","HUT","BTBT","BITF","CIFR","HIVE","ARM","SMCI","AI","BBAI","SOUN","UPST","LCID","RIVN","FSR","NKLA","RIDE","QS","ENPH","SEDG","RUN","FSLR","SPWR","NOVA","ARRY","BE","PLUG","FCEL","BLDP","BEEM","SHLS","STEM","DQ","JKS","CSIQ","SOL","TSLA","NVDA","TSM","INTC","MU","ON","MCHP","SWKS","QRVO","LSCC","CRWD","ZS","NET","SNOW","DDOG","MDB","OKTA","DOCN","ESTC","FROG","CFLT","S","TENB","RPD","CYBR","VRNS","FTNT","PANW","CHKP","BSY","GTLB","NEWR","DT","PCTY","PAYC","WDAY","ZUO","BL","APPN","APPS","SE","GRAB","MELI","NU","STNE","PAGS","CART","RDDT","KSPI","HIMS","TLRY","CGC","ACB","CRON","SNDL","HEXO","OGI","VFF"],
@@ -1564,8 +1565,8 @@ async function renderLeagueRecord(){
    Action. The site only READS data/site.json; nothing here can alter
    the record, which is what makes it trustworthy.
 ================================================================ */
-const ADV_COLORS = {aggressive:"#ff8c42", growth:"#4ade80", longterm:"#7dd3fc", benchmark:"#8a93a5"};
-const ADV_CARD_CLASS = {aggressive:"agg", growth:"gro", longterm:"lt"};
+const ADV_COLORS = {daytrade:"#e879f9", aggressive:"#ff8c42", growth:"#4ade80", longterm:"#7dd3fc", benchmark:"#8a93a5"};
+const ADV_CARD_CLASS = {daytrade:"day", aggressive:"agg", growth:"gro", longterm:"lt"};
 let advisorData = null;
 let advisorFetchedAt = 0;
 
@@ -1628,17 +1629,19 @@ function renderAdvisor(){
 
   // ---- Today's Calls: plain buy/sell instructions across all strategies ----
   const calls = [];
-  ["aggressive","growth","longterm"].forEach(key => {
+  ["daytrade","aggressive","growth","longterm"].forEach(key => {
     const s = d.strategies[key];
     if(!s) return;
     (s.positions||[]).forEach(p => {
       if(p.is_new) calls.push({verb:"buy", sym:p.symbol, strat:`${s.icon} ${s.label}`,
-        why:`Bought at <b>${fmt$(p.entry_price)}</b> (the ${esc(p.entry_date)} close). To copy it, buy near that price. `
+        why: key === "daytrade"
+          ? `Bought live at <b>${esc(p.entry_time || "")} ET</b> for <b>${fmt$(p.entry_price)}</b>. Day trade — sells at <b>${fmt$(p.target_price)}</b> (+2%), <b>${fmt$(p.stop_price)}</b> (−1%), or the closing bell, whichever comes first. Checked every ~20 minutes.`
+          : `Bought at <b>${fmt$(p.entry_price)}</b> (the ${esc(p.entry_date)} close). To copy it, buy near that price. `
            + (p.target_price ? `Watched at every close — you'll get an explicit SELL call the day it closes above <b>${fmt$(p.target_price)}</b> or below <b>${fmt$(p.stop_price)}</b>, booked at that day's real closing price.` : `Long-term hold.`)});
     });
     (s.recent_trades||[]).forEach(t => {
-      if(t.exit_date === d.as_of_date) calls.push({verb:"sell", sym:t.symbol, strat:`${s.icon} ${s.label}`,
-        why:`Sold at <b>${fmt$(t.exit_price)}</b> — ${esc(t.reason)}. Result: <b class="${pctCls(t.pnl_pct)}">${pctTxt(t.pnl_pct)}</b> since ${esc(t.entry_date)}.`});
+      if(t.exit_date === d.as_of_date || (d.intraday_date && t.exit_date === d.intraday_date)) calls.push({verb:"sell", sym:t.symbol, strat:`${s.icon} ${s.label}`,
+        why:`Sold${t.exit_time ? " at " + esc(t.exit_time) + " ET" : ""} at <b>${fmt$(t.exit_price)}</b> — ${esc(t.reason)}. Result: <b class="${pctCls(t.pnl_pct)}">${pctTxt(t.pnl_pct)}</b> since ${esc(t.entry_date)}${t.entry_time ? " " + esc(t.entry_time) + " ET" : ""}.`});
     });
   });
   const callRows = calls.length ? calls.map(c => `<div class="call-row">
@@ -1656,7 +1659,7 @@ function renderAdvisor(){
     ${callRows}
   </div>`;
 
-  const cards = ["aggressive","growth","longterm"].map(key => {
+  const cards = ["daytrade","aggressive","growth","longterm"].map(key => {
     const s = d.strategies[key];
     if(!s) return "";
     const vsCls = pctCls(s.vs_spy_pct);
@@ -1669,7 +1672,9 @@ function renderAdvisor(){
     const posRows = (s.positions||[]).map((p,i) => {
       const held = p.name && p.name !== p.symbol ? esc(p.name) : `bought ${esc(p.entry_date)}`;
       let rule;
-      if(p.target_price){
+      if(key === "daytrade"){
+        rule = `<b>Day trade${p.entry_time ? ` — opened ${esc(p.entry_time)} ET` : ""}.</b> Sells live at <b>${fmt$(p.target_price)}</b> (+2%), <b>${fmt$(p.stop_price)}</b> (−1%), or the closing bell — never held overnight. Checked every ~20 minutes.`;
+      } else if(p.target_price){
         const daysLeft = (s.max_hold_bars && p.bars_held != null) ? s.max_hold_bars - p.bars_held : null;
         rule = `Becomes a <b>SELL call</b> the day it closes above <b>${fmt$(p.target_price)}</b> (take profit) or below <b>${fmt$(p.stop_price)}</b> (cut loss)`
              + (daysLeft != null ? ` — or automatically in <b>${Math.max(daysLeft,0)} trading day${daysLeft===1?"":"s"}</b>.` : `.`)
@@ -1717,7 +1722,7 @@ function renderAdvisor(){
   body.querySelectorAll(".adv-pos-row.expand").forEach(row => {
     row.addEventListener("click", () => row.classList.toggle("open"));
   });
-  ["aggressive","growth","longterm"].forEach(key => {
+  ["daytrade","aggressive","growth","longterm"].forEach(key => {
     const cv = $("spark-" + key);
     if(cv) drawSpark(cv, d.equity_curves, key);
   });
@@ -1764,7 +1769,7 @@ function drawEquityChart(canvas, curves){
   canvas.width = w * dpr; canvas.height = h * dpr;
   const ctx = canvas.getContext("2d");
   ctx.scale(dpr, dpr);
-  const keys = ["benchmark","longterm","growth","aggressive"];
+  const keys = ["benchmark","longterm","growth","aggressive","daytrade"];
   const dates = curves.dates || [];
   let lo = Infinity, hi = -Infinity;
   keys.forEach(k => (curves[k]||[]).forEach(v => { if(v != null){ lo = Math.min(lo,v); hi = Math.max(hi,v); } }));
@@ -1824,7 +1829,7 @@ function renderTrackMain(){
   const d = advisorData;
   if(!d){ loadAdvisorData().then(() => { if(advisorData) renderTrackMain(); }); return; }
   const bench = d.benchmark || {};
-  const rows = ["aggressive","growth","longterm"].map(key => {
+  const rows = ["daytrade","aggressive","growth","longterm"].map(key => {
     const s = d.strategies[key];
     if(!s) return "";
     const wr = s.win_rate_pct != null ? s.win_rate_pct.toFixed(0) + "%" : "—";
@@ -1850,7 +1855,7 @@ function renderTrackMain(){
   </tr>`;
 
   const trades = [];
-  ["aggressive","growth","longterm"].forEach(key => {
+  ["daytrade","aggressive","growth","longterm"].forEach(key => {
     const s = d.strategies[key];
     if(!s) return;
     (s.recent_trades||[]).forEach(t => trades.push({...t, icon:s.icon, key}));
@@ -1865,7 +1870,7 @@ function renderTrackMain(){
     </div>`).join("") || `<div class="empty" style="padding:24px"><div class="small">No closed trades yet — the record builds with every exit.</div></div>`;
 
   const acts = [];
-  ["aggressive","growth","longterm"].forEach(key => {
+  ["daytrade","aggressive","growth","longterm"].forEach(key => {
     const s = d.strategies[key];
     if(!s) return;
     (s.recent_activity||[]).forEach(a => acts.push({...a, icon:s.icon}));
@@ -1884,6 +1889,7 @@ function renderTrackMain(){
     </div>
     <div class="chart-wrap">
       <div class="chart-legend">
+        <span><i style="background:${ADV_COLORS.daytrade}"></i>⚡ Day Trader</span>
         <span><i style="background:${ADV_COLORS.aggressive}"></i>🚀 Get Rich Quick</span>
         <span><i style="background:${ADV_COLORS.growth}"></i>📈 Dependable Growth</span>
         <span><i style="background:${ADV_COLORS.longterm}"></i>🏛️ Long-Term Success</span>
@@ -1912,7 +1918,7 @@ function renderTrackMain(){
 let liveTimer = null;
 async function applyLiveOverlay(){
   if(!advisorData || !apiKey) return;
-  const strategies = ["aggressive","growth","longterm"];
+  const strategies = ["daytrade","aggressive","growth","longterm"];
   const syms = [...new Set(strategies.flatMap(k => (advisorData.strategies[k]?.positions||[]).map(p => p.symbol)))];
   if(!syms.length) return;
   const quotes = {};

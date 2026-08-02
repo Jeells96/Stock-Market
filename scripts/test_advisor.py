@@ -341,3 +341,45 @@ if fails:
     print(f"{fails} STORE FAILURES")
     sys.exit(1)
 print("ALL STORE TESTS PASSED")
+
+# ---------- test 17: daytrade consolidation — safety flat + cash marks ----------
+def t17():
+    strat = {"cash": 4000.0, "positions": [{
+        "symbol": "LEFT", "name": "LEFT", "shares": 100.0, "entry_price": 60.0,
+        "entry_date": DAYS[1], "entry_time": "14:20",
+        "target_price": 61.2, "stop_price": 59.4,
+        "thesis": "", "last_price": 60.5, "bars_held": 0,
+        "splits_applied": [], "divs_credited": [],
+    }], "closed": [], "cooldown": {}, "last_eval_date": DAYS[1], "activity": []}
+    bars = {"LEFT": mk_hist([60, 60, 61, 62, 63])}
+    marks = adv.consolidate_daytrade(strat, bars, DAYS, DAYS[3])
+    assert strat["positions"] == [], "leftover day-trade position not flattened"
+    assert strat["closed"][0]["reason"] == "overnight safety flat"
+    approx(strat["cash"], 4000.0 + 100 * 62.0)   # flattened at the as-of close
+    approx(marks[DAYS[2]], strat["cash"])
+    approx(marks[DAYS[3]], strat["cash"])
+    assert strat["last_eval_date"] == DAYS[3]
+check("daytrade consolidation flattens leftovers, marks cash", t17)
+
+# ---------- test 18: daytrade entry signal thresholds ----------
+def t18():
+    assert adv.daytrade_entry_signal(102.0, 100.0, 0.02) is True
+    assert adv.daytrade_entry_signal(101.9, 100.0, 0.02) is False
+    assert adv.daytrade_entry_signal(102.0, 0.0, 0.02) is False
+check("daytrade entry signal thresholds", t18)
+
+# ---------- test 19: ensure_strategies migrates old state ----------
+def t19():
+    state = adv.bootstrap_state(DAYS[0])
+    del state["strategies"]["daytrade"]
+    adv.ensure_strategies(state, DAYS[2])
+    dt = state["strategies"]["daytrade"]
+    approx(dt["cash"], adv.STARTING_CAPITAL)
+    assert dt["positions"] == [] and dt["last_eval_date"] == DAYS[2]
+check("ensure_strategies migrates in the daytrade sleeve", t19)
+
+print()
+if fails:
+    print(f"{fails} DAYTRADE FAILURES")
+    sys.exit(1)
+print("ALL DAYTRADE TESTS PASSED")

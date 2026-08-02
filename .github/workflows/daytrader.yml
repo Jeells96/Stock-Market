@@ -1,0 +1,61 @@
+name: Day Trader (intraday checks)
+
+# ⚡ Intraday sleeve: checks roughly every 20 minutes across the US session
+# (cron covers both EDT and EST market hours; the engine itself no-ops
+# instantly outside 9:35–16:00 ET or on holidays, so off-hours firings cost
+# seconds and commit nothing). All fills book at the live quoted price at the
+# moment of the check, timestamped by the resulting commit.
+
+on:
+  schedule:
+    - cron: "*/20 13-21 * * 1-5"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: advisor
+  cancel-in-progress: false
+
+jobs:
+  daytrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Intraday check
+        env:
+          FINNHUB_API_KEY: ${{ secrets.FINNHUB_API_KEY }}
+        run: python scripts/advisor.py --intraday
+
+      - name: Commit and push results
+        run: |
+          git config user.name "advisor-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          if [ -f data/commit_msg.txt ]; then
+            git commit -F data/commit_msg.txt
+          else
+            git commit -m "⚡ intraday check $(date -u +%H:%MZ)"
+          fi
+          for i in 1 2 3; do
+            if git push; then exit 0; fi
+            git pull --rebase || true
+            sleep 5
+          done
+          git push
