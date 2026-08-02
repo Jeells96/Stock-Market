@@ -1185,6 +1185,63 @@ def compute_stats(closed, equity_series, bench_return_pct):
     }
 
 
+def pro_metrics(dates, hist, key, closed):
+    """Institutional-grade statistics from the daily equity marks, computed
+    only when there is enough sample to mean anything (else null → shown as
+    an em dash, never a fake number).
+
+    All figures are GROSS: fills at official closes (intraday sleeve at live
+    quotes), no commissions, no modeled slippage. Stated, not hidden.
+    """
+    pairs = []
+    prev = None
+    for d in dates:
+        s, b = hist[d].get(key), hist[d].get("benchmark")
+        if s is None or b is None:
+            prev = None
+            continue
+        if prev is not None and prev[0] > 0 and prev[1] > 0:
+            pairs.append((s / prev[0] - 1.0, b / prev[1] - 1.0))
+        prev = (s, b)
+    out = {"ann_vol_pct": None, "sharpe": None, "beta": None, "alpha_ann_pct": None,
+           "ann_return_pct": None, "profit_factor": None, "sample_days": len(pairs)}
+    n = len(pairs)
+    if n >= 5:
+        rs = [p[0] for p in pairs]
+        rb = [p[1] for p in pairs]
+        mean_s = sum(rs) / n
+        mean_b = sum(rb) / n
+        var_s = sum((r - mean_s) ** 2 for r in rs) / (n - 1)
+        var_b = sum((r - mean_b) ** 2 for r in rb) / (n - 1)
+        sd_s = math.sqrt(var_s)
+        out["ann_vol_pct"] = round(sd_s * math.sqrt(252) * 100, 1)
+        if sd_s > 0:
+            out["sharpe"] = round(mean_s / sd_s * math.sqrt(252), 2)
+        if var_b > 0:
+            cov = sum((rs[i] - mean_s) * (rb[i] - mean_b) for i in range(n)) / (n - 1)
+            beta = cov / var_b
+            out["beta"] = round(beta, 2)
+            out["alpha_ann_pct"] = round((mean_s - beta * mean_b) * 252 * 100, 1)
+    if n >= 20:
+        first = None
+        for d in dates:
+            if hist[d].get(key) is not None:
+                first = hist[d][key]
+                break
+        last = None
+        for d in reversed(dates):
+            if hist[d].get(key) is not None:
+                last = hist[d][key]
+                break
+        if first and last and first > 0:
+            out["ann_return_pct"] = round(((last / first) ** (252.0 / n) - 1.0) * 100, 1)
+    wins = sum(t["pnl_pct"] for t in closed if t["pnl_pct"] > 0)
+    losses = -sum(t["pnl_pct"] for t in closed if t["pnl_pct"] < 0)
+    if losses > 0 and len(closed) >= 5:
+        out["profit_factor"] = round(wins / losses, 2)
+    return out
+
+
 def build_site_payload(state, bars, as_of, new_picks, data_source):
     hist = state["equity_history"]
     dates = sorted(hist.keys())
@@ -1230,6 +1287,7 @@ def build_site_payload(state, bars, as_of, new_picks, data_source):
             "positions": positions,
             "recent_trades": strat["closed"][-12:][::-1],
             "recent_activity": strat["activity"][-8:][::-1],
+            "pro": pro_metrics(dates, hist, key, strat["closed"]),
         }
     return {
         "version": 1,

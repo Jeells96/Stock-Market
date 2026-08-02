@@ -436,3 +436,39 @@ if fails:
     print(f"{fails} DAYTRADE FAILURES")
     sys.exit(1)
 print("ALL DAYTRADE TESTS PASSED")
+
+# ---------- test 20: institutional metrics math ----------
+def t20():
+    # strategy grows 1%/day steadily; benchmark 0.5%/day → beta ≈ 2 vs bench... 
+    # use mixed series with known relationship: s = 2*b day by day
+    dates = [f"2026-03-{d:02d}" for d in range(1, 22)]
+    hist = {}
+    s, b = 10000.0, 10000.0
+    moves = [0.01, -0.005, 0.008, -0.002, 0.006, 0.004, -0.006, 0.01, -0.004, 0.002,
+             0.007, -0.003, 0.005, -0.001, 0.009, 0.003, -0.007, 0.006, -0.002, 0.004]
+    hist[dates[0]] = {"aggressive": s, "benchmark": b}
+    for i, m in enumerate(moves):
+        b *= (1 + m)
+        s *= (1 + 2 * m)          # exactly 2x the benchmark's daily move
+        hist[dates[i + 1]] = {"aggressive": s, "benchmark": b}
+    closed = [{"pnl_pct": 10.0}, {"pnl_pct": 6.0}, {"pnl_pct": -4.0},
+              {"pnl_pct": 8.0}, {"pnl_pct": -2.0}]
+    m = adv.pro_metrics(dates, hist, "aggressive", closed)
+    assert m["sample_days"] == 20, m["sample_days"]
+    approx(m["beta"], 2.0, tol=0.05)
+    assert m["ann_vol_pct"] and m["ann_vol_pct"] > 0
+    assert m["sharpe"] is not None
+    approx(m["profit_factor"], 24.0 / 6.0, tol=0.01)     # 24 gross win / 6 gross loss
+    assert m["ann_return_pct"] is not None               # n>=20 unlocks annualization
+    # a flat (all-cash) curve must yield nulls, not zeros pretending to be data
+    flat_hist = {d: {"daytrade": 10000.0, "benchmark": hist[d]["benchmark"]} for d in dates}
+    f = adv.pro_metrics(dates, flat_hist, "daytrade", [])
+    assert f["sharpe"] is None and f["profit_factor"] is None
+    approx(f["ann_vol_pct"], 0.0)
+check("pro metrics: beta recovery, profit factor, null-safety", t20)
+
+print()
+if fails:
+    print(f"{fails} METRICS FAILURES")
+    sys.exit(1)
+print("ALL METRICS TESTS PASSED")

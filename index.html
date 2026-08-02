@@ -115,6 +115,12 @@
   .smallnote{font-size:12px;color:var(--gold-dim)}
   a{color:var(--gold-bright)}
 
+  /* ---- by the numbers ---- */
+  .progrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px}
+  .procell{background:rgba(8,17,31,0.5);border:1px solid var(--line);border-radius:6px;padding:10px 12px;cursor:help}
+  .procell .k{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold-dim);margin-bottom:2px}
+  .procell .v{font-size:19px;color:#fff;font-weight:600}
+
   /* ---- chart ---- */
   .chartwrap{position:relative;margin:14px 0 4px;background:rgba(8,17,31,0.5);border:1px solid var(--line);border-radius:6px;padding:10px}
   .chartwrap canvas{width:100%;height:230px;display:block}
@@ -355,6 +361,26 @@ function render(){
     <p class="chart-note">Your ${money(startCap)} following this strategy (solid) versus the overall market (dashed), day by day.</p>
   </div>`;
 
+  // --- 2b. by the numbers: institutional metrics, honestly nulled ---
+  const pro = s.pro || {};
+  const proCell = (label, v, suffix, tip) =>
+    `<div class="procell" title="${tip}"><span class="k">${label}</span><span class="v">${v == null ? "&mdash;" : v + suffix}</span></div>`;
+  const proHtml = `<div class="card"><h2>By the numbers</h2>
+    <div class="progrid">
+      ${proCell("Sharpe ratio", pro.sharpe, "", "Return earned per unit of risk taken. Above 1 is good; above 2 is excellent.")}
+      ${proCell("Volatility (ann.)", pro.ann_vol_pct, "%", "How much the value swings in a typical year. Lower is calmer.")}
+      ${proCell("Beta vs S&P 500", pro.beta, "", "How hard it moves when the market moves. 1 means with the market; 2 means twice as hard.")}
+      ${proCell("Alpha (ann.)", pro.alpha_ann_pct, "%", "Return above what market exposure alone would explain. The skill number.")}
+      ${proCell("Return (ann.)", pro.ann_return_pct, "%", "The yearly pace of growth. Only shown after 20+ trading days of history.")}
+      ${proCell("Profit factor", pro.profit_factor, "", "Gross winnings divided by gross losses across finished trades. Above 1.5 is healthy. Needs 5+ trades.")}
+      ${proCell("Worst dip", s.max_drawdown_pct != null ? Math.abs(s.max_drawdown_pct).toFixed(1) : null, "%", "Largest fall from a peak so far, using daily closing values.")}
+      ${proCell("Win rate", s.win_rate_pct != null ? s.win_rate_pct.toFixed(0) : null, "%", "Share of finished trades that made money.")}
+    </div>
+    <p class="smallnote">Gross results: fills at official closing prices (the Day Trader at live quoted prices),
+    no commissions or slippage modeled, pretend money. A dash means not enough history yet &mdash; these numbers
+    have to be earned. Hover any figure for plain English.</p>
+  </div>`;
+
   // --- 3. holdings ---
   const holds = (s.positions||[]).map(p=>{
     const nm = p.name && p.name!==p.symbol ? `${esc(p.name)} (${esc(p.symbol)})` : esc(p.symbol);
@@ -376,7 +402,7 @@ function render(){
      (bought ${fmtDate(t.entry_date)} at ${price(t.entry_price)}): ${pctWords(t.pnl_pct)} · ${esc(t.reason)}</div>`).join("");
   const tradesHtml = trades ? `<div class="card"><h2>Its last few decisions</h2>${trades}</div>` : "";
 
-  $("content").innerHTML = alarmHtml + todoHtml + proofHtml + holdingsHtml + tradesHtml;
+  $("content").innerHTML = alarmHtml + todoHtml + proofHtml + proHtml + holdingsHtml + tradesHtml;
   drawChart(key);
 }
 
