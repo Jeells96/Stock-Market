@@ -473,3 +473,57 @@ if fails:
     print(f"{fails} METRICS FAILURES")
     sys.exit(1)
 print("ALL METRICS TESTS PASSED")
+
+# ---------- test 21: self-tuning ladder + blacklist + gates ----------
+def t21():
+    meta = dict(adv.STRATEGY_META["daytrade"])
+    # gate: under 25 trades → no change
+    few = [{"pnl_pct": -2.0, "reason": "stop −2%", "symbol": "A"}] * 10
+    ch, why = adv.daytrade_ladder_decision(few, meta)
+    assert ch is None and "need 25" in why
+    # 30 trades, 30% win rate, losses mostly stop-outs → widen one notch
+    trades = ([{"pnl_pct": 3.0, "reason": "target +3%", "symbol": "W"}] * 9
+              + [{"pnl_pct": -2.0, "reason": "stop −2%", "symbol": "L"}] * 15
+              + [{"pnl_pct": -0.5, "reason": "end of day — flat by the close", "symbol": "L"}] * 6)
+    ch, why = adv.daytrade_ladder_decision(trades, meta)
+    assert ch and ch["stop_pct"] == 0.025 and ch["min_gap"] == 0.025, ch
+    # already at ladder top → no further widening
+    top = dict(meta, stop_pct=0.03, min_gap=0.03)
+    ch2, _ = adv.daytrade_ladder_decision(trades, top)
+    assert ch2 is None or ("stop_pct" not in ch2 and "min_gap" not in ch2)
+    # healthy stats → no change
+    good = ([{"pnl_pct": 1.0, "reason": "target +3%", "symbol": "W"}] * 13
+            + [{"pnl_pct": -1.0, "reason": "stop −2%", "symbol": "L"}] * 12)
+    ch3, why3 = adv.daytrade_ladder_decision(good, meta)
+    assert ch3 is None and "no change" in why3
+    # blacklist: 3 trades totalling −6% benches the symbol; expiry honored
+    closed = [{"symbol": "BAD", "pnl_pct": -2.0}] * 3 + [{"symbol": "OK", "pnl_pct": 1.0}] * 3
+    bl = adv.daytrade_blacklist_update(closed, "2026-08-01", {})
+    assert "BAD" in bl and "OK" not in bl
+    assert bl["BAD"] == "2026-09-30"
+    bl2 = adv.daytrade_blacklist_update([], "2026-10-01", bl)
+    assert "BAD" not in bl2, "expired bench should clear"
+check("self-tuning: ladder gates, notch caps, blacklist lifecycle", t21)
+
+# ---------- test 22: walk-forward tuner gates on store depth ----------
+def t22():
+    store = {"SPY": [[f"2026-01-{d:02d}", 100.0] for d in range(1, 20)]}
+    ch, why = adv.tune_daily_strategy("aggressive", store, {})
+    assert ch is None and "arms itself" in why, why
+    # param overrides fold into STRATEGY_META (and never touch the Nest Egg)
+    import copy
+    saved = copy.deepcopy(adv.STRATEGY_META)
+    try:
+        adv.apply_param_overrides({"overrides": {"daytrade": {"stop_pct": 0.025},
+                                                 "longterm": {"slots": 99}}})
+        assert adv.STRATEGY_META["daytrade"]["stop_pct"] == 0.025
+        assert adv.STRATEGY_META["longterm"]["slots"] != 99, "Nest Egg must never be tuned"
+    finally:
+        adv.STRATEGY_META.clear(); adv.STRATEGY_META.update(saved)
+check("walk-forward gate + override safety (Nest Egg untouchable)", t22)
+
+print()
+if fails:
+    print(f"{fails} TUNING FAILURES")
+    sys.exit(1)
+print("ALL TUNING TESTS PASSED")

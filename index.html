@@ -396,6 +396,14 @@ function render(){
     Commissions are $0, matching modern retail brokers; the S&amp;P 500 benchmark is frictionless by convention.
     Pretend money. A dash means not enough history yet &mdash; these numbers have to be earned.
     Hover any figure for plain English.</p>
+    <p class="smallnote">${(() => {
+      const tu = DATA.tuning || {};
+      let line = "\ud83d\udcd0 Self-tuning: every Sunday the machine re-examines its rules against all accumulated results and adapts them along fixed ladders \u2014 only with out-of-sample evidence, and every change is published.";
+      if(tu.last_change) line += ` Last change (${fmtDate(tu.last_change.date)}): ${esc(tu.last_change.reason)}.`;
+      else line += " No changes adopted yet \u2014 the loop gains power as history accumulates.";
+      if(key === "daytrade" && (tu.benched||[]).length) line += ` Currently benched for repeated losses: ${tu.benched.join(", ")}.`;
+      return line;
+    })()}</p>
   </div>`;
 
   // --- 3. holdings ---
@@ -537,23 +545,43 @@ function drawDrawdown(key, pts, ML, MR){
 
 /* ---------- live ticker ---------- */
 const TICKER_SYMS = ["AAPL","MSFT","NVDA","GOOGL","AMZN","META","TSLA","JPM","V","UNH","XOM","WMT","LLY","AVGO","JNJ","MA","PG","HD","COST","BAC","NFLX","KO","CRM","ORCL","AMD","DIS","SPY","QQQ","COIN","PLTR"];
-let tickerData = TICKER_SYMS.map(s => ({sym:s, px:null, chg:0}));
-function renderTicker(){
-  const items = [...tickerData, ...tickerData].map(d => {
-    if(d.px == null) return `<div class="ticker-item"><span class="ticker-sym">${d.sym}</span><span class="ticker-px">&mdash;</span></div>`;
-    const up = (d.chg||0) >= 0;
-    return `<div class="ticker-item"><span class="ticker-sym">${d.sym}</span><span class="ticker-px">$${d.px.toFixed(2)}</span><span class="ticker-chg ${up?"up":"down"}">${up?"\u25b2":"\u25bc"} ${(d.chg>=0?"+":"")}${(d.chg||0).toFixed(2)}%</span></div>`;
-  }).join("");
-  $("tickerTrack").innerHTML = items;
+let tickerBuilt = false;
+function buildTicker(){
+  // build the strip ONCE (two copies for the seamless -50% loop) and never
+  // touch innerHTML again — rebuilding restarts the CSS animation and causes
+  // the stutter. Prices update in place afterwards.
+  const track = $("tickerTrack");
+  track.innerHTML = [0, 1].map(copy => TICKER_SYMS.map(sym =>
+    `<div class="ticker-item" data-sym="${sym}">
+       <span class="ticker-sym">${sym}</span>
+       <span class="ticker-px">&mdash;</span>
+       <span class="ticker-chg"></span>
+     </div>`).join("")).join("");
+  // scroll speed proportional to content width so the pace is steady on any
+  // screen (fixed 90s made it crawl or race depending on item count)
+  requestAnimationFrame(() => {
+    const half = track.scrollWidth / 2;
+    if(half > 0) track.style.animationDuration = Math.max(30, Math.round(half / 55)) + "s";
+  });
+  tickerBuilt = true;
+}
+function updateTickerItem(sym, px, chg){
+  document.querySelectorAll(`.ticker-item[data-sym="${sym}"]`).forEach(el => {
+    el.querySelector(".ticker-px").textContent = "$" + px.toFixed(2);
+    const up = (chg || 0) >= 0;
+    const c = el.querySelector(".ticker-chg");
+    c.className = "ticker-chg " + (up ? "up" : "down");
+    c.textContent = `${up ? "\u25b2" : "\u25bc"} ${(chg >= 0 ? "+" : "")}${(chg || 0).toFixed(2)}%`;
+  });
 }
 async function fillTicker(){
-  renderTicker();
-  for(let i = 0; i < tickerData.length; i++){
+  if(!tickerBuilt) buildTicker();
+  for(const sym of TICKER_SYMS){
     try{
-      const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=${TICKER_SYMS[i]}&token=${FINNHUB_KEY}`);
+      const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=${sym}&token=${FINNHUB_KEY}`);
       const j = await r.json();
-      if(j && j.c){ tickerData[i] = {sym:TICKER_SYMS[i], px:j.c, chg:j.dp||0}; renderTicker(); }
-    }catch(e){ /* leave dash */ }
+      if(j && j.c) updateTickerItem(sym, j.c, j.dp || 0);
+    }catch(e){ /* keep last value */ }
     await new Promise(r => setTimeout(r, 1100));
   }
 }
@@ -585,6 +613,7 @@ document.addEventListener("visibilitychange", async ()=>{
     await refreshQuotes();
     fillTicker();
     setInterval(refreshQuotes, 60000);
+    setInterval(fillTicker, 5 * 60000);
     setInterval(async ()=>{ if(await loadData()){ renderTabs(); render(); } }, 5*60000);
   }
 })();

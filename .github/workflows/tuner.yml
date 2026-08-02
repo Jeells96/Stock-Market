@@ -1,0 +1,62 @@
+name: Sunday Self-Tuning
+
+# 📐 The learning loop: every Sunday the machine re-examines its own rules
+# against all accumulated live data — the day trader's ladder from its real
+# trades, the daily strategies by walk-forward validation on the price store.
+# Changes are adopted only with out-of-sample evidence and are committed
+# publicly with their before/after numbers. Quiet weeks commit nothing.
+
+on:
+  schedule:
+    - cron: "0 12 * * 0"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: advisor
+  cancel-in-progress: false
+
+jobs:
+  tune:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Pre-flight — engine self-test
+        run: python scripts/test_advisor.py
+
+      - name: Tuning pass
+        run: python scripts/advisor.py --tune
+
+      - name: Commit and push adopted changes
+        run: |
+          git config user.name "advisor-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/params.json
+          if git diff --cached --quiet; then
+            echo "No tuning changes this week."
+            exit 0
+          fi
+          if [ -f data/commit_msg.txt ]; then
+            git commit -F data/commit_msg.txt
+          else
+            git commit -m "📐 Sunday tuning"
+          fi
+          for i in 1 2 3; do
+            if git push; then exit 0; fi
+            git pull --rebase || true
+            sleep 5
+          done
+          git push

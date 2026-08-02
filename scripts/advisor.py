@@ -1358,8 +1358,17 @@ def build_site_payload(state, bars, as_of, new_picks, data_source):
             "recent_activity": strat["activity"][-8:][::-1],
             "pro": pro_metrics(dates, hist, key, strat["closed"], slots=meta.get("slots")),
         }
+    tuning_params = load_params()
+    today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    tuning = {
+        "reviews": len(tuning_params.get("history", [])),
+        "last_change": (tuning_params.get("history") or [None])[-1],
+        "benched": sorted(s for s, d in (tuning_params.get("blacklist") or {}).items()
+                          if d >= today_str),
+    }
     return {
         "version": 1,
+        "tuning": tuning,
         "generated_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
         "as_of_date": as_of,
         "inception_date": state["inception_date"],
@@ -1513,6 +1522,252 @@ def build_commit_message(site, trades_today):
 # ---------------------------------------------------------------- main
 
 
+# ---------------------------------------------------------------- self-tuning
+# The learning loop. The machine re-examines its own rules every Sunday
+# against ALL accumulated live data, and adapts them along PREDEFINED ladders
+# with strict sample-size gates and out-of-sample validation. Predefined
+# ladders (not free optimization) keep the degrees of freedom tiny — that is
+# what separates adaptation from curve-fitting. Every change is committed to
+# the public record with its before/after evidence, so each era of rules is
+# auditable against the results it produced. The Nest Egg is never tuned:
+# its entire thesis is that patience beats tinkering.
+
+PARAMS_PATH = os.path.join(DATA_DIR, "params.json")
+
+DAYTRADE_STOP_LADDER = [0.02, 0.025, 0.03]
+DAYTRADE_GAP_LADDER = [0.02, 0.025, 0.03]
+DAYTRADE_TARGET_LADDER = [0.03, 0.04]
+LADDER_MIN_TRADES = 25
+BLACKLIST_MIN_TRADES = 3
+BLACKLIST_LOSS_PCT = -4.0
+BLACKLIST_DAYS = 60
+TUNE_MIN_SESSIONS = 220     # store depth needed before daily-strategy tuning
+TUNE_VALIDATION = 63        # out-of-sample window (sessions)
+TUNE_ADOPT_MARGIN = 1.0     # adopt only if better by this much (mean basket %, net)
+
+
+def load_params():
+    if os.path.exists(PARAMS_PATH):
+        with open(PARAMS_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    return {"overrides": {}, "blacklist": {}, "history": [], "reviewed_trades": {}}
+
+
+def apply_param_overrides(params):
+    """Fold adopted overrides into STRATEGY_META at startup — one authority."""
+    for key, over in (params.get("overrides") or {}).items():
+        if key in STRATEGY_META and key != "longterm":
+            STRATEGY_META[key].update(over)
+
+
+def next_notch(ladder, current):
+    """The next step up a predefined ladder, or None if already at the top."""
+    best_i = min(range(len(ladder)), key=lambda i: abs(ladder[i] - current))
+    return ladder[best_i + 1] if best_i + 1 < len(ladder) else None
+
+
+def daytrade_ladder_decision(trades, meta):
+    """Adaptation from the sleeve's own completed trades. Returns
+    (changes_dict_or_None, reason). One notch maximum per review."""
+    n = len(trades)
+    if n < LADDER_MIN_TRADES:
+        return None, f"only {n} completed trades since last review (need {LADDER_MIN_TRADES})"
+    wins = [t for t in trades if t["pnl_pct"] > 0]
+    losers = [t for t in trades if t["pnl_pct"] <= 0]
+    win_rate = len(wins) / n
+    stop_outs = [t for t in losers if "stop" in (t.get("reason") or "")]
+    changes = {}
+    if win_rate < 0.40 and losers and len(stop_outs) / len(losers) >= 0.6:
+        ns = next_notch(DAYTRADE_STOP_LADDER, meta["stop_pct"])
+        ng = next_notch(DAYTRADE_GAP_LADDER, meta["min_gap"])
+        if ns:
+            changes["stop_pct"] = ns
+        if ng:
+            changes["min_gap"] = ng
+        if changes:
+            return changes, (f"win rate {win_rate * 100:.0f}% with {len(stop_outs)}/{len(losers)} "
+                             f"losses at the stop — widening the stop and demanding stronger gaps")
+    elif win_rate >= 0.55 and wins:
+        avg_win = sum(t["pnl_pct"] for t in wins) / len(wins)
+        nt = next_notch(DAYTRADE_TARGET_LADDER, meta["target_pct"])
+        if avg_win >= meta["target_pct"] * 100 * 0.8 and nt:
+            return {"target_pct": nt}, (f"win rate {win_rate * 100:.0f}% with winners averaging "
+                                        f"{avg_win:.1f}% — raising the profit target")
+    return None, f"win rate {win_rate * 100:.0f}% over {n} trades — within tolerances, no change"
+
+
+def daytrade_blacklist_update(closed, today, existing):
+    """Symbols that keep losing get benched for BLACKLIST_DAYS."""
+    out = {s: d for s, d in (existing or {}).items() if d >= today}
+    by_sym = {}
+    for t in closed:
+        by_sym.setdefault(t["symbol"], []).append(t["pnl_pct"])
+    until = (datetime.strptime(today, "%Y-%m-%d") + timedelta(days=BLACKLIST_DAYS)).strftime("%Y-%m-%d")
+    for sym, pnls in by_sym.items():
+        if sym not in out and len(pnls) >= BLACKLIST_MIN_TRADES and sum(pnls) <= BLACKLIST_LOSS_PCT:
+            out[sym] = until
+    return out
+
+
+def simulate_exit_params(key, store, symbols, session_lo, session_hi,
+                         stop_pct, target_pct, max_hold):
+    """Approximate exit-parameter backtest on the rolling store: every 5th
+    session in [lo, hi), rank the universe as of that session, open the top
+    slots equal-weight at the close (net of slippage) and walk each basket
+    forward on closes with the given exits. Returns mean basket return (net,
+    in %) or None if too little data. Growth's trend-break exit is omitted —
+    this deliberately tunes only the stop/target/hold triad."""
+    cal = [r[0] for r in store.get(BENCHMARK_SYMBOL) or []]
+    if len(cal) < session_hi:
+        return None
+    sym_rows = {s: store.get(s) or [] for s in symbols}
+    meta = STRATEGY_META[key]
+    scorer = score_aggressive if key == "aggressive" else score_growth
+    basket_returns = []
+    for t in range(session_lo, session_hi - 1, 5):
+        as_of = cal[t]
+        bars_view = {}
+        for s, rows in sym_rows.items():
+            upto = [r for r in rows if r[0] <= as_of]
+            if len(upto) < 65:
+                continue
+            bars_view[s] = {"dates": [r[0] for r in upto],
+                            "close": {r[0]: r[1] for r in upto},
+                            "volume": {}, "name": s, "divs": {}, "splits": {},
+                            "has_events": False}
+        ranked = scorer(bars_view, as_of)
+        picks = ranked[:meta["slots"]]
+        if not picks:
+            continue
+        rets = []
+        for p in picks:
+            rows = sym_rows[p["symbol"]]
+            idx = next((i for i, r in enumerate(rows) if r[0] == as_of), None)
+            if idx is None:
+                continue
+            entry = rows[idx][1] * (1 + SLIPPAGE_BPS_DAILY / 10000.0)
+            stop = rows[idx][1] * (1 - stop_pct)
+            target = rows[idx][1] * (1 + target_pct)
+            exit_px = None
+            path = rows[idx + 1: idx + 1 + (max_hold or 15)]
+            for _, c in path:
+                if c <= stop or c >= target:
+                    exit_px = c
+                    break
+            if exit_px is None:
+                exit_px = path[-1][1] if path else rows[idx][1]
+            fill = exit_px * (1 - SLIPPAGE_BPS_DAILY / 10000.0)
+            rets.append((fill / entry - 1.0) * 100.0)
+        if rets:
+            basket_returns.append(sum(rets) / len(rets))
+    if len(basket_returns) < 8:
+        return None
+    return sum(basket_returns) / len(basket_returns)
+
+
+DAILY_TUNE_GRID = {
+    "aggressive": {"stop_pct": [0.06, 0.08, 0.10], "target_pct": [0.15, 0.20, 0.25],
+                   "max_hold_bars": [10, 15, 20]},
+    "growth": {"stop_pct": [0.08, 0.10, 0.12], "target_pct": [0.12, 0.15, 0.20],
+               "max_hold_bars": [None]},
+}
+
+
+def tune_daily_strategy(key, store, params):
+    """Walk-forward: choose the grid winner on the training window, then adopt
+    it ONLY if it also beats the incumbent on the held-out validation window
+    by a real margin. Returns (changes_or_None, reason)."""
+    cal = [r[0] for r in store.get(BENCHMARK_SYMBOL) or []]
+    n = len(cal)
+    if n < TUNE_MIN_SESSIONS:
+        return None, f"store holds {n} sessions (need {TUNE_MIN_SESSIONS}) — the loop arms itself as history grows"
+    symbols = MOMENTUM if key == "aggressive" else SP_CORE
+    val_lo, val_hi = n - TUNE_VALIDATION, n
+    train_lo, train_hi = 65, n - TUNE_VALIDATION
+    meta = STRATEGY_META[key]
+    incumbent = (meta["stop_pct"], meta["target_pct"], meta.get("max_hold_bars"))
+    grid = DAILY_TUNE_GRID[key]
+    best, best_train = None, None
+    for sp in grid["stop_pct"]:
+        for tp in grid["target_pct"]:
+            for mh in grid["max_hold_bars"]:
+                r = simulate_exit_params(key, store, symbols, train_lo, train_hi, sp, tp, mh)
+                if r is not None and (best_train is None or r > best_train):
+                    best, best_train = (sp, tp, mh), r
+    if best is None:
+        return None, "not enough qualifying history in the training window"
+    if best == incumbent:
+        return None, f"incumbent parameters are already the training winner ({best_train:+.2f}% per basket)"
+    inc_val = simulate_exit_params(key, store, symbols, val_lo, val_hi, *incumbent)
+    new_val = simulate_exit_params(key, store, symbols, val_lo, val_hi, *best)
+    if inc_val is None or new_val is None:
+        return None, "validation window too thin to compare safely"
+    if new_val - inc_val < TUNE_ADOPT_MARGIN:
+        return None, (f"challenger {best} beat training but not validation "
+                      f"({new_val:+.2f}% vs incumbent {inc_val:+.2f}%) — keeping current rules")
+    changes = {"stop_pct": best[0], "target_pct": best[1]}
+    if best[2] is not None:
+        changes["max_hold_bars"] = best[2]
+    return changes, (f"walk-forward adopted stop {best[0] * 100:.0f}% / target {best[1] * 100:.0f}%"
+                     f"{f' / hold {best[2]}d' if best[2] else ''}: validation {new_val:+.2f}% per basket "
+                     f"vs incumbent {inc_val:+.2f}%")
+
+
+def run_tuning():
+    """Weekly self-tuning pass. Only writes params.json (and a commit message)
+    when something actually changes — quiet weeks leave no trace but a log."""
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    params = load_params()
+    apply_param_overrides(params)
+    state = load_state()
+    store = load_price_store()
+    notes, changed = [], False
+
+    if state:
+        dt = state["strategies"].get("daytrade", {})
+        closed = dt.get("closed", [])
+        reviewed = params["reviewed_trades"].get("daytrade", 0)
+        fresh = closed[reviewed:]
+        changes, reason = daytrade_ladder_decision(fresh, STRATEGY_META["daytrade"])
+        print(f"⚡ ladder: {reason}")
+        if changes:
+            params["overrides"].setdefault("daytrade", {}).update(changes)
+            params["reviewed_trades"]["daytrade"] = len(closed)
+            params["history"].append({"date": today, "strategy": "daytrade",
+                                      "changes": changes, "reason": reason})
+            notes.append(f"⚡ {reason}")
+            changed = True
+        new_bl = daytrade_blacklist_update(closed, today, params.get("blacklist", {}))
+        if new_bl != params.get("blacklist", {}):
+            added = sorted(set(new_bl) - set(params.get("blacklist", {})))
+            params["blacklist"] = new_bl
+            if added:
+                params["history"].append({"date": today, "strategy": "daytrade",
+                                          "changes": {"blacklist": added},
+                                          "reason": f"benched {', '.join(added)} for {BLACKLIST_DAYS} days "
+                                                    f"after repeated losses"})
+                notes.append(f"⚡ benched {', '.join(added)}")
+            changed = True
+
+    for key in ("aggressive", "growth"):
+        changes, reason = tune_daily_strategy(key, store, params)
+        print(f"{STRATEGY_META[key]['icon']} walk-forward: {reason}")
+        if changes:
+            params["overrides"].setdefault(key, {}).update(changes)
+            params["history"].append({"date": today, "strategy": key,
+                                      "changes": changes, "reason": reason})
+            notes.append(f"{STRATEGY_META[key]['icon']} {reason}")
+            changed = True
+
+    if changed:
+        save_json(PARAMS_PATH, params)
+        with open(COMMIT_MSG_PATH, "w", encoding="utf-8") as f:
+            f.write("📐 Sunday tuning: " + " · ".join(notes)[:400])
+        print("Tuning changes adopted and recorded.")
+    else:
+        print("Tuning pass complete — no changes earned adoption this week.")
+
+
 # ---------------------------------------------------------------- intraday mode
 
 
@@ -1621,10 +1876,13 @@ def run_intraday():
     held = {p["symbol"] for p in strat["positions"]}
     in_window = hm < meta["entry_cutoff"]
     if in_window and tape_ok and len(strat["positions"]) < meta["slots"] and strat["cash"] > 100:
+        blacklist = load_params().get("blacklist", {})
         candidates = []
         for sym in DAYTRADE_WATCHLIST:
             if sym in held or sym in traded_today:
                 continue
+            if blacklist.get(sym, "") >= today:
+                continue          # benched after repeated losses
             prev_close = prev_close_from_store(store, sym, today)
             if not prev_close:
                 continue
@@ -1706,11 +1964,17 @@ def run_intraday():
 
 
 def main():
+    if "--tune" in sys.argv:
+        print(f"=== Self-tuning pass {datetime.now(timezone.utc).isoformat()} ===")
+        run_tuning()
+        return
     if "--intraday" in sys.argv or os.environ.get("ADVISOR_INTRADAY") == "1":
         print(f"=== Day-trader intraday check {datetime.now(timezone.utc).isoformat()} ===")
+        apply_param_overrides(load_params())
         run_intraday()
         return
     print(f"=== Advisor run {datetime.now(timezone.utc).isoformat()} ===")
+    apply_param_overrides(load_params())
 
     state = load_state()
     held_syms = []
