@@ -361,12 +361,65 @@ def t17():
     assert strat["last_eval_date"] == DAYS[3]
 check("daytrade consolidation flattens leftovers, marks cash", t17)
 
-# ---------- test 18: daytrade entry signal thresholds ----------
+# ---------- test 18: daytrade entry — gap band + confirmation ----------
 def t18():
-    assert adv.daytrade_entry_signal(102.0, 100.0, 0.02) is True
-    assert adv.daytrade_entry_signal(101.9, 100.0, 0.02) is False
-    assert adv.daytrade_entry_signal(102.0, 0.0, 0.02) is False
-check("daytrade entry signal thresholds", t18)
+    m = adv.STRATEGY_META["daytrade"]
+    # in band + rising vs prior check → enter
+    assert adv.daytrade_should_enter(103.0, 100.0, 102.5, m) is True
+    # first sighting (no prior mark) → never enter
+    assert adv.daytrade_should_enter(103.0, 100.0, None, m) is False
+    # fading vs prior check → never enter, even in band
+    assert adv.daytrade_should_enter(103.0, 100.0, 103.5, m) is False
+    # gap too small → no
+    assert adv.daytrade_should_enter(101.5, 100.0, 101.0, m) is False
+    # monster gap (>8%) fades — skip
+    assert adv.daytrade_should_enter(109.0, 100.0, 108.0, m) is False
+    # bad prev close → no
+    assert adv.daytrade_should_enter(103.0, 0.0, 102.0, m) is False
+check("daytrade entry: gap band + still-climbing confirmation", t18)
+
+# ---------- test 18b: aggressive breakeven ratchet in replay ----------
+def t18b():
+    strat = {"cash": 0.0, "positions": [{
+        "symbol": "RATCH", "name": "RATCH", "shares": 10.0, "entry_price": 100.0,
+        "entry_date": DAYS[0], "target_price": 120.0, "stop_price": 92.0,
+        "thesis": "", "last_price": 100.0, "bars_held": 0,
+        "splits_applied": [], "divs_credited": [],
+    }], "closed": [], "cooldown": {}, "last_eval_date": DAYS[0], "activity": []}
+    # +11% on day 2 arms the ratchet; drop back to entry on day 4 exits at breakeven
+    bars = {"RATCH": mk_hist([100, 111, 108, 99, 98])}
+    adv.replay_strategy("aggressive", strat, bars, DAYS, DAYS[4])
+    assert len(strat["closed"]) == 1, strat["positions"]
+    t = strat["closed"][0]
+    assert t["reason"] == "breakeven stop", t["reason"]
+    approx(t["exit_price"], 99.0)          # out near entry, NOT at the old −8% stop
+    approx(t["pnl_pct"], -1.0)
+    assert any("breakeven" in a["text"] for a in strat["activity"])
+check("aggressive: winner ratchets stop to breakeven, never a full loss", t18b)
+
+# ---------- test 18c: quality-momentum ranking rejects spikes ----------
+def t18c():
+    import math as _m
+    def series(daily):
+        out = [100.0]
+        for i in range(250):
+            out.append(out[-1] * (1 + daily(i)))
+        return out
+    def hist_from(closes, sym):
+        n = len(closes)
+        dates = [f"2026-{(i//28)+1:02d}-{(i%28)+1:02d}" for i in range(n)]
+        return {"dates": dates, "close": {d: c for d, c in zip(dates, closes)},
+                "volume": {}, "name": sym, "divs": {}, "splits": {}}
+    # steady riser with normal wiggle (a monotone line would read RSI 100)
+    smooth = series(lambda i: 0.006 if i % 3 else -0.004)
+    spike  = series(lambda i: 0.09 if i > 246 else (0.002 if i % 3 else -0.002))  # flat, then vertical
+    bars = {"SMOOTH": hist_from(smooth, "SMOOTH"), "SPIKE": hist_from(spike, "SPIKE")}
+    as_of = bars["SMOOTH"]["dates"][-1]
+    ranked = adv.score_aggressive(bars, as_of)
+    syms = [r["symbol"] for r in ranked]
+    assert "SPIKE" not in syms, f"vertical spike should be filtered: {syms}"
+    assert "SMOOTH" in syms, f"steady riser should qualify: {syms}"
+check("quality momentum: steady riser in, vertical spike out", t18c)
 
 # ---------- test 19: ensure_strategies migrates old state ----------
 def t19():

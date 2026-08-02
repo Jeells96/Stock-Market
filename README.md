@@ -26,10 +26,10 @@ honest yardstick.
 
 | | Strategy | How it works | Risk |
 |---|---|---|---|
-| 🚀 | **Get Rich Quick** | Short-term momentum swings on high-beta names. Ranked by 1-week + 1-month momentum, RSI-capped. Target +20%, hard stop −8%, forced exit after 15 trading days. | Very high |
+| 🚀 | **Get Rich Quick** | Quality momentum on high-beta names: ranked by volatility-adjusted 3-month + 1-month climbs (1-week spikes filtered out, RSI 45–75 band), new entries only when SPY is above its 50-day trend. Target +20%, stop −8% ratcheting to breakeven at +10%, forced exit after 15 trading days. | Very high |
 | 📈 | **Dependable Growth** | Quality large caps in confirmed uptrends (price above rising 50- and 200-day averages, positive 6-month return, volatility-capped). Target +15%, stop −10%, exits on a 200-day trend break. | Moderate |
 | 🏛️ | **Long-Term Success** | Fixed diversified ETF allocation — 40% VOO, 20% QQQ, 20% SCHD, 10% VXUS, 10% BND — bought once and rebalanced automatically when weights drift. | Lower |
-| ⚡ | **Day Trader** | Intraday gap-momentum on a 45-name high-beta watchlist, checked ~every 20 minutes during market hours. +2% target, −1% stop, always flat by the close — never holds overnight. Fills book at the live quoted price of the check, timestamped by the commit. | Extreme |
+| ⚡ | **Day Trader** | Intraday gap-momentum on a 45-name watchlist: buys only 2–8% morning gaps still climbing 20 minutes after first sighting, only before 11:30am ET, and only when SPY isn't down 1%+. +3% target, −2% stop ratcheting to breakeven at +1.5%, always flat by the close. Fills book at the live quoted price of the check, timestamped by the commit. | Extreme |
 
 ## How it fires by itself
 

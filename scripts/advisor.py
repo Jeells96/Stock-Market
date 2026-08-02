@@ -136,11 +136,14 @@ STRATEGY_META = {
         "icon": "🚀",
         "tagline": "High-octane momentum swings. Big targets, hard stops, fast exits.",
         "horizon": "Days to weeks",
-        "risk_note": "Very high risk. Expect large swings and frequent losing trades — the bet is that winners outrun losers.",
+        "risk_note": "Very high risk. Buys quality momentum (3-month climbers, not 1-week spikes), only when the broad market is above its 50-day trend. Once a trade is up 10% its stop moves to breakeven, so a winner cannot become a loser.",
         "slots": 5,
         "target_pct": 0.20,
         "stop_pct": 0.08,
         "max_hold_bars": 15,
+        # once a position is up this much, the stop ratchets to the entry
+        # price — a winner is never allowed to become a loser
+        "be_trigger": 0.10,
     },
     "growth": {
         "label": "Dependable Growth",
@@ -167,18 +170,28 @@ STRATEGY_META = {
         "tagline": "Intraday momentum bursts. In and out the same day — always flat by the close.",
         "horizon": "Minutes to hours",
         "risk_note": (
-            "Extreme risk, smallest edges. Checks run about every 20 minutes during market hours; "
-            "fills book at the exact quoted price of the check, timestamped by the git commit. "
-            "Never holds overnight."
+            "Extreme risk, smallest edges. Buys only 2-8% morning gaps that are still climbing "
+            "20 minutes after first sighting, and only when the broad market is steady. Checks run "
+            "about every 20 minutes; fills book at the exact quoted price of the check, timestamped "
+            "by the git commit. Stop jumps to breakeven once up 1.5%. Never holds overnight."
         ),
         "slots": 3,
-        "target_pct": 0.02,
-        "stop_pct": 0.01,
-        # entry rule: up at least this much vs yesterday's close
+        # ±1%/2% sat inside normal 20-minute noise for these names — widened so
+        # a stop means a real reversal, not a wiggle
+        "target_pct": 0.03,
+        "stop_pct": 0.02,
+        # entry rule: up min_gap..max_gap vs yesterday's close. Monster gaps
+        # (>8%) statistically fade — they are skipped on purpose.
         "min_gap": 0.02,
-        # no NEW entries after this ET time; everything is flattened at eod_flat
-        "entry_cutoff": (15, 0),
+        "max_gap": 0.08,
+        # stop ratchets to entry once up this much — no round-trips to red
+        "be_trigger": 0.015,
+        # entries only in the morning momentum window; afternoon setups have
+        # less runway and worse odds. Everything flattens at eod_flat.
+        "entry_cutoff": (11, 30),
         "eod_flat": (15, 40),
+        # no new entries when SPY itself is down this much on the day
+        "tape_filter": -0.01,
     },
 }
 
@@ -599,8 +612,18 @@ def zscores(values):
 
 
 def score_aggressive(bars, as_of):
-    """Rank the momentum universe (close-based only — the curated universe is
-    already liquid, and the batched data source doesn't carry volume)."""
+    """Rank the momentum universe on QUALITY momentum, not raw spike size.
+
+    The evidence this leans on:
+      * 1-week winners tend to mean-revert; 1–6 month winners tend to persist.
+        So the ranking anchors on the 3-month move, confirms with 1-month, and
+        only uses the last week as a sanity band (not collapsing, not vertical).
+      * Volatility-adjusted momentum beats raw momentum — a smooth +30% is a
+        far better sign than a spiky +30%. Returns are divided by volatility
+        before ranking (a Sharpe-style score).
+      * RSI is used as a band, not a cap: 45–75 means genuine strength that
+        isn't yet euphoric. Chasing RSI>75 verticals is how momentum dies.
+    """
     rows = []
     for sym, h in bars.items():
         if not h["dates"] or h["dates"][-1] != as_of:
@@ -612,27 +635,32 @@ def score_aggressive(bars, as_of):
         if px < 2.0:
             continue
         r5, r20 = pct_return(closes, 5), pct_return(closes, 20)
-        if r5 is None or r20 is None or r20 <= 0 or r5 <= 0:
+        r63 = pct_return(closes, 63) if len(closes) >= 64 else r20
+        if r5 is None or r20 is None or r63 is None:
             continue
+        if r20 <= 0 or r63 <= 0:
+            continue                      # must be rising on both horizons
+        if r5 < -0.02 or r5 > 0.15:
+            continue                      # not collapsing, not a vertical spike
         rsi = rsi14(closes[-80:])
-        if rsi is not None and rsi >= 78:
-            continue
-        s20 = sma(closes, 20)
-        dist20 = (px / s20 - 1.0) if s20 else 0.0
+        if rsi is None or rsi < 45 or rsi > 75:
+            continue                      # strength without euphoria
         vol = annualized_vol(closes)
+        if not vol or vol <= 0:
+            continue
         rows.append({
             "symbol": sym, "name": h["name"], "price": px,
-            "r5": r5, "r20": r20, "dist20": dist20, "rsi": rsi, "vol": vol,
+            "r5": r5, "r20": r20, "r63": r63, "rsi": rsi, "vol": vol,
+            "q63": r63 / vol, "q20": r20 / vol,
         })
-    z5 = zscores([r["r5"] for r in rows])
-    z20 = zscores([r["r20"] for r in rows])
-    zd = zscores([r["dist20"] for r in rows])
+    z63 = zscores([r["q63"] for r in rows])
+    z20 = zscores([r["q20"] for r in rows])
     for i, r in enumerate(rows):
-        r["score"] = 0.50 * z5[i] + 0.35 * z20[i] + 0.15 * zd[i]
+        r["score"] = 0.55 * z63[i] + 0.45 * z20[i]
         r["thesis"] = (
-            f"Up {r['r5'] * 100:.1f}% this week and {r['r20'] * 100:.1f}% this month, "
-            f"still under RSI {r['rsi']:.0f}. Momentum play — target +20%, hard stop −8%, "
-            f"out after 15 trading days no matter what."
+            f"Up {r['r63'] * 100:.0f}% in three months and {r['r20'] * 100:.1f}% this month — "
+            f"a steady climb, not a one-week spike (RSI {r['rsi']:.0f}). Target +20%, stop −8%, "
+            f"stop jumps to breakeven once up 10%, out after 15 trading days no matter what."
         )
     rows.sort(key=lambda r: r["score"], reverse=True)
     return rows
@@ -914,10 +942,20 @@ def replay_strategy(key, strat, bars, calendar, as_of):
                 continue
             pos["last_price"] = px
             pos["bars_held"] = pos.get("bars_held", 0) + 1
+            # breakeven ratchet: once up be_trigger, the stop rises to the
+            # entry price — a winner is never allowed to become a loser
+            be = meta.get("be_trigger")
+            if (be and key == "aggressive" and not pos.get("be_locked")
+                    and pos.get("stop_price") and px >= pos["entry_price"] * (1 + be)):
+                pos["stop_price"] = max(pos["stop_price"], pos["entry_price"])
+                pos["be_locked"] = True
+                strat["activity"].append(
+                    {"date": d, "text": f"{pos['symbol']} up {be * 100:.0f}% — stop moved to breakeven"})
             exited = False
             if key in ("aggressive", "growth"):
                 if pos.get("stop_price") and px <= pos["stop_price"]:
-                    close_position(strat, pos, d, px, "stop loss")
+                    close_position(strat, pos, d, px,
+                                   "breakeven stop" if pos.get("be_locked") else "stop loss")
                     exited = True
                 elif pos.get("target_price") and px >= pos["target_price"]:
                     close_position(strat, pos, d, px, "target hit")
@@ -1348,9 +1386,32 @@ def build_commit_message(site, trades_today):
 # ---------------------------------------------------------------- intraday mode
 
 
-def daytrade_entry_signal(px, prev_close, min_gap):
-    """True when the live price is up at least min_gap vs yesterday's close."""
-    return prev_close > 0 and (px / prev_close - 1.0) >= min_gap
+def prev_close_from_store(store, sym, today):
+    """Most recent close strictly before `today` from the rolling price store."""
+    for d, c in reversed(store.get(sym) or []):
+        if d < today:
+            return c
+    return None
+
+
+def daytrade_should_enter(px, prev_close, prior_mark, meta):
+    """Entry test for one symbol at one intraday check.
+
+    Three conditions, all evidence-driven:
+      1. Gap band: up min_gap..max_gap vs yesterday's close. Small gaps are
+         noise; monster gaps (>max_gap) statistically fade after the open.
+      2. Confirmation: the price must be HIGHER than it was at the previous
+         ~20-minute check (prior_mark). A gapper that is already fading never
+         gets bought — this one check removes the worst gap-chase losers.
+      3. No prior mark → no entry. The first sighting only registers the
+         candidate; the machine needs to see momentum survive one interval.
+    """
+    if not prev_close or prev_close <= 0:
+        return False
+    gap = px / prev_close - 1.0
+    if gap < meta["min_gap"] or gap > meta["max_gap"]:
+        return False
+    return prior_mark is not None and px > prior_mark
 
 
 def run_intraday():
@@ -1383,6 +1444,12 @@ def run_intraday():
     events = []
     time_str = now.strftime("%H:%M")
 
+    # per-day confirmation memory: last check's price for each candidate
+    intraday = state.get("intraday") or {}
+    if intraday.get("date") != today:
+        intraday = {"date": today, "marks": {}}
+    marks = intraday["marks"]
+
     # -- exits first: stop / target / end-of-day flat, at live quoted prices
     eod = hm >= meta["eod_flat"]
     for pos in list(strat["positions"]):
@@ -1392,11 +1459,19 @@ def run_intraday():
             continue
         px = q["c"]
         pos["last_price"] = px
+        # breakeven ratchet: once up 1.5%, the stop moves to the entry price —
+        # a working trade is never allowed to turn into a loss
+        if not pos.get("be_locked") and px >= pos["entry_price"] * (1 + meta["be_trigger"]):
+            pos["stop_price"] = max(pos["stop_price"], pos["entry_price"])
+            pos["be_locked"] = True
+            events.append(f"{pos['symbol']} up {((px / pos['entry_price']) - 1) * 100:.1f}% — "
+                          f"stop moved to breakeven")
+            changed = True
         reason = None
         if px <= pos["stop_price"]:
-            reason = "stop −1%"
+            reason = "breakeven stop" if pos.get("be_locked") else "stop −2%"
         elif px >= pos["target_price"]:
-            reason = "target +2%"
+            reason = "target +3%"
         elif eod:
             reason = "end of day — flat by the close"
         if reason:
@@ -1408,29 +1483,36 @@ def run_intraday():
             events.append(f"sold {pos['symbol']} @ ${px:,.2f} ({t['pnl_pct']:+.2f}%, {reason})")
             changed = True
 
-    # -- entries: gap-momentum, before the cutoff, one shot per symbol per day
+    # -- entries: confirmed gap-momentum in the morning window only, and only
+    #    when the broad market itself isn't selling off
+    tape_ok = (spy["c"] / (prev_close_from_store(store, BENCHMARK_SYMBOL, today) or spy["c"]) - 1.0) \
+        >= meta["tape_filter"]
     traded_today = {t["symbol"] for t in strat["closed"] if t["exit_date"] == today}
     held = {p["symbol"] for p in strat["positions"]}
-    if hm < meta["entry_cutoff"] and len(strat["positions"]) < meta["slots"] and strat["cash"] > 100:
+    in_window = hm < meta["entry_cutoff"]
+    if in_window and tape_ok and len(strat["positions"]) < meta["slots"] and strat["cash"] > 100:
         candidates = []
         for sym in DAYTRADE_WATCHLIST:
             if sym in held or sym in traded_today:
                 continue
-            rows = store.get(sym) or []
-            prev_close = None
-            for d, c in reversed(rows):
-                if d < today:
-                    prev_close = c
-                    break
+            prev_close = prev_close_from_store(store, sym, today)
             if not prev_close:
                 continue
             q = finnhub_quote(sym)
             time.sleep(1.1)
             if not q or market_date(q["t"], "America/New_York") != today:
                 continue
-            if daytrade_entry_signal(q["c"], prev_close, meta["min_gap"]):
-                candidates.append({"symbol": sym, "px": q["c"],
-                                   "gap": q["c"] / prev_close - 1.0})
+            px = q["c"]
+            gap = px / prev_close - 1.0
+            if daytrade_should_enter(px, prev_close, marks.get(sym), meta):
+                candidates.append({"symbol": sym, "px": px, "gap": gap})
+            # remember this check's price — next run's confirmation baseline
+            if meta["min_gap"] <= gap <= meta["max_gap"]:
+                marks[sym] = px
+                changed = True
+            elif sym in marks:
+                del marks[sym]
+                changed = True
         candidates.sort(key=lambda c: c["gap"], reverse=True)
         empty = meta["slots"] - len(strat["positions"])
         for cand in candidates[:empty]:
@@ -1444,21 +1526,25 @@ def run_intraday():
                 "entry_time": time_str,
                 "target_price": px * (1 + meta["target_pct"]),
                 "stop_price": px * (1 - meta["stop_pct"]),
-                "thesis": (f"Up {cand['gap'] * 100:.1f}% on the day at {time_str} ET. "
-                           f"Intraday momentum — out at +2%, −1%, or the closing bell, "
-                           f"whichever comes first."),
-                "last_price": px, "bars_held": 0,
+                "thesis": (f"Up {cand['gap'] * 100:.1f}% on the day at {time_str} ET and still "
+                           f"climbing 20 minutes after first sighting. Out at +3%, −2%, or the "
+                           f"closing bell — and the stop moves to breakeven once up 1.5%."),
+                "last_price": px, "bars_held": 0, "be_locked": False,
                 "splits_applied": [], "divs_credited": [],
             }
             strat["cash"] -= budget
             strat["positions"].append(pos)
             strat["activity"].append(
                 {"date": today, "text": f"⚡ {time_str} ET BUY {cand['symbol']} @ ${px:,.2f} "
-                 f"(+{cand['gap'] * 100:.1f}% gap)"})
-            events.append(f"bought {cand['symbol']} @ ${px:,.2f} (+{cand['gap'] * 100:.1f}% gap)")
+                 f"(+{cand['gap'] * 100:.1f}% confirmed gap)"})
+            events.append(f"bought {cand['symbol']} @ ${px:,.2f} (+{cand['gap'] * 100:.1f}% confirmed gap)")
+            marks.pop(cand["symbol"], None)
             empty -= 1
             changed = True
+    elif in_window and not tape_ok:
+        print(f"  tape filter: SPY down more than {abs(meta['tape_filter']) * 100:.0f}% — no new entries.")
 
+    state["intraday"] = intraday
     open_mv = sum(p["shares"] * (p.get("last_price") or p["entry_price"]) for p in strat["positions"])
     equity = strat["cash"] + open_mv
     if not changed and not strat["positions"]:
@@ -1632,6 +1718,14 @@ def main():
         gro_universe = {s: h for s, h in bars.items() if s in set(SP_CORE)}
         ranked_agg = score_aggressive(agg_universe, as_of)
         ranked_gro = score_growth(gro_universe, as_of)
+        # regime filter: high-beta momentum bleeds when the broad market is
+        # below its own 50-day trend — the Fast Mover sits in cash then
+        spy_closes = [bars[BENCHMARK_SYMBOL]["close"][d] for d in bars[BENCHMARK_SYMBOL]["dates"]]
+        spy_s50 = sma(spy_closes, 50)
+        risk_on = spy_s50 is None or spy_closes[-1] > spy_s50
+        if not risk_on:
+            print("  regime filter: SPY below its 50-day average — Fast Mover takes no new positions.")
+            ranked_agg = []
         print(f"Ranked candidates: aggressive {len(ranked_agg)}, growth {len(ranked_gro)}")
         new_picks["aggressive"] = fill_slots(
             "aggressive", state["strategies"]["aggressive"], ranked_agg, as_of, can_trade)
