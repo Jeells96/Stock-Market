@@ -266,6 +266,34 @@
   .adv-pos-row.open .adv-pos-thesis{display:block}
   .adv-risk{font-size:10px;color:var(--gold-dim);line-height:1.5;border-top:1px dashed var(--border);padding-top:10px;margin-top:auto}
   .adv-disclaimer{margin-top:22px;padding:12px 16px;border:1px dashed var(--border);font-size:10px;color:var(--gold-dim);line-height:1.6;text-align:center;letter-spacing:.03em}
+  /* ===== Plain view (Advisor tab) — written for humans, set in a book face ===== */
+  .pv{max-width:820px;margin:0 auto;font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:1.75;color:var(--ivory)}
+  .pv p{margin:0 0 12px}
+  .pv b{color:#fff}
+  .pv .up{color:var(--green);font-weight:700}
+  .pv .down{color:var(--red);font-weight:700}
+  .pv-card{background:linear-gradient(180deg,rgba(22,43,82,0.75),rgba(15,31,61,0.75));border:1px solid var(--border);border-radius:4px;padding:26px 28px;margin-bottom:20px}
+  .pv-card h2{font-family:'Cormorant Garamond',serif;font-size:29px;font-weight:700;color:var(--gold-bright);margin:0 0 12px;line-height:1.2}
+  .pv-bignum{font-family:'Cormorant Garamond',serif;font-size:clamp(40px,8vw,54px);font-weight:700;color:#fff;line-height:1.1;margin:4px 0 10px}
+  .pv-bignum .chg{font-size:22px;font-family:Georgia,serif}
+  .pv-muted{font-size:15px;color:var(--cream);opacity:.85}
+  .pv-todo-item{padding:16px 18px;border-left:4px solid var(--gold);background:rgba(8,17,31,0.5);border-radius:3px;margin-bottom:12px}
+  .pv-todo-item.buy{border-left-color:var(--green)}
+  .pv-todo-item.sell{border-left-color:var(--red)}
+  .pv-todo-item p{margin:0}
+  .pv-strat{border-left:5px solid var(--accent,#c9a961)}
+  .pv-strat.day{--accent:#e879f9} .pv-strat.agg{--accent:#ff8c42} .pv-strat.gro{--accent:#4ade80} .pv-strat.lt{--accent:#7dd3fc}
+  .pv-risk{display:inline-block;font-size:14px;font-style:italic;color:var(--cream);opacity:.9;margin-left:8px}
+  .pv-hold{padding:12px 0;border-top:1px solid rgba(201,169,97,0.15)}
+  .pv-hold:first-of-type{border-top:none}
+  .pv-hold p{margin:0}
+  .pv-spark{width:100%;height:44px;display:block;margin-top:12px;opacity:.9}
+  .pv-alert{border:2px solid var(--red);background:rgba(220,38,38,0.12);animation:glowStop 2s ease-in-out infinite}
+  .pv-alert h2{color:var(--red)}
+  .pv-proof{font-size:15px;color:var(--cream);opacity:.9;text-align:center;padding:8px 20px;line-height:1.8}
+  .pv-proof a{color:var(--gold-bright)}
+  @media (max-width:640px){ .pv{font-size:17px} .pv-card{padding:20px 18px} }
+
   /* At-a-glance hero */
   .adv-hero{display:flex;align-items:center;gap:22px;flex-wrap:wrap;padding:18px 20px;margin-bottom:16px;background:linear-gradient(180deg,rgba(22,43,82,0.85),rgba(15,31,61,0.85));border:1px solid var(--border-strong);border-radius:2px}
   .adv-hero .big{font-family:'Cormorant Garamond',serif;font-size:clamp(34px,7vw,46px);font-weight:700;color:var(--ivory);line-height:1}
@@ -373,7 +401,7 @@
   </div>
   <h1>Jaren's Stock Market Tracker</h1>
   <div class="subtitle">Intelligence · Conviction · Capital</div>
-  <div class="est">Est. MMXXVI · Autonomous Engine + Live Scanner · <span id="verTag">v2.5</span></div>
+  <div class="est">Est. MMXXVI · Autonomous Engine + Live Scanner · <span id="verTag">v2.6</span></div>
 </header>
 
 <nav class="tabs">
@@ -388,8 +416,8 @@
   <section class="view active" id="view-advisor">
     <div class="scan-header">
       <div>
-        <div class="scan-title">Autonomous Advisor
-          <span class="sub">Four strategies · runs itself on a schedule · <span id="advAsOf">loading…</span></span>
+        <div class="scan-title">Your Automatic Adviser
+          <span class="sub">It buys and sells by itself — this page tells you what it did · <span id="advAsOf">loading…</span></span>
         </div>
       </div>
       <div class="scan-actions">
@@ -583,12 +611,12 @@
 <div class="toast-wrap" id="toastWrap"></div>
 
 <footer>
-  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v2.5</span><br>
+  Jaren's Stock Market Tracker <span class="ornament">✦</span> Built for Conviction <span class="ornament">✦</span> <span id="verTagFoot">v2.6</span><br>
   <span style="letter-spacing:.05em;text-transform:none">Paper-money model portfolios · not financial advice</span>
 </footer>
 
 <script>
-const APP_VERSION = "2.5";
+const APP_VERSION = "2.6";
 const UNIVERSES = {
   sp: ["AAPL","MSFT","GOOGL","GOOG","AMZN","NVDA","META","TSLA","BRK.B","JPM","V","UNH","XOM","JNJ","WMT","MA","PG","LLY","HD","CVX","ABBV","KO","PEP","MRK","AVGO","COST","BAC","ADBE","ACN","CRM","TMO","CSCO","NFLX","ABT","MCD","DHR","WFC","TXN","NEE","ORCL","DIS","AMD","PM","CMCSA","VZ","NKE","UPS","RTX","PFE","INTC","HON","INTU","AMGN","T","COP","UNP","LOW","SPGI","LIN","CAT","GS","MS","ISRG","BLK","NOW","BKNG","DE","AXP","SCHW","TJX","C","BMY","SYK","MMC","BA","ELV","GE","MDT","ADP","PLD","LMT","REGN","VRTX","GILD","BSX","TMUS","CI","CB","ZTS","SO","DUK","MO","PGR","MDLZ","SLB","ETN","ADI","FI","ICE","CME","SHW","KLAC","APD","NSC","HCA","FCX","WM","BDX","CL","EOG","FDX","ITW","CSX","EQIX","NOC","MMM","PNC","TGT","EMR","MPC","PSX","AON","ORLY","HUM","MCK","PSA","ROP","MSI","USB","CARR","COF","APH","AJG","TFC","GD","SRE","D","NXPI","AZO","KMB","MAR","AIG","WMB","TT","ECL","WELL","O","FIS","OKE","KMI","ROST","CCI","TRV","CHTR","GIS","ALL","HLT","STZ","ANET","FTNT","KHC","SYY","BIIB","DOW","KDP","LRCX","ABNB","CTAS","BK","AFL","NUE","IDXX","JCI","VLO","MET","OXY","PCAR","SPG","AMP","PAYX","EW","TEL","HSY","CMG","DXCM","CTSH","A","PRU","DLR","LEN","DHI","CNC","MNST","DD","CRWD","DG","KR","WBA","YUM","ADM","EXC","XEL","FAST","SBUX","WEC","ED","ROK","BKR","HAL","RSG","VRSK","TROW","CDNS","SNPS","WST","ANSS","CDW","WTW","GWW","ALGN","ZBH","TYL","KEYS","NDAQ","NTAP","STT","STE","RJF","PFG","PHM","HBAN","RF","CFG","TSCO","ULTA","DRI","HAS"],
   momentum: ["GME","AMC","BB","CLOV","SOFI","PLTR","HOOD","COIN","MSTR","MARA","RIOT","CLSK","WULF","HUT","BTBT","BITF","CIFR","HIVE","ARM","SMCI","AI","BBAI","SOUN","UPST","LCID","RIVN","FSR","NKLA","RIDE","QS","ENPH","SEDG","RUN","FSLR","SPWR","NOVA","ARRY","BE","PLUG","FCEL","BLDP","BEEM","SHLS","STEM","DQ","JKS","CSIQ","SOL","TSLA","NVDA","TSM","INTC","MU","ON","MCHP","SWKS","QRVO","LSCC","CRWD","ZS","NET","SNOW","DDOG","MDB","OKTA","DOCN","ESTC","FROG","CFLT","S","TENB","RPD","CYBR","VRNS","FTNT","PANW","CHKP","BSY","GTLB","NEWR","DT","PCTY","PAYC","WDAY","ZUO","BL","APPN","APPS","SE","GRAB","MELI","NU","STNE","PAGS","CART","RDDT","KSPI","HIMS","TLRY","CGC","ACB","CRON","SNDL","HEXO","OGI","VFF"],
@@ -1626,18 +1654,46 @@ function fmtDate(iso){
   return d.toLocaleDateString("en-US", {month:"short", day:"numeric"});
 }
 
+const PV_STRATS = {
+  daytrade:{cls:"day", name:"The Day Trader", risk:"the wildest one",
+    desc:"Buys and sells within a single day and never keeps anything overnight. It checks prices about every 20 minutes while the market is open."},
+  aggressive:{cls:"agg", name:"The Fast Mover", risk:"very risky",
+    desc:"Buys stocks that are rising quickly, hoping to sell them about 20% higher. If a stock falls 8%, it sells to protect your money, and it never keeps one longer than about three weeks."},
+  growth:{cls:"gro", name:"The Steady Climber", risk:"medium risk",
+    desc:"Buys large, healthy companies that have been rising steadily for months, and stays with them for as long as the rise continues."},
+  longterm:{cls:"lt", name:"The Nest Egg", risk:"the calm one",
+    desc:"Owns a little of everything — big companies, technology, dividend payers, foreign companies, and bonds — and simply sits patiently. This is how retirement money is usually invested."}
+};
+
+function moneyTxt(v){
+  if(v == null || isNaN(v)) return "—";
+  return "$" + Math.round(v).toLocaleString("en-US");
+}
+function gainSpan(nowV, startV){
+  const diff = nowV - startV;
+  const pct = startV ? (diff / startV) * 100 : 0;
+  if(Math.abs(diff) < 0.5) return '<span class="up">exactly even so far</span>';
+  const word = diff >= 0 ? "up" : "down";
+  return `<span class="${diff >= 0 ? "up" : "down"}">${word} ${moneyTxt(Math.abs(diff))} (${Math.abs(pct).toFixed(1)}%)</span>`;
+}
+function pctWord(p){
+  if(p == null || isNaN(p)) return "even";
+  if(Math.abs(p) < 0.005) return "unchanged";
+  return `<span class="${p >= 0 ? "up" : "down"}">${p >= 0 ? "up" : "down"} ${Math.abs(p).toFixed(1)}%</span>`;
+}
+
 // One plain sentence about what the machine is doing right now, in ET terms.
 function marketStatusText(){
   const now = new Date();
   const et = new Date(now.toLocaleString("en-US", {timeZone:"America/New_York"}));
   const day = et.getDay(), mins = et.getHours() * 60 + et.getMinutes();
   if(day === 0 || day === 6)
-    return "Market closed for the weekend. Next decisions: <b>Monday at the 4pm ET close</b>. Nothing needs your attention.";
+    return "The stock market is closed for the weekend. The system wakes up again on Monday and makes its next decisions when the market closes at 4 o'clock New York time. <b>Nothing needs your attention right now.</b>";
   if(mins < 9*60+30)
-    return "Pre-market. ⚡ Day Trader starts checking at the <b>9:30am ET open</b>; the other strategies decide at the <b>4pm close</b>.";
+    return "The market opens at 9:30 New York time. The Day Trader starts working then; the other helpers make their decisions when the market closes at 4 o'clock.";
   if(mins < 16*60)
-    return "<b>Market open.</b> ⚡ Day Trader is checking about every 20 minutes; the other strategies decide at the <b>4pm ET close</b>. Live prices below.";
-  return "Market closed. Today's decisions are locked in below. Next: ⚡ resumes at <b>tomorrow's open</b>, everything else at the <b>4pm close</b>.";
+    return "<b>The market is open right now.</b> The Day Trader is checking prices about every 20 minutes, and the prices on this page refresh every minute while you watch.";
+  return "The market has closed for the day. Today's decisions are shown below. Nothing more happens until tomorrow.";
 }
 
 function advFreshness(asOf){
@@ -1652,7 +1708,8 @@ function renderAdvisor(){
   if(!body) return;
   const d = advisorData;
   if(!d){ loadAdvisorData().then(() => { if(advisorData) renderAdvisor(); }); return; }
-  $("advAsOf").textContent = "as of " + d.as_of_date;
+  body.classList.add("pv");
+  $("advAsOf").textContent = "as of " + fmtDate(d.as_of_date);
   const fresh = advFreshness(d.as_of_date);
   const fb = $("advFresh");
   fb.style.display = "inline-flex";
@@ -1660,132 +1717,82 @@ function renderAdvisor(){
   fb.textContent = fresh.txt;
 
   const bench = d.benchmark || {};
-  // ---- at-a-glance hero: all strategies combined + a one-line status ----
-  const stratKeys = ["daytrade","aggressive","growth","longterm"].filter(k => d.strategies[k]);
-  const combined = stratKeys.reduce((sum,k) => sum + (d.strategies[k].equity || 0), 0);
-  const combinedStart = stratKeys.length * (d.starting_capital || 10000);
-  const combinedPct = combinedStart ? (combined / combinedStart - 1) * 100 : 0;
-  const hero = `<div class="adv-hero">
-    <div>
-      <span class="lbl">All strategies combined</span>
-      <span class="big">${fmt$(combined)}</span>
-      <span class="delta ${pctCls(combinedPct)}"> ${pctTxt(combinedPct)}</span>
-    </div>
-    <div class="status">${marketStatusText()}<br>
-      <span style="font-size:11px;color:var(--gold-dim)">Started ${fmtDate(d.inception_date)} with
-      $${combinedStart.toLocaleString()} paper money across ${stratKeys.length} strategies ·
-      the market (S&P 500) is ${pctTxt(bench.total_return_pct)} over the same period · run #${d.runs}</span>
-    </div>
-  </div>`;
-  const howto = `<details class="howto">
-    <summary>👋 New here? How to use this page</summary>
-    <div class="inner">
-      <b>1.</b> Pick the card below that matches your appetite — ⚡ wildest, 🚀 aggressive, 📈 steady, 🏛️ safest.<br>
-      <b>2.</b> Do what <b>📣 Today's Calls</b> says. Buys and sells appear there the moment the machine makes them, with exact prices.<br>
-      <b>3.</b> Each card's highlighted sentence answers "what if I'd copied it?" — that's your profit if you'd followed every call.<br>
-      <b>4.</b> Don't trust it — <b>verify it</b>: the Track Record tab links every number to public git history that can't be rewritten.
-    </div>
-  </details>`;
-  const meta = hero + howto;
+  const keys = ["daytrade","aggressive","growth","longterm"].filter(k => d.strategies[k]);
+  const startCap = d.starting_capital || 10000;
+  const combined = keys.reduce((s,k) => s + (d.strategies[k].equity || 0), 0);
+  const combinedStart = keys.length * startCap;
 
-  // ---- Today's Calls: plain buy/sell instructions across all strategies ----
-  const calls = [];
-  ["daytrade","aggressive","growth","longterm"].forEach(key => {
+  const glance = `<div class="pv-card">
+    <h2>Your money at a glance</h2>
+    <div class="pv-bignum" id="pvCombined">${moneyTxt(combined)} <span class="chg">${gainSpan(combined, combinedStart)}</span></div>
+    <p>Four automatic helpers are each investing <b>${moneyTxt(startCap)}</b> of pretend money.
+    They started on <b>${fmtDate(d.inception_date)}</b>. For comparison, the same money left in the
+    overall stock market would be ${pctWord(bench.total_return_pct)} — that is the number to beat.</p>
+    <p>${marketStatusText()}</p>
+  </div>`;
+
+  const todos = [];
+  keys.forEach(key => {
     const s = d.strategies[key];
-    if(!s) return;
+    const pv = PV_STRATS[key];
     (s.positions||[]).forEach(p => {
-      if(p.is_new) calls.push({verb:"buy", sym:p.symbol, strat:`${s.icon} ${s.label}`,
-        why: key === "daytrade"
-          ? `Bought live at <b>${esc(p.entry_time || "")} ET</b> for <b>${fmt$(p.entry_price)}</b>. Day trade — sells at <b>${fmt$(p.target_price)}</b> (+2%), <b>${fmt$(p.stop_price)}</b> (−1%), or the closing bell, whichever comes first. Checked every ~20 minutes.`
-          : `Bought at <b>${fmt$(p.entry_price)}</b> (the ${fmtDate(p.entry_date)} close). To copy it, buy near that price. `
-           + (p.target_price ? `Watched at every close — you'll get an explicit SELL call the day it closes above <b>${fmt$(p.target_price)}</b> or below <b>${fmt$(p.stop_price)}</b>, booked at that day's real closing price.` : `Long-term hold.`)});
+      if(p.is_new) todos.push({kind:"buy", html:
+        `<b>Buy ${esc(p.name && p.name !== p.symbol ? p.name : p.symbol)} (${esc(p.symbol)}).</b>
+         ${pv.name} bought it ${key === "daytrade" && p.entry_time ? "at " + esc(p.entry_time) + " New York time today" : "on " + fmtDate(p.entry_date)}
+         for <b>${fmt$(p.entry_price)}</b> a share. To copy it, buy near that price —
+         this page will tell you plainly when it is time to sell.`});
     });
     (s.recent_trades||[]).forEach(t => {
-      if(t.exit_date === d.as_of_date || (d.intraday_date && t.exit_date === d.intraday_date)) calls.push({verb:"sell", sym:t.symbol, strat:`${s.icon} ${s.label}`,
-        why:`Sold${t.exit_time ? " at " + esc(t.exit_time) + " ET" : ""} at <b>${fmt$(t.exit_price)}</b> — ${esc(t.reason)}. Result: <b class="${pctCls(t.pnl_pct)}">${pctTxt(t.pnl_pct)}</b> since ${esc(t.entry_date)}${t.entry_time ? " " + esc(t.entry_time) + " ET" : ""}.`});
+      if(t.exit_date === d.as_of_date || (d.intraday_date && t.exit_date === d.intraday_date))
+        todos.push({kind:"sell", html:
+          `<b>Sell ${esc(t.symbol)}.</b> ${pv.name} sold it for <b>${fmt$(t.exit_price)}</b> a share
+           (${esc(t.reason)}). The result: ${pctWord(t.pnl_pct)} on that stock.`});
     });
   });
-  const callRows = calls.length ? calls.map(c => `<div class="call-row">
-      <span class="call-verb ${c.verb}">${c.verb}</span>
-      <span class="sym">${esc(c.sym)}<span class="strat-tag">${c.strat}</span></span>
-      <span class="why">${c.why}</span>
-    </div>`).join("")
-    : `<div class="call-row">
-        <span class="call-verb hold">Hold</span>
-        <span class="sym">—</span>
-        <span class="why">No new action right now. Keep the positions below — each one lists exactly when to sell it. New decisions are made automatically at every market close.</span>
-      </div>`;
-  const callsPanel = `<div class="calls-panel">
-    <div class="calls-head"><span>📣</span><span class="t">Today's Calls</span><span class="d">decisions from the ${fmtDate(d.as_of_date)} close</span></div>
-    ${callRows}
-  </div>`;
+  const todoHtml = todos.length
+    ? todos.map(t => `<div class="pv-todo-item ${t.kind}"><p>${t.html}</p></div>`).join("")
+    : `<div class="pv-todo-item"><p><b>Nothing today.</b> The system looked at the market and decided
+       to keep everything just as it is. When it wants you to buy or sell, a simple instruction
+       will appear right here — for example: <i>&ldquo;Buy Apple at about $210.&rdquo;</i></p></div>`;
+  const todo = `<div class="pv-card"><h2>What to do today</h2>${todoHtml}</div>`;
 
-  const cards = ["daytrade","aggressive","growth","longterm"].map(key => {
+  const sections = keys.map(key => {
     const s = d.strategies[key];
-    if(!s) return "";
-    const vsCls = pctCls(s.vs_spy_pct);
-    const startCap = d.starting_capital || 10000;
-    const spyTxt = `<span class="${pctCls(bench.total_return_pct)}">${pctTxt(bench.total_return_pct)}</span>`;
-    const ifYou = `<div class="adv-ifyou">If you had copied every call since <b>${fmtDate(d.inception_date)}</b> with
-      $${startCap.toLocaleString()}, you'd have <b>${fmt$(s.equity)}</b> today —
-      <span class="${pctCls(s.total_return_pct)}">${pctTxt(s.total_return_pct)}</span> profit.
-      The same money in the S&P 500: ${spyTxt}.</div>`;
-    const posRows = (s.positions||[]).map((p,i) => {
-      const held = p.name && p.name !== p.symbol ? esc(p.name) : `bought ${fmtDate(p.entry_date)}`;
-      let rule;
-      if(key === "daytrade"){
-        rule = `<b>Day trade${p.entry_time ? ` — opened ${esc(p.entry_time)} ET` : ""}.</b> Sells live at <b>${fmt$(p.target_price)}</b> (+2%), <b>${fmt$(p.stop_price)}</b> (−1%), or the closing bell — never held overnight. Checked every ~20 minutes.`;
-      } else if(p.target_price){
-        const daysLeft = (s.max_hold_bars && p.bars_held != null) ? s.max_hold_bars - p.bars_held : null;
-        rule = `Becomes a <b>SELL call</b> the day it closes above <b>${fmt$(p.target_price)}</b> (take profit) or below <b>${fmt$(p.stop_price)}</b> (cut loss)`
-             + (daysLeft != null ? ` — or automatically in <b>${Math.max(daysLeft,0)} trading day${daysLeft===1?"":"s"}</b>.` : `.`)
-             + ` The record books the real closing price that fires the signal — never the planned number.`;
-      } else {
-        rule = `<b>Hold.</b> Sells only to rebalance — this is the compounding sleeve.`;
-      }
-      const act = p.is_new ? '<span class="pos-act buy">Buy</span>' : '<span class="pos-act hold">Hold</span>';
-      return `<div class="adv-pos-row expand" data-k="${key}" data-i="${i}">
-        <span class="sym">${esc(p.symbol)}${act}</span>
-        <span class="detail">${held} @ ${fmt$(p.entry_price)}</span>
-        <span class="px">${fmt$(p.current_price)}</span>
-        <span class="pnl ${pctCls(p.pnl_pct)}">${pctTxt(p.pnl_pct)}</span>
-        <span class="adv-pos-rule">${rule}</span>
-        <span class="adv-pos-thesis">${esc(p.thesis || "—")}</span>
-      </div>`;
-    }).join("") || `<div class="adv-pos-row"><span class="detail">All cash — the model found no qualified setups yet. It re-decides at every market close and new buys appear in Today's Calls.</span></div>`;
-    const wr = s.win_rate_pct != null ? s.win_rate_pct.toFixed(0) + "%" : "—";
-    return `<div class="adv-card ${ADV_CARD_CLASS[key]}">
-      <div class="adv-head">
-        <div class="adv-title"><span class="icon">${s.icon}</span>${s.label}</div>
-        <span class="adv-horizon">${s.horizon}</span>
-      </div>
-      <div class="adv-tagline">${esc(s.tagline)}</div>
-      <div class="adv-equity-row">
-        <span class="adv-equity">${fmt$(s.equity)}</span>
-        <span class="adv-ret ${pctCls(s.total_return_pct)}">${pctTxt(s.total_return_pct)}</span>
-        <span class="adv-vs">vs S&P <b class="${vsCls}">${pctTxt(s.vs_spy_pct)}</b></span>
-      </div>
-      ${ifYou}
-      <canvas class="adv-spark" id="spark-${key}"></canvas>
-      <div class="adv-stats">
-        <div class="adv-stat" title="Of all finished trades, how many made money"><span class="lbl">Wins</span><span class="val">${wr}</span></div>
-        <div class="adv-stat" title="Finished trades so far"><span class="lbl">Trades</span><span class="val">${s.closed_trades}</span></div>
-        <div class="adv-stat" title="Biggest peak-to-bottom dip so far — how bad it got before recovering"><span class="lbl">Worst dip</span><span class="val">${s.max_drawdown_pct.toFixed(1)}%</span></div>
-        <div class="adv-stat" title="Money not currently invested"><span class="lbl">Cash</span><span class="val">${fmt$(s.cash)}</span></div>
-      </div>
-      <div class="adv-sec-lbl">Positions</div>
-      <div class="adv-pos">${posRows}</div>
-      <div class="adv-risk">⚠ ${esc(s.risk_note)}</div>
+    const pv = PV_STRATS[key];
+    const holds = (s.positions||[]).map((p,i) => {
+      const nm = p.name && p.name !== p.symbol ? `${esc(p.name)} (${esc(p.symbol)})` : esc(p.symbol);
+      let sellRule;
+      if(key === "daytrade")
+        sellRule = `It sells by itself at ${fmt$(p.target_price)} (taking the profit), at ${fmt$(p.stop_price)} (protecting the money), or when the market closes today — whichever comes first.`;
+      else if(p.target_price)
+        sellRule = `It will say <b>sell</b> when the price finishes a day above ${fmt$(p.target_price)} (taking the profit) or below ${fmt$(p.stop_price)} (protecting the money).`;
+      else
+        sellRule = `This one is simply kept and looks after itself.`;
+      return `<div class="pv-hold"><p>Holds <b>${nm}</b>, bought ${key === "daytrade" && p.entry_time ? "today at " + esc(p.entry_time) : "on " + fmtDate(p.entry_date)}
+        at ${fmt$(p.entry_price)} — <span class="pv-now" data-k="${key}" data-i="${i}">now ${fmt$(p.current_price)}, ${pctWord(p.pnl_pct)}</span>. ${sellRule}</p></div>`;
+    }).join("") || `<div class="pv-hold"><p>Right now it is holding all of its money in cash, waiting
+      for the right moment. When it buys something, the instruction will appear under
+      <b>&ldquo;What to do today.&rdquo;</b></p></div>`;
+    const trades = s.closed_trades
+      ? ` So far it has finished ${s.closed_trades} trade${s.closed_trades === 1 ? "" : "s"}${s.win_rate_pct != null ? `, and ${s.win_rate_pct.toFixed(0)}% of them made money` : ""}.`
+      : "";
+    return `<div class="pv-card pv-strat ${pv.cls}">
+      <h2>${s.icon} ${pv.name}<span class="pv-risk">— ${pv.risk}</span></h2>
+      <p>${pv.desc}</p>
+      <p>It now looks after <b id="pv-worth-${key}">${moneyTxt(s.equity)}</b> — <span id="pv-gain-${key}">${gainSpan(s.equity, startCap)}</span> since the start.${trades}</p>
+      ${holds}
+      <canvas class="pv-spark" id="spark-${key}"></canvas>
     </div>`;
   }).join("");
 
-  body.innerHTML = meta + callsPanel + `<div class="adv-grid">${cards}</div>`;
-  body.querySelectorAll(".adv-pos-row.expand").forEach(row => {
-    row.addEventListener("click", () => row.classList.toggle("open"));
-  });
-  ["daytrade","aggressive","growth","longterm"].forEach(key => {
+  const proof = `<p class="pv-proof">🛡️ Every decision is written into a public record the moment it
+    happens and can never be quietly changed afterward. The <b>Track Record</b> page shows the whole
+    history and how to check it yourself.</p>`;
+
+  body.innerHTML = glance + todo + sections + proof;
+  keys.forEach(key => {
     const cv = $("spark-" + key);
-    if(cv) drawSpark(cv, d.equity_curves, key);
+    if(cv) drawSpark(cv, d.equity_curves || {}, key);
   });
 }
 
@@ -1979,80 +1986,53 @@ function renderTrackMain(){
 let liveTimer = null;
 async function applyLiveOverlay(){
   if(!advisorData || !apiKey) return;
-  const strategies = ["daytrade","aggressive","growth","longterm"];
-  const syms = [...new Set(strategies.flatMap(k => (advisorData.strategies[k]?.positions||[]).map(p => p.symbol)))];
+  const keys = ["daytrade","aggressive","growth","longterm"].filter(k => advisorData.strategies[k]);
+  const syms = [...new Set(keys.flatMap(k => (advisorData.strategies[k].positions||[]).map(p => p.symbol)))];
   if(!syms.length) return;
   const quotes = {};
   for(const sym of syms){
     try { const q = await finn("/quote", {symbol: sym}, 55*1000); if(q && q.c) quotes[sym] = q; }
-    catch(e){ /* keep official close for this one */ }
+    catch(e){ /* keep the recorded price for this one */ }
   }
   if(!Object.keys(quotes).length) return;
+  const startCap = advisorData.starting_capital || 10000;
+  let combined = 0;
   const breaches = [];
-  strategies.forEach(key => {
+  keys.forEach(key => {
     const s = advisorData.strategies[key];
-    if(!s) return;
     let equity = s.cash ?? 0;
     (s.positions||[]).forEach((p,i) => {
       const q = quotes[p.symbol];
       const px = q ? q.c : p.current_price;
       equity += (p.shares || 0) * px;
-      const row = document.querySelector(`.adv-pos-row[data-k="${key}"][data-i="${i}"]`);
-      if(row && q && p.entry_price){
-        const pnl = (q.c / p.entry_price - 1) * 100;
-        row.querySelector(".px").textContent = fmt$(q.c);
-        const el = row.querySelector(".pnl");
-        el.textContent = pctTxt(pnl);
-        el.className = "pnl " + pctCls(pnl);
-        // real-time breach watch: raise the alarm the moment the live price
-        // crosses a stop or target — don't wait for the closing bell
-        row.classList.remove("breach-stop", "breach-target");
-        row.querySelector(".sellnow")?.remove();
-        let breach = null;
-        if(p.stop_price && q.c <= p.stop_price) breach = "stop";
-        else if(p.target_price && q.c >= p.target_price) breach = "target";
-        if(breach){
-          row.classList.add("breach-" + breach);
-          const chip = document.createElement("span");
-          chip.className = "sellnow " + breach;
-          chip.textContent = "SELL NOW";
-          row.querySelector(".sym").appendChild(chip);
-          breaches.push({key, s, p, q, breach});
-        }
+      const el = document.querySelector(`.pv-now[data-k="${key}"][data-i="${i}"]`);
+      if(el && q && p.entry_price){
+        el.innerHTML = `now ${fmt$(q.c)}, ${pctWord((q.c / p.entry_price - 1) * 100)}`;
+      }
+      if(q){
+        if(p.stop_price && q.c <= p.stop_price) breaches.push({p, q, s, kind:"protection", line:p.stop_price});
+        else if(p.target_price && q.c >= p.target_price) breaches.push({p, q, s, kind:"profit", line:p.target_price});
       }
     });
-    const card = document.querySelector(`.adv-card.${ADV_CARD_CLASS[key]}`);
-    if(card && (s.positions||[]).length){
-      const ret = (equity / (advisorData.starting_capital || 10000) - 1) * 100;
-      card.querySelector(".adv-equity").textContent = fmt$(equity);
-      const retEl = card.querySelector(".adv-ret");
-      retEl.textContent = pctTxt(ret);
-      retEl.className = "adv-ret " + pctCls(ret);
-      if(!card.querySelector(".live-chip")){
-        const chip = document.createElement("span");
-        chip.className = "live-chip";
-        chip.innerHTML = '<span class="dot"></span>Live';
-        chip.title = "Live Finnhub prices, refreshed every minute while this tab is open. The committed track record still uses official daily closes.";
-        card.querySelector(".adv-equity-row").appendChild(chip);
-      }
-    }
+    const worth = $("pv-worth-" + key);
+    if(worth) worth.textContent = moneyTxt(equity);
+    const gain = $("pv-gain-" + key);
+    if(gain) gain.innerHTML = gainSpan(equity, startCap);
+    combined += equity;
   });
-  // live SELL NOW strip — surfaced above everything the moment a breach exists
-  document.getElementById("liveAlerts")?.remove();
-  const wrap = $("advisorBody");
-  if(breaches.length && wrap){
+  const comb = $("pvCombined");
+  if(comb) comb.innerHTML = `${moneyTxt(combined)} <span class="chg">${gainSpan(combined, keys.length * startCap)}</span>`;
+  document.getElementById("pvAlert")?.remove();
+  if(breaches.length){
     const div = document.createElement("div");
-    div.id = "liveAlerts";
-    div.className = "live-alerts";
-    div.innerHTML = breaches.map(b => `<div class="call-row">
-      <span class="call-verb sell">Sell now</span>
-      <span class="sym">${esc(b.p.symbol)}<span class="strat-tag">${b.s.icon} ${esc(b.s.label)}</span></span>
-      <span class="why">Live at <b>${fmt$(b.q.c)}</b> — ${b.breach === "stop"
-        ? `below the <b>${fmt$(b.p.stop_price)}</b> stop. If you're copying this strategy, sell now to cut the loss;`
-        : `above the <b>${fmt$(b.p.target_price)}</b> target. If you're copying this strategy, sell now to lock the profit;`}
-      the official record books it at today's actual closing price.</span>
-    </div>`).join("");
-    wrap.prepend(div);
+    div.id = "pvAlert";
+    div.className = "pv-card pv-alert";
+    div.innerHTML = `<h2>⚠ Time to sell — right now</h2>` + breaches.map(b =>
+      `<p><b>Sell ${esc(b.p.symbol)}.</b> The price is ${fmt$(b.q.c)} — it has
+       ${b.kind === "profit" ? "reached the profit point" : "fallen to the protection point"}
+       (${fmt$(b.line)}). If you own it, sell it now. The official record will note the sale
+       at today's closing price.</p>`).join("");
+    $("advisorBody").prepend(div);
   }
 }
 function startLiveOverlay(){
