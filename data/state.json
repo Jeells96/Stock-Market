@@ -7,7 +7,7 @@
   "shares": 13.386343252613685,
   "cash": 0.0,
   "entry_date": "2026-07-31",
-  "last_eval_date": "2026-07-31",
+  "last_eval_date": "2026-08-03",
   "entry_price": 747.03,
   "splits_applied": [],
   "divs_credited": []
@@ -18,7 +18,7 @@
    "positions": [],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-07-31",
+   "last_eval_date": "2026-08-03",
    "activity": []
   },
   "growth": {
@@ -26,7 +26,7 @@
    "positions": [],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-07-31",
+   "last_eval_date": "2026-08-03",
    "activity": []
   },
   "longterm": {
@@ -41,8 +41,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "S&P 500 core \u2014 owns the 500 biggest US companies",
-     "last_price": 686.65,
-     "bars_held": 0,
+     "last_price": 696.4,
+     "bars_held": 1,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -56,8 +56,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Nasdaq-100 \u2014 concentrated big-tech growth",
-     "last_price": 687.99,
-     "bars_held": 0,
+     "last_price": 700.07,
+     "bars_held": 1,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -71,8 +71,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Dividend quality \u2014 cash-generating value companies",
-     "last_price": 33.47,
-     "bars_held": 0,
+     "last_price": 33.56,
+     "bars_held": 1,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -86,8 +86,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "International \u2014 diversification outside the US",
-     "last_price": 84.59,
-     "bars_held": 0,
+     "last_price": 85.02,
+     "bars_held": 1,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -101,8 +101,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Bonds \u2014 ballast that cushions stock drawdowns",
-     "last_price": 72.23,
-     "bars_held": 0,
+     "last_price": 72.15,
+     "bars_held": 1,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -110,7 +110,7 @@
    ],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-07-31",
+   "last_eval_date": "2026-08-03",
    "activity": [
     {
      "date": "2026-07-31",
@@ -123,7 +123,7 @@
    "positions": [],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-07-31",
+   "last_eval_date": "2026-08-03",
    "activity": [
     {
      "date": "2026-07-31",
@@ -139,8 +139,15 @@
    "longterm": 10000.0,
    "benchmark": 10000.0,
    "daytrade": 10000.0
+  },
+  "2026-08-03": {
+   "daytrade": 10000.0,
+   "aggressive": 10000.0,
+   "growth": 10000.0,
+   "longterm": 10101.27,
+   "benchmark": 10142.43
   }
  },
- "runs": 4,
- "last_run_utc": "2026-08-02T05:29:21Z"
+ "runs": 5,
+ "last_run_utc": "2026-08-03T22:54:21Z"
 }
