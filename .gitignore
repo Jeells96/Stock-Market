@@ -2,3 +2,6 @@
 data/commit_msg.txt
 __pycache__/
 *.pyc
+
+# daily derived cache — regenerated each run; each pick embeds its driving numbers in its thesis
+data/metrics.json
