@@ -7,27 +7,221 @@
   "shares": 13.386343252613685,
   "cash": 0.0,
   "entry_date": "2026-07-31",
-  "last_eval_date": "2026-08-03",
+  "last_eval_date": "2026-08-04",
   "entry_price": 747.03,
   "splits_applied": [],
   "divs_credited": []
  },
  "strategies": {
   "aggressive": {
-   "cash": 10000.0,
-   "positions": [],
+   "cash": 0.0,
+   "positions": [
+    {
+     "symbol": "FTNT",
+     "name": "FTNT",
+     "shares": 11.878308275893549,
+     "entry_price": 168.37414499999997,
+     "entry_date": "2026-08-04",
+     "raw_entry_price": 168.29,
+     "target_price": 201.94799999999998,
+     "stop_price": 154.8268,
+     "thesis": "Up 94% over three months and 100% over six, sitting 98% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+8.8% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
+     "last_price": 168.29,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "PANW",
+     "name": "PANW",
+     "shares": 5.456680951438896,
+     "entry_price": 366.52316999999994,
+     "entry_date": "2026-08-04",
+     "raw_entry_price": 366.34,
+     "target_price": 439.60799999999995,
+     "stop_price": 337.0328,
+     "thesis": "Up 94% over three months and 89% over six, sitting 99% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+8.8% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
+     "last_price": 366.34,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "CRWD",
+     "name": "CRWD",
+     "shares": 9.464068268867177,
+     "entry_price": 211.32560999999998,
+     "entry_date": "2026-08-04",
+     "raw_entry_price": 211.22,
+     "target_price": 253.464,
+     "stop_price": 194.32240000000002,
+     "thesis": "Up 82% over three months and 70% over six, sitting 95% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+11.4% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
+     "last_price": 211.22,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "OKTA",
+     "name": "OKTA",
+     "shares": 13.52320727743286,
+     "entry_price": 147.89390999999998,
+     "entry_date": "2026-08-04",
+     "raw_entry_price": 147.82,
+     "target_price": 177.384,
+     "stop_price": 135.9944,
+     "thesis": "Up 92% over three months and 55% over six, sitting 90% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+3.9% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
+     "last_price": 147.82,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "TENB",
+     "name": "TENB",
+     "shares": 55.62049248052658,
+     "entry_price": 35.957969999999996,
+     "entry_date": "2026-08-04",
+     "raw_entry_price": 35.94,
+     "target_price": 43.12799999999999,
+     "stop_price": 33.0648,
+     "thesis": "Up 67% over three months and 54% over six, sitting 72% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+11.5% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
+     "last_price": 35.94,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    }
+   ],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-08-03",
-   "activity": []
+   "last_eval_date": "2026-08-04",
+   "activity": [
+    {
+     "date": "2026-08-04",
+     "text": "BUY FTNT @ $168.29 \u2014 Up 94% over three months and 100% over six, sitting 98% of the way up its 52-wee"
+    },
+    {
+     "date": "2026-08-04",
+     "text": "BUY PANW @ $366.34 \u2014 Up 94% over three months and 89% over six, sitting 99% of the way up its 52-week"
+    },
+    {
+     "date": "2026-08-04",
+     "text": "BUY CRWD @ $211.22 \u2014 Up 82% over three months and 70% over six, sitting 95% of the way up its 52-week"
+    },
+    {
+     "date": "2026-08-04",
+     "text": "BUY OKTA @ $147.82 \u2014 Up 92% over three months and 55% over six, sitting 90% of the way up its 52-week"
+    },
+    {
+     "date": "2026-08-04",
+     "text": "BUY TENB @ $35.94 \u2014 Up 67% over three months and 54% over six, sitting 72% of the way up its 52-week"
+    }
+   ]
   },
   "growth": {
-   "cash": 10000.0,
-   "positions": [],
+   "cash": 0.0,
+   "positions": [
+    {
+     "symbol": "MPC",
+     "name": "MPC",
+     "shares": 6.394550717347894,
+     "entry_price": 312.766305,
+     "entry_date": "2026-08-04",
+     "raw_entry_price": 312.61,
+     "target_price": 359.50149999999996,
+     "stop_price": 281.34900000000005,
+     "thesis": "A confirmed climb: up 79% over six months and 85% over the year, trading 92% of the way up its 52-week range with moderate (35%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 312.61,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "STT",
+     "name": "STT",
+     "shares": 10.791991036819764,
+     "entry_price": 185.32261499999998,
+     "entry_date": "2026-08-04",
+     "raw_entry_price": 185.23,
+     "target_price": 213.01449999999997,
+     "stop_price": 166.707,
+     "thesis": "A confirmed climb: up 44% over six months and 69% over the year, trading 92% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 185.23,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "VLO",
+     "name": "VLO",
+     "shares": 6.474914973439979,
+     "entry_price": 308.884365,
+     "entry_date": "2026-08-04",
+     "raw_entry_price": 308.73,
+     "target_price": 355.0395,
+     "stop_price": 277.857,
+     "thesis": "A confirmed climb: up 68% over six months and 131% over the year, trading 94% of the way up its 52-week range with moderate (39%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 308.73,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "UNH",
+     "name": "UNH",
+     "shares": 4.904920867991964,
+     "entry_price": 407.75377499999996,
+     "entry_date": "2026-08-04",
+     "raw_entry_price": 407.55,
+     "target_price": 468.6825,
+     "stop_price": 366.795,
+     "thesis": "A confirmed climb: up 47% over six months and 75% over the year, trading 76% of the way up its 52-week range with moderate (26%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 407.55,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "BK",
+     "name": "BK",
+     "shares": 12.797698461908613,
+     "entry_price": 156.27809999999997,
+     "entry_date": "2026-08-04",
+     "raw_entry_price": 156.2,
+     "target_price": 179.62999999999997,
+     "stop_price": 140.57999999999998,
+     "thesis": "A confirmed climb: up 31% over six months and 54% over the year, trading 88% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 156.2,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    }
+   ],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-08-03",
-   "activity": []
+   "last_eval_date": "2026-08-04",
+   "activity": [
+    {
+     "date": "2026-08-04",
+     "text": "BUY MPC @ $312.61 \u2014 A confirmed climb: up 79% over six months and 85% over the year, trading 92% of "
+    },
+    {
+     "date": "2026-08-04",
+     "text": "BUY STT @ $185.23 \u2014 A confirmed climb: up 44% over six months and 69% over the year, trading 92% of "
+    },
+    {
+     "date": "2026-08-04",
+     "text": "BUY VLO @ $308.73 \u2014 A confirmed climb: up 68% over six months and 131% over the year, trading 94% of"
+    },
+    {
+     "date": "2026-08-04",
+     "text": "BUY UNH @ $407.55 \u2014 A confirmed climb: up 47% over six months and 75% over the year, trading 76% of "
+    },
+    {
+     "date": "2026-08-04",
+     "text": "BUY BK @ $156.20 \u2014 A confirmed climb: up 31% over six months and 54% over the year, trading 88% of "
+    }
+   ]
   },
   "longterm": {
    "cash": 0.0,
@@ -41,8 +235,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "S&P 500 core \u2014 owns the 500 biggest US companies",
-     "last_price": 696.4,
-     "bars_held": 1,
+     "last_price": 708.98,
+     "bars_held": 2,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -56,8 +250,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Nasdaq-100 \u2014 concentrated big-tech growth",
-     "last_price": 700.07,
-     "bars_held": 1,
+     "last_price": 723.85,
+     "bars_held": 2,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -71,8 +265,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Dividend quality \u2014 cash-generating value companies",
-     "last_price": 33.56,
-     "bars_held": 1,
+     "last_price": 33.85,
+     "bars_held": 2,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -86,8 +280,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "International \u2014 diversification outside the US",
-     "last_price": 85.02,
-     "bars_held": 1,
+     "last_price": 86.45,
+     "bars_held": 2,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -101,8 +295,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Bonds \u2014 ballast that cushions stock drawdowns",
-     "last_price": 72.15,
-     "bars_held": 1,
+     "last_price": 72.44,
+     "bars_held": 2,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -110,7 +304,7 @@
    ],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-08-03",
+   "last_eval_date": "2026-08-04",
    "activity": [
     {
      "date": "2026-07-31",
@@ -123,7 +317,7 @@
    "positions": [],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-08-03",
+   "last_eval_date": "2026-08-04",
    "activity": [
     {
      "date": "2026-07-31",
@@ -146,10 +340,17 @@
    "growth": 10000.0,
    "longterm": 10101.27,
    "benchmark": 10142.43
+  },
+  "2026-08-04": {
+   "daytrade": 10000.0,
+   "aggressive": 9995.0,
+   "growth": 9995.0,
+   "longterm": 10281.93,
+   "benchmark": 10325.29
   }
  },
- "runs": 5,
- "last_run_utc": "2026-08-04T15:23:09Z",
+ "runs": 6,
+ "last_run_utc": "2026-08-04T23:11:05Z",
  "intraday": {
   "date": "2026-08-04",
   "marks": {
