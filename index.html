@@ -115,6 +115,22 @@
   .smallnote{font-size:12px;color:var(--gold-dim)}
   a{color:var(--gold-bright)}
 
+  /* ---- watchlist ---- */
+  .watchrow{display:grid;grid-template-columns:minmax(64px,auto) 1fr auto;gap:12px;align-items:baseline;
+    padding:11px 0;border-top:1px solid var(--line)}
+  .watchrow:first-of-type{border-top:none}
+  .watchrow .wsym{font-family:'Cormorant Garamond',serif;font-size:20px;font-weight:700;color:#fff}
+  .watchrow .wwhy{font-size:13px;color:var(--cream);line-height:1.55}
+  .watchrow .wstat{font-size:11px;letter-spacing:.06em;text-transform:uppercase;text-align:right;white-space:nowrap}
+  .wstat.qualified{color:var(--up)} .wstat.queued{color:var(--gold-bright)}
+  .wstat.owned{color:var(--gold-dim)} .wstat.cooling{color:var(--gold-dim)}
+  .watchnote{font-size:13px;color:var(--cream);line-height:1.6;margin-bottom:14px}
+  .watchtags{display:flex;gap:14px;flex-wrap:wrap;font-size:11px;color:var(--gold-dim);margin-top:3px}
+  .watchtags b{color:var(--ivory);font-weight:600}
+  .watchgaps{display:flex;flex-wrap:wrap;gap:8px}
+  .watchgaps span{font-size:13px;background:rgba(8,17,31,0.5);border:1px solid var(--line);
+    border-radius:4px;padding:5px 10px;color:var(--cream)}
+
   /* ---- by the numbers ---- */
   .progrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:10px;margin-bottom:12px}
   .procell{background:rgba(8,17,31,0.5);border:1px solid var(--line);border-radius:6px;padding:10px 12px;cursor:help}
@@ -347,6 +363,36 @@ function render(){
       : "New instructions appear just after the market closes at 4 o'clock New York time."}</p>
   </div>`;
 
+  // --- 1b. what it is watching (always shown, even when nothing qualifies) ---
+  const wl = s.watchlist;
+  let watchHtml = "";
+  if(wl){
+    const statClass = st =>
+      st.startsWith("qualified") ? "qualified" :
+      st.startsWith("next") ? "queued" :
+      st.startsWith("already") ? "owned" : "cooling";
+    const rows = (wl.items||[]).map(it => {
+      const tags = [];
+      if(it.r3m != null) tags.push(`3-month <b>${it.r3m >= 0 ? "+" : ""}${it.r3m}%</b>`);
+      if(it.r6m != null) tags.push(`6-month <b>${it.r6m >= 0 ? "+" : ""}${it.r6m}%</b>`);
+      if(it.range_pos != null) tags.push(`<b>${it.range_pos}%</b> up its 52-week range`);
+      return `<div class="watchrow">
+        <span class="wsym">${esc(it.symbol)}${it.price ? `<br><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--gold-dim)">${price(it.price)}</span>` : ""}</span>
+        <span class="wwhy">${esc(it.why) || "On the list for a morning gap."}
+          ${tags.length ? `<span class="watchtags">${tags.map(t=>`<span>${t}</span>`).join("")}</span>` : ""}</span>
+        <span class="wstat ${statClass(it.status)}">${esc(it.status)}</span>
+      </div>`;
+    }).join("");
+    const gapList = key === "daytrade" && (wl.items||[]).length
+      ? `<div class="watchgaps">${wl.items.map(i=>`<span>${esc(i.symbol)}</span>`).join("")}</div>`
+      : "";
+    watchHtml = `<div class="card"><h2>What it's watching</h2>
+      <p class="watchnote">${esc(wl.note)}</p>
+      ${key === "daytrade" ? gapList : rows}
+      <p class="smallnote">Scanning ${wl.scanned} companies${wl.basis && wl.basis !== "none" ? ` · ranked by ${esc(wl.basis === "metrics" ? "trailing 3- and 6-month performance" : wl.basis === "price-history" ? "its own stored price history" : wl.basis)}` : ""}.</p>
+    </div>`;
+  }
+
   // --- 2. why you should listen ---
   const wins = s.closed_trades
     ? `It has finished <b>${s.closed_trades}</b> trade${s.closed_trades===1?"":"s"} so far${
@@ -427,7 +473,7 @@ function render(){
      (bought ${fmtDate(t.entry_date)} at ${price(t.entry_price)}): ${pctWords(t.pnl_pct)} · ${esc(t.reason)}</div>`).join("");
   const tradesHtml = trades ? `<div class="card"><h2>Its last few decisions</h2>${trades}</div>` : "";
 
-  $("content").innerHTML = alarmHtml + todoHtml + proofHtml + proHtml + holdingsHtml + tradesHtml;
+  $("content").innerHTML = alarmHtml + todoHtml + watchHtml + proofHtml + proHtml + holdingsHtml + tradesHtml;
   drawChart(key);
 }
 

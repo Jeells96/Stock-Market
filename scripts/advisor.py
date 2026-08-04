@@ -314,6 +314,157 @@ def market_date(unix_ts, tz_name):
         return datetime.fromtimestamp(unix_ts, timezone.utc).strftime("%Y-%m-%d")
 
 
+METRICS_PATH = os.path.join(DATA_DIR, "metrics.json")
+
+
+def load_metrics_cache():
+    if os.path.exists(METRICS_PATH):
+        with open(METRICS_PATH, encoding="utf-8") as f:
+            return json.load(f)
+    return {"date": "", "metrics": {}}
+
+
+def finnhub_metric(sym):
+    """Finnhub's free /stock/metric — trailing return windows, volatility, and
+    the 52-week range for one symbol. This is the key that lets the ranking
+    models work from day one: the vendor has already computed the 3-month and
+    6-month windows that would otherwise need a year of stored closes."""
+    if not FINNHUB_KEY:
+        return None
+    try:
+        j = http_get_json(
+            f"https://finnhub.io/api/v1/stock/metric?symbol={urllib.parse.quote(sym)}"
+            f"&metric=all&token={FINNHUB_KEY}", timeout=12)
+        m = (j or {}).get("metric") or {}
+        return m or None
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def fetch_universe_metrics(symbols, today):
+    """Daily-cached metric pull for the scanning universe (1 call/symbol,
+    paced under the 60/min free limit). Cached per calendar day — these
+    windows only move once a session."""
+    cache = load_metrics_cache()
+    if cache.get("date") == today and len(cache.get("metrics") or {}) >= len(symbols) * 0.8:
+        print(f"  metrics: reusing today's cache ({len(cache['metrics'])} symbols)")
+        return cache["metrics"]
+    out = dict(cache.get("metrics") or {}) if cache.get("date") == today else {}
+    todo = [s for s in symbols if s not in out]
+    print(f"Fetching Finnhub metrics for {len(todo)} symbols (~{len(todo) * 1.05 / 60:.0f} min)…")
+    for i, sym in enumerate(todo):
+        m = finnhub_metric(sym)
+        if m:
+            out[sym] = {
+                "r5": m.get("5DayPriceReturnDaily"),
+                "r13w": m.get("13WeekPriceReturnDaily"),
+                "r26w": m.get("26WeekPriceReturnDaily"),
+                "r52w": m.get("52WeekPriceReturnDaily"),
+                "vol": m.get("3MonthADReturnStd"),
+                "beta": m.get("beta"),
+                "hi52": m.get("52WeekHigh"),
+                "lo52": m.get("52WeekLow"),
+                "advol": m.get("10DayAverageTradingVolume"),
+            }
+        if i < len(todo) - 1:
+            time.sleep(1.05)
+        if (i + 1) % 100 == 0:
+            print(f"  … {i + 1}/{len(todo)}")
+    save_json(METRICS_PATH, {"date": today, "metrics": out}, compact=True)
+    print(f"  metrics: {len(out)}/{len(symbols)} symbols")
+    return out
+
+
+def _range_pos(px, lo, hi):
+    """Where the price sits in its 52-week range, 0..1. A durable uptrend puts
+    price in the upper part of its own range — the metric-path stand-in for
+    'above rising 50- and 200-day averages'."""
+    if not px or not lo or not hi or hi <= lo:
+        return None
+    return max(0.0, min(1.0, (px - lo) / (hi - lo)))
+
+
+def score_aggressive_metrics(metrics, quotes):
+    """🚀 Fast Mover ranking from vendor metric windows. Same philosophy as the
+    history-based model: volatility-adjusted 3-month momentum leads, longer
+    trend confirms, the last week is only a sanity band so verticals and
+    collapses are both excluded."""
+    rows = []
+    for sym, m in metrics.items():
+        px = quotes.get(sym)
+        if not px or px < 2.0:
+            continue
+        r13, r26, r5 = m.get("r13w"), m.get("r26w"), m.get("r5")
+        vol = m.get("vol")
+        if r13 is None or r26 is None or r5 is None or not vol or vol <= 0:
+            continue
+        if r13 <= 0 or r26 <= 0:
+            continue                       # rising on both horizons
+        if r5 < -2.0 or r5 > 15.0:
+            continue                       # not collapsing, not vertical
+        pos = _range_pos(px, m.get("lo52"), m.get("hi52"))
+        if pos is None or pos < 0.55:
+            continue                       # must be in the upper half of its range
+        if pos > 0.995 and r5 > 8.0:
+            continue                       # blow-off top at a 52-week high
+        advol = m.get("advol")
+        if advol is not None and advol * px < 20.0:
+            continue                       # ~$20M/day liquidity floor (advol in millions)
+        rows.append({"symbol": sym, "name": sym, "price": px,
+                     "r13": r13, "r26": r26, "r5": r5, "vol": vol, "pos": pos,
+                     "q13": r13 / vol, "q26": r26 / vol})
+    z13 = zscores([r["q13"] for r in rows])
+    z26 = zscores([r["q26"] for r in rows])
+    for i, r in enumerate(rows):
+        r["score"] = 0.60 * z13[i] + 0.40 * z26[i]
+        r["basis"] = "metrics"
+        r["thesis"] = (
+            f"Up {r['r13']:.0f}% over three months and {r['r26']:.0f}% over six, "
+            f"sitting {r['pos'] * 100:.0f}% of the way up its 52-week range — a steady climb "
+            f"rather than a one-week spike ({r['r5']:+.1f}% this week). Target +20%, stop −8% "
+            f"moving to breakeven at +10%, out after 15 trading days regardless."
+        )
+    rows.sort(key=lambda r: r["score"], reverse=True)
+    return rows
+
+
+def score_growth_metrics(metrics, quotes):
+    """📈 Steady Climber ranking from vendor metric windows: durable multi-month
+    uptrend, near the top of its own range, with volatility capped."""
+    rows = []
+    for sym, m in metrics.items():
+        px = quotes.get(sym)
+        if not px or px < 5.0:
+            continue
+        r13, r26, r52 = m.get("r13w"), m.get("r26w"), m.get("r52w")
+        vol = m.get("vol")
+        if r13 is None or r26 is None or r52 is None or not vol or vol <= 0:
+            continue
+        if r26 <= 0 or r52 <= 0 or r13 <= 0:
+            continue                       # rising over 3, 6 and 12 months
+        if vol > 45.0:
+            continue                       # volatility cap
+        pos = _range_pos(px, m.get("lo52"), m.get("hi52"))
+        if pos is None or pos < 0.65:
+            continue                       # trading near its highs = confirmed uptrend
+        rows.append({"symbol": sym, "name": sym, "price": px,
+                     "r13": r13, "r26": r26, "r52": r52, "vol": vol, "pos": pos,
+                     "q26": r26 / vol, "q13": r13 / vol})
+    z26 = zscores([r["q26"] for r in rows])
+    z13 = zscores([r["q13"] for r in rows])
+    for i, r in enumerate(rows):
+        r["score"] = 0.55 * z26[i] + 0.25 * z13[i] + 0.20 * r["pos"] * 2
+        r["basis"] = "metrics"
+        r["thesis"] = (
+            f"A confirmed climb: up {r['r26']:.0f}% over six months and {r['r52']:.0f}% over the year, "
+            f"trading {r['pos'] * 100:.0f}% of the way up its 52-week range with moderate "
+            f"({r['vol']:.0f}%) volatility. Target +15%, stop −10%, and it steps aside if the "
+            f"trend breaks."
+        )
+    rows.sort(key=lambda r: r["score"], reverse=True)
+    return rows
+
+
 def trim_partial_session(bars):
     """Yahoo's daily series includes the in-progress session (with the live
     price as its 'close') once trading starts. Scheduled runs are timed to
@@ -1311,7 +1462,75 @@ def pro_metrics(dates, hist, key, closed, slots=None):
     return out
 
 
-def build_site_payload(state, bars, as_of, new_picks, data_source):
+def build_watchlists(state, ranked_agg, ranked_gro, rank_basis, regime_note,
+                     universe_ok, can_trade):
+    """What each strategy is watching right now, and why it hasn't bought.
+    The list is published even on days when nothing qualifies, so the site can
+    always show its homework instead of an empty page."""
+    out = {}
+    ranked_by_key = {"aggressive": ranked_agg, "growth": ranked_gro}
+    for key, ranked in ranked_by_key.items():
+        strat = state["strategies"][key]
+        meta = STRATEGY_META[key]
+        free = meta["slots"] - len(strat["positions"])
+        held = {p["symbol"] for p in strat["positions"]}
+        cooling = set(strat.get("cooldown") or {})
+        items = []
+        for r in ranked[:8]:
+            sym = r["symbol"]
+            if sym in held:
+                status = "already owned"
+            elif sym in cooling:
+                status = "recently traded — cooling off"
+            elif free <= 0:
+                status = "next in line when a slot frees up"
+            else:
+                status = "qualified — buying at the next close"
+            items.append({
+                "symbol": sym,
+                "price": round(r.get("price") or 0, 2),
+                "status": status,
+                "why": r.get("thesis", ""),
+                "r3m": round(r["r13"], 1) if r.get("r13") is not None else (
+                    round(r["r63"] * 100, 1) if r.get("r63") is not None else None),
+                "r6m": round(r["r26"], 1) if r.get("r26") is not None else None,
+                "range_pos": round(r["pos"] * 100) if r.get("pos") is not None else None,
+            })
+        if regime_note and key == "aggressive":
+            note = f"Nothing is being bought right now — {regime_note}."
+        elif not ranked and rank_basis == "none":
+            note = ("The scanner is still gathering enough market history to rank safely. "
+                    "It grows every trading day and starts naming candidates as soon as it can.")
+        elif not ranked:
+            note = ("Nothing in the universe currently meets this strategy's standards. "
+                    "That is a decision, not an outage — it re-checks at every close.")
+        elif free <= 0:
+            note = "All slots are full. These are the names queued for the next opening."
+        elif not can_trade:
+            note = ("These qualify now; purchases are made on the post-close run so every "
+                    "fill uses an official closing price.")
+        else:
+            note = "Ranked highest by this strategy's model at the latest close."
+        out[key] = {"note": note, "items": items,
+                    "scanned": len(MOMENTUM if key == "aggressive" else SP_CORE),
+                    "basis": rank_basis}
+    # the intraday sleeve watches a fixed list all session
+    dt = state["strategies"].get("daytrade") or {"positions": []}
+    out["daytrade"] = {
+        "note": ("These are the names it watches all session. It buys only the ones that gap "
+                 "up 2–8% before 11:30 in the morning and are still climbing 20 minutes later."),
+        "items": [{"symbol": s, "price": None, "status": "watching for a morning gap",
+                   "why": "", "r3m": None, "r6m": None, "range_pos": None}
+                  for s in DAYTRADE_WATCHLIST[:12]],
+        "scanned": len(DAYTRADE_WATCHLIST), "basis": "intraday gaps"}
+    out["longterm"] = {
+        "note": ("This strategy owns its full allocation permanently and rebalances when the "
+                 "weights drift — there is no watchlist by design."),
+        "items": [], "scanned": len(LONGTERM_ALLOCATION), "basis": "fixed allocation"}
+    return out
+
+
+def build_site_payload(state, bars, as_of, new_picks, data_source, watchlists=None):
     hist = state["equity_history"]
     dates = sorted(hist.keys())
     curves = {"dates": dates}
@@ -1357,6 +1576,7 @@ def build_site_payload(state, bars, as_of, new_picks, data_source):
             "recent_trades": strat["closed"][-12:][::-1],
             "recent_activity": strat["activity"][-8:][::-1],
             "pro": pro_metrics(dates, hist, key, strat["closed"], slots=meta.get("slots")),
+            "watchlist": (watchlists or {}).get(key),
         }
     tuning_params = load_params()
     today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -2001,7 +2221,24 @@ def main():
             bars_critical = floor_bars
             finnhub_floor = True
     if BENCHMARK_SYMBOL not in bars_critical:
-        print("FATAL: no benchmark data — aborting without touching state.")
+        # No data this pass. That is routine for the pre-open catch-up run when
+        # every history source is rate-limited and the market has not closed yet
+        # (the Finnhub floor refuses to treat a live price as a close). Exit
+        # quietly if the record is already current — the post-close run does the
+        # real work. Only shout when the record is genuinely falling behind.
+        prior = load_state()
+        recorded = sorted((prior or {}).get("equity_history", {}).keys())
+        last = recorded[-1] if recorded else None
+        behind = 99
+        if last:
+            behind = (datetime.now(timezone.utc).date()
+                      - datetime.strptime(last, "%Y-%m-%d").date()).days
+        if prior and behind <= 4:
+            print(f"No market data available this pass (last record {last}, {behind}d ago) — "
+                  "nothing to do. The post-close run will catch up.")
+            sys.exit(0)
+        print("FATAL: no benchmark data and the record is falling behind — "
+              f"last recorded session {last}.")
         sys.exit(1)
     missing_held = [s for s in held_syms if s not in bars_critical]
     if missing_held:
@@ -2107,26 +2344,59 @@ def main():
     # 2) longterm allocation management (inception buy / drift rebalance)
     manage_longterm(state["strategies"]["longterm"], bars, as_of, can_trade)
 
-    # 3) fill empty aggressive/growth slots with freshly ranked picks
+    # 3) fill empty aggressive/growth slots with freshly ranked picks.
+    #    Two ranking paths: the native price-history model once the store is
+    #    deep enough, otherwise Finnhub's precomputed return windows — which
+    #    let both models work from day one instead of waiting months.
     new_picks = {"aggressive": [], "growth": [], "longterm": []}
+    ranked_agg, ranked_gro, rank_basis = [], [], "none"
+    agg_wants = STRATEGY_META["aggressive"]["slots"] - len(state["strategies"]["aggressive"]["positions"])
+    gro_wants = STRATEGY_META["growth"]["slots"] - len(state["strategies"]["growth"]["positions"])
+
     if universe_ok:
+        rank_basis = "price-history"
         agg_universe = {s: h for s, h in bars.items() if s in set(MOMENTUM)}
         gro_universe = {s: h for s, h in bars.items() if s in set(SP_CORE)}
         ranked_agg = score_aggressive(agg_universe, as_of)
         ranked_gro = score_growth(gro_universe, as_of)
-        # regime filter: high-beta momentum bleeds when the broad market is
-        # below its own 50-day trend — the Fast Mover sits in cash then
-        spy_closes = [bars[BENCHMARK_SYMBOL]["close"][d] for d in bars[BENCHMARK_SYMBOL]["dates"]]
-        spy_s50 = sma(spy_closes, 50)
-        risk_on = spy_s50 is None or spy_closes[-1] > spy_s50
-        if not risk_on:
-            print("  regime filter: SPY below its 50-day average — Fast Mover takes no new positions.")
-            ranked_agg = []
-        print(f"Ranked candidates: aggressive {len(ranked_agg)}, growth {len(ranked_gro)}")
-        new_picks["aggressive"] = fill_slots(
-            "aggressive", state["strategies"]["aggressive"], ranked_agg, as_of, can_trade)
-        new_picks["growth"] = fill_slots(
-            "growth", state["strategies"]["growth"], ranked_gro, as_of, can_trade)
+    elif FINNHUB_KEY and (agg_wants > 0 or gro_wants > 0):
+        rank_basis = "metrics"
+        print("  price store still shallow — ranking from Finnhub metric windows instead.")
+        uni = list(dict.fromkeys(MOMENTUM + SP_CORE))
+        metrics = fetch_universe_metrics(uni, ny_today)
+        quotes = {s: (bars[s]["close"][bars[s]["dates"][-1]]
+                      if bars.get(s) and bars[s]["dates"] else None) for s in uni}
+        quotes = {s: p for s, p in quotes.items() if p}
+        ranked_agg = score_aggressive_metrics(
+            {s: m for s, m in metrics.items() if s in set(MOMENTUM)}, quotes)
+        ranked_gro = score_growth_metrics(
+            {s: m for s, m in metrics.items() if s in set(SP_CORE)}, quotes)
+
+    # regime filter: high-beta momentum bleeds when the broad market is below
+    # its own 50-day trend — the Fast Mover sits in cash then
+    risk_on, regime_note = True, ""
+    spy_h = bars.get(BENCHMARK_SYMBOL)
+    spy_closes = [spy_h["close"][d] for d in spy_h["dates"]] if spy_h else []
+    spy_s50 = sma(spy_closes, 50)
+    if spy_s50 is not None:
+        risk_on = spy_closes[-1] > spy_s50
+    elif rank_basis == "metrics":
+        # no 50-day history yet: use the benchmark's own 52-week range position
+        bm = (load_metrics_cache().get("metrics") or {}).get(BENCHMARK_SYMBOL) or {}
+        pos = _range_pos(spy_closes[-1] if spy_closes else None, bm.get("lo52"), bm.get("hi52"))
+        if pos is not None:
+            risk_on = pos >= 0.40
+    if not risk_on:
+        regime_note = "the market itself is in a downtrend, so it is deliberately holding cash"
+        print("  regime filter: market in a downtrend — Fast Mover takes no new positions.")
+        ranked_agg = []
+    if ranked_agg or ranked_gro:
+        print(f"Ranked candidates ({rank_basis}): aggressive {len(ranked_agg)}, growth {len(ranked_gro)}")
+    new_picks["aggressive"] = fill_slots(
+        "aggressive", state["strategies"]["aggressive"], ranked_agg, as_of, can_trade)
+    new_picks["growth"] = fill_slots(
+        "growth", state["strategies"]["growth"], ranked_gro, as_of, can_trade)
+    if new_picks["aggressive"] or new_picks["growth"]:
         # upgrade fresh picks with full history (real company name + div/split
         # events) so the next replay has proper accounting from day one
         fresh_syms = [] if SPARK_ONLY else [
@@ -2173,7 +2443,10 @@ def main():
     trades_today = sum(
         1 for k in ("daytrade", "aggressive", "growth") for t in state["strategies"][k]["closed"]
         if t["exit_date"] == as_of) + sum(len(v) for v in new_picks.values())
-    site = build_site_payload(state, bars, as_of, new_picks, data_source)
+    watchlists = build_watchlists(
+        state, ranked_agg, ranked_gro, rank_basis, regime_note, universe_ok, can_trade)
+    site = build_site_payload(state, bars, as_of, new_picks, data_source,
+                              watchlists=watchlists)
 
     save_json(STATE_PATH, state)
     save_json(SITE_PATH, site)

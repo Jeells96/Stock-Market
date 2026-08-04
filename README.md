@@ -18,7 +18,7 @@ A self-driving investment advisor that **runs itself**, **keeps score honestly**
 _Updated automatically every trading day · [full report](REPORT.md) · [verify in commit history](../../commits/main/data)_
 <!-- ADVISOR:END -->
 
-## The three strategies
+## The four strategies
 
 Every strategy manages its own **$10,000 paper-money portfolio**, fully automatically.
 An S&P 500 (SPY) buy-and-hold benchmark runs alongside them so there's always an
@@ -39,13 +39,24 @@ runs [`scripts/advisor.py`](scripts/advisor.py) twice every trading day:
 - **Post-close (~5:45pm ET)** — the trading run: marks outcomes on the session that just
   ended, applies stops/targets, and enters new picks at that day's closing price. The
   commit lands while tomorrow's outcome is still unknown — that's the proof.
-- **Pre-open (~9:10am ET)** — a catch-up run: replays anything a failed evening run
+- **Pre-open (~6:40am ET)** — a catch-up run: replays anything a failed evening run
   missed. It never opens positions (the engine refuses to trade at a stale close, so
   overnight gaps can't be gamed and a delayed cron firing mid-session is harmless).
+  Scheduled early on purpose — GitHub's cron often fires late, and this leaves hours of
+  slack before the open.
 
-Each run fetches free Yahoo Finance data (no API key needed), replays every trading day
-since the previous run — crediting dividends, applying splits, checking stops and targets
-on daily closes only — then commits the updated record to this repository.
+Each run replays every trading day since the previous run — crediting dividends, applying
+splits, checking stops and targets on daily closes only — then commits the updated record
+to this repository.
+
+**Data resilience.** Yahoo and Stooq both rate-limit datacenter IPs, so the engine falls
+back through Yahoo chart → Yahoo spark → Stooq → Finnhub end-of-day quotes, and keeps its
+own rolling price store (`data/prices.json`) that grows one close per symbol per session.
+Stock ranking works from day one either way: when the store is still shallow, the two
+stock-picking strategies rank on Finnhub's precomputed trailing return windows (3-month,
+6-month, 1-year, volatility, 52-week range) instead of waiting months for stored history.
+If every source is blocked on a pre-open catch-up pass, the run exits quietly rather than
+failing — the post-close run does the real work.
 
 The ⚡ Day Trader sleeve has its own schedule
 ([`.github/workflows/daytrader.yml`](.github/workflows/daytrader.yml)): checks roughly
