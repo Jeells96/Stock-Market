@@ -5,7 +5,7 @@
   "last_change": null,
   "benched": []
  },
- "generated_at_utc": "2026-08-03T22:54:21Z",
+ "generated_at_utc": "2026-08-04T15:23:09Z",
  "as_of_date": "2026-08-03",
  "inception_date": "2026-07-31",
  "starting_capital": 10000.0,
@@ -282,6 +282,8 @@
    10142.43
   ]
  },
- "data_source": "Finnhub official end-of-day closes + rolling price store (327 symbols)",
- "methodology_note": "All trades are simulated with paper money and booked NET of modeled slippage (5 bps per fill, 10 bps intraday; commissions are zero, matching modern retail; the SPY benchmark is frictionless by convention). Daily strategies fill at official closing prices. Every position is re-checked at every market close without exception; a sell enters the record only when the model actually fires the signal, booked at that day's real closing price \u2014 never at the planned target or stop. Picks are committed to git before outcomes are known \u2014 the commit history is the proof. Not financial advice."
+ "data_source": "live Finnhub quotes (intraday) + rolling price store",
+ "methodology_note": "All trades are simulated with paper money and booked NET of modeled slippage (5 bps per fill, 10 bps intraday; commissions are zero, matching modern retail; the SPY benchmark is frictionless by convention). Daily strategies fill at official closing prices. Every position is re-checked at every market close without exception; a sell enters the record only when the model actually fires the signal, booked at that day's real closing price \u2014 never at the planned target or stop. Picks are committed to git before outcomes are known \u2014 the commit history is the proof. Not financial advice.",
+ "intraday_date": "2026-08-04",
+ "intraday_equity": 10000.0
 }
