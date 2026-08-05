@@ -29,7 +29,8 @@
      "last_price": 168.29,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "PANW",
@@ -44,7 +45,8 @@
      "last_price": 366.34,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "CRWD",
@@ -59,7 +61,8 @@
      "last_price": 211.22,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "OKTA",
@@ -74,7 +77,8 @@
      "last_price": 147.82,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "TENB",
@@ -89,7 +93,8 @@
      "last_price": 35.94,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     }
    ],
    "closed": [],
@@ -134,7 +139,8 @@
      "last_price": 312.61,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "STT",
@@ -149,7 +155,8 @@
      "last_price": 185.23,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "VLO",
@@ -164,7 +171,8 @@
      "last_price": 308.73,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "UNH",
@@ -179,7 +187,8 @@
      "last_price": 407.55,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "BK",
@@ -191,10 +200,11 @@
      "target_price": 179.62999999999997,
      "stop_price": 140.57999999999998,
      "thesis": "A confirmed climb: up 31% over six months and 54% over the year, trading 88% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 156.2,
+     "last_price": 156.82,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     }
    ],
    "closed": [],
@@ -344,13 +354,13 @@
   "2026-08-04": {
    "daytrade": 10000.0,
    "aggressive": 9995.0,
-   "growth": 9995.0,
+   "growth": 10002.94,
    "longterm": 10281.93,
    "benchmark": 10325.29
   }
  },
- "runs": 6,
- "last_run_utc": "2026-08-04T23:11:05Z",
+ "runs": 7,
+ "last_run_utc": "2026-08-05T12:43:25Z",
  "intraday": {
   "date": "2026-08-04",
   "marks": {
