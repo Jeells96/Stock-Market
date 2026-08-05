@@ -5,7 +5,7 @@
   "last_change": null,
   "benched": []
  },
- "generated_at_utc": "2026-08-05T12:43:25Z",
+ "generated_at_utc": "2026-08-05T15:11:49Z",
  "as_of_date": "2026-08-04",
  "inception_date": "2026-07-31",
  "starting_capital": 10000.0,
@@ -154,12 +154,7 @@
     "turnover_yr": null,
     "t_stat": null
    },
-   "watchlist": {
-    "note": "The scanner is still gathering enough market history to rank safely. It grows every trading day and starts naming candidates as soon as it can.",
-    "items": [],
-    "scanned": 120,
-    "basis": "none"
-   }
+   "watchlist": null
   },
   "growth": {
    "key": "growth",
@@ -299,12 +294,7 @@
     "turnover_yr": null,
     "t_stat": null
    },
-   "watchlist": {
-    "note": "The scanner is still gathering enough market history to rank safely. It grows every trading day and starts naming candidates as soon as it can.",
-    "items": [],
-    "scanned": 219,
-    "basis": "none"
-   }
+   "watchlist": null
   },
   "longterm": {
    "key": "longterm",
@@ -428,12 +418,7 @@
     "turnover_yr": null,
     "t_stat": null
    },
-   "watchlist": {
-    "note": "This strategy owns its full allocation permanently and rebalances when the weights drift \u2014 there is no watchlist by design.",
-    "items": [],
-    "scanned": 5,
-    "basis": "fixed allocation"
-   }
+   "watchlist": null
   },
   "daytrade": {
    "key": "daytrade",
@@ -476,121 +461,7 @@
     "turnover_yr": null,
     "t_stat": null
    },
-   "watchlist": {
-    "note": "These are the names it watches all session. It buys only the ones that gap up 2\u20138% before 11:30 in the morning and are still climbing 20 minutes later.",
-    "items": [
-     {
-      "symbol": "TSLA",
-      "price": null,
-      "status": "watching for a morning gap",
-      "why": "",
-      "r3m": null,
-      "r6m": null,
-      "range_pos": null
-     },
-     {
-      "symbol": "NVDA",
-      "price": null,
-      "status": "watching for a morning gap",
-      "why": "",
-      "r3m": null,
-      "r6m": null,
-      "range_pos": null
-     },
-     {
-      "symbol": "AMD",
-      "price": null,
-      "status": "watching for a morning gap",
-      "why": "",
-      "r3m": null,
-      "r6m": null,
-      "range_pos": null
-     },
-     {
-      "symbol": "SMCI",
-      "price": null,
-      "status": "watching for a morning gap",
-      "why": "",
-      "r3m": null,
-      "r6m": null,
-      "range_pos": null
-     },
-     {
-      "symbol": "COIN",
-      "price": null,
-      "status": "watching for a morning gap",
-      "why": "",
-      "r3m": null,
-      "r6m": null,
-      "range_pos": null
-     },
-     {
-      "symbol": "MSTR",
-      "price": null,
-      "status": "watching for a morning gap",
-      "why": "",
-      "r3m": null,
-      "r6m": null,
-      "range_pos": null
-     },
-     {
-      "symbol": "MARA",
-      "price": null,
-      "status": "watching for a morning gap",
-      "why": "",
-      "r3m": null,
-      "r6m": null,
-      "range_pos": null
-     },
-     {
-      "symbol": "RIOT",
-      "price": null,
-      "status": "watching for a morning gap",
-      "why": "",
-      "r3m": null,
-      "r6m": null,
-      "range_pos": null
-     },
-     {
-      "symbol": "PLTR",
-      "price": null,
-      "status": "watching for a morning gap",
-      "why": "",
-      "r3m": null,
-      "r6m": null,
-      "range_pos": null
-     },
-     {
-      "symbol": "HOOD",
-      "price": null,
-      "status": "watching for a morning gap",
-      "why": "",
-      "r3m": null,
-      "r6m": null,
-      "range_pos": null
-     },
-     {
-      "symbol": "SOFI",
-      "price": null,
-      "status": "watching for a morning gap",
-      "why": "",
-      "r3m": null,
-      "r6m": null,
-      "range_pos": null
-     },
-     {
-      "symbol": "GME",
-      "price": null,
-      "status": "watching for a morning gap",
-      "why": "",
-      "r3m": null,
-      "r6m": null,
-      "range_pos": null
-     }
-    ],
-    "scanned": 45,
-    "basis": "intraday gaps"
-   }
+   "watchlist": null
   }
  },
  "equity_curves": {
@@ -625,6 +496,8 @@
    10325.29
   ]
  },
- "data_source": "Finnhub official end-of-day closes + rolling price store (327 symbols)",
- "methodology_note": "All trades are simulated with paper money and booked NET of modeled slippage (5 bps per fill, 10 bps intraday; commissions are zero, matching modern retail; the SPY benchmark is frictionless by convention). Daily strategies fill at official closing prices. Every position is re-checked at every market close without exception; a sell enters the record only when the model actually fires the signal, booked at that day's real closing price \u2014 never at the planned target or stop. Picks are committed to git before outcomes are known \u2014 the commit history is the proof. Not financial advice."
+ "data_source": "live Finnhub quotes (intraday) + rolling price store",
+ "methodology_note": "All trades are simulated with paper money and booked NET of modeled slippage (5 bps per fill, 10 bps intraday; commissions are zero, matching modern retail; the SPY benchmark is frictionless by convention). Daily strategies fill at official closing prices. Every position is re-checked at every market close without exception; a sell enters the record only when the model actually fires the signal, booked at that day's real closing price \u2014 never at the planned target or stop. Picks are committed to git before outcomes are known \u2014 the commit history is the proof. Not financial advice.",
+ "intraday_date": "2026-08-05",
+ "intraday_equity": 10000.0
 }
