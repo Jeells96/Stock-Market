@@ -115,6 +115,46 @@
   .smallnote{font-size:12px;color:var(--gold-dim)}
   a{color:var(--gold-bright)}
 
+  /* ---- the stock board ---- */
+  .brow{display:grid;grid-template-columns:34px minmax(110px,auto) 1fr auto;gap:12px;align-items:center;
+    padding:10px 12px;border-radius:6px;border:1px solid transparent;border-top:1px solid var(--line);margin:0 -6px}
+  .brow:first-of-type{border-top-color:transparent}
+  .brow.buy{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.45);margin-top:6px;margin-bottom:6px;
+    box-shadow:0 0 12px rgba(74,222,128,0.12)}
+  .brank{font-size:12px;color:var(--gold-dim);text-align:right}
+  .bsym{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;color:#fff;display:block;line-height:1.1}
+  .bpx{font-size:13px;color:var(--ivory)}
+  .bstamp{display:block;font-size:10px;color:var(--gold-dim)}
+  .bstamp.live{color:var(--up)}
+  .bnums{font-size:12px;color:var(--cream);line-height:1.5}
+  .bnums b{color:#fff}
+  .breason{font-size:11px;color:var(--gold-dim);text-align:right;max-width:210px;line-height:1.4}
+  .bside{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+  .chip{font-size:11px;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:3px;text-transform:uppercase}
+  .chip.cbuy{background:var(--up);color:#06220f}
+  .chip.cheld{background:rgba(201,169,97,0.2);color:var(--gold-bright);border:1px solid var(--gold-dim)}
+  .chip.cmine{background:rgba(56,189,248,0.18);color:#7dd3fc;border:1px solid #0284c7}
+  .chip.cgap{background:rgba(74,222,128,0.15);color:var(--up);border:1px solid rgba(74,222,128,0.5)}
+  .ibought{font-family:inherit;cursor:pointer;font-size:12px;font-weight:700;color:#06220f;background:var(--up);
+    border:none;border-radius:4px;padding:7px 12px}
+  .ibought:hover{filter:brightness(1.1)}
+  .buyform{grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:10px 4px 4px;font-size:13px}
+  .buyform label{color:var(--cream)}
+  .buyform input{font-family:inherit;font-size:14px;width:110px;padding:7px 9px;background:rgba(8,17,31,0.7);
+    border:1px solid var(--line-strong);border-radius:4px;color:#fff}
+  .btn2{font-family:inherit;cursor:pointer;font-size:13px;font-weight:700;padding:8px 14px;border-radius:4px;border:none}
+  .btn2.save{background:var(--gold);color:#08111f}
+  .btn2.cancel{background:transparent;color:var(--gold-dim);border:1px solid var(--line)}
+  .btn2.sold{background:var(--down);color:#fff}
+  .btn2.ghost{background:transparent;color:var(--gold-dim);border:1px solid var(--line);font-weight:400;font-size:11px}
+  .mineband{border-left:5px solid #38bdf8}
+  .minepos{padding:13px 0;border-top:1px solid var(--line)}
+  .minepos:first-of-type{border-top:none}
+  .minepos p{margin:0 0 6px}
+  .minepos .row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .minepos.alarm{background:rgba(220,38,38,0.1);border-radius:6px;padding:13px 12px;border:1px solid var(--down)}
+  .showmore{width:100%;margin-top:10px}
+
   /* ---- watchlist ---- */
   .watchrow{display:grid;grid-template-columns:minmax(64px,auto) 1fr auto;gap:12px;align-items:baseline;
     padding:11px 0;border-top:1px solid var(--line)}
@@ -246,20 +286,138 @@ async function loadData(){
   return true;
 }
 
-/* ---------- live prices (refresh every minute while the market is open) ---------- */
-async function refreshQuotes(){
-  if(!DATA) return;
-  const syms = [...new Set(ORDER.flatMap(k => (DATA.strategies[k]?.positions||[]).map(p=>p.symbol)))];
-  for(const sym of syms){
-    try{
-      const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(sym)}&token=${FINNHUB_KEY}`);
-      const j = await r.json();
-      if(j && j.c) liveQuotes[sym] = j.c;
-    }catch(e){ /* keep last known */ }
-    await new Promise(r=>setTimeout(r,1100));
-  }
-  renderTabs(); render();
+/* ---------- your own positions — stored in this browser only ---------- */
+const MINE_KEY = "jsma.mine.v1";
+let MINE = {positions: [], closed: []};
+try { MINE = Object.assign(MINE, JSON.parse(localStorage.getItem(MINE_KEY) || "{}")); } catch(e){}
+function saveMine(){ localStorage.setItem(MINE_KEY, JSON.stringify(MINE)); }
+function mineFor(key){ return MINE.positions.filter(p => p.strategy === key); }
+function mineOwns(key, sym){ return mineFor(key).some(p => p.symbol === sym); }
+const RULE_DEFAULTS = {
+  aggressive:{target_pct:0.20, stop_pct:0.08, max_hold_bars:15},
+  growth:{target_pct:0.15, stop_pct:0.10},
+  daytrade:{target_pct:0.03, stop_pct:0.02},
+  longterm:{}
+};
+function ruleFor(key){
+  return Object.assign({}, RULE_DEFAULTS[key] || {}, DATA?.strategies?.[key]?.rules || {});
 }
+function addMine(key, sym, px, amount){
+  const r = ruleFor(key);
+  const today = new Date().toISOString().slice(0,10);
+  let deadline = null;
+  if(key === "daytrade") deadline = today;
+  else if(r.max_hold_bars) deadline = new Date(Date.now() + Math.round(r.max_hold_bars * 1.45) * 86400000).toISOString().slice(0,10);
+  MINE.positions.push({
+    id: Date.now() + "-" + sym, strategy: key, symbol: sym,
+    entry_price: px, amount: amount, entry_date: today,
+    target_price: r.target_pct ? +(px * (1 + r.target_pct)).toFixed(2) : null,
+    stop_price: r.stop_pct ? +(px * (1 - r.stop_pct)).toFixed(2) : null,
+    deadline
+  });
+  saveMine();
+}
+function closeMine(id, px){
+  const i = MINE.positions.findIndex(p => p.id === id);
+  if(i < 0) return;
+  const p = MINE.positions.splice(i, 1)[0];
+  MINE.closed.push({...p, exit_price: px, exit_date: new Date().toISOString().slice(0,10),
+    pnl_pct: p.entry_price ? +((px / p.entry_price - 1) * 100).toFixed(2) : 0});
+  saveMine();
+}
+function mineStatus(p){
+  const px = liveQuotes[p.symbol];
+  const today = new Date().toISOString().slice(0,10);
+  if(px != null){
+    if(p.stop_price && px <= p.stop_price) return {sell: true, why: `it has fallen to your protection point (${price(p.stop_price)})`};
+    if(p.target_price && px >= p.target_price) return {sell: true, why: `it has reached your profit point (${price(p.target_price)})`};
+  }
+  if(p.deadline && today >= p.deadline)
+    return {sell: true, why: p.strategy === "daytrade" ? "day trades never stay overnight — sell before the close" : `its holding time is up (${fmtDate(p.deadline)})`};
+  return {sell: false, why: ""};
+}
+
+/* ---------- one shared quote pump: your positions + board + ticker ---------- */
+let quoteInfo = {};      // sym -> {px, chg, t}
+let pumpSyms = [];       // high-priority rotation, rebuilt on each render
+let pumpIdx = 0, tickIdx = 0, beat = 0, pumpStarted = false;
+function rebuildPump(){
+  const set = [];
+  const push = s => { if(s && !set.includes(s)) set.push(s); };
+  MINE.positions.forEach(p => push(p.symbol));
+  ORDER.forEach(k => (DATA?.strategies[k]?.positions || []).forEach(p => push(p.symbol)));
+  const b = DATA?.strategies?.[currentTab]?.board;
+  if(b){
+    const rows = b.rows || [];
+    (currentTab === "daytrade" ? rows : rows.slice(0, 15)).forEach(r => push(r.symbol));
+  }
+  pumpSyms = set;
+}
+function noteQuote(sym, px, chg){
+  quoteInfo[sym] = {px, chg, t: new Date()};
+  liveQuotes[sym] = px;
+}
+function stampText(sym, fallback){
+  const q = quoteInfo[sym];
+  if(q) return "updated " + q.t.toLocaleTimeString("en-US", {hour:"numeric", minute:"2-digit"});
+  if(!fallback) return "";
+  const dpart = fallback.replace(" close", "");
+  return "at the " + (dpart.length === 10 ? fmtDate(dpart) : dpart) + " close";
+}
+function applyLive(sym){
+  const q = quoteInfo[sym];
+  if(!q) return;
+  document.querySelectorAll(`[data-live-px="${sym}"]`).forEach(el => { el.textContent = price(q.px); });
+  document.querySelectorAll(`[data-live-stamp="${sym}"]`).forEach(el => {
+    el.textContent = stampText(sym); el.classList.add("live");
+  });
+  document.querySelectorAll(`[data-live-gap="${sym}"]`).forEach(el => {
+    const g = q.chg || 0;
+    el.innerHTML = `<span class="${g >= 0 ? "up" : "down"}">${g >= 0 ? "+" : ""}${g.toFixed(2)}% today</span>` +
+      (g >= 2 && g <= 8 ? ` <span class="chip cgap">gap zone</span>` : "");
+  });
+  document.querySelectorAll(`[data-live-mine="${sym}"]`).forEach(el => {
+    const id = el.getAttribute("data-mine-id");
+    const p = MINE.positions.find(x => x.id === id);
+    if(!p || !p.entry_price) return;
+    const pnl = (q.px / p.entry_price - 1) * 100;
+    el.innerHTML = `now ${price(q.px)}, ${pctWords(pnl)}`;
+  });
+  renderTabs();
+  refreshMineAlarms();
+}
+let mineAlarmState = "";
+function refreshMineAlarms(){
+  const alarms = mineFor(currentTab).map(p => ({p, st: mineStatus(p)})).filter(x => x.st.sell);
+  const sig = alarms.map(x => x.p.id + x.st.why).join("|");
+  if(sig === mineAlarmState) return;
+  mineAlarmState = sig;
+  if(alarms.length || document.getElementById("mineAlarmCard")) render();
+}
+async function quotePump(){
+  if(pumpStarted) return;
+  pumpStarted = true;
+  while(true){
+    beat++;
+    let sym = null, forTicker = false;
+    if(beat % 3 === 0 && TICKER_SYMS.length){ sym = TICKER_SYMS[tickIdx++ % TICKER_SYMS.length]; forTicker = true; }
+    else if(pumpSyms.length){ sym = pumpSyms[pumpIdx++ % pumpSyms.length]; }
+    else if(TICKER_SYMS.length){ sym = TICKER_SYMS[tickIdx++ % TICKER_SYMS.length]; forTicker = true; }
+    if(sym){
+      try{
+        const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(sym)}&token=${FINNHUB_KEY}`);
+        const j = await r.json();
+        if(j && j.c){
+          noteQuote(sym, j.c, j.dp || 0);
+          updateTickerItem(sym, j.c, j.dp || 0);
+          if(!forTicker) applyLive(sym);
+        }
+      }catch(e){ /* keep last */ }
+    }
+    await new Promise(res => setTimeout(res, 1100));
+  }
+}
+
 function livePrice(p){ return liveQuotes[p.symbol] || p.current_price; }
 function liveEquity(key){
   const s = DATA.strategies[key];
@@ -349,8 +507,12 @@ function render(){
   const normal = calls.filter(c=>!c.kind.startsWith("alarm"));
 
   // --- 1. what to do today ---
-  const alarmHtml = alarms.length ? `<div class="card alertcard"><h2>⚠ Time to sell — right now</h2>
-      ${alarms.map(a=>`<p>${a.html}</p>`).join("")}</div>` : "";
+  const mineAlarmMsgs = mineFor(key).map(pp => ({pp, st: mineStatus(pp)})).filter(x => x.st.sell)
+    .map(x => `<b>Sell your ${esc(x.pp.symbol)}.</b> ${x.st.why[0].toUpperCase()}${esc(x.st.why.slice(1))}.
+      You bought it at ${price(x.pp.entry_price)}${liveQuotes[x.pp.symbol] ? ` — it is now ${price(liveQuotes[x.pp.symbol])}` : ""}.`);
+  const allAlarms = [...mineAlarmMsgs.map(h => ({html: h})), ...alarms];
+  const alarmHtml = allAlarms.length ? `<div class="card alertcard"><h2>⚠ Time to sell — right now</h2>
+      ${allAlarms.map(a=>`<p>${a.html}</p>`).join("")}</div>` : "";
   const todoClass = normal.some(c=>c.kind==="buy") ? "has-buy" : normal.some(c=>c.kind==="sell") ? "has-sell" : "";
   const todoHtml = `<div class="card todo ${todoClass}"><h2>What to do today</h2>
     ${normal.length
@@ -363,34 +525,117 @@ function render(){
       : "New instructions appear just after the market closes at 4 o'clock New York time."}</p>
   </div>`;
 
-  // --- 1b. what it is watching (always shown, even when nothing qualifies) ---
-  const wl = s.watchlist;
-  let watchHtml = "";
-  if(wl){
-    const statClass = st =>
-      st.startsWith("qualified") ? "qualified" :
-      st.startsWith("next") ? "queued" :
-      st.startsWith("already") ? "owned" : "cooling";
-    const rows = (wl.items||[]).map(it => {
-      const tags = [];
-      if(it.r3m != null) tags.push(`3-month <b>${it.r3m >= 0 ? "+" : ""}${it.r3m}%</b>`);
-      if(it.r6m != null) tags.push(`6-month <b>${it.r6m >= 0 ? "+" : ""}${it.r6m}%</b>`);
-      if(it.range_pos != null) tags.push(`<b>${it.range_pos}%</b> up its 52-week range`);
-      return `<div class="watchrow">
-        <span class="wsym">${esc(it.symbol)}${it.price ? `<br><span style="font-size:12px;font-family:'JetBrains Mono',monospace;color:var(--gold-dim)">${price(it.price)}</span>` : ""}</span>
-        <span class="wwhy">${esc(it.why) || "On the list for a morning gap."}
-          ${tags.length ? `<span class="watchtags">${tags.map(t=>`<span>${t}</span>`).join("")}</span>` : ""}</span>
-        <span class="wstat ${statClass(it.status)}">${esc(it.status)}</span>
+  // --- 1b. your own positions: the site tracks what YOU actually bought ---
+  const mine = mineFor(key);
+  const mineAlarms = mine.map(pp => ({pp, st: mineStatus(pp)})).filter(x => x.st.sell);
+  let mineHtml = "";
+  if(mine.length || MINE.closed.some(c => c.strategy === key)){
+    const rows = mine.map(pp => {
+      const st = mineStatus(pp);
+      const live = liveQuotes[pp.symbol];
+      const pnlTxt = live && pp.entry_price
+        ? `now ${price(live)}, ${pctWords((live / pp.entry_price - 1) * 100)}`
+        : `waiting for a live price`;
+      let plan;
+      if(st.sell) plan = `<b class="down">Sell now</b> — ${st.why}.`;
+      else {
+        const bits = [];
+        if(pp.target_price) bits.push(`reaches <b>${price(pp.target_price)}</b> (profit)`);
+        if(pp.stop_price) bits.push(`falls to <b>${price(pp.stop_price)}</b> (protection)`);
+        plan = `Hold. Sell when it ${bits.join(" or ")}` +
+          (pp.deadline ? `, or by <b>${fmtDate(pp.deadline)}</b> at the latest.` : ".");
+      }
+      return `<div class="minepos ${st.sell ? "alarm" : ""}">
+        <p>You bought <b>${esc(pp.symbol)}</b> on ${fmtDate(pp.entry_date)} at ${price(pp.entry_price)}
+        (${money(pp.amount)}) — <span data-live-mine="${esc(pp.symbol)}" data-mine-id="${esc(pp.id)}">${pnlTxt}</span>.</p>
+        <p>${plan}</p>
+        <div class="row2">
+          <button class="btn2 sold" data-act="sellform" data-id="${esc(pp.id)}">I sold it</button>
+          <button class="btn2 ghost" data-act="removemine" data-id="${esc(pp.id)}">Remove (added by mistake)</button>
+        </div>
+        <div class="buyform" id="sellform-${esc(pp.id)}" style="display:none">
+          <label>Price you sold at: <input type="number" step="0.01" id="sellpx-${esc(pp.id)}"
+            value="${live ? live.toFixed(2) : pp.entry_price}"></label>
+          <button class="btn2 save" data-act="sellsave" data-id="${esc(pp.id)}">Save</button>
+          <button class="btn2 cancel" data-act="sellcancel" data-id="${esc(pp.id)}">Cancel</button>
+        </div>
       </div>`;
     }).join("");
-    const gapList = key === "daytrade" && (wl.items||[]).length
-      ? `<div class="watchgaps">${wl.items.map(i=>`<span>${esc(i.symbol)}</span>`).join("")}</div>`
-      : "";
-    watchHtml = `<div class="card"><h2>What it's watching</h2>
-      <p class="watchnote">${esc(wl.note)}</p>
-      ${key === "daytrade" ? gapList : rows}
-      <p class="smallnote">Scanning ${wl.scanned} companies${wl.basis && wl.basis !== "none" ? ` · ranked by ${esc(wl.basis === "metrics" ? "trailing 3- and 6-month performance" : wl.basis === "price-history" ? "its own stored price history" : wl.basis)}` : ""}.</p>
+    const done = MINE.closed.filter(c => c.strategy === key).slice(-5).reverse();
+    const doneHtml = done.length ? `<p class="smallnote" style="margin-top:12px">Your finished trades here:
+      ${done.map(c => `${esc(c.symbol)} ${pctWords(c.pnl_pct)}`).join(" · ")}</p>` : "";
+    mineHtml = `<div class="card mineband" ${mineAlarms.length ? 'id="mineAlarmCard"' : ""}>
+      <h2>Your positions</h2>
+      ${rows || `<p>None right now. When a stock on the board below is highlighted as a
+        <b class="up">BUY</b>, press <i>&ldquo;I bought this&rdquo;</i> and this page will watch it
+        for you and tell you exactly when to sell.</p>`}
+      ${doneHtml}
+      <p class="smallnote">Saved in this browser only — the machine's own record stays separate.</p>
     </div>`;
+  } else {
+    mineHtml = `<div class="card mineband"><h2>Your positions</h2>
+      <p>None yet. When a stock on the board below is highlighted as a <b class="up">BUY</b>,
+      press <i>&ldquo;I bought this&rdquo;</i> — this page will then watch your position and tell
+      you exactly when to sell it. You don't need to have been following along before.</p>
+    </div>`;
+  }
+
+  // --- 1c. THE BOARD: every scanned stock, hottest first, buys highlighted ---
+  const board = s.board || (s.watchlist ? {rows: (s.watchlist.items || []).map(it => ({
+      symbol: it.symbol, price: it.price, price_asof: d.as_of_date + " close",
+      qualified: it.status.startsWith("qualified"), buy: it.status.startsWith("qualified"),
+      held: it.status.startsWith("already"), reason: it.status,
+      r3m: it.r3m, r6m: it.r6m, range_pos: it.range_pos, vol: null})),
+      note: s.watchlist.note, basis: s.watchlist.basis} : null);
+  let boardHtml = "";
+  if(board && (board.rows || []).length){
+    const allRows = board.rows;
+    const shown = boardExpanded ? allRows : allRows.slice(0, 25);
+    const rowsHtml = shown.map((r, i) => {
+      const youOwn = mineOwns(key, r.symbol);
+      const nums = key === "daytrade"
+        ? `<span data-live-gap="${esc(r.symbol)}">${r.price ? "prev close " + price(r.price) : "&mdash;"}</span>`
+        : [r.r3m != null ? `3-mo <b>${r.r3m >= 0 ? "+" : ""}${r.r3m}%</b>` : "",
+           r.r6m != null ? `6-mo <b>${r.r6m >= 0 ? "+" : ""}${r.r6m}%</b>` : "",
+           r.range_pos != null ? `<b>${r.range_pos}%</b> up its range` : ""].filter(Boolean).join(" · ");
+      let side;
+      if(youOwn) side = `<span class="chip cmine">You own this</span>`;
+      else if(r.buy) side = `<span class="chip cbuy">Buy</span>
+        <button class="ibought" data-act="buyform" data-sym="${esc(r.symbol)}">I bought this</button>`;
+      else if(r.held) side = `<span class="chip cheld">Model owns it</span>`;
+      else side = `<span class="breason">${esc(r.reason)}</span>`;
+      return `<div class="brow ${r.buy && !youOwn ? "buy" : ""}" data-row="${esc(r.symbol)}">
+        <span class="brank">${i + 1}</span>
+        <div class="bmain">
+          <span class="bsym">${esc(r.symbol)}</span>
+          <span class="bpx" data-live-px="${esc(r.symbol)}">${r.price ? price(r.price) : "&mdash;"}</span>
+          <span class="bstamp" data-live-stamp="${esc(r.symbol)}">${esc(stampText(r.symbol, r.price_asof))}</span>
+        </div>
+        <div class="bnums">${nums}</div>
+        <div class="bside">${side}</div>
+        <div class="buyform" id="buyform-${esc(r.symbol)}" style="display:none">
+          <label>Price you paid: <input type="number" step="0.01" id="buypx-${esc(r.symbol)}"
+            value="${(liveQuotes[r.symbol] || r.price || 0).toFixed(2)}"></label>
+          <label>Amount: $<input type="number" step="50" id="buyamt-${esc(r.symbol)}" value="1000"></label>
+          <button class="btn2 save" data-act="buysave" data-sym="${esc(r.symbol)}">Save &mdash; watch it for me</button>
+          <button class="btn2 cancel" data-act="buycancel" data-sym="${esc(r.symbol)}">Cancel</button>
+        </div>
+      </div>`;
+    }).join("");
+    const more = allRows.length > shown.length
+      ? `<button class="btn2 ghost showmore" data-act="showmore">Show all ${allRows.length} stocks</button>` : "";
+    boardHtml = `<div class="card"><h2>The board</h2>
+      ${board.note ? `<p class="watchnote">${esc(board.note)}</p>` : ""}
+      ${rowsHtml}${more}
+      <p class="smallnote">Hottest at the top. Green rows are this strategy's buys right now.
+      Each price shows exactly when it was last updated${key === "daytrade"
+        ? "; day changes stream in live while the market is open" : ""}.</p>
+    </div>`;
+  } else if(key === "longterm"){
+    boardHtml = "";
+  } else {
+    boardHtml = `<div class="card"><h2>The board</h2>
+      <p>The full board publishes with the machine's next report (tonight after the close).</p></div>`;
   }
 
   // --- 2. why you should listen ---
@@ -473,11 +718,45 @@ function render(){
      (bought ${fmtDate(t.entry_date)} at ${price(t.entry_price)}): ${pctWords(t.pnl_pct)} · ${esc(t.reason)}</div>`).join("");
   const tradesHtml = trades ? `<div class="card"><h2>Its last few decisions</h2>${trades}</div>` : "";
 
-  $("content").innerHTML = alarmHtml + todoHtml + watchHtml + proofHtml + proHtml + holdingsHtml + tradesHtml;
+  $("content").innerHTML = alarmHtml + mineHtml + boardHtml + todoHtml + proofHtml + proHtml + holdingsHtml + tradesHtml;
+  wireBoardActions();
+  rebuildPump();
   drawChart(key);
 }
 
 /* ---------- the chart: strategy line vs market reference, with hover ---------- */
+let boardExpanded = false;
+function wireBoardActions(){
+  $("content").onclick = (ev) => {
+    const btn = ev.target.closest("[data-act]");
+    if(!btn) return;
+    const act = btn.dataset.act, sym = btn.dataset.sym, id = btn.dataset.id;
+    if(act === "showmore"){ boardExpanded = true; render(); }
+    else if(act === "buyform"){ const f = $("buyform-" + sym); if(f) f.style.display = "flex"; }
+    else if(act === "buycancel"){ const f = $("buyform-" + sym); if(f) f.style.display = "none"; }
+    else if(act === "buysave"){
+      const px = parseFloat($("buypx-" + sym)?.value);
+      const amt = parseFloat($("buyamt-" + sym)?.value) || 1000;
+      if(!px || px <= 0) return;
+      addMine(currentTab, sym, px, amt);
+      render();
+      window.scrollTo({top: 0, behavior: "smooth"});
+    }
+    else if(act === "sellform"){ const f = $("sellform-" + id); if(f) f.style.display = "flex"; }
+    else if(act === "sellcancel"){ const f = $("sellform-" + id); if(f) f.style.display = "none"; }
+    else if(act === "sellsave"){
+      const px = parseFloat($("sellpx-" + id)?.value);
+      if(!px || px <= 0) return;
+      closeMine(id, px);
+      render();
+    }
+    else if(act === "removemine"){
+      const i = MINE.positions.findIndex(x => x.id === id);
+      if(i >= 0){ MINE.positions.splice(i, 1); saveMine(); render(); }
+    }
+  };
+}
+
 function drawChart(key){
   const cv = $("chart");
   if(!cv || !DATA.equity_curves) return;
@@ -620,23 +899,14 @@ function updateTickerItem(sym, px, chg){
     c.textContent = `${up ? "\u25b2" : "\u25bc"} ${(chg >= 0 ? "+" : "")}${(chg || 0).toFixed(2)}%`;
   });
 }
-async function fillTicker(){
-  if(!tickerBuilt) buildTicker();
-  for(const sym of TICKER_SYMS){
-    try{
-      const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=${sym}&token=${FINNHUB_KEY}`);
-      const j = await r.json();
-      if(j && j.c) updateTickerItem(sym, j.c, j.dp || 0);
-    }catch(e){ /* keep last value */ }
-    await new Promise(r => setTimeout(r, 1100));
-  }
-}
 
 /* ---------- boot ---------- */
 document.querySelectorAll(".tabbtn").forEach(btn=>{
   btn.addEventListener("click", ()=>{
     currentTab = btn.dataset.tab;
     location.hash = currentTab;
+    boardExpanded = false;
+    mineAlarmState = "";
     renderTabs(); render();
     window.scrollTo({top:0, behavior:"smooth"});
   });
@@ -649,17 +919,14 @@ window.addEventListener("resize", ()=>{ if(DATA) drawChart(currentTab); });
 document.addEventListener("visibilitychange", async ()=>{
   if(document.visibilityState === "visible" && DATA){
     if(await loadData()){ renderTabs(); render(); }
-    refreshQuotes();
   }
 });
 
 (async ()=>{
   if(await loadData()){
     renderTabs(); render();
-    await refreshQuotes();
-    fillTicker();
-    setInterval(refreshQuotes, 60000);
-    setInterval(fillTicker, 5 * 60000);
+    buildTicker();
+    quotePump();
     setInterval(async ()=>{ if(await loadData()){ renderTabs(); render(); } }, 5*60000);
   }
 })();

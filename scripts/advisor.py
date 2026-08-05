@@ -385,84 +385,109 @@ def _range_pos(px, lo, hi):
 
 
 def score_aggressive_metrics(metrics, quotes):
-    """🚀 Fast Mover ranking from vendor metric windows. Same philosophy as the
-    history-based model: volatility-adjusted 3-month momentum leads, longer
-    trend confirms, the last week is only a sanity band so verticals and
-    collapses are both excluded."""
+    """⚡🚀 Fast Mover ranking from vendor metric windows — but unlike a
+    plain screener, EVERY scanned symbol comes back with a verdict: the ones
+    that qualify (with a score) and the ones that don't (with the plain-English
+    reason they were rejected). The website's board shows all of it."""
     rows = []
     for sym, m in metrics.items():
         px = quotes.get(sym)
-        if not px or px < 2.0:
-            continue
         r13, r26, r5 = m.get("r13w"), m.get("r26w"), m.get("r5")
         vol = m.get("vol")
-        if r13 is None or r26 is None or r5 is None or not vol or vol <= 0:
-            continue
-        if r13 <= 0 or r26 <= 0:
-            continue                       # rising on both horizons
-        if r5 < -2.0 or r5 > 15.0:
-            continue                       # not collapsing, not vertical
         pos = _range_pos(px, m.get("lo52"), m.get("hi52"))
-        if pos is None or pos < 0.55:
-            continue                       # must be in the upper half of its range
-        if pos > 0.995 and r5 > 8.0:
-            continue                       # blow-off top at a 52-week high
-        advol = m.get("advol")
-        if advol is not None and advol * px < 20.0:
-            continue                       # ~$20M/day liquidity floor (advol in millions)
-        rows.append({"symbol": sym, "name": sym, "price": px,
-                     "r13": r13, "r26": r26, "r5": r5, "vol": vol, "pos": pos,
-                     "q13": r13 / vol, "q26": r26 / vol})
-    z13 = zscores([r["q13"] for r in rows])
-    z26 = zscores([r["q26"] for r in rows])
-    for i, r in enumerate(rows):
-        r["score"] = 0.60 * z13[i] + 0.40 * z26[i]
-        r["basis"] = "metrics"
+        row = {"symbol": sym, "name": sym, "price": px,
+               "r13": r13, "r26": r26, "r5": r5, "vol": vol, "pos": pos,
+               "qualified": False, "reason": "", "score": None}
+        reason = None
+        if not px or px < 2.0:
+            reason = "no usable price"
+        elif r13 is None or r26 is None or r5 is None or not vol or vol <= 0:
+            reason = "missing data"
+        elif r13 <= 0 or r26 <= 0:
+            reason = "not rising over both 3 and 6 months"
+        elif r5 < -2.0:
+            reason = "falling too hard this week"
+        elif r5 > 15.0:
+            reason = "vertical one-week spike — chases like this reverse"
+        elif pos is None or pos < 0.55:
+            reason = "in the lower half of its 52-week range"
+        elif pos > 0.995 and r5 > 8.0:
+            reason = "blow-off top at a 52-week high"
+        elif m.get("advol") is not None and m["advol"] * px < 20.0:
+            reason = "too thinly traded"
+        if reason:
+            row["reason"] = reason
+            rows.append(row)
+            continue
+        row["qualified"] = True
+        row["q13"] = r13 / vol
+        row["q26"] = r26 / vol
+        rows.append(row)
+    qual = [r for r in rows if r["qualified"]]
+    z13 = zscores([r["q13"] for r in qual])
+    z26 = zscores([r["q26"] for r in qual])
+    for i, r in enumerate(qual):
+        r["score"] = round(0.60 * z13[i] + 0.40 * z26[i], 3)
+        r["reason"] = "meets every test — genuine multi-month momentum"
         r["thesis"] = (
             f"Up {r['r13']:.0f}% over three months and {r['r26']:.0f}% over six, "
             f"sitting {r['pos'] * 100:.0f}% of the way up its 52-week range — a steady climb "
             f"rather than a one-week spike ({r['r5']:+.1f}% this week). Target +20%, stop −8% "
             f"moving to breakeven at +10%, out after 15 trading days regardless."
         )
-    rows.sort(key=lambda r: r["score"], reverse=True)
-    return rows
+    qual.sort(key=lambda r: r["score"], reverse=True)
+    rest = [r for r in rows if not r["qualified"]]
+    rest.sort(key=lambda r: (r["r13"] if r["r13"] is not None else -999), reverse=True)
+    return qual + rest
 
 
 def score_growth_metrics(metrics, quotes):
-    """📈 Steady Climber ranking from vendor metric windows: durable multi-month
-    uptrend, near the top of its own range, with volatility capped."""
+    """📈 Steady Climber ranking from vendor metric windows, with a verdict
+    for every scanned symbol (see score_aggressive_metrics)."""
     rows = []
     for sym, m in metrics.items():
         px = quotes.get(sym)
-        if not px or px < 5.0:
-            continue
         r13, r26, r52 = m.get("r13w"), m.get("r26w"), m.get("r52w")
         vol = m.get("vol")
-        if r13 is None or r26 is None or r52 is None or not vol or vol <= 0:
-            continue
-        if r26 <= 0 or r52 <= 0 or r13 <= 0:
-            continue                       # rising over 3, 6 and 12 months
-        if vol > 45.0:
-            continue                       # volatility cap
         pos = _range_pos(px, m.get("lo52"), m.get("hi52"))
-        if pos is None or pos < 0.65:
-            continue                       # trading near its highs = confirmed uptrend
-        rows.append({"symbol": sym, "name": sym, "price": px,
-                     "r13": r13, "r26": r26, "r52": r52, "vol": vol, "pos": pos,
-                     "q26": r26 / vol, "q13": r13 / vol})
-    z26 = zscores([r["q26"] for r in rows])
-    z13 = zscores([r["q13"] for r in rows])
-    for i, r in enumerate(rows):
-        r["score"] = 0.55 * z26[i] + 0.25 * z13[i] + 0.20 * r["pos"] * 2
-        r["basis"] = "metrics"
+        row = {"symbol": sym, "name": sym, "price": px,
+               "r13": r13, "r26": r26, "r52": r52, "vol": vol, "pos": pos,
+               "qualified": False, "reason": "", "score": None}
+        reason = None
+        if not px or px < 5.0:
+            reason = "no usable price"
+        elif r13 is None or r26 is None or r52 is None or not vol or vol <= 0:
+            reason = "missing data"
+        elif r26 <= 0 or r52 <= 0 or r13 <= 0:
+            reason = "not rising over 3, 6 and 12 months together"
+        elif vol > 45.0:
+            reason = "swings too hard for this strategy"
+        elif pos is None or pos < 0.65:
+            reason = "too far below its 52-week high"
+        if reason:
+            row["reason"] = reason
+            rows.append(row)
+            continue
+        row["qualified"] = True
+        row["q26"] = r26 / vol
+        row["q13"] = r13 / vol
+        rows.append(row)
+    qual = [r for r in rows if r["qualified"]]
+    z26 = zscores([r["q26"] for r in qual])
+    z13 = zscores([r["q13"] for r in qual])
+    for i, r in enumerate(qual):
+        r["score"] = round(0.55 * z26[i] + 0.25 * z13[i] + 0.20 * r["pos"] * 2, 3)
+        r["reason"] = "meets every test — durable, calm uptrend"
         r["thesis"] = (
             f"A confirmed climb: up {r['r26']:.0f}% over six months and {r['r52']:.0f}% over the year, "
             f"trading {r['pos'] * 100:.0f}% of the way up its 52-week range with moderate "
             f"({r['vol']:.0f}%) volatility. Target +15%, stop −10%, and it steps aside if the "
             f"trend breaks."
         )
-    rows.sort(key=lambda r: r["score"], reverse=True)
-    return rows
+    qual.sort(key=lambda r: r["score"], reverse=True)
+    rest = [r for r in rows if not r["qualified"]]
+    rest.sort(key=lambda r: (r["r26"] if r["r26"] is not None else -999), reverse=True)
+    return qual + rest
 
 
 def trim_partial_session(bars):
@@ -1530,7 +1555,63 @@ def build_watchlists(state, ranked_agg, ranked_gro, rank_basis, regime_note,
     return out
 
 
-def build_site_payload(state, bars, as_of, new_picks, data_source, watchlists=None):
+def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
+                 can_trade, as_of, bars):
+    """The full evaluated universe per strategy — every scanned symbol with its
+    numbers, its verdict, and the exact vintage of its price. The website
+    renders this as the stock board, buy-highlights included."""
+    out = {}
+    price_asof = f"{as_of} close"
+    for key, board in (("aggressive", board_agg), ("growth", board_gro)):
+        strat = state["strategies"][key]
+        held = {p["symbol"] for p in strat["positions"]}
+        cooling = set(strat.get("cooldown") or {})
+        free = STRATEGY_META[key]["slots"] - len(strat["positions"])
+        rows, buy_rank = [], 0
+        for r in board[:250]:
+            buyable = bool(r.get("qualified")) and r["symbol"] not in held                 and r["symbol"] not in cooling and not regime_note
+            if buyable:
+                buy_rank += 1
+            rows.append({
+                "symbol": r["symbol"],
+                "price": round(r["price"], 2) if r.get("price") else None,
+                "price_asof": price_asof,
+                "qualified": bool(r.get("qualified")),
+                "buy": buyable and buy_rank <= max(free, 0) + 3,
+                "held": r["symbol"] in held,
+                "reason": r.get("reason", ""),
+                "r3m": round(r["r13"], 1) if r.get("r13") is not None else (
+                    round(r["r63"] * 100, 1) if r.get("r63") is not None else None),
+                "r6m": round(r["r26"], 1) if r.get("r26") is not None else None,
+                "range_pos": round(r["pos"] * 100) if r.get("pos") is not None else None,
+                "vol": round(r["vol"], 0) if r.get("vol") is not None else None,
+            })
+        note = ""
+        if regime_note and key == "aggressive":
+            note = f"Buying is paused — {regime_note}."
+        elif not can_trade:
+            note = ("Highlighted names qualify right now; the model itself buys on the "
+                    "post-close run at official closing prices.")
+        out[key] = {"rows": rows, "note": note, "basis": rank_basis}
+    # daytrade board: the fixed watchlist, previous closes attached
+    dt_rows = []
+    for s in DAYTRADE_WATCHLIST:
+        h = bars.get(s)
+        px = (h["close"][h["dates"][-1]] if h and h["dates"] else None)
+        dt_rows.append({"symbol": s, "price": round(px, 2) if px else None,
+                        "price_asof": price_asof, "qualified": False, "buy": False,
+                        "held": False, "reason": "watching for a 2–8% morning gap",
+                        "r3m": None, "r6m": None, "range_pos": None, "vol": None})
+    out["daytrade"] = {"rows": dt_rows, "basis": "intraday gaps",
+                       "note": ("Live gap percentages appear while the market is open. "
+                                "A name lights up as BUY only in the morning window, "
+                                "still climbing 20 minutes after its gap.")}
+    out["longterm"] = {"rows": [], "basis": "fixed allocation",
+                       "note": "This strategy owns its whole allocation permanently — no board by design."}
+    return out
+
+
+def build_site_payload(state, bars, as_of, new_picks, data_source, watchlists=None, boards=None):
     hist = state["equity_history"]
     dates = sorted(hist.keys())
     curves = {"dates": dates}
@@ -1577,6 +1658,10 @@ def build_site_payload(state, bars, as_of, new_picks, data_source, watchlists=No
             "recent_activity": strat["activity"][-8:][::-1],
             "pro": pro_metrics(dates, hist, key, strat["closed"], slots=meta.get("slots")),
             "watchlist": (watchlists or {}).get(key),
+            "board": (boards or {}).get(key),
+            "rules": {k: meta.get(k) for k in
+                      ("target_pct", "stop_pct", "max_hold_bars", "be_trigger",
+                       "min_gap", "max_gap") if meta.get(k) is not None},
         }
     tuning_params = load_params()
     today_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
@@ -2350,6 +2435,7 @@ def main():
     #    let both models work from day one instead of waiting months.
     new_picks = {"aggressive": [], "growth": [], "longterm": []}
     ranked_agg, ranked_gro, rank_basis = [], [], "none"
+    board_agg, board_gro = [], []
     agg_wants = STRATEGY_META["aggressive"]["slots"] - len(state["strategies"]["aggressive"]["positions"])
     gro_wants = STRATEGY_META["growth"]["slots"] - len(state["strategies"]["growth"]["positions"])
 
@@ -2359,6 +2445,10 @@ def main():
         gro_universe = {s: h for s, h in bars.items() if s in set(SP_CORE)}
         ranked_agg = score_aggressive(agg_universe, as_of)
         ranked_gro = score_growth(gro_universe, as_of)
+        for r in ranked_agg + ranked_gro:
+            r["qualified"] = True
+            r.setdefault("reason", "meets every test")
+        board_agg, board_gro = ranked_agg, ranked_gro
     elif FINNHUB_KEY and (agg_wants > 0 or gro_wants > 0):
         rank_basis = "metrics"
         print("  price store still shallow — ranking from Finnhub metric windows instead.")
@@ -2367,10 +2457,12 @@ def main():
         quotes = {s: (bars[s]["close"][bars[s]["dates"][-1]]
                       if bars.get(s) and bars[s]["dates"] else None) for s in uni}
         quotes = {s: p for s, p in quotes.items() if p}
-        ranked_agg = score_aggressive_metrics(
+        board_agg = score_aggressive_metrics(
             {s: m for s, m in metrics.items() if s in set(MOMENTUM)}, quotes)
-        ranked_gro = score_growth_metrics(
+        board_gro = score_growth_metrics(
             {s: m for s, m in metrics.items() if s in set(SP_CORE)}, quotes)
+        ranked_agg = [r for r in board_agg if r["qualified"]]
+        ranked_gro = [r for r in board_gro if r["qualified"]]
 
     # regime filter: high-beta momentum bleeds when the broad market is below
     # its own 50-day trend — the Fast Mover sits in cash then
@@ -2445,8 +2537,10 @@ def main():
         if t["exit_date"] == as_of) + sum(len(v) for v in new_picks.values())
     watchlists = build_watchlists(
         state, ranked_agg, ranked_gro, rank_basis, regime_note, universe_ok, can_trade)
+    boards = build_boards(state, board_agg, board_gro, rank_basis, regime_note,
+                          can_trade, as_of, bars)
     site = build_site_payload(state, bars, as_of, new_picks, data_source,
-                              watchlists=watchlists)
+                              watchlists=watchlists, boards=boards)
 
     save_json(STATE_PATH, state)
     save_json(SITE_PATH, site)

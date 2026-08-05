@@ -527,3 +527,33 @@ if fails:
     print(f"{fails} TUNING FAILURES")
     sys.exit(1)
 print("ALL TUNING TESTS PASSED")
+
+# ---------- test 23: board scorers give every symbol a verdict ----------
+def t23():
+    metrics = {
+        "GOOD": {"r5": 2.0, "r13w": 20.0, "r26w": 35.0, "r52w": 60.0, "vol": 30.0,
+                 "hi52": 120.0, "lo52": 60.0, "advol": 5.0},
+        "SPIKE": {"r5": 22.0, "r13w": 25.0, "r26w": 30.0, "r52w": 40.0, "vol": 50.0,
+                  "hi52": 100.0, "lo52": 40.0, "advol": 5.0},
+        "DOWN": {"r5": -1.0, "r13w": -8.0, "r26w": -12.0, "r52w": -20.0, "vol": 30.0,
+                 "hi52": 100.0, "lo52": 50.0, "advol": 5.0},
+    }
+    quotes = {"GOOD": 110.0, "SPIKE": 95.0, "DOWN": 55.0}
+    board = adv.score_aggressive_metrics(metrics, quotes)
+    assert len(board) == 3, "every scanned symbol must appear on the board"
+    by = {r["symbol"]: r for r in board}
+    assert by["GOOD"]["qualified"] and by["GOOD"]["score"] is not None
+    assert not by["SPIKE"]["qualified"] and "spike" in by["SPIKE"]["reason"]
+    assert not by["DOWN"]["qualified"] and "not rising" in by["DOWN"]["reason"]
+    assert board[0]["symbol"] == "GOOD", "qualified rows sort to the top"
+    g = adv.score_growth_metrics(metrics, quotes)
+    gby = {r["symbol"]: r for r in g}
+    assert gby["GOOD"]["qualified"]
+    assert not gby["DOWN"]["qualified"]
+check("board scorers: verdict + reason for every symbol, buys on top", t23)
+
+print()
+if fails:
+    print(f"{fails} BOARD FAILURES")
+    sys.exit(1)
+print("ALL BOARD TESTS PASSED")
