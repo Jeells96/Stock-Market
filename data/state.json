@@ -200,7 +200,7 @@
      "target_price": 179.62999999999997,
      "stop_price": 140.57999999999998,
      "thesis": "A confirmed climb: up 31% over six months and 54% over the year, trading 88% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 156.82,
+     "last_price": 158.74,
      "bars_held": 0,
      "splits_applied": [],
      "divs_credited": [],
@@ -361,13 +361,13 @@
   "2026-08-05": {
    "daytrade": 10000.0,
    "aggressive": 9905.43,
-   "growth": 9912.01,
+   "growth": 9936.58,
    "longterm": 10243.29,
    "benchmark": 10304.67
   }
  },
- "runs": 8,
- "last_run_utc": "2026-08-05T22:57:28Z",
+ "runs": 9,
+ "last_run_utc": "2026-08-06T12:46:40Z",
  "intraday": {
   "date": "2026-08-05",
   "marks": {
