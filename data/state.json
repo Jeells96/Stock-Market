@@ -323,8 +323,60 @@
    ]
   },
   "daytrade": {
-   "cash": 10000.0,
-   "positions": [],
+   "cash": 0.0,
+   "positions": [
+    {
+     "symbol": "MDB",
+     "name": "MDB",
+     "shares": 8.409948807968812,
+     "entry_price": 396.3559599999999,
+     "entry_date": "2026-08-07",
+     "raw_entry_price": 395.96,
+     "entry_time": "11:11",
+     "target_price": 407.8388,
+     "stop_price": 388.0408,
+     "thesis": "Up 7.0% on the day at 11:11 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 395.96,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "CVNA",
+     "name": "CVNA",
+     "shares": 45.58526119101068,
+     "entry_price": 73.12304999999999,
+     "entry_date": "2026-08-07",
+     "raw_entry_price": 73.05,
+     "entry_time": "11:11",
+     "target_price": 75.2415,
+     "stop_price": 71.589,
+     "thesis": "Up 6.9% on the day at 11:11 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 73.05,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "IONQ",
+     "name": "IONQ",
+     "shares": 78.66769029065274,
+     "entry_price": 42.37232999999999,
+     "entry_date": "2026-08-07",
+     "raw_entry_price": 42.33,
+     "entry_time": "11:11",
+     "target_price": 43.5999,
+     "stop_price": 41.483399999999996,
+     "thesis": "Up 6.6% on the day at 11:11 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 42.33,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    }
+   ],
    "closed": [],
    "cooldown": {},
    "last_eval_date": "2026-08-06",
@@ -332,6 +384,18 @@
     {
      "date": "2026-07-31",
      "text": "Day Trader sleeve started with $10,000"
+    },
+    {
+     "date": "2026-08-07",
+     "text": "\u26a1 11:11 ET BUY MDB @ $395.96 (+7.0% confirmed gap)"
+    },
+    {
+     "date": "2026-08-07",
+     "text": "\u26a1 11:11 ET BUY CVNA @ $73.05 (+6.9% confirmed gap)"
+    },
+    {
+     "date": "2026-08-07",
+     "text": "\u26a1 11:11 ET BUY IONQ @ $42.33 (+6.6% confirmed gap)"
     }
    ]
   }
@@ -374,36 +438,34 @@
   }
  },
  "runs": 12,
- "last_run_utc": "2026-08-07T14:10:23Z",
+ "last_run_utc": "2026-08-07T15:12:01Z",
  "intraday": {
   "date": "2026-08-07",
   "marks": {
-   "SMCI": 30.08,
-   "COIN": 149.85,
-   "MSTR": 100.41,
-   "HOOD": 93.8,
-   "SOFI": 18.49,
-   "RDDT": 161.28,
-   "CVNA": 72.03,
-   "AFRM": 78.46,
-   "UPST": 30.51,
-   "IONQ": 41.73,
-   "RGTI": 16.91,
-   "ASTS": 68.96,
-   "RKLB": 79.3,
-   "ACHR": 5.41,
-   "JOBY": 8.45,
-   "HIMS": 30.49,
-   "CELH": 24.7,
-   "ELF": 96.62,
-   "DUOL": 128.07,
-   "SNOW": 328.17,
-   "CRWD": 215.81,
-   "MDB": 391.22,
-   "DDOG": 238.65,
-   "U": 42.97,
-   "PATH": 14.98,
-   "SHOP": 150.52
+   "SMCI": 30.25,
+   "COIN": 152.64,
+   "MSTR": 102.3,
+   "HOOD": 94.91,
+   "UPST": 30.78,
+   "RGTI": 17.03,
+   "ASTS": 69.88,
+   "RKLB": 80.28,
+   "ACHR": 5.49,
+   "JOBY": 8.6,
+   "HIMS": 31.2,
+   "CELH": 24.83,
+   "ELF": 98.31,
+   "DUOL": 127.39,
+   "SNOW": 324.85,
+   "DDOG": 234.96,
+   "U": 42.46,
+   "PATH": 14.84,
+   "SHOP": 152.43,
+   "TSLA": 330.26,
+   "NVDA": 223.67,
+   "DKNG": 23.2,
+   "NET": 303.9,
+   "SE": 114.1
   }
  }
 }
