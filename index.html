@@ -115,30 +115,36 @@
   .smallnote{font-size:12px;color:var(--gold-dim)}
   a{color:var(--gold-bright)}
 
-  /* ---- the stock board ---- */
-  .brow{display:grid;grid-template-columns:34px minmax(110px,auto) 1fr auto;gap:12px;align-items:center;
-    padding:10px 12px;border-radius:6px;border:1px solid transparent;border-top:1px solid var(--line);margin:0 -6px}
-  .brow:first-of-type{border-top-color:transparent}
-  .brow.buy{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.45);margin-top:6px;margin-bottom:6px;
+  /* ---- the stock board: a grid of cards, three across ---- */
+  .bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
+  @media(max-width:860px){.bgrid{grid-template-columns:repeat(2,1fr)}}
+  @media(max-width:540px){.bgrid{grid-template-columns:1fr}}
+  .bcard{position:relative;display:flex;flex-direction:column;gap:7px;padding:13px 13px 12px;
+    border:1px solid var(--line);border-radius:8px;background:rgba(8,17,31,0.45)}
+  .bcard.buy{background:rgba(74,222,128,0.10);border-color:rgba(74,222,128,0.55);
     box-shadow:0 0 12px rgba(74,222,128,0.12)}
-  .brank{font-size:12px;color:var(--gold-dim);text-align:right}
-  .bsym{font-family:'Cormorant Garamond',serif;font-size:21px;font-weight:700;color:#fff;display:block;line-height:1.1}
+  .bcard.sell{background:rgba(220,38,38,0.13);border-color:var(--down);
+    box-shadow:0 0 12px rgba(220,38,38,0.16)}
+  .brank{position:absolute;top:9px;right:11px;font-size:11px;color:var(--gold-dim)}
+  .bsym{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;color:#fff;display:block;line-height:1.1}
   .bpx{font-size:13px;color:var(--ivory)}
   .bstamp{display:block;font-size:10px;color:var(--gold-dim)}
   .bstamp.live{color:var(--up)}
   .bnums{font-size:12px;color:var(--cream);line-height:1.5}
   .bnums b{color:#fff}
-  .breason{font-size:11px;color:var(--gold-dim);text-align:right;max-width:210px;line-height:1.4}
-  .bside{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+  .breason{font-size:11px;color:var(--gold-dim);line-height:1.4}
+  .bwhy{font-size:11px;color:var(--cream);line-height:1.4}
+  .bside{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:auto}
   .chip{font-size:11px;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:3px;text-transform:uppercase}
   .chip.cbuy{background:var(--up);color:#06220f}
+  .chip.csell{background:var(--down);color:#fff}
   .chip.cheld{background:rgba(201,169,97,0.2);color:var(--gold-bright);border:1px solid var(--gold-dim)}
   .chip.cmine{background:rgba(56,189,248,0.18);color:#7dd3fc;border:1px solid #0284c7}
   .chip.cgap{background:rgba(74,222,128,0.15);color:var(--up);border:1px solid rgba(74,222,128,0.5)}
   .ibought{font-family:inherit;cursor:pointer;font-size:12px;font-weight:700;color:#06220f;background:var(--up);
     border:none;border-radius:4px;padding:7px 12px}
   .ibought:hover{filter:brightness(1.1)}
-  .buyform{grid-column:1/-1;display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:10px 4px 4px;font-size:13px}
+  .buyform{display:flex;gap:10px;flex-wrap:wrap;align-items:center;padding:8px 0 2px;font-size:13px}
   .buyform label{color:var(--cream)}
   .buyform input{font-family:inherit;font-size:14px;width:110px;padding:7px 9px;background:rgba(8,17,31,0.7);
     border:1px solid var(--line-strong);border-radius:4px;color:#fff}
@@ -537,7 +543,7 @@ function render(){
         ? `now ${price(live)}, ${pctWords((live / pp.entry_price - 1) * 100)}`
         : `waiting for a live price`;
       let plan;
-      if(st.sell) plan = `<b class="down">Sell now</b> — ${st.why}.`;
+      if(st.sell) plan = `<b class="down">Suggested sell — right now.</b> ${st.why[0].toUpperCase()}${st.why.slice(1)}.`;
       else {
         const bits = [];
         if(pp.target_price) bits.push(`reaches <b>${price(pp.target_price)}</b> (profit)`);
@@ -550,7 +556,7 @@ function render(){
         (${money(pp.amount)}) — <span data-live-mine="${esc(pp.symbol)}" data-mine-id="${esc(pp.id)}">${pnlTxt}</span>.</p>
         <p>${plan}</p>
         <div class="row2">
-          <button class="btn2 sold" data-act="sellform" data-id="${esc(pp.id)}">I sold it</button>
+          <button class="btn2 sold" data-act="sellform" data-id="${esc(pp.id)}">You sold it? Record it here</button>
           <button class="btn2 ghost" data-act="removemine" data-id="${esc(pp.id)}">Remove (added by mistake)</button>
         </div>
         <div class="buyform" id="sellform-${esc(pp.id)}" style="display:none">
@@ -566,17 +572,18 @@ function render(){
       ${done.map(c => `${esc(c.symbol)} ${pctWords(c.pnl_pct)}`).join(" · ")}</p>` : "";
     mineHtml = `<div class="card mineband" ${mineAlarms.length ? 'id="mineAlarmCard"' : ""}>
       <h2>Your positions</h2>
-      ${rows || `<p>None right now. When a stock on the board below is highlighted as a
-        <b class="up">BUY</b>, press <i>&ldquo;I bought this&rdquo;</i> and this page will watch it
-        for you and tell you exactly when to sell.</p>`}
+      ${rows || `<p>None right now. When a card on the board below turns green with
+        <b class="up">Suggested buy</b> and you buy the stock, press the green button on that
+        card — this page will then watch it for you and tell you exactly when to sell.</p>`}
       ${doneHtml}
       <p class="smallnote">Saved in this browser only — the machine's own record stays separate.</p>
     </div>`;
   } else {
     mineHtml = `<div class="card mineband"><h2>Your positions</h2>
-      <p>None yet. When a stock on the board below is highlighted as a <b class="up">BUY</b>,
-      press <i>&ldquo;I bought this&rdquo;</i> — this page will then watch your position and tell
-      you exactly when to sell it. You don't need to have been following along before.</p>
+      <p>None yet. When a card on the board below turns green with <b class="up">Suggested buy</b>
+      and you buy the stock, press the green button on that card — this page will then watch your
+      position, turn the card <b class="down">red</b> when it is time to sell, and tell you why.
+      You don't need to have been following along before.</p>
     </div>`;
   }
 
@@ -592,20 +599,33 @@ function render(){
     const allRows = board.rows;
     const shown = boardExpanded ? allRows : allRows.slice(0, 25);
     const rowsHtml = shown.map((r, i) => {
-      const youOwn = mineOwns(key, r.symbol);
+      const minePos = mineFor(key).find(p => p.symbol === r.symbol);
+      const youOwn = !!minePos;
+      const st = minePos ? mineStatus(minePos) : {sell: false, why: ""};
       const nums = key === "daytrade"
         ? `<span data-live-gap="${esc(r.symbol)}">${r.price ? "prev close " + price(r.price) : "&mdash;"}</span>`
         : [r.r3m != null ? `3-mo <b>${r.r3m >= 0 ? "+" : ""}${r.r3m}%</b>` : "",
            r.r6m != null ? `6-mo <b>${r.r6m >= 0 ? "+" : ""}${r.r6m}%</b>` : "",
            r.range_pos != null ? `<b>${r.range_pos}%</b> up its range` : ""].filter(Boolean).join(" · ");
-      let side;
-      if(youOwn) side = `<span class="chip cmine">You own this</span>`;
-      else if(r.buy) side = `<span class="chip cbuy">Buy</span>
-        <button class="ibought" data-act="buyform" data-sym="${esc(r.symbol)}">I bought this</button>`;
-      else if(r.held) side = `<span class="chip cheld">Model owns it</span>`;
-      else side = `<span class="breason">${esc(r.reason)}</span>`;
-      return `<div class="brow ${r.buy && !youOwn ? "buy" : ""}" data-row="${esc(r.symbol)}">
-        <span class="brank">${i + 1}</span>
+      let side, cls = "";
+      if(youOwn && st.sell){
+        cls = "sell";
+        side = `<span class="chip csell">Suggested sell</span>
+          <span class="bwhy">${esc(st.why[0].toUpperCase() + st.why.slice(1))}. Record the sale under &ldquo;Your positions&rdquo; above.</span>`;
+      } else if(youOwn){
+        side = `<span class="chip cmine">You own this</span>
+          <span class="bwhy">Nothing to do yet — your sell plan is under &ldquo;Your positions&rdquo; above.</span>`;
+      } else if(r.buy){
+        cls = "buy";
+        side = `<span class="chip cbuy">Suggested buy</span>
+          <button class="ibought" data-act="buyform" data-sym="${esc(r.symbol)}">You bought it? Track it here</button>`;
+      } else if(r.held){
+        side = `<span class="chip cheld">Model owns it</span>`;
+      } else {
+        side = `<span class="breason">${esc(r.reason)}</span>`;
+      }
+      return `<div class="bcard ${cls}" data-row="${esc(r.symbol)}">
+        <span class="brank">#${i + 1}</span>
         <div class="bmain">
           <span class="bsym">${esc(r.symbol)}</span>
           <span class="bpx" data-live-px="${esc(r.symbol)}">${r.price ? price(r.price) : "&mdash;"}</span>
@@ -617,7 +637,7 @@ function render(){
           <label>Price you paid: <input type="number" step="0.01" id="buypx-${esc(r.symbol)}"
             value="${(liveQuotes[r.symbol] || r.price || 0).toFixed(2)}"></label>
           <label>Amount: $<input type="number" step="50" id="buyamt-${esc(r.symbol)}" value="1000"></label>
-          <button class="btn2 save" data-act="buysave" data-sym="${esc(r.symbol)}">Save &mdash; watch it for me</button>
+          <button class="btn2 save" data-act="buysave" data-sym="${esc(r.symbol)}">Save &mdash; it will be watched for you</button>
           <button class="btn2 cancel" data-act="buycancel" data-sym="${esc(r.symbol)}">Cancel</button>
         </div>
       </div>`;
@@ -626,8 +646,9 @@ function render(){
       ? `<button class="btn2 ghost showmore" data-act="showmore">Show all ${allRows.length} stocks</button>` : "";
     boardHtml = `<div class="card"><h2>The board</h2>
       ${board.note ? `<p class="watchnote">${esc(board.note)}</p>` : ""}
-      ${rowsHtml}${more}
-      <p class="smallnote">Hottest at the top. Green rows are this strategy's buys right now.
+      <div class="bgrid">${rowsHtml}</div>${more}
+      <p class="smallnote">Hottest at the top. <b class="up">Green</b> means suggested buy;
+      <b class="down">red</b> means you own it and it is time to sell.
       Each price shows exactly when it was last updated${key === "daytrade"
         ? "; day changes stream in live while the market is open" : ""}.</p>
     </div>`;
