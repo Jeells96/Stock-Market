@@ -15,7 +15,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: advisor
+  group: advisor-daily
   cancel-in-progress: false
 
 jobs:
@@ -56,7 +56,7 @@ jobs:
           fi
           for i in 1 2 3; do
             if git push; then exit 0; fi
-            git pull --rebase || true
+            git pull --rebase || git rebase --abort || true
             sleep 5
           done
           git push

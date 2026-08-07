@@ -14,8 +14,13 @@ on:
 permissions:
   contents: write
 
+# Own queue slot on purpose: GitHub keeps only ONE pending run per concurrency
+# group and cancels the rest, so sharing a group with the 15–30-minute daily
+# engine run would get these quick checks killed (and emailed as failures) just
+# for waiting in line. Git-push retries below handle the rare cross-workflow
+# data race instead.
 concurrency:
-  group: advisor
+  group: advisor-intraday
   cancel-in-progress: false
 
 jobs:
@@ -55,7 +60,7 @@ jobs:
           fi
           for i in 1 2 3; do
             if git push; then exit 0; fi
-            git pull --rebase || true
+            git pull --rebase || git rebase --abort || true
             sleep 5
           done
           git push

@@ -24,8 +24,12 @@ on:
 permissions:
   contents: write
 
+# Shared with the Sunday tuner only (their schedules can never collide). The
+# intraday Day Trader keeps its OWN group: GitHub holds just one pending run
+# per group and cancels the rest, so the quick 20-minute checks must not wait
+# in line behind this 15–30-minute run.
 concurrency:
-  group: advisor
+  group: advisor-daily
   cancel-in-progress: false
 
 jobs:
@@ -70,7 +74,7 @@ jobs:
           # from killing the loop on a transient pull failure)
           for i in 1 2 3; do
             if git push; then exit 0; fi
-            git pull --rebase || true
+            git pull --rebase || git rebase --abort || true
             sleep 5
           done
           git push
