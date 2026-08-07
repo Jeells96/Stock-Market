@@ -1,12 +1,12 @@
 # 📊 Advisor Daily Report
 
-**As of 2026-08-06** · generated 2026-08-07T02:32:25Z · run #11 · inception 2026-07-31 · each portfolio started with $10,000 of paper money
+**As of 2026-08-06** · generated 2026-08-07T11:54:18Z · run #12 · inception 2026-07-31 · each portfolio started with $10,000 of paper money
 
 | Strategy | Equity | Total Return | vs S&P 500 | Max Drawdown | Trades | Win Rate |
 |---|---|---|---|---|---|---|
 | ⚡ **Day Trader** | $10,000.00 | +0.00% | -2.88% | 0.00% | 0 | — |
 | 🚀 **Get Rich Quick** | $9,778.72 | -2.21% | -5.09% | -2.21% | 0 | — |
-| 📈 **Dependable Growth** | $9,884.00 | -1.16% | -4.04% | -1.19% | 0 | — |
+| 📈 **Dependable Growth** | $9,885.02 | -1.15% | -4.03% | -1.18% | 0 | — |
 | 🏛️ **Long-Term Success** | $10,227.02 | +2.27% | -0.61% | -0.53% | 0 | — |
 | 🧭 S&P 500 (SPY) benchmark | $10,288.21 | +2.88% | — | — | — | — |
 
@@ -24,7 +24,7 @@ _No open positions (all cash)._
 | **OKTA** (2026-08-04) | $147.89 | $143.51 | -2.96% | $177.38 | $135.99 |
 | **TENB** (2026-08-04) | $35.96 | $36.17 | +0.59% | $43.13 | $33.06 |
 
-## 📈 Dependable Growth — $9,884.00 (-1.16%)
+## 📈 Dependable Growth — $9,885.02 (-1.15%)
 
 | Position | Entry | Now | P&L | Target | Stop |
 |---|---|---|---|---|---|
@@ -32,7 +32,7 @@ _No open positions (all cash)._
 | **STT** (2026-08-04) | $185.32 | $184.92 | -0.22% | $213.01 | $166.71 |
 | **VLO** (2026-08-04) | $308.88 | $302.99 | -1.91% | $355.04 | $277.86 |
 | **UNH** (2026-08-04) | $407.75 | $403.97 | -0.93% | $468.68 | $366.80 |
-| **BK** (2026-08-04) | $156.28 | $158.74 | +1.58% | $179.63 | $140.58 |
+| **BK** (2026-08-04) | $156.28 | $158.82 | +1.63% | $179.63 | $140.58 |
 
 ## 🏛️ Long-Term Success — $10,227.02 (+2.27%)
 
