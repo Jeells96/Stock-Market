@@ -52,7 +52,9 @@
 
   /* ---- live ticker ---- */
   .ticker-bar{position:sticky;top:0;z-index:50;margin:0 -16px;background:linear-gradient(180deg,#06101e,#0a1628);border-bottom:1px solid var(--line-strong);overflow:hidden;height:42px;display:flex;align-items:center;box-shadow:0 4px 20px rgba(0,0,0,0.5)}
-  .ticker-label{flex-shrink:0;padding:0 14px;height:100%;display:flex;align-items:center;background:linear-gradient(90deg,var(--gold-dim),transparent);border-right:1px solid var(--line);font-family:'Cormorant Garamond',serif;font-weight:700;font-size:14px;color:#08111f;letter-spacing:.18em;text-transform:uppercase}
+  /* opaque + above the track, so scrolling items disappear cleanly behind it
+     instead of showing a stray price/percentage under the badge */
+  .ticker-label{flex-shrink:0;padding:0 14px;height:100%;display:flex;align-items:center;background:linear-gradient(90deg,var(--gold-dim),#2a2416);border-right:1px solid var(--line);font-family:'Cormorant Garamond',serif;font-weight:700;font-size:14px;color:#08111f;letter-spacing:.18em;text-transform:uppercase;position:relative;z-index:2}
   .ticker-label .dot{width:6px;height:6px;border-radius:50%;background:#dc2626;margin-right:8px;box-shadow:0 0 8px #dc2626;animation:pulse 1.6s infinite}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
   .ticker-track{display:flex;animation:scroll 90s linear infinite;flex-shrink:0;will-change:transform}
@@ -60,7 +62,11 @@
   @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   .ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 18px;font-size:12px;white-space:nowrap;border-right:1px solid rgba(201,169,97,0.08)}
   .ticker-sym{color:var(--gold-bright);font-weight:600}
-  .ticker-px{color:var(--ivory)}
+  /* fixed-width numeric cells: the loop slides the track by -50% of its OWN
+     width, so any width change from a price update makes the scroll jump.
+     Tabular digits + min-widths keep the track width constant. */
+  .ticker-px{color:var(--ivory);font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;min-width:70px;text-align:right}
+  .ticker-chg{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;min-width:82px;text-align:left}
   .ticker-chg.up,.ticker-chg.down{font-weight:500}
 
   /* ---- the four tabs ---- */
@@ -110,6 +116,20 @@
   .hold{padding:13px 0;border-top:1px solid var(--line)}
   .hold:first-of-type{border-top:none}
   .hold p{margin:0}
+  /* holdings as a tappable activity list */
+  .hrow{display:grid;grid-template-columns:minmax(58px,auto) 1fr 1fr 1fr auto;gap:10px;align-items:baseline;
+    padding:10px 6px;border-top:1px solid var(--line);cursor:pointer;font-size:12.5px;color:var(--cream)}
+  .hrow:first-of-type{border-top:none}
+  .hrow:hover{background:rgba(201,169,97,0.04)}
+  .hrow b{color:#fff;font-weight:600}
+  .hsym{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:#fff}
+  .hpnl{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+  .hprose{grid-column:1/-1;font-size:12.5px;line-height:1.6;color:var(--cream);padding:4px 2px 2px;cursor:default}
+  @media(max-width:700px){
+    .hrow{font-size:10.5px;gap:6px;padding:8px 2px}
+    .hsym{font-size:14px}
+    .hprose{font-size:11px}
+  }
   .trade{padding:10px 0;border-top:1px solid var(--line);font-size:13px;color:var(--cream)}
   .trade:first-of-type{border-top:none}
   .smallnote{font-size:12px;color:var(--gold-dim)}
@@ -418,6 +438,13 @@ function applyLive(sym){
     el.innerHTML = `<span class="${g >= 0 ? "up" : "down"}">${g >= 0 ? "+" : ""}${g.toFixed(2)}% today</span>` +
       (g >= 2 && g <= 8 ? ` <span class="chip cgap">gap zone</span>` : "");
   });
+  document.querySelectorAll(`[data-hold-pnl="${sym}"]`).forEach(el => {
+    const entry = parseFloat(el.getAttribute("data-entry"));
+    if(!entry) return;
+    const pnl = (q.px / entry - 1) * 100;
+    el.textContent = `${pnl>=0?"+":""}${pnl.toFixed(1)}%`;
+    el.className = `hpnl ${pnl>=0?"up":"down"}`;
+  });
   document.querySelectorAll(`[data-live-mine="${sym}"]`).forEach(el => {
     const id = el.getAttribute("data-mine-id");
     const p = MINE.positions.find(x => x.id === id);
@@ -548,26 +575,14 @@ function render(){
   const bench = DATA.benchmark || {};
   const calls = todayCalls(key);
   const alarms = calls.filter(c=>c.kind.startsWith("alarm"));
-  const normal = calls.filter(c=>!c.kind.startsWith("alarm"));
 
-  // --- 1. what to do today ---
+  // --- 1. sell alarms (the board and holdings list carry everything else) ---
   const mineAlarmMsgs = mineFor(key).map(pp => ({pp, st: mineStatus(pp)})).filter(x => x.st.sell)
     .map(x => `<b>Sell your ${esc(x.pp.symbol)}.</b> ${x.st.why[0].toUpperCase()}${esc(x.st.why.slice(1))}.
       You bought it at ${price(x.pp.entry_price)}${liveQuotes[x.pp.symbol] ? ` — it is now ${price(liveQuotes[x.pp.symbol])}` : ""}.`);
   const allAlarms = [...mineAlarmMsgs.map(h => ({html: h})), ...alarms];
   const alarmHtml = allAlarms.length ? `<div class="card alertcard"><h2>⚠ Time to sell — right now</h2>
       ${allAlarms.map(a=>`<p>${a.html}</p>`).join("")}</div>` : "";
-  const todoClass = normal.some(c=>c.kind==="buy") ? "has-buy" : normal.some(c=>c.kind==="sell") ? "has-sell" : "";
-  const todoHtml = `<div class="card todo ${todoClass}"><h2>What to do today</h2>
-    ${normal.length
-      ? normal.map(c=>`<p>${c.html}</p>`).join("")
-      : `<p><b>Nothing today.</b> The ${meta.name} looked at the market and is happy with how things stand.
-         When it wants you to buy or sell, a plain instruction appears right here — for example:
-         <i>“Buy Apple near $210.”</i></p>`}
-    <p class="smallnote">${key==="daytrade"
-      ? "New instructions can appear about every 20 minutes while the market is open."
-      : "New instructions appear just after the market closes at 4 o'clock New York time."}</p>
-  </div>`;
 
   // --- 1b. your own positions: the site tracks what YOU actually bought ---
   const mine = mineFor(key);
@@ -809,23 +824,31 @@ function render(){
     })()}</p>
   </div>`;
 
-  // --- 3. holdings (display capped — the board above shows every one) ---
-  const HOLD_SHOW = 14;
-  const holds = (s.positions||[]).slice(0, HOLD_SHOW).map(p=>{
+  // --- 3. holdings: activity list — one row per stock, tap for the full story ---
+  const holds = (s.positions||[]).map(p=>{
     const nm = p.name && p.name!==p.symbol ? `${esc(p.name)} (${esc(p.symbol)})` : esc(p.symbol);
     const px = livePrice(p);
     const pnl = p.entry_price ? (px/p.entry_price-1)*100 : 0;
+    const hid = key + ":" + p.symbol;
+    const open = openHolds.has(hid);
     let plan;
     if(key==="daytrade") plan = `It sells by itself at ${price(p.target_price)} (taking the profit), at ${price(p.stop_price)} (protecting the money), or at today's closing bell — whichever comes first.`;
     else if(p.target_price) plan = `The machine will say <b>sell</b> when the price ends a day above ${price(p.target_price)} (taking the profit) or below ${price(p.stop_price)} (protecting the money).`;
     else plan = `It is simply kept, and looks after itself.`;
-    return `<div class="hold"><p>Holds <b>${nm}</b> — bought ${key==="daytrade"&&p.entry_time ? "today at "+esc(p.entry_time) : "on "+fmtDate(p.entry_date)}
-      at ${price(p.entry_price)}, now ${price(px)}, ${pctWords(pnl)}. ${plan}</p></div>`;
+    const prose = `Holds <b>${nm}</b> — bought ${key==="daytrade"&&p.entry_time ? "today at "+esc(p.entry_time) : "on "+fmtDate(p.entry_date)}
+      at ${price(p.entry_price)}, now ${price(px)}, ${pctWords(pnl)}. ${plan}`;
+    return `<div class="hrow ${open ? "open" : ""}" data-hold="${esc(hid)}">
+      <span class="hsym">${esc(p.symbol)}</span>
+      <span class="hcell">bought <b>${price(p.entry_price)}</b></span>
+      <span class="hcell">target <b>${p.target_price ? price(p.target_price) : "—"}</b></span>
+      <span class="hcell">stop <b>${p.stop_price ? price(p.stop_price) : "—"}</b></span>
+      <span class="hpnl ${pnl>=0?"up":"down"}" data-hold-pnl="${esc(p.symbol)}" data-entry="${p.entry_price}">${pnl>=0?"+":""}${pnl.toFixed(1)}%</span>
+      ${open ? `<div class="hprose">${prose}</div>` : ""}
+    </div>`;
   }).join("") || `<div class="hold"><p>Nothing at the moment — everything is safely in cash, waiting for
-      the right opportunity. When it buys, the instruction appears under <b>“What to do today.”</b></p></div>`;
-  const holdMore = (s.positions||[]).length > HOLD_SHOW
-    ? `<p class="smallnote">…and ${(s.positions||[]).length - HOLD_SHOW} more — every one is on the board above, marked “Model owns it.”</p>` : "";
-  const holdingsHtml = `<div class="card"><h2>What it's holding right now</h2>${holds}${holdMore}</div>`;
+      the right opportunity. New buys appear on the board above and in this list.</p></div>`;
+  const holdingsHtml = `<div class="card"><h2>What it's holding right now</h2>${holds}
+    ${(s.positions||[]).length ? `<p class="smallnote">Tap any row for the full story and the exact sell plan.</p>` : ""}</div>`;
 
   // --- 4. recent decisions ---
   const trades = (s.recent_trades||[]).slice(0,5).map(t=>
@@ -840,7 +863,7 @@ function render(){
     if(f.id && f.style.display !== "none")
       savedForms[f.id] = Array.from(f.querySelectorAll("input")).map(inp => inp.value);
   });
-  $("content").innerHTML = alarmHtml + mineHtml + boardHtml + todoHtml + proofHtml + proHtml + holdingsHtml + tradesHtml;
+  $("content").innerHTML = alarmHtml + mineHtml + boardHtml + holdingsHtml + proofHtml + proHtml + tradesHtml;
   Object.entries(savedForms).forEach(([id, vals]) => {
     const f = $(id);
     if(!f) return;
@@ -855,12 +878,20 @@ function render(){
 /* ---------- the chart: strategy line vs market reference, with hover ---------- */
 let boardExpanded = false;
 let openCards = new Set();
+let openHolds = new Set();
 function wireBoardActions(){
   $("content").onclick = (ev) => {
     const btn = ev.target.closest("[data-act]");
     if(!btn){
       // a tap anywhere else on a board card opens its full reasoning
       if(ev.target.closest("input,label,a,button,.buyform")) return;
+      const hr = ev.target.closest(".hrow[data-hold]");
+      if(hr){
+        const hid = hr.dataset.hold;
+        openHolds.has(hid) ? openHolds.delete(hid) : openHolds.add(hid);
+        render();
+        return;
+      }
       const card = ev.target.closest(".bcard[data-card]");
       if(card){
         const form = card.querySelector(".buyform");
