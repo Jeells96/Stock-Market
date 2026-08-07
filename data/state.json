@@ -323,7 +323,7 @@
    ]
   },
   "daytrade": {
-   "cash": 0.0,
+   "cash": 3450.058092155896,
    "positions": [
     {
      "symbol": "MDB",
@@ -336,7 +336,7 @@
      "target_price": 407.8388,
      "stop_price": 388.0408,
      "thesis": "Up 7.0% on the day at 11:11 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 395.96,
+     "last_price": 393.34,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -353,32 +353,32 @@
      "target_price": 75.2415,
      "stop_price": 71.589,
      "thesis": "Up 6.9% on the day at 11:11 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 73.05,
-     "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "IONQ",
-     "name": "IONQ",
-     "shares": 78.66769029065274,
-     "entry_price": 42.37232999999999,
-     "entry_date": "2026-08-07",
-     "raw_entry_price": 42.33,
-     "entry_time": "11:11",
-     "target_price": 43.5999,
-     "stop_price": 41.483399999999996,
-     "thesis": "Up 6.6% on the day at 11:11 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 42.33,
+     "last_price": 71.86,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
      "divs_credited": []
     }
    ],
-   "closed": [],
-   "cooldown": {},
+   "closed": [
+    {
+     "symbol": "IONQ",
+     "name": "IONQ",
+     "entry_date": "2026-08-07",
+     "entry_price": 42.3723,
+     "exit_date": "2026-08-07",
+     "exit_price": 43.8561,
+     "raw_exit_price": 43.9,
+     "slippage_bps": 10,
+     "pnl_pct": 3.5,
+     "reason": "target +3%",
+     "entry_time": "11:11",
+     "exit_time": "12:08"
+    }
+   ],
+   "cooldown": {
+    "IONQ": "2026-08-07"
+   },
    "last_eval_date": "2026-08-06",
    "activity": [
     {
@@ -438,7 +438,7 @@
   }
  },
  "runs": 12,
- "last_run_utc": "2026-08-07T15:12:01Z",
+ "last_run_utc": "2026-08-07T16:08:16Z",
  "intraday": {
   "date": "2026-08-07",
   "marks": {
