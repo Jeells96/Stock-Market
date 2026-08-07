@@ -81,6 +81,9 @@ the sleeve can never hold a position overnight.
 
 ## Why the track record is trustworthy
 
+- **Every suggestion is a purchase.** The site never highlights a "suggested buy" it
+  doesn't take into its own paper portfolio, so every recommendation — not a cherry-picked
+  subset — gets scored in the public record.
 - Every pick is committed to git **before its outcome is known**. The commit timestamp
   is GitHub's, not the bot's.
 - History can't be silently edited — any tampering would show in the

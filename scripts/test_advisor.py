@@ -584,6 +584,7 @@ def t24():
     gro = state["strategies"]["growth"]
     gro["positions"] = [{"symbol": "AAA", "shares": 1.0, "entry_price": 100.0}] * adv.STRATEGY_META["growth"]["slots"]
     gro["positions"] = [dict(p, symbol=s) for p, s in zip(gro["positions"], ["AAA", "BBB", "CCC", "DDD", "EEE"])]
+    gro["positions"][0]["entry_date"] = "2026-01-02"  # AAA bought at this very close
     gro["cooldown"] = {"COOL": "2026-01-01"}
     bars["COOL"] = hist("COOL")
     board = adv.score_growth(bars, as_of)
@@ -593,6 +594,8 @@ def t24():
     byrow = {r["symbol"]: r for r in rows}
     assert byrow["AAA"]["held"] and byrow["BBB"]["held"]
     assert not byrow["AAA"]["buy"], "held names are never buy-highlighted"
+    assert not any(r["buy"] for r in rows), "zero free slots means zero suggestions — every suggestion is a purchase"
+    assert byrow["AAA"]["fresh"] and not byrow["BBB"]["fresh"], "same-close buys are flagged fresh"
     assert "full" in boards["growth"]["note"], "fully-invested board explains itself"
     old = byrow["OLD"]
     assert old["needs"], "every rejected symbol says what it needs"

@@ -1799,13 +1799,17 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
         held = {p["symbol"] for p in strat["positions"]}
         cooling = set(strat.get("cooldown") or {})
         free = STRATEGY_META[key]["slots"] - len(strat["positions"])
+        fresh = {p["symbol"] for p in strat["positions"] if p.get("entry_date") == as_of}
         rows, buy_rank = [], 0
         for r in board[:250]:
             is_held = r["symbol"] in held
             buyable = bool(r.get("qualified")) and not is_held                 and r["symbol"] not in cooling and not regime_note
             if buyable:
                 buy_rank += 1
-            is_buy = buyable and buy_rank <= max(free, 0) + 3
+            # accountability rule: a suggestion IS a purchase. Only names the
+            # machine actually takes into its own paper portfolio get the buy
+            # highlight — never a "next in line" it won't be scored on.
+            is_buy = buyable and buy_rank <= max(free, 0)
             needs = r.get("needs", "")
             if r.get("qualified") and not is_buy and not is_held and not needs:
                 # qualified but not highlighted — say exactly what's in the way
@@ -1823,6 +1827,7 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
                 "qualified": bool(r.get("qualified")),
                 "buy": is_buy,
                 "held": is_held,
+                "fresh": is_held and r["symbol"] in fresh,
                 "reason": r.get("reason", ""),
                 "needs": needs,
                 "news": r.get("news"),
@@ -1836,11 +1841,13 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
         if regime_note and key == "aggressive":
             note = f"Buying is paused — {regime_note}."
         elif free <= 0:
-            note = ("Every slot is full, so the model itself isn't buying today — "
-                    "highlighted names are the ones it would buy next.")
+            note = ("Every slot is full, so nothing new is suggested today — a suggestion "
+                    "here is always a stock the machine itself buys, so every one of its "
+                    "recommendations gets scored in the public record.")
         elif not can_trade:
-            note = ("Highlighted names qualify right now; the model itself buys on the "
-                    "post-close run at official closing prices.")
+            note = ("Highlighted names are what the machine itself buys on the post-close "
+                    "run at official closing prices — every suggestion lands in its own "
+                    "track record.")
         out[key] = {"rows": rows, "note": note, "basis": rank_basis}
     # daytrade board: the fixed watchlist, previous closes attached
     dt_rows = []

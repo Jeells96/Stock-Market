@@ -663,6 +663,12 @@ function render(){
       } else if(r.buy){
         cls = "buy";
         side = `<span class="chip cbuy">Suggested buy</span>
+          <span class="bwhy">The machine itself buys this at the next close — the result will be scored publicly.</span>
+          <button class="ibought" data-act="buyform" data-sym="${esc(r.symbol)}">You bought it? Track it here</button>`;
+      } else if(r.held && r.fresh){
+        cls = "buy";
+        side = `<span class="chip cbuy">Suggested buy</span>
+          <span class="bwhy">The machine just bought it — its result is now being scored.</span>
           <button class="ibought" data-act="buyform" data-sym="${esc(r.symbol)}">You bought it? Track it here</button>`;
       } else if(r.held){
         side = `<span class="chip cheld">Model owns it</span>`;
@@ -731,10 +737,11 @@ function render(){
       <div class="bgrid">${rowsHtml}</div>${more}
       <p class="smallnote">${key === "longterm"
         ? "These five never change — each card shows what the fund is for and how far its weight has drifted from target. Tap a card for the model's plan."
-        : `Hottest at the top. <b class="up">Green</b> means suggested buy;
-      <b class="down">red</b> means you own it and it is time to sell.
-      Tap any card for the full reasoning — the numbers, the news, and what is missing.
-      Each price shows exactly when it was last updated${key === "daytrade"
+        : `Hottest at the top. <b class="up">Green</b> means suggested buy — and the machine
+      itself buys every suggestion with its own paper money, so every recommendation gets
+      fact-checked in the public record. <b class="down">Red</b> means you own it and it is
+      time to sell. Tap any card for the full reasoning — the numbers, the news, and what
+      is missing. Each price shows exactly when it was last updated${key === "daytrade"
         ? "; day changes stream in live while the market is open" : ""}.`}</p>
     </div>`;
   } else {
