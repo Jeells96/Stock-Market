@@ -5,7 +5,7 @@
   "last_change": null,
   "benched": []
  },
- "generated_at_utc": "2026-08-07T17:05:57Z",
+ "generated_at_utc": "2026-08-07T17:10:35Z",
  "as_of_date": "2026-08-06",
  "inception_date": "2026-07-31",
  "starting_capital": 10000.0,
@@ -5023,7 +5023,7 @@
    "tagline": "Intraday momentum bursts. In and out the same day \u2014 always flat by the close.",
    "horizon": "Minutes to hours",
    "risk_note": "Extreme risk, smallest edges. Buys only 2-8% morning gaps that are still climbing 20 minutes after first sighting, and only when the broad market is steady. Checks run about every 20 minutes; fills book at the quoted price of the check minus 10 bps modeled slippage, timestamped by the git commit. Stop jumps to breakeven once up 1.5%. Never holds overnight.",
-   "equity": 10016.34,
+   "equity": 10019.95,
    "cash": 6687.93,
    "max_hold_bars": null,
    "total_return_pct": 0.0,
@@ -5040,9 +5040,9 @@
      "entry_date": "2026-08-07",
      "entry_price": 396.36,
      "shares": 8.4099,
-     "current_price": 395.77,
-     "current_value": 3328.41,
-     "pnl_pct": -0.15,
+     "current_price": 396.2,
+     "current_value": 3332.02,
+     "pnl_pct": -0.04,
      "target_price": 407.84,
      "stop_price": 388.04,
      "bars_held": 0,
@@ -5877,5 +5877,5 @@
  "data_source": "live Finnhub quotes (intraday) + rolling price store",
  "methodology_note": "All trades are simulated with paper money and booked NET of modeled slippage (5 bps per fill, 10 bps intraday; commissions are zero, matching modern retail; the SPY benchmark is frictionless by convention). Daily strategies fill at official closing prices. The two stock-picking strategies buy exactly ONE SHARE of every name that passes every test \u2014 no slot limit \u2014 so the record scores every recommendation ever made; the percentage curve tracks the same starting pot. Every position is re-checked at every market close without exception; a sell enters the record only when the model actually fires the signal, booked at that day's real closing price \u2014 never at the planned target or stop. Picks are committed to git before outcomes are known \u2014 the commit history is the proof. Not financial advice.",
  "intraday_date": "2026-08-07",
- "intraday_equity": 10016.33
+ "intraday_equity": 10019.95
 }
