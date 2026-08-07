@@ -1796,7 +1796,6 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
         strat = state["strategies"][key]
         held = {p["symbol"] for p in strat["positions"]}
         cooling = set(strat.get("cooldown") or {})
-        fresh = {p["symbol"] for p in strat["positions"] if p.get("entry_date") == as_of}
         news_era = any(r.get("news") for r in board)
         rows = []
         for r in board[:250]:
@@ -1823,7 +1822,6 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
                 "qualified": bool(r.get("qualified")),
                 "buy": is_buy,
                 "held": is_held,
-                "fresh": is_held and r["symbol"] in fresh,
                 "reason": r.get("reason", ""),
                 "needs": needs,
                 "news": r.get("news"),

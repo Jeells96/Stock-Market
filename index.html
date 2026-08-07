@@ -189,7 +189,6 @@
   .chip{font-size:11px;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:3px;text-transform:uppercase}
   .chip.cbuy{background:var(--up);color:#06220f}
   .chip.csell{background:var(--down);color:#fff}
-  .chip.cheld{background:rgba(201,169,97,0.2);color:var(--gold-bright);border:1px solid var(--gold-dim)}
   .chip.cmine{background:rgba(56,189,248,0.18);color:#7dd3fc;border:1px solid #0284c7}
   .chip.cgap{background:rgba(74,222,128,0.15);color:var(--up);border:1px solid rgba(74,222,128,0.5)}
   .ibought{font-family:inherit;cursor:pointer;font-size:12px;font-weight:700;color:#06220f;background:var(--up);
@@ -675,18 +674,19 @@ function render(){
       } else if(youOwn){
         side = `<span class="chip cmine">You own this</span>
           <span class="bwhy">Sell ${minePlanBits.join(" · ")}${minePos.deadline ? ` · by <b>${fmtDate(minePos.deadline)}</b>` : ""}</span>`;
-      } else if(r.buy){
+      } else if(r.buy || r.held){
+        // a suggestion IS a purchase, so "held" and "suggested" are the same
+        // state — one label, never a separate 'model owns it' badge
         cls = "buy";
+        const modelPos = (s.positions || []).find(p => p.symbol === r.symbol);
+        const heldPnl = modelPos && modelPos.entry_price
+          ? (livePrice(modelPos) / modelPos.entry_price - 1) * 100 : null;
         side = `<span class="chip cbuy">Suggested buy</span>
-          <span class="bwhy">The machine itself buys this at the next close — the result will be scored publicly.</span>
+          <span class="bwhy">${r.held
+            ? `Bought ${key==="daytrade" && modelPos?.entry_time ? "today at " + esc(modelPos.entry_time) : "on " + fmtDate(modelPos?.entry_date)} at ${price(modelPos?.entry_price)}${
+                heldPnl != null ? ` — <b class="${heldPnl>=0?"up":"down"}">${heldPnl>=0?"+":""}${heldPnl.toFixed(1)}%</b> since` : ""}.`
+            : "The machine buys this at the next close — the result will be scored publicly."}</span>
           <button class="ibought" data-act="buyform" data-sym="${esc(r.symbol)}">You bought it? Track it here</button>`;
-      } else if(r.held && r.fresh){
-        cls = "buy";
-        side = `<span class="chip cbuy">Suggested buy</span>
-          <span class="bwhy">The machine just bought it — its result is now being scored.</span>
-          <button class="ibought" data-act="buyform" data-sym="${esc(r.symbol)}">You bought it? Track it here</button>`;
-      } else if(r.held){
-        side = `<span class="chip cheld">Model owns it</span>`;
       } else {
         side = `<span class="breason">${esc(r.reason)}</span>`;
       }

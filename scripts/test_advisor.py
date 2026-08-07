@@ -602,7 +602,7 @@ def t24():
     byrow = {r["symbol"]: r for r in rows}
     assert byrow["AAA"]["held"] and byrow["BBB"]["held"]
     assert not byrow["AAA"]["buy"], "held names are never buy-highlighted"
-    assert byrow["AAA"]["fresh"] and not byrow["BBB"]["fresh"], "same-close buys are flagged fresh"
+    assert byrow["AAA"]["held"], "owned names carry the held flag (the site shows them as Suggested buy)"
     assert "every" in boards["growth"]["note"].lower() and "bought" in boards["growth"]["note"], \
         "board states the every-suggestion-is-a-purchase rule"
     old = byrow["OLD"]
