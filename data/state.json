@@ -323,7 +323,7 @@
    ]
   },
   "daytrade": {
-   "cash": 3450.058092155896,
+   "cash": 6687.9290507660735,
    "positions": [
     {
      "symbol": "MDB",
@@ -336,24 +336,7 @@
      "target_price": 407.8388,
      "stop_price": 388.0408,
      "thesis": "Up 7.0% on the day at 11:11 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 394.26,
-     "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "CVNA",
-     "name": "CVNA",
-     "shares": 45.58526119101068,
-     "entry_price": 73.12304999999999,
-     "entry_date": "2026-08-07",
-     "raw_entry_price": 73.05,
-     "entry_time": "11:11",
-     "target_price": 75.2415,
-     "stop_price": 71.589,
-     "thesis": "Up 6.9% on the day at 11:11 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 71.71,
+     "last_price": 395.77,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -374,10 +357,25 @@
      "reason": "target +3%",
      "entry_time": "11:11",
      "exit_time": "12:08"
+    },
+    {
+     "symbol": "CVNA",
+     "name": "CVNA",
+     "entry_date": "2026-08-07",
+     "entry_price": 73.123,
+     "exit_date": "2026-08-07",
+     "exit_price": 71.0289,
+     "raw_exit_price": 71.1,
+     "slippage_bps": 10,
+     "pnl_pct": -2.86,
+     "reason": "stop \u22122%",
+     "entry_time": "11:11",
+     "exit_time": "13:05"
     }
    ],
    "cooldown": {
-    "IONQ": "2026-08-07"
+    "IONQ": "2026-08-07",
+    "CVNA": "2026-08-07"
    },
    "last_eval_date": "2026-08-06",
    "activity": [
@@ -438,7 +436,7 @@
   }
  },
  "runs": 12,
- "last_run_utc": "2026-08-07T16:13:25Z",
+ "last_run_utc": "2026-08-07T17:05:57Z",
  "intraday": {
   "date": "2026-08-07",
   "marks": {
