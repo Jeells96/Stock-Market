@@ -453,8 +453,7 @@ def summarize_news(heads):
     else:
         verdict = "mixed"
     # the loudest headlines first (signal before neutral), newest within a group
-    top = sorted(heads, key=lambda x: (-abs(x["sent"]), x["d"]), reverse=False)
-    top = sorted(top, key=lambda x: abs(x["sent"]), reverse=True)[:4]
+    top = sorted(heads, key=lambda x: (abs(x["sent"]), x["d"]), reverse=True)[:4]
     return {"n": len(heads), "pos": pos, "neg": neg, "verdict": verdict, "top": top}
 
 
