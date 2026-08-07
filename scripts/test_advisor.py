@@ -247,8 +247,10 @@ def t12():
                "volume": {}, "name": "S", "divs": {}, "splits": {}}
     as_of = h_fresh["dates"][-1]
     ranked = adv.score_growth({"FRESH": h_fresh, "STALE": h_stale}, as_of)
-    syms = [r["symbol"] for r in ranked]
-    assert "STALE" not in syms, syms
+    qual = [r["symbol"] for r in ranked if r["qualified"]]
+    assert "STALE" not in qual, qual
+    stale_row = next(r for r in ranked if r["symbol"] == "STALE")
+    assert stale_row["reason"] == "no fresh price today", stale_row["reason"]
 check("stale symbols excluded from new-pick ranking", t12)
 
 print()
@@ -417,9 +419,11 @@ def t18c():
     bars = {"SMOOTH": hist_from(smooth, "SMOOTH"), "SPIKE": hist_from(spike, "SPIKE")}
     as_of = bars["SMOOTH"]["dates"][-1]
     ranked = adv.score_aggressive(bars, as_of)
-    syms = [r["symbol"] for r in ranked]
-    assert "SPIKE" not in syms, f"vertical spike should be filtered: {syms}"
-    assert "SMOOTH" in syms, f"steady riser should qualify: {syms}"
+    qual = [r["symbol"] for r in ranked if r["qualified"]]
+    assert "SPIKE" not in qual, f"vertical spike should be filtered: {qual}"
+    assert "SMOOTH" in qual, f"steady riser should qualify: {qual}"
+    spike_row = next(r for r in ranked if r["symbol"] == "SPIKE")
+    assert spike_row["reason"], "rejected symbol must carry a verdict reason"
 check("quality momentum: steady riser in, vertical spike out", t18c)
 
 # ---------- test 19: ensure_strategies migrates old state ----------
@@ -551,6 +555,33 @@ def t23():
     assert gby["GOOD"]["qualified"]
     assert not gby["DOWN"]["qualified"]
 check("board scorers: verdict + reason for every symbol, buys on top", t23)
+
+# ---------- test 24: board stays full when every slot is taken ----------
+def t24():
+    # native scorers must return a verdict row for EVERY symbol (the empty-board
+    # bug: fully-invested strategies published boards with zero rows)
+    up = list(range(100, 320))
+    def hist(name, dates_cut=0):
+        ds = [f"d{i:03d}" for i in range(len(up) - dates_cut)]
+        return {"dates": ds, "close": {d: float(up[i]) for i, d in enumerate(ds)},
+                "volume": {}, "name": name, "divs": {}, "splits": {}}
+    bars = {"AAA": hist("AAA"), "BBB": hist("BBB"), "OLD": hist("OLD", 1)}
+    as_of = bars["AAA"]["dates"][-1]
+    board = adv.score_growth(bars, as_of)
+    assert len(board) == 3, "every scanned symbol must get a verdict row"
+    # a fully-invested strategy still shows the whole board, holdings flagged
+    state = adv.bootstrap_state("2026-01-02")
+    gro = state["strategies"]["growth"]
+    gro["positions"] = [{"symbol": "AAA", "shares": 1.0, "entry_price": 100.0}] * adv.STRATEGY_META["growth"]["slots"]
+    gro["positions"] = [dict(p, symbol=s) for p, s in zip(gro["positions"], ["AAA", "BBB", "CCC", "DDD", "EEE"])]
+    boards = adv.build_boards(state, [], board, "price-history", "", True, "2026-01-02", bars)
+    rows = boards["growth"]["rows"]
+    assert len(rows) == 3, "board publishes even with zero open slots"
+    byrow = {r["symbol"]: r for r in rows}
+    assert byrow["AAA"]["held"] and byrow["BBB"]["held"]
+    assert not byrow["AAA"]["buy"], "held names are never buy-highlighted"
+    assert "full" in boards["growth"]["note"], "fully-invested board explains itself"
+check("board publishes every verdict even when fully invested", t24)
 
 print()
 if fails:

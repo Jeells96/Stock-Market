@@ -806,66 +806,116 @@ def score_aggressive(bars, as_of):
         before ranking (a Sharpe-style score).
       * RSI is used as a band, not a cap: 45–75 means genuine strength that
         isn't yet euphoric. Chasing RSI>75 verticals is how momentum dies.
-    """
+
+    Like the metric-window scorers, EVERY scanned symbol comes back with a
+    verdict — qualified names carry a score, rejected names the plain-English
+    reason — so the website's board never goes dark just because the model is
+    fully invested."""
     rows = []
     for sym, h in bars.items():
+        closes = [h["close"][d] for d in h["dates"]] if h["dates"] else []
+        px = closes[-1] if closes else None
+        r5 = pct_return(closes, 5) if closes else None
+        r20 = pct_return(closes, 20) if closes else None
+        r63 = (pct_return(closes, 63) if len(closes) >= 64 else r20) if closes else None
+        r126 = pct_return(closes, 126) if len(closes) >= 127 else None
+        rsi = rsi14(closes[-80:]) if closes else None
+        vol = annualized_vol(closes) if closes else None
+        window = closes[-252:] if closes else []
+        pos = _range_pos(px, min(window) if window else None,
+                         max(window) if window else None)
+        row = {"symbol": sym, "name": h.get("name", sym), "price": px,
+               "r5": r5, "r20": r20, "r63": r63, "rsi": rsi,
+               "r13": round(r63 * 100, 1) if r63 is not None else None,
+               "r26": round(r126 * 100, 1) if r126 is not None else None,
+               "vol": round(vol * 100, 1) if vol else None, "pos": pos,
+               "qualified": False, "reason": "", "score": None}
+        reason = None
         if not h["dates"] or h["dates"][-1] != as_of:
-            continue  # stale/halted symbol — never buy at an old price
-        closes = [h["close"][d] for d in h["dates"]]
-        if len(closes) < 65:
+            reason = "no fresh price today"  # stale/halted — never buy at an old price
+        elif len(closes) < 65:
+            reason = "not enough stored history yet"
+        elif px < 2.0:
+            reason = "no usable price"
+        elif r5 is None or r20 is None or r63 is None or not vol or vol <= 0:
+            reason = "missing data"
+        elif r20 <= 0 or r63 <= 0:
+            reason = "not rising over both 1 and 3 months"
+        elif r5 < -0.02:
+            reason = "falling too hard this week"
+        elif r5 > 0.15:
+            reason = "vertical one-week spike — chases like this reverse"
+        elif rsi is None:
+            reason = "missing data"
+        elif rsi < 45:
+            reason = "momentum too weak (RSI below 45)"
+        elif rsi > 75:
+            reason = "already euphoric (RSI above 75)"
+        if reason:
+            row["reason"] = reason
+            rows.append(row)
             continue
-        px = closes[-1]
-        if px < 2.0:
-            continue
-        r5, r20 = pct_return(closes, 5), pct_return(closes, 20)
-        r63 = pct_return(closes, 63) if len(closes) >= 64 else r20
-        if r5 is None or r20 is None or r63 is None:
-            continue
-        if r20 <= 0 or r63 <= 0:
-            continue                      # must be rising on both horizons
-        if r5 < -0.02 or r5 > 0.15:
-            continue                      # not collapsing, not a vertical spike
-        rsi = rsi14(closes[-80:])
-        if rsi is None or rsi < 45 or rsi > 75:
-            continue                      # strength without euphoria
-        vol = annualized_vol(closes)
-        if not vol or vol <= 0:
-            continue
-        rows.append({
-            "symbol": sym, "name": h["name"], "price": px,
-            "r5": r5, "r20": r20, "r63": r63, "rsi": rsi, "vol": vol,
-            "q63": r63 / vol, "q20": r20 / vol,
-        })
-    z63 = zscores([r["q63"] for r in rows])
-    z20 = zscores([r["q20"] for r in rows])
-    for i, r in enumerate(rows):
+        row["qualified"] = True
+        row["q63"] = r63 / vol
+        row["q20"] = r20 / vol
+        rows.append(row)
+    qual = [r for r in rows if r["qualified"]]
+    z63 = zscores([r["q63"] for r in qual])
+    z20 = zscores([r["q20"] for r in qual])
+    for i, r in enumerate(qual):
         r["score"] = 0.55 * z63[i] + 0.45 * z20[i]
+        r["reason"] = "meets every test — genuine multi-month momentum"
         r["thesis"] = (
             f"Up {r['r63'] * 100:.0f}% in three months and {r['r20'] * 100:.1f}% this month — "
             f"a steady climb, not a one-week spike (RSI {r['rsi']:.0f}). Target +20%, stop −8%, "
             f"stop jumps to breakeven once up 10%, out after 15 trading days no matter what."
         )
-    rows.sort(key=lambda r: r["score"], reverse=True)
-    return rows
+    qual.sort(key=lambda r: r["score"], reverse=True)
+    rest = [r for r in rows if not r["qualified"]]
+    rest.sort(key=lambda r: (r["r63"] if r["r63"] is not None else -999), reverse=True)
+    return qual + rest
 
 
 def score_growth(bars, as_of):
+    """📈 Steady Climber ranking on stored price history, with a verdict for
+    every scanned symbol (see score_aggressive) so the board stays full even
+    when every slot is taken."""
     rows = []
     for sym, h in bars.items():
+        closes = [h["close"][d] for d in h["dates"]] if h["dates"] else []
+        px = closes[-1] if closes else None
+        s50 = sma(closes, 50) if closes else None
+        s200 = sma(closes, 200) if closes else None
+        r126 = pct_return(closes, 126) if closes else None
+        r63 = pct_return(closes, 63) if closes else None
+        vol = annualized_vol(closes) if closes else None
+        window = closes[-252:] if closes else []
+        pos = _range_pos(px, min(window) if window else None,
+                         max(window) if window else None)
+        row = {"symbol": sym, "name": h.get("name", sym), "price": px,
+               "r126": r126, "r63": r63,
+               "r13": round(r63 * 100, 1) if r63 is not None else None,
+               "r26": round(r126 * 100, 1) if r126 is not None else None,
+               "vol": round(vol * 100, 1) if vol else None, "pos": pos,
+               "qualified": False, "reason": "", "score": None}
+        reason = None
         if not h["dates"] or h["dates"][-1] != as_of:
-            continue  # stale/halted symbol — never buy at an old price
-        closes = [h["close"][d] for d in h["dates"]]
-        if len(closes) < 210:
-            continue
-        px = closes[-1]
-        s50, s200 = sma(closes, 50), sma(closes, 200)
-        if not s50 or not s200 or not (px > s50 > s200):
-            continue
-        r126, r63 = pct_return(closes, 126), pct_return(closes, 63)
-        if r126 is None or r126 <= 0 or r63 is None:
-            continue
-        vol = annualized_vol(closes)
-        if vol is None or vol > 0.45:
+            reason = "no fresh price today"  # stale/halted — never buy at an old price
+        elif len(closes) < 210:
+            reason = "not enough stored history yet"
+        elif not s50 or not s200 or not (px > s50 > s200):
+            reason = "not in a confirmed uptrend (price vs 50/200-day averages)"
+        elif r126 is None or r63 is None:
+            reason = "missing data"
+        elif r126 <= 0:
+            reason = "not rising over six months"
+        elif vol is None:
+            reason = "missing data"
+        elif vol > 0.45:
+            reason = "swings too hard for this strategy"
+        if reason:
+            row["reason"] = reason
+            rows.append(row)
             continue
         blocks_up = 0
         for b in range(6):
@@ -873,24 +923,27 @@ def score_growth(bars, as_of):
             start = end - 21
             if start >= 0 and closes[start] > 0:
                 blocks_up += 1 if closes[end] > closes[start] else 0
-        consistency = blocks_up / 6.0
-        rows.append({
-            "symbol": sym, "name": h["name"], "price": px,
-            "r126": r126, "r63": r63, "vol": vol, "consistency": consistency,
-        })
-    z126 = zscores([r["r126"] for r in rows])
-    z63 = zscores([r["r63"] for r in rows])
-    zv = zscores([r["vol"] for r in rows])
-    for i, r in enumerate(rows):
+        row["qualified"] = True
+        row["consistency"] = blocks_up / 6.0
+        row["vol_frac"] = vol
+        rows.append(row)
+    qual = [r for r in rows if r["qualified"]]
+    z126 = zscores([r["r126"] for r in qual])
+    z63 = zscores([r["r63"] for r in qual])
+    zv = zscores([r["vol_frac"] for r in qual])
+    for i, r in enumerate(qual):
         r["score"] = 0.35 * z126[i] + 0.25 * z63[i] + 0.20 * r["consistency"] * 2 - 0.20 * zv[i]
+        r["reason"] = "meets every test — durable, calm uptrend"
         r["thesis"] = (
             f"Confirmed uptrend — price above rising 50- and 200-day averages, "
-            f"up {r['r126'] * 100:.0f}% over six months with {r['vol'] * 100:.0f}% volatility "
+            f"up {r['r126'] * 100:.0f}% over six months with {r['vol_frac'] * 100:.0f}% volatility "
             f"and gains in {int(r['consistency'] * 6)} of the last 6 months. "
             f"Target +15%, stop −10% or a break of the 200-day trend."
         )
-    rows.sort(key=lambda r: r["score"], reverse=True)
-    return rows
+    qual.sort(key=lambda r: r["score"], reverse=True)
+    rest = [r for r in rows if not r["qualified"]]
+    rest.sort(key=lambda r: (r["r126"] if r["r126"] is not None else -999), reverse=True)
+    return qual + rest
 
 # ---------------------------------------------------------------- state
 
@@ -1589,6 +1642,9 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
         note = ""
         if regime_note and key == "aggressive":
             note = f"Buying is paused — {regime_note}."
+        elif free <= 0:
+            note = ("Every slot is full, so the model itself isn't buying today — "
+                    "highlighted names are the ones it would buy next.")
         elif not can_trade:
             note = ("Highlighted names qualify right now; the model itself buys on the "
                     "post-close run at official closing prices.")
@@ -2436,20 +2492,19 @@ def main():
     new_picks = {"aggressive": [], "growth": [], "longterm": []}
     ranked_agg, ranked_gro, rank_basis = [], [], "none"
     board_agg, board_gro = [], []
-    agg_wants = STRATEGY_META["aggressive"]["slots"] - len(state["strategies"]["aggressive"]["positions"])
-    gro_wants = STRATEGY_META["growth"]["slots"] - len(state["strategies"]["growth"]["positions"])
 
     if universe_ok:
         rank_basis = "price-history"
         agg_universe = {s: h for s, h in bars.items() if s in set(MOMENTUM)}
         gro_universe = {s: h for s, h in bars.items() if s in set(SP_CORE)}
-        ranked_agg = score_aggressive(agg_universe, as_of)
-        ranked_gro = score_growth(gro_universe, as_of)
-        for r in ranked_agg + ranked_gro:
-            r["qualified"] = True
-            r.setdefault("reason", "meets every test")
-        board_agg, board_gro = ranked_agg, ranked_gro
-    elif FINNHUB_KEY and (agg_wants > 0 or gro_wants > 0):
+        board_agg = score_aggressive(agg_universe, as_of)
+        board_gro = score_growth(gro_universe, as_of)
+        ranked_agg = [r for r in board_agg if r["qualified"]]
+        ranked_gro = [r for r in board_gro if r["qualified"]]
+    elif FINNHUB_KEY:
+        # No open-slot gate here on purpose: the board must publish a verdict
+        # for every scanned symbol even when the model is fully invested —
+        # "all slots are full" is a note on the site, not a blank page.
         rank_basis = "metrics"
         print("  price store still shallow — ranking from Finnhub metric windows instead.")
         uni = list(dict.fromkeys(MOMENTUM + SP_CORE))
