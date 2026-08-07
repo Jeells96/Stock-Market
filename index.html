@@ -240,7 +240,6 @@
 </div>
 
 <h1>Jaren's Stock Market Adviser</h1>
-<p class="subtitle">Four automatic strategies invest pretend money and tell you exactly what they do.</p>
 <p class="statusline" id="statusline">Loading…</p>
 
 <div class="tabs" id="tabs">
@@ -697,7 +696,7 @@ function render(){
             ((nn.top || []).length ? `<ul class="newslist">${nn.top.map(x =>
               `<li><span class="${x.sent>0?"nup":x.sent<0?"ndown":""}">${x.sent>0?"▲":x.sent<0?"▼":"•"}</span>
                ${esc(x.h)} <span class="nsrc">(${esc(x.s)}${x.d ? ", " + fmtDate(x.d) : ""})</span></li>`).join("")}</ul>` : ""));
-        } else {
+        } else if(key !== "longterm"){
           bits.push(`<p class="smallnote">The news check for this stock publishes with the next nightly report.</p>`);
         }
         if(!youOwn && !r.buy){
@@ -730,14 +729,14 @@ function render(){
     boardHtml = `<div class="card"><h2>The board</h2>
       ${board.note ? `<p class="watchnote">${esc(board.note)}</p>` : ""}
       <div class="bgrid">${rowsHtml}</div>${more}
-      <p class="smallnote">Hottest at the top. <b class="up">Green</b> means suggested buy;
+      <p class="smallnote">${key === "longterm"
+        ? "These five never change — each card shows what the fund is for and how far its weight has drifted from target. Tap a card for the model's plan."
+        : `Hottest at the top. <b class="up">Green</b> means suggested buy;
       <b class="down">red</b> means you own it and it is time to sell.
       Tap any card for the full reasoning — the numbers, the news, and what is missing.
       Each price shows exactly when it was last updated${key === "daytrade"
-        ? "; day changes stream in live while the market is open" : ""}.</p>
+        ? "; day changes stream in live while the market is open" : ""}.`}</p>
     </div>`;
-  } else if(key === "longterm"){
-    boardHtml = "";
   } else {
     boardHtml = `<div class="card"><h2>The board</h2>
       <p>The full board publishes with the machine's next report (tonight after the close).</p></div>`;

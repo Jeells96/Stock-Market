@@ -379,6 +379,14 @@ def t18():
     assert adv.daytrade_should_enter(109.0, 100.0, 108.0, m) is False
     # bad prev close → no
     assert adv.daytrade_should_enter(103.0, 0.0, 102.0, m) is False
+    # sparse-cron fallback: no prior mark, but climbed since the open → enter
+    assert adv.daytrade_should_enter(103.0, 100.0, None, m, open_px=102.0, allow_open_confirm=True) is True
+    # no prior mark and fading off the open → no
+    assert adv.daytrade_should_enter(103.0, 100.0, None, m, open_px=103.5, allow_open_confirm=True) is False
+    # fallback disabled during opening-range noise → no
+    assert adv.daytrade_should_enter(103.0, 100.0, None, m, open_px=102.0, allow_open_confirm=False) is False
+    # prior mark always wins over the open fallback
+    assert adv.daytrade_should_enter(103.0, 100.0, 103.5, m, open_px=100.5, allow_open_confirm=True) is False
 check("daytrade entry: gap band + still-climbing confirmation", t18)
 
 # ---------- test 18b: aggressive breakeven ratchet in replay ----------
@@ -590,6 +598,11 @@ def t24():
     assert old["needs"], "every rejected symbol says what it needs"
     assert byrow["COOL"]["qualified"] and not byrow["COOL"]["buy"]
     assert "cool-down" in byrow["COOL"]["needs"], "qualified-but-blocked names say what's in the way"
+    # the Nest Egg board lists all five permanent holdings with their roles
+    lt_rows = boards["longterm"]["rows"]
+    assert len(lt_rows) == len(adv.LONGTERM_ALLOCATION), "longterm board shows the whole allocation"
+    assert all(r["reason"] for r in lt_rows), "every fund explains its role"
+    assert "target" in lt_rows[0]["reason"] or "buys at" in lt_rows[0]["reason"]
 check("board publishes every verdict even when fully invested", t24)
 
 # ---------- test 25: news check — bad headlines pull a name off the buy list ----------

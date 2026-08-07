@@ -680,9 +680,12 @@ def finnhub_quote(sym):
             f"https://finnhub.io/api/v1/quote?symbol={urllib.parse.quote(sym)}&token={FINNHUB_KEY}",
             timeout=10,
         )
-        c, t = j.get("c"), j.get("t")
+        c, t, o = j.get("c"), j.get("t"), j.get("o")
         if isinstance(c, (int, float)) and c > 0 and isinstance(t, (int, float)) and t > 0:
-            return {"c": float(c), "t": int(t)}
+            out = {"c": float(c), "t": int(t)}
+            if isinstance(o, (int, float)) and o > 0:
+                out["o"] = float(o)  # today's session open — the fallback confirmation reference
+            return out
     except Exception:  # noqa: BLE001
         pass
     return None
@@ -1847,16 +1850,47 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
         dt_rows.append({"symbol": s, "price": round(px, 2) if px else None,
                         "price_asof": price_asof, "qualified": False, "buy": False,
                         "held": False, "reason": "watching for a 2–8% morning gap",
-                        "needs": "needs a 2–8% gap up before 11:30 New York time, "
-                                 "still climbing 20 minutes after first sighting",
+                        "needs": "needs a 2–8% gap up before 11:30 New York time "
+                                 "that is still climbing when the machine checks it",
                         "news": (news or {}).get(s),
                         "r3m": None, "r6m": None, "range_pos": None, "vol": None})
     out["daytrade"] = {"rows": dt_rows, "basis": "intraday gaps",
                        "note": ("Live gap percentages appear while the market is open. "
-                                "A name lights up as BUY only in the morning window, "
-                                "still climbing 20 minutes after its gap.")}
-    out["longterm"] = {"rows": [], "basis": "fixed allocation",
-                       "note": "This strategy owns its whole allocation permanently — no board by design."}
+                                "A name is bought only in the morning window, gapping 2–8% "
+                                "and still climbing — versus the last check, or versus the "
+                                "session open when it is the first check of the morning.")}
+    # longterm board: the five permanent holdings, target vs actual weight —
+    # nothing is picked daily, but the board still shows exactly what the pot
+    # owns, why, and how far each weight has drifted
+    lt = state["strategies"]["longterm"]
+    lt_bysym = {p["symbol"]: p for p in lt["positions"]}
+    lt_px, lt_val = {}, {}
+    for sym in LONGTERM_ALLOCATION:
+        p = lt_bysym.get(sym)
+        h = bars.get(sym)
+        px = (last_close_at(h, as_of) if h else None) or (p or {}).get("last_price")
+        lt_px[sym] = px
+        lt_val[sym] = p["shares"] * px if (p and px) else 0.0
+    lt_total = lt["cash"] + sum(lt_val.values())
+    lt_rows = []
+    for sym, (w, role) in LONGTERM_ALLOCATION.items():
+        p = lt_bysym.get(sym)
+        cur_w = (lt_val[sym] / lt_total * 100.0) if lt_total else 0.0
+        drift = cur_w - w * 100.0
+        if p:
+            reason = (f"{role} · target {w * 100:.0f}% of the pot, holding {cur_w:.1f}%"
+                      + (f" ({drift:+.1f} from target)" if abs(drift) >= 0.05 else " (on target)"))
+        else:
+            reason = f"{role} · buys at the first close after launch"
+        lt_rows.append({"symbol": sym, "price": round(lt_px[sym], 2) if lt_px[sym] else None,
+                        "price_asof": price_asof, "qualified": True, "buy": False,
+                        "held": bool(p), "reason": reason,
+                        "needs": "", "news": None,
+                        "r3m": None, "r6m": None, "range_pos": None, "vol": None})
+    out["longterm"] = {"rows": lt_rows, "basis": "fixed allocation",
+                       "note": ("These five are owned permanently — nothing is picked day to day. "
+                                "The machine rebalances automatically whenever a weight drifts "
+                                "5 points from its target.")}
     return out
 
 
@@ -2333,24 +2367,31 @@ def prev_close_from_store(store, sym, today):
     return None
 
 
-def daytrade_should_enter(px, prev_close, prior_mark, meta):
+def daytrade_should_enter(px, prev_close, prior_mark, meta, open_px=None,
+                          allow_open_confirm=False):
     """Entry test for one symbol at one intraday check.
 
-    Three conditions, all evidence-driven:
+    Conditions, all evidence-driven:
       1. Gap band: up min_gap..max_gap vs yesterday's close. Small gaps are
          noise; monster gaps (>max_gap) statistically fade after the open.
-      2. Confirmation: the price must be HIGHER than it was at the previous
-         ~20-minute check (prior_mark). A gapper that is already fading never
-         gets bought — this one check removes the worst gap-chase losers.
-      3. No prior mark → no entry. The first sighting only registers the
-         candidate; the machine needs to see momentum survive one interval.
+      2. Confirmation — the gap must still be CLIMBING, proven one of two ways:
+         * price higher than at the previous ~20-minute check (prior_mark); or
+         * no prior check exists this session and the price sits above the
+           session OPEN (allow_open_confirm, used once the opening-range noise
+           has settled). GitHub's scheduler fires the 20-minute checks
+           erratically — some mornings only one check lands in the window, and
+           without this fallback a gapper spotted once could never be bought.
     """
     if not prev_close or prev_close <= 0:
         return False
     gap = px / prev_close - 1.0
     if gap < meta["min_gap"] or gap > meta["max_gap"]:
         return False
-    return prior_mark is not None and px > prior_mark
+    if prior_mark is not None:
+        return px > prior_mark
+    if allow_open_confirm and open_px and open_px > 0:
+        return px > open_px * 1.002  # climbed since the open, not fading off it
+    return False
 
 
 def run_intraday():
@@ -2456,7 +2497,9 @@ def run_intraday():
                 continue
             px = q["c"]
             gap = px / prev_close - 1.0
-            if daytrade_should_enter(px, prev_close, marks.get(sym), meta):
+            if daytrade_should_enter(px, prev_close, marks.get(sym), meta,
+                                     open_px=q.get("o"),
+                                     allow_open_confirm=hm >= (9, 45)):
                 candidates.append({"symbol": sym, "px": px, "gap": gap})
             # remember this check's price — next run's confirmation baseline
             if meta["min_gap"] <= gap <= meta["max_gap"]:

@@ -8,7 +8,13 @@ name: Day Trader (intraday checks)
 
 on:
   schedule:
+    # GitHub fires schedules erratically and drops many entirely — often only
+    # one or two land in the 9:30–11:30 ET entry window. The extra morning
+    # lines are independent schedules, each with its own chance to fire, so
+    # the morning gets several shots even on a bad scheduler day.
     - cron: "*/20 13-21 * * 1-5"
+    - cron: "5,25,45 13-16 * * 1-5"
+    - cron: "15,35,55 13-16 * * 1-5"
   workflow_dispatch:
 
 permissions:
