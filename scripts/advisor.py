@@ -470,11 +470,18 @@ def fetch_news_signals(symbols, today):
     todo = [s for s in symbols if s not in out]
     if todo:
         print(f"News check on {len(todo)} symbols (~{len(todo) * 1.05 / 60:.0f} min)…")
+    started, straight_fails = time.time(), 0
     for i, sym in enumerate(todo):
+        # circuit breaker: a stalling source must not eat the job's timeout —
+        # a partial news map is fine (unchecked names just can't be bought)
+        if straight_fails >= 5 or time.time() - started > 300:
+            print(f"  ! news source unhealthy — stopping with {len(out)}/{len(symbols)} checked")
+            break
         try:
             out[sym] = summarize_news(fetch_company_news(sym, today))
+            straight_fails = 0
         except Exception:  # noqa: BLE001
-            pass  # no signal is treated as quiet — never blocks the run
+            straight_fails += 1
         if i < len(todo) - 1:
             time.sleep(1.05)
     save_json(NEWS_PATH, {"date": today, "news": out}, compact=True)
@@ -499,6 +506,20 @@ def apply_news_to_board(board, news):
             r["needs"] = "needs the negative headlines to stop"
     board.sort(key=lambda r: 0 if r["qualified"] else 1)  # stable — keeps score order
     return board
+
+
+def daytrade_news_veto(site):
+    """Symbols whose PUBLISHED news verdict is negative, read from the last
+    nightly report's day-trade board. The intraday job runs on a fresh checkout
+    without the news cache, but the committed site payload carries every
+    verdict — so the board's 'held back from buying' claim is enforceable."""
+    out = set()
+    rows = ((((site or {}).get("strategies") or {}).get("daytrade") or {})
+            .get("board") or {}).get("rows") or []
+    for row in rows:
+        if (row.get("news") or {}).get("verdict") == "negative" and row.get("symbol"):
+            out.add(row["symbol"])
+    return out
 
 
 def score_aggressive_metrics(metrics, quotes):
@@ -1777,18 +1798,30 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
         free = STRATEGY_META[key]["slots"] - len(strat["positions"])
         rows, buy_rank = [], 0
         for r in board[:250]:
-            buyable = bool(r.get("qualified")) and r["symbol"] not in held                 and r["symbol"] not in cooling and not regime_note
+            is_held = r["symbol"] in held
+            buyable = bool(r.get("qualified")) and not is_held                 and r["symbol"] not in cooling and not regime_note
             if buyable:
                 buy_rank += 1
+            is_buy = buyable and buy_rank <= max(free, 0) + 3
+            needs = r.get("needs", "")
+            if r.get("qualified") and not is_buy and not is_held and not needs:
+                # qualified but not highlighted — say exactly what's in the way
+                if regime_note and key == "aggressive":
+                    needs = "needs the overall market back above its own 50-day trend"
+                elif r["symbol"] in cooling:
+                    needs = "recently traded — needs its cool-down days to pass"
+                else:
+                    needs = ("it already qualifies — it needs a slot to open or "
+                             "the names ranked above it to drop")
             rows.append({
                 "symbol": r["symbol"],
                 "price": round(r["price"], 2) if r.get("price") else None,
                 "price_asof": price_asof,
                 "qualified": bool(r.get("qualified")),
-                "buy": buyable and buy_rank <= max(free, 0) + 3,
-                "held": r["symbol"] in held,
+                "buy": is_buy,
+                "held": is_held,
                 "reason": r.get("reason", ""),
-                "needs": r.get("needs", ""),
+                "needs": needs,
                 "news": r.get("news"),
                 "r3m": round(r["r13"], 1) if r.get("r13") is not None else (
                     round(r["r63"] * 100, 1) if r.get("r63") is not None else None),
@@ -2398,12 +2431,22 @@ def run_intraday():
     in_window = hm < meta["entry_cutoff"]
     if in_window and tape_ok and len(strat["positions"]) < meta["slots"] and strat["cash"] > 100:
         blacklist = load_params().get("blacklist", {})
+        news_veto = set()
+        try:
+            with open(SITE_PATH, encoding="utf-8") as f:
+                news_veto = daytrade_news_veto(json.load(f))
+        except Exception:  # noqa: BLE001
+            pass
+        if news_veto:
+            print(f"  news veto (from the last nightly report): {', '.join(sorted(news_veto))}")
         candidates = []
         for sym in DAYTRADE_WATCHLIST:
             if sym in held or sym in traded_today:
                 continue
             if blacklist.get(sym, "") >= today:
                 continue          # benched after repeated losses
+            if sym in news_veto:
+                continue          # negative headlines this week — the board says so
             prev_close = prev_close_from_store(store, sym, today)
             if not prev_close:
                 continue
@@ -2695,8 +2738,8 @@ def main():
         held_syms = [p["symbol"] for k in ("aggressive", "growth")
                      for p in state["strategies"][k]["positions"]]
         news_syms = list(dict.fromkeys(
-            [r["symbol"] for r in board_agg if r["qualified"]][:12]
-            + [r["symbol"] for r in board_gro if r["qualified"]][:12]
+            [r["symbol"] for r in board_agg if r["qualified"]][:20]
+            + [r["symbol"] for r in board_gro if r["qualified"]][:20]
             + held_syms + list(DAYTRADE_WATCHLIST)))
         try:
             news_map = fetch_news_signals(news_syms, ny_today)
@@ -2705,8 +2748,14 @@ def main():
         if news_map:
             apply_news_to_board(board_agg, news_map)
             apply_news_to_board(board_gro, news_map)
-    ranked_agg = [r for r in board_agg if r["qualified"]]
-    ranked_gro = [r for r in board_gro if r["qualified"]]
+
+    def _buyable(board):
+        # the veto only protects names it actually looked at — when a news map
+        # exists, a symbol it never checked is not buyable this pass
+        return [r for r in board if r["qualified"]
+                and (not news_map or r["symbol"] in news_map)]
+    ranked_agg = _buyable(board_agg)
+    ranked_gro = _buyable(board_gro)
 
     # regime filter: high-beta momentum bleeds when the broad market is below
     # its own 50-day trend — the Fast Mover sits in cash then

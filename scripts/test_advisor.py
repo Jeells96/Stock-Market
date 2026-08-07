@@ -576,15 +576,20 @@ def t24():
     gro = state["strategies"]["growth"]
     gro["positions"] = [{"symbol": "AAA", "shares": 1.0, "entry_price": 100.0}] * adv.STRATEGY_META["growth"]["slots"]
     gro["positions"] = [dict(p, symbol=s) for p, s in zip(gro["positions"], ["AAA", "BBB", "CCC", "DDD", "EEE"])]
+    gro["cooldown"] = {"COOL": "2026-01-01"}
+    bars["COOL"] = hist("COOL")
+    board = adv.score_growth(bars, as_of)
     boards = adv.build_boards(state, [], board, "price-history", "", True, "2026-01-02", bars)
     rows = boards["growth"]["rows"]
-    assert len(rows) == 3, "board publishes even with zero open slots"
+    assert len(rows) == 4, "board publishes even with zero open slots"
     byrow = {r["symbol"]: r for r in rows}
     assert byrow["AAA"]["held"] and byrow["BBB"]["held"]
     assert not byrow["AAA"]["buy"], "held names are never buy-highlighted"
     assert "full" in boards["growth"]["note"], "fully-invested board explains itself"
-    old = next(r for r in boards["growth"]["rows"] if r["symbol"] == "OLD")
+    old = byrow["OLD"]
     assert old["needs"], "every rejected symbol says what it needs"
+    assert byrow["COOL"]["qualified"] and not byrow["COOL"]["buy"]
+    assert "cool-down" in byrow["COOL"]["needs"], "qualified-but-blocked names say what's in the way"
 check("board publishes every verdict even when fully invested", t24)
 
 # ---------- test 25: news check — bad headlines pull a name off the buy list ----------
@@ -616,6 +621,19 @@ def t25():
     assert sig["verdict"] == "negative" and sig["neg"] == 2 and sig["pos"] == 1
     assert adv.summarize_news([])["verdict"] == "quiet"
 check("news check: sentiment words, buy-list veto, verdict math", t25)
+
+# ---------- test 26: intraday news veto reads the published board verdicts ----------
+def t26():
+    site = {"strategies": {"daytrade": {"board": {"rows": [
+        {"symbol": "TSLA", "news": {"verdict": "negative"}},
+        {"symbol": "NVDA", "news": {"verdict": "positive"}},
+        {"symbol": "AMD", "news": None},
+        {"symbol": "GME"}]}}}}
+    assert adv.daytrade_news_veto(site) == {"TSLA"}
+    assert adv.daytrade_news_veto({}) == set()
+    assert adv.daytrade_news_veto(None) == set()
+    assert adv.daytrade_news_veto({"strategies": {"daytrade": {"board": None}}}) == set()
+check("intraday news veto reads published verdicts", t26)
 
 print()
 if fails:

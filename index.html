@@ -364,8 +364,19 @@ function mineStatus(p){
     if(p.stop_price && px <= p.stop_price) return {sell: true, why: `it has fallen to your protection point (${price(p.stop_price)})`};
     if(p.target_price && px >= p.target_price) return {sell: true, why: `it has reached your profit point (${price(p.target_price)})`};
   }
-  if(p.deadline && today >= p.deadline)
+  if(p.deadline && today > p.deadline)
     return {sell: true, why: p.strategy === "daytrade" ? "day trades never stay overnight — sell before the close" : `its holding time is up (${fmtDate(p.deadline)})`};
+  if(p.deadline && today === p.deadline){
+    if(p.strategy === "daytrade"){
+      // a day trade's deadline is TODAY by design — the alarm belongs near the
+      // close, not the second it was bought
+      const et = new Date(new Date().toLocaleString("en-US",{timeZone:"America/New_York"}));
+      if(et.getHours()*60 + et.getMinutes() >= 15*60+30)
+        return {sell: true, why: "day trades never stay overnight — sell before the close"};
+    } else {
+      return {sell: true, why: `its holding time is up (${fmtDate(p.deadline)})`};
+    }
+  }
   return {sell: false, why: ""};
 }
 
@@ -813,7 +824,20 @@ function render(){
      (bought ${fmtDate(t.entry_date)} at ${price(t.entry_price)}): ${pctWords(t.pnl_pct)} · ${esc(t.reason)}</div>`).join("");
   const tradesHtml = trades ? `<div class="card"><h2>Its last few decisions</h2>${trades}</div>` : "";
 
+  // a re-render must never eat a half-filled buy/sell form: snapshot any open
+  // form and its typed values, restore them after the rebuild
+  const savedForms = {};
+  document.querySelectorAll("#content .buyform").forEach(f => {
+    if(f.id && f.style.display !== "none")
+      savedForms[f.id] = Array.from(f.querySelectorAll("input")).map(inp => inp.value);
+  });
   $("content").innerHTML = alarmHtml + mineHtml + boardHtml + todoHtml + proofHtml + proHtml + holdingsHtml + tradesHtml;
+  Object.entries(savedForms).forEach(([id, vals]) => {
+    const f = $(id);
+    if(!f) return;
+    f.style.display = "flex";
+    Array.from(f.querySelectorAll("input")).forEach((inp, i) => { if(vals[i] != null) inp.value = vals[i]; });
+  });
   wireBoardActions();
   rebuildPump();
   drawChart(key);
@@ -830,6 +854,8 @@ function wireBoardActions(){
       if(ev.target.closest("input,label,a,button,.buyform")) return;
       const card = ev.target.closest(".bcard[data-card]");
       if(card){
+        const form = card.querySelector(".buyform");
+        if(form && form.style.display !== "none") return; // mid-entry — leave the card alone
         const cid = card.dataset.card;
         openCards.has(cid) ? openCards.delete(cid) : openCards.add(cid);
         render();
