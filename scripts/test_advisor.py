@@ -549,6 +549,8 @@ def t23():
     assert by["GOOD"]["qualified"] and by["GOOD"]["score"] is not None
     assert not by["SPIKE"]["qualified"] and "spike" in by["SPIKE"]["reason"]
     assert not by["DOWN"]["qualified"] and "not rising" in by["DOWN"]["reason"]
+    assert by["SPIKE"]["needs"] and "cool" in by["SPIKE"]["needs"], by["SPIKE"]["needs"]
+    assert by["DOWN"]["needs"] and "positive" in by["DOWN"]["needs"], by["DOWN"]["needs"]
     assert board[0]["symbol"] == "GOOD", "qualified rows sort to the top"
     g = adv.score_growth_metrics(metrics, quotes)
     gby = {r["symbol"]: r for r in g}
@@ -581,7 +583,39 @@ def t24():
     assert byrow["AAA"]["held"] and byrow["BBB"]["held"]
     assert not byrow["AAA"]["buy"], "held names are never buy-highlighted"
     assert "full" in boards["growth"]["note"], "fully-invested board explains itself"
+    old = next(r for r in boards["growth"]["rows"] if r["symbol"] == "OLD")
+    assert old["needs"], "every rejected symbol says what it needs"
 check("board publishes every verdict even when fully invested", t24)
+
+# ---------- test 25: news check — bad headlines pull a name off the buy list ----------
+def t25():
+    assert adv._headline_sentiment("Shares surge after earnings beat") == 1
+    assert adv._headline_sentiment("SEC probe widens; shares plunge") == -1
+    assert adv._headline_sentiment("Company announces annual meeting date") == 0
+    board = [
+        {"symbol": "CLEAN", "qualified": True, "reason": "meets every test", "needs": "", "score": 1.2},
+        {"symbol": "DIRTY", "qualified": True, "reason": "meets every test", "needs": "", "score": 1.1},
+        {"symbol": "JUNK", "qualified": False, "reason": "not rising", "needs": "needs climbs", "score": None},
+    ]
+    news = {
+        "CLEAN": {"n": 3, "pos": 2, "neg": 0, "verdict": "positive", "top": []},
+        "DIRTY": {"n": 5, "pos": 0, "neg": 3, "verdict": "negative", "top": []},
+    }
+    adv.apply_news_to_board(board, news)
+    by = {r["symbol"]: r for r in board}
+    assert by["CLEAN"]["qualified"], "positive news never disqualifies"
+    assert not by["DIRTY"]["qualified"], "negative news pulls the name off the buy list"
+    assert "news" in by["DIRTY"]["reason"] and by["DIRTY"]["needs"]
+    assert board[0]["symbol"] == "CLEAN" and board[1]["symbol"] == "DIRTY", \
+        "flagged name drops below qualified but stays above ordinary rejects"
+    sig = adv.summarize_news([
+        {"h": "a", "s": "x", "d": "2026-08-01", "sent": -1},
+        {"h": "b", "s": "x", "d": "2026-08-02", "sent": -1},
+        {"h": "c", "s": "x", "d": "2026-08-03", "sent": 1},
+    ])
+    assert sig["verdict"] == "negative" and sig["neg"] == 2 and sig["pos"] == 1
+    assert adv.summarize_news([])["verdict"] == "quiet"
+check("news check: sentiment words, buy-list veto, verdict math", t25)
 
 print()
 if fails:

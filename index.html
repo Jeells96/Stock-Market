@@ -115,12 +115,12 @@
   .smallnote{font-size:12px;color:var(--gold-dim)}
   a{color:var(--gold-bright)}
 
-  /* ---- the stock board: a grid of cards, three across ---- */
-  .bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px}
-  @media(max-width:860px){.bgrid{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:540px){.bgrid{grid-template-columns:1fr}}
+  /* ---- the stock board: a grid of cards, three across at every size ---- */
+  .bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px;align-items:start}
   .bcard{position:relative;display:flex;flex-direction:column;gap:7px;padding:13px 13px 12px;
     border:1px solid var(--line);border-radius:8px;background:rgba(8,17,31,0.45)}
+  .bcard[data-card]{cursor:pointer}
+  .bcard[data-card]:hover{border-color:var(--line-strong)}
   .bcard.buy{background:rgba(74,222,128,0.10);border-color:rgba(74,222,128,0.55);
     box-shadow:0 0 12px rgba(74,222,128,0.12)}
   .bcard.sell{background:rgba(220,38,38,0.13);border-color:var(--down);
@@ -135,6 +135,37 @@
   .breason{font-size:11px;color:var(--gold-dim);line-height:1.4}
   .bwhy{font-size:11px;color:var(--cream);line-height:1.4}
   .bside{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:auto}
+  .bpnl{display:block;font-family:'JetBrains Mono',monospace;font-size:19px;font-weight:700;margin:2px 0}
+  .taphint{font-size:9.5px;color:var(--gold-dim);letter-spacing:.06em;text-transform:uppercase;
+    margin-top:2px;text-align:center}
+  .bdetail{border-top:1px solid var(--line);padding-top:8px;font-size:11.5px;line-height:1.5;
+    color:var(--cream);cursor:default}
+  .bdetail p{margin:0 0 7px}
+  .bdetail b{color:#fff}
+  .newslist{list-style:none;margin:0 0 7px;padding:0}
+  .newslist li{margin:0 0 4px;font-size:11px;line-height:1.4}
+  .newslist .nup{color:var(--up)} .newslist .ndown{color:var(--down)}
+  .newslist .nsrc{color:var(--gold-dim);font-size:10px}
+  .bignum.up{color:var(--up)} .bignum.down{color:var(--down)}
+  /* phones: keep three across, shrink everything */
+  @media(max-width:700px){
+    .bgrid{gap:6px}
+    .bcard{padding:8px 8px 7px;gap:5px;border-radius:6px}
+    .bsym{font-size:15px}
+    .bpx{font-size:11px}
+    .bstamp{font-size:8.5px}
+    .bnums{font-size:9.5px;line-height:1.45}
+    .breason,.bwhy{font-size:9.5px}
+    .brank{font-size:9px;top:6px;right:8px}
+    .chip{font-size:8.5px;padding:3px 6px;letter-spacing:.06em}
+    .ibought{font-size:10px;padding:5px 8px}
+    .btn2{font-size:10.5px;padding:6px 9px}
+    .bpnl{font-size:15px}
+    .bdetail{font-size:10.5px}
+    .taphint{font-size:8px}
+    .buyform label{font-size:11px}
+    .buyform input{width:100%;max-width:120px;font-size:12px;padding:5px 7px}
+  }
   .chip{font-size:11px;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:3px;text-transform:uppercase}
   .chip.cbuy{background:var(--up);color:#06220f}
   .chip.csell{background:var(--down);color:#fff}
@@ -259,11 +290,6 @@ function fmtDate(iso){
   if(!iso || iso.length !== 10) return iso || "—";
   return new Date(iso+"T12:00:00Z").toLocaleDateString("en-US",{month:"long",day:"numeric"});
 }
-function gainWords(nowV, startV){
-  const diff = nowV - startV, pct = startV ? Math.abs(diff/startV*100) : 0;
-  if(Math.abs(diff) < 0.5) return `<span class="up">exactly even so far</span>`;
-  return `<span class="${diff>=0?"up":"down"}">${diff>=0?"up":"down"} ${money(Math.abs(diff))} (${pct.toFixed(1)}%)</span>`;
-}
 function pctWords(p){
   if(p==null||isNaN(p)) return "even";
   if(Math.abs(p) < 0.005) return "unchanged";
@@ -387,7 +413,8 @@ function applyLive(sym){
     const p = MINE.positions.find(x => x.id === id);
     if(!p || !p.entry_price) return;
     const pnl = (q.px / p.entry_price - 1) * 100;
-    el.innerHTML = `now ${price(q.px)}, ${pctWords(pnl)}`;
+    el.innerHTML = `<span class="${pnl>=0?"up":"down"}">${pnl>=0?"+":""}${pnl.toFixed(1)}%</span>` +
+      `<small style="font-size:11px;color:var(--cream)"> now ${price(q.px)}</small>`;
   });
   renderTabs();
   refreshMineAlarms();
@@ -456,14 +483,15 @@ function renderTabs(){
     const el = $("tabval-"+key);
     if(el && DATA?.strategies[key]){
       const eq = liveEquity(key);
-      const diff = eq - startCap;
-      el.textContent = money(eq) + (Math.abs(diff)<0.5 ? "" : (diff>0?" ▲":" ▼"));
-      el.style.color = Math.abs(diff)<0.5 ? "" : (diff>0 ? "var(--up)" : "var(--down)");
+      const pct = startCap ? (eq/startCap-1)*100 : 0;
+      const flat = Math.abs(pct) < 0.005;
+      el.textContent = flat ? "0.0%" : `${pct>0?"+":""}${pct.toFixed(1)}%${pct>0?" ▲":" ▼"}`;
+      el.style.color = flat ? "" : (pct>0 ? "var(--up)" : "var(--down)");
     }
   });
   if(n){
-    const startAll = n * startCap;
-    $("combined").innerHTML = `All four together: <b>${money(total)}</b> — ${gainWords(total, startAll)}`;
+    const pctAll = (total/(n*startCap)-1)*100;
+    $("combined").innerHTML = `All four together: ${pctWords(pctAll)}`;
   }
   // stale-feed warning: the machine reports every market day; silence means trouble
   const days = DATA ? Math.floor((Date.now() - new Date(DATA.as_of_date + "T21:00:00Z").getTime()) / 86400000) : 0;
@@ -539,25 +567,26 @@ function render(){
     const rows = mine.map(pp => {
       const st = mineStatus(pp);
       const live = liveQuotes[pp.symbol];
-      const pnlTxt = live && pp.entry_price
-        ? `now ${price(live)}, ${pctWords((live / pp.entry_price - 1) * 100)}`
-        : `waiting for a live price`;
-      let plan;
-      if(st.sell) plan = `<b class="down">Suggested sell — right now.</b> ${st.why[0].toUpperCase()}${st.why.slice(1)}.`;
-      else {
-        const bits = [];
-        if(pp.target_price) bits.push(`reaches <b>${price(pp.target_price)}</b> (profit)`);
-        if(pp.stop_price) bits.push(`falls to <b>${price(pp.stop_price)}</b> (protection)`);
-        plan = `Hold. Sell when it ${bits.join(" or ")}` +
-          (pp.deadline ? `, or by <b>${fmtDate(pp.deadline)}</b> at the latest.` : ".");
-      }
-      return `<div class="minepos ${st.sell ? "alarm" : ""}">
-        <p>You bought <b>${esc(pp.symbol)}</b> on ${fmtDate(pp.entry_date)} at ${price(pp.entry_price)}
-        (${money(pp.amount)}) — <span data-live-mine="${esc(pp.symbol)}" data-mine-id="${esc(pp.id)}">${pnlTxt}</span>.</p>
-        <p>${plan}</p>
-        <div class="row2">
-          <button class="btn2 sold" data-act="sellform" data-id="${esc(pp.id)}">You sold it? Record it here</button>
-          <button class="btn2 ghost" data-act="removemine" data-id="${esc(pp.id)}">Remove (added by mistake)</button>
+      const pnl = live && pp.entry_price ? (live/pp.entry_price-1)*100 : null;
+      const pnlHtml = pnl != null
+        ? `<span class="${pnl>=0?"up":"down"}">${pnl>=0?"+":""}${pnl.toFixed(1)}%</span><small style="font-size:11px;color:var(--cream)"> now ${price(live)}</small>`
+        : `<span class="smallnote">waiting for a live price</span>`;
+      const planBits = [pp.target_price ? `above <b>${price(pp.target_price)}</b>` : "",
+                        pp.stop_price ? `below <b>${price(pp.stop_price)}</b>` : ""].filter(Boolean);
+      const verdict = st.sell
+        ? `<span class="chip csell">Suggested sell</span>
+           <span class="bwhy">${esc(st.why[0].toUpperCase()+st.why.slice(1))}.</span>`
+        : `<span class="bwhy">Sell ${planBits.join(" · ")}${pp.deadline ? ` · by <b>${fmtDate(pp.deadline)}</b>` : ""}</span>`;
+      return `<div class="bcard ${st.sell ? "sell" : ""}">
+        <div class="bmain">
+          <span class="bsym">${esc(pp.symbol)}</span>
+          <span class="bpnl" data-live-mine="${esc(pp.symbol)}" data-mine-id="${esc(pp.id)}">${pnlHtml}</span>
+          <span class="bstamp">bought ${fmtDate(pp.entry_date)} at ${price(pp.entry_price)} · ${money(pp.amount)} in</span>
+        </div>
+        ${verdict}
+        <div class="bside row2">
+          <button class="btn2 sold" data-act="sellform" data-id="${esc(pp.id)}">Sold it? Record it</button>
+          <button class="btn2 ghost" data-act="removemine" data-id="${esc(pp.id)}">Remove</button>
         </div>
         <div class="buyform" id="sellform-${esc(pp.id)}" style="display:none">
           <label>Price you sold at: <input type="number" step="0.01" id="sellpx-${esc(pp.id)}"
@@ -572,7 +601,7 @@ function render(){
       ${done.map(c => `${esc(c.symbol)} ${pctWords(c.pnl_pct)}`).join(" · ")}</p>` : "";
     mineHtml = `<div class="card mineband" ${mineAlarms.length ? 'id="mineAlarmCard"' : ""}>
       <h2>Your positions</h2>
-      ${rows || `<p>None right now. When a card on the board below turns green with
+      ${rows ? `<div class="bgrid">${rows}</div>` : `<p>None right now. When a card on the board below turns green with
         <b class="up">Suggested buy</b> and you buy the stock, press the green button on that
         card — this page will then watch it for you and tell you exactly when to sell.</p>`}
       ${doneHtml}
@@ -602,11 +631,17 @@ function render(){
       const minePos = mineFor(key).find(p => p.symbol === r.symbol);
       const youOwn = !!minePos;
       const st = minePos ? mineStatus(minePos) : {sell: false, why: ""};
+      const cardId = key + ":" + r.symbol;
+      const open = openCards.has(cardId);
       const nums = key === "daytrade"
         ? `<span data-live-gap="${esc(r.symbol)}">${r.price ? "prev close " + price(r.price) : "&mdash;"}</span>`
         : [r.r3m != null ? `3-mo <b>${r.r3m >= 0 ? "+" : ""}${r.r3m}%</b>` : "",
            r.r6m != null ? `6-mo <b>${r.r6m >= 0 ? "+" : ""}${r.r6m}%</b>` : "",
            r.range_pos != null ? `<b>${r.range_pos}%</b> up its range` : ""].filter(Boolean).join(" · ");
+      const minePlanBits = minePos
+        ? [minePos.target_price ? `above <b>${price(minePos.target_price)}</b>` : "",
+           minePos.stop_price ? `below <b>${price(minePos.stop_price)}</b>` : ""].filter(Boolean)
+        : [];
       let side, cls = "";
       if(youOwn && st.sell){
         cls = "sell";
@@ -614,7 +649,7 @@ function render(){
           <span class="bwhy">${esc(st.why[0].toUpperCase() + st.why.slice(1))}. Record the sale under &ldquo;Your positions&rdquo; above.</span>`;
       } else if(youOwn){
         side = `<span class="chip cmine">You own this</span>
-          <span class="bwhy">Nothing to do yet — your sell plan is under &ldquo;Your positions&rdquo; above.</span>`;
+          <span class="bwhy">Sell ${minePlanBits.join(" · ")}${minePos.deadline ? ` · by <b>${fmtDate(minePos.deadline)}</b>` : ""}</span>`;
       } else if(r.buy){
         cls = "buy";
         side = `<span class="chip cbuy">Suggested buy</span>
@@ -624,7 +659,42 @@ function render(){
       } else {
         side = `<span class="breason">${esc(r.reason)}</span>`;
       }
-      return `<div class="bcard ${cls}" data-row="${esc(r.symbol)}">
+      let detail = "";
+      if(open){
+        const modelPos = (s.positions || []).find(p => p.symbol === r.symbol);
+        const bits = [];
+        if(r.reason) bits.push(`<p><b>Verdict:</b> ${esc(r.reason)}.</p>`);
+        if(r.needs && !r.buy && !r.held) bits.push(`<p><b>To become a buy:</b> ${esc(r.needs)}.</p>`);
+        const nb = [r.r3m != null ? `3-month ${r.r3m>=0?"+":""}${r.r3m}%` : "",
+                    r.r6m != null ? `6-month ${r.r6m>=0?"+":""}${r.r6m}%` : "",
+                    r.range_pos != null ? `${r.range_pos}% up its 52-week range` : "",
+                    r.vol != null ? `${r.vol}% volatility` : ""].filter(Boolean);
+        if(nb.length) bits.push(`<p><b>The numbers:</b> ${nb.join(" · ")}.</p>`);
+        if(modelPos){
+          const mp = [modelPos.target_price ? `sells above <b>${price(modelPos.target_price)}</b> (profit)` : "",
+                      modelPos.stop_price ? `below <b>${price(modelPos.stop_price)}</b> (protection)` : ""].filter(Boolean);
+          bits.push(`<p><b>The model's plan:</b> bought at ${price(modelPos.entry_price)} on ${fmtDate(modelPos.entry_date)}${
+            mp.length ? "; " + mp.join(" or ") : "; kept and rebalanced automatically"}${
+            ruleFor(key).max_hold_bars ? `, or after ${ruleFor(key).max_hold_bars} trading days` : ""}.${
+            modelPos.thesis ? " " + esc(modelPos.thesis) : ""}</p>`);
+        }
+        if(r.news){
+          const nn = r.news;
+          bits.push(`<p><b>News this week:</b> ${nn.n} headline${nn.n===1?"":"s"} —
+            <span class="up">${nn.pos} positive</span>, <span class="down">${nn.neg} negative</span>${
+            nn.verdict === "negative" ? " · <b class='down'>held back from buying until this clears</b>" : ""}.</p>` +
+            ((nn.top || []).length ? `<ul class="newslist">${nn.top.map(x =>
+              `<li><span class="${x.sent>0?"nup":x.sent<0?"ndown":""}">${x.sent>0?"▲":x.sent<0?"▼":"•"}</span>
+               ${esc(x.h)} <span class="nsrc">(${esc(x.s)}${x.d ? ", " + fmtDate(x.d) : ""})</span></li>`).join("")}</ul>` : ""));
+        } else {
+          bits.push(`<p class="smallnote">The news check for this stock publishes with the next nightly report.</p>`);
+        }
+        if(!youOwn && !r.buy){
+          bits.push(`<button class="btn2 ghost" data-act="buyform" data-sym="${esc(r.symbol)}">You bought it? Track it here</button>`);
+        }
+        detail = `<div class="bdetail">${bits.join("")}</div>`;
+      }
+      return `<div class="bcard ${cls}" data-row="${esc(r.symbol)}" data-card="${esc(cardId)}">
         <span class="brank">#${i + 1}</span>
         <div class="bmain">
           <span class="bsym">${esc(r.symbol)}</span>
@@ -640,6 +710,8 @@ function render(){
           <button class="btn2 save" data-act="buysave" data-sym="${esc(r.symbol)}">Save &mdash; it will be watched for you</button>
           <button class="btn2 cancel" data-act="buycancel" data-sym="${esc(r.symbol)}">Cancel</button>
         </div>
+        ${detail}
+        <span class="taphint">${open ? "tap to close ▴" : "tap for the full reasoning ▾"}</span>
       </div>`;
     }).join("");
     const more = allRows.length > shown.length
@@ -649,6 +721,7 @@ function render(){
       <div class="bgrid">${rowsHtml}</div>${more}
       <p class="smallnote">Hottest at the top. <b class="up">Green</b> means suggested buy;
       <b class="down">red</b> means you own it and it is time to sell.
+      Tap any card for the full reasoning — the numbers, the news, and what is missing.
       Each price shows exactly when it was last updated${key === "daytrade"
         ? "; day changes stream in live while the market is open" : ""}.</p>
     </div>`;
@@ -665,15 +738,16 @@ function render(){
         s.win_rate_pct!=null ? `, and <b>${s.win_rate_pct.toFixed(0)}%</b> of them made money` : ""}.
        Its worst stretch was a dip of <b>${Math.abs(s.max_drawdown_pct||0).toFixed(1)}%</b>.`
     : `It hasn't finished a trade yet — its record starts building with the first sale.`;
+  const eqPct = startCap ? (eq/startCap-1)*100 : 0;
   const proofHtml = `<div class="card"><h2>Why you should listen</h2>
-    <p>Since <b>${fmtDate(DATA.inception_date)}</b> it has been investing ${money(startCap)} of pretend money,
-    every decision published the instant it was made. If you had copied it, you would now have:</p>
-    <div class="bignum">${money(eq)} <span class="chg">${gainWords(eq, startCap)}</span></div>
+    <p>Since <b>${fmtDate(DATA.inception_date)}</b> every decision has been published the instant
+    it was made. If you had copied this strategy with any amount of money, you would now be:</p>
+    <div class="bignum ${eqPct>=0?"up":"down"}">${eqPct>=0?"+":""}${eqPct.toFixed(2)}%</div>
     <p>The same money left in the overall market would be ${pctWords(bench.total_return_pct)}.
     ${wins}</p>
     <div class="chartwrap"><canvas id="chart"></canvas><div class="chart-tip" id="chartTip"></div></div>
     <div class="chartwrap ddwrap"><canvas id="ddChart"></canvas></div>
-    <p class="chart-note">Your ${money(startCap)} following this strategy (solid) versus the overall market (dashed), day by day.</p>
+    <p class="chart-note">Percent gained or lost following this strategy (solid) versus the overall market (dashed), day by day.</p>
   </div>`;
 
   // --- 2b. by the numbers: institutional metrics, honestly nulled ---
@@ -729,7 +803,7 @@ function render(){
     else plan = `It is simply kept, and looks after itself.`;
     return `<div class="hold"><p>Holds <b>${nm}</b> — bought ${key==="daytrade"&&p.entry_time ? "today at "+esc(p.entry_time) : "on "+fmtDate(p.entry_date)}
       at ${price(p.entry_price)}, now ${price(px)}, ${pctWords(pnl)}. ${plan}</p></div>`;
-  }).join("") || `<div class="hold"><p>Nothing at the moment — all ${money(s.cash)} is safely in cash, waiting for
+  }).join("") || `<div class="hold"><p>Nothing at the moment — everything is safely in cash, waiting for
       the right opportunity. When it buys, the instruction appears under <b>“What to do today.”</b></p></div>`;
   const holdingsHtml = `<div class="card"><h2>What it's holding right now</h2>${holds}</div>`;
 
@@ -747,10 +821,21 @@ function render(){
 
 /* ---------- the chart: strategy line vs market reference, with hover ---------- */
 let boardExpanded = false;
+let openCards = new Set();
 function wireBoardActions(){
   $("content").onclick = (ev) => {
     const btn = ev.target.closest("[data-act]");
-    if(!btn) return;
+    if(!btn){
+      // a tap anywhere else on a board card opens its full reasoning
+      if(ev.target.closest("input,label,a,button,.buyform")) return;
+      const card = ev.target.closest(".bcard[data-card]");
+      if(card){
+        const cid = card.dataset.card;
+        openCards.has(cid) ? openCards.delete(cid) : openCards.add(cid);
+        render();
+      }
+      return;
+    }
     const act = btn.dataset.act, sym = btn.dataset.sym, id = btn.dataset.id;
     if(act === "showmore"){ boardExpanded = true; render(); }
     else if(act === "buyform"){ const f = $("buyform-" + sym); if(f) f.style.display = "flex"; }
@@ -791,20 +876,27 @@ function drawChart(key){
   cv.width = w*dpr; cv.height = h*dpr;
   const ctx = cv.getContext("2d");
   ctx.scale(dpr,dpr);
+  const base = DATA.starting_capital || START_CAP_FALLBACK;
   const pts = dates.map((d,i)=>({d, s:sSeries[i], b:bSeries[i]})).filter(p=>p.s!=null||p.b!=null);
   if(!pts.length){ ctx.font="13px 'JetBrains Mono',monospace"; ctx.fillStyle="rgba(201,169,97,0.7)"; ctx.fillText("The chart begins with the first market day.", 20, h/2); return; }
+  pts.forEach(p=>{ p.sp = p.s!=null ? (p.s/base-1)*100 : null; p.bp = p.b!=null ? (p.b/base-1)*100 : null; });
   let lo=Infinity, hi=-Infinity;
-  pts.forEach(p=>{ [p.s,p.b].forEach(v=>{ if(v!=null){ lo=Math.min(lo,v); hi=Math.max(hi,v);} }); });
-  const pad = Math.max((hi-lo)*0.1, hi*0.004); lo-=pad; hi+=pad;
+  pts.forEach(p=>{ [p.sp,p.bp].forEach(v=>{ if(v!=null){ lo=Math.min(lo,v); hi=Math.max(hi,v);} }); });
+  const pad = Math.max((hi-lo)*0.1, 0.15); lo-=pad; hi+=pad;
   const ML=64, MR=16, MT=12, MB=28;
   const X = i => pts.length>1 ? ML + i/(pts.length-1)*(w-ML-MR) : (ML+w-MR)/2;
   const Y = v => MT + (1-(v-lo)/(hi-lo))*(h-MT-MB);
-  // recessive grid + $ labels
+  // recessive grid + percent labels
   ctx.font="11px 'JetBrains Mono',monospace"; ctx.fillStyle="rgba(201,169,97,0.7)"; ctx.strokeStyle="rgba(201,169,97,0.12)"; ctx.lineWidth=1;
   for(let g=0; g<=3; g++){
     const v = lo + (hi-lo)*g/3, y = Y(v);
     ctx.beginPath(); ctx.moveTo(ML,y); ctx.lineTo(w-MR,y); ctx.stroke();
-    ctx.fillText("$"+Math.round(v).toLocaleString(), 6, y+4);
+    ctx.fillText((v>=0?"+":"")+v.toFixed(1)+"%", 6, y+4);
+  }
+  if(lo < 0 && hi > 0){ // the break-even line
+    ctx.strokeStyle="rgba(201,169,97,0.3)";
+    ctx.beginPath(); ctx.moveTo(ML,Y(0)); ctx.lineTo(w-MR,Y(0)); ctx.stroke();
+    ctx.strokeStyle="rgba(201,169,97,0.12)";
   }
   const nT = Math.min(4, pts.length);
   for(let t=0;t<nT;t++){
@@ -814,19 +906,19 @@ function drawChart(key){
   // market: dashed gray reference line
   ctx.strokeStyle="#9aa0a8"; ctx.lineWidth=1.5; ctx.setLineDash([5,4]);
   ctx.beginPath(); let started=false;
-  pts.forEach((p,i)=>{ if(p.b==null) return; started?ctx.lineTo(X(i),Y(p.b)):ctx.moveTo(X(i),Y(p.b)); started=true; });
+  pts.forEach((p,i)=>{ if(p.bp==null) return; started?ctx.lineTo(X(i),Y(p.bp)):ctx.moveTo(X(i),Y(p.bp)); started=true; });
   ctx.stroke(); ctx.setLineDash([]);
   // strategy: solid accent line
   ctx.strokeStyle=accent; ctx.lineWidth=2.5;
   ctx.beginPath(); started=false; let lastI=-1;
-  pts.forEach((p,i)=>{ if(p.s==null) return; started?ctx.lineTo(X(i),Y(p.s)):ctx.moveTo(X(i),Y(p.s)); started=true; lastI=i; });
+  pts.forEach((p,i)=>{ if(p.sp==null) return; started?ctx.lineTo(X(i),Y(p.sp)):ctx.moveTo(X(i),Y(p.sp)); started=true; lastI=i; });
   ctx.stroke();
-  if(lastI>=0){ ctx.beginPath(); ctx.arc(X(lastI),Y(pts[lastI].s),4,0,Math.PI*2); ctx.fillStyle=accent; ctx.fill(); }
+  if(lastI>=0){ ctx.beginPath(); ctx.arc(X(lastI),Y(pts[lastI].sp),4,0,Math.PI*2); ctx.fillStyle=accent; ctx.fill(); }
   // direct labels (identity is never color alone)
   ctx.font="bold 12px 'JetBrains Mono',monospace";
-  if(lastI>=0){ ctx.fillStyle=accent; ctx.fillText("This strategy", Math.min(X(lastI)+8,w-92), Y(pts[lastI].s)-8); }
-  const lastB = [...pts].reverse().find(p=>p.b!=null);
-  if(lastB){ ctx.fillStyle="#6b7280"; ctx.fillText("The market", Math.min(X(pts.indexOf(lastB))+8,w-84), Y(lastB.b)+16); }
+  if(lastI>=0){ ctx.fillStyle=accent; ctx.fillText("This strategy", Math.min(X(lastI)+8,w-92), Y(pts[lastI].sp)-8); }
+  const lastB = [...pts].reverse().find(p=>p.bp!=null);
+  if(lastB){ ctx.fillStyle="#6b7280"; ctx.fillText("The market", Math.min(X(pts.indexOf(lastB))+8,w-84), Y(lastB.bp)+16); }
   // hover crosshair + tooltip
   const tip = $("chartTip");
   cv.onmousemove = ev=>{
@@ -836,7 +928,8 @@ function drawChart(key){
     tip.style.display="block";
     tip.style.left = Math.min(ev.clientX-r.left+14, r.width-170)+"px";
     tip.style.top  = "12px";
-    tip.innerHTML = `<b>${fmtDate(p.d)}</b><br>This strategy: ${p.s!=null?money(p.s):"—"}<br>The market: ${p.b!=null?money(p.b):"—"}`;
+    const pf = v => v==null ? "—" : (v>=0?"+":"")+v.toFixed(2)+"%";
+    tip.innerHTML = `<b>${fmtDate(p.d)}</b><br>This strategy: ${pf(p.sp)}<br>The market: ${pf(p.bp)}`;
   };
   cv.onmouseleave = ()=>{ tip.style.display="none"; };
   drawDrawdown(key, pts, ML, MR);

@@ -384,6 +384,124 @@ def _range_pos(px, lo, hi):
     return max(0.0, min(1.0, (px - lo) / (hi - lo)))
 
 
+# ------------------------------------------------------------------- news
+# A price can rise into a story it hasn't digested yet. Before buying, the
+# engine reads the week's headlines (Finnhub company-news, free tier) and
+# scores them with a plain keyword test — crude, but deterministic, free, and
+# fully published so every verdict can be audited on the site.
+
+NEWS_PATH = os.path.join(DATA_DIR, "news.json")
+NEWS_LOOKBACK_DAYS = 7
+
+NEWS_POS_WORDS = (
+    "beat", "beats", "record", "surge", "surges", "soars", "soar", "rally",
+    "rallies", "upgrade", "upgraded", "upgrades", "raises", "raised", "tops",
+    "buyback", "outperform", "outperforms", "wins", "win", "approval",
+    "approved", "expands", "breakthrough", "strong", "jumps", "growth",
+)
+NEWS_NEG_WORDS = (
+    "miss", "misses", "missed", "downgrade", "downgraded", "downgrades",
+    "cuts", "cut", "falls", "fall", "plunge", "plunges", "sinks", "slump",
+    "slumps", "lawsuit", "sues", "probe", "investigation", "recall", "fraud",
+    "warns", "warning", "layoffs", "bankruptcy", "halts", "halted", "weak",
+    "disappoints", "disappointing", "underperform", "tumbles", "slides",
+)
+
+
+def _headline_sentiment(headline):
+    """+1 / 0 / -1 from word-boundary keyword hits. No magic — the same lists
+    are in the open-source file anyone can read."""
+    text = (headline or "").lower()
+    pos = sum(1 for w in NEWS_POS_WORDS if re.search(r"\b" + re.escape(w) + r"\b", text))
+    neg = sum(1 for w in NEWS_NEG_WORDS if re.search(r"\b" + re.escape(w) + r"\b", text))
+    if pos > neg:
+        return 1
+    if neg > pos:
+        return -1
+    return 0
+
+
+def fetch_company_news(sym, today):
+    """Last week's headlines for one symbol from Finnhub's free company-news."""
+    frm = (datetime.strptime(today, "%Y-%m-%d") - timedelta(days=NEWS_LOOKBACK_DAYS)).strftime("%Y-%m-%d")
+    items = http_get_json(
+        f"https://finnhub.io/api/v1/company-news?symbol={urllib.parse.quote(sym)}"
+        f"&from={frm}&to={today}&token={FINNHUB_KEY}", timeout=15) or []
+    out = []
+    for it in items[:40]:
+        h = (it.get("headline") or "").strip()
+        if not h:
+            continue
+        try:
+            d = datetime.fromtimestamp(it.get("datetime") or 0, timezone.utc).strftime("%Y-%m-%d")
+        except Exception:  # noqa: BLE001
+            d = ""
+        out.append({"h": h[:120], "s": (it.get("source") or "")[:28],
+                    "d": d, "sent": _headline_sentiment(h)})
+    return out
+
+
+def summarize_news(heads):
+    pos = sum(1 for x in heads if x["sent"] > 0)
+    neg = sum(1 for x in heads if x["sent"] < 0)
+    if neg >= 2 and neg > pos:
+        verdict = "negative"
+    elif pos >= 2 and pos > neg:
+        verdict = "positive"
+    elif not heads:
+        verdict = "quiet"
+    else:
+        verdict = "mixed"
+    # the loudest headlines first (signal before neutral), newest within a group
+    top = sorted(heads, key=lambda x: (-abs(x["sent"]), x["d"]), reverse=False)
+    top = sorted(top, key=lambda x: abs(x["sent"]), reverse=True)[:4]
+    return {"n": len(heads), "pos": pos, "neg": neg, "verdict": verdict, "top": top}
+
+
+def fetch_news_signals(symbols, today):
+    """Daily-cached news signal per symbol (1 call each, paced for free tier)."""
+    cache = {}
+    if os.path.exists(NEWS_PATH):
+        try:
+            with open(NEWS_PATH, encoding="utf-8") as f:
+                cache = json.load(f)
+        except Exception:  # noqa: BLE001
+            cache = {}
+    out = dict(cache.get("news") or {}) if cache.get("date") == today else {}
+    todo = [s for s in symbols if s not in out]
+    if todo:
+        print(f"News check on {len(todo)} symbols (~{len(todo) * 1.05 / 60:.0f} min)…")
+    for i, sym in enumerate(todo):
+        try:
+            out[sym] = summarize_news(fetch_company_news(sym, today))
+        except Exception:  # noqa: BLE001
+            pass  # no signal is treated as quiet — never blocks the run
+        if i < len(todo) - 1:
+            time.sleep(1.05)
+    save_json(NEWS_PATH, {"date": today, "news": out}, compact=True)
+    return out
+
+
+def apply_news_to_board(board, news):
+    """Attach the week's news signal to each verdict row. A qualified name
+    drowning in negative headlines is pulled off the buy list — still shown,
+    with the reason — until the news clears."""
+    for r in board:
+        sig = news.get(r["symbol"])
+        if not sig:
+            continue
+        r["news"] = sig
+        if r["qualified"] and sig["verdict"] == "negative":
+            r["qualified"] = False
+            r["news_flag"] = True
+            r["reason"] = ("passes every price test, but this week's news is negative "
+                           f"({sig['neg']} bad headline{'s' if sig['neg'] != 1 else ''}) "
+                           "— waiting for it to clear")
+            r["needs"] = "needs the negative headlines to stop"
+    board.sort(key=lambda r: 0 if r["qualified"] else 1)  # stable — keeps score order
+    return board
+
+
 def score_aggressive_metrics(metrics, quotes):
     """⚡🚀 Fast Mover ranking from vendor metric windows — but unlike a
     plain screener, EVERY scanned symbol comes back with a verdict: the ones
@@ -397,26 +515,36 @@ def score_aggressive_metrics(metrics, quotes):
         pos = _range_pos(px, m.get("lo52"), m.get("hi52"))
         row = {"symbol": sym, "name": sym, "price": px,
                "r13": r13, "r26": r26, "r5": r5, "vol": vol, "pos": pos,
-               "qualified": False, "reason": "", "score": None}
-        reason = None
+               "qualified": False, "reason": "", "needs": "", "score": None}
+        reason, needs = None, ""
         if not px or px < 2.0:
             reason = "no usable price"
+            needs = "needs a reliable price feed first"
         elif r13 is None or r26 is None or r5 is None or not vol or vol <= 0:
             reason = "missing data"
+            needs = "needs a full set of return data first"
         elif r13 <= 0 or r26 <= 0:
             reason = "not rising over both 3 and 6 months"
+            needs = f"needs both climbs positive — 3-month is {r13:+.1f}%, 6-month {r26:+.1f}%"
         elif r5 < -2.0:
             reason = "falling too hard this week"
+            needs = f"needs this week ({r5:+.1f}%) to steady above −2%"
         elif r5 > 15.0:
             reason = "vertical one-week spike — chases like this reverse"
+            needs = f"needs the spike ({r5:+.1f}% in a week) to cool below +15%"
         elif pos is None or pos < 0.55:
             reason = "in the lower half of its 52-week range"
+            needs = ("needs 52-week range data" if pos is None else
+                     f"needs to climb past 55% of its 52-week range — it is at {pos * 100:.0f}%")
         elif pos > 0.995 and r5 > 8.0:
             reason = "blow-off top at a 52-week high"
+            needs = "needs to settle off its high before a safer entry appears"
         elif m.get("advol") is not None and m["advol"] * px < 20.0:
             reason = "too thinly traded"
+            needs = "needs more daily trading volume to get in and out safely"
         if reason:
             row["reason"] = reason
+            row["needs"] = needs
             rows.append(row)
             continue
         row["qualified"] = True
@@ -452,20 +580,28 @@ def score_growth_metrics(metrics, quotes):
         pos = _range_pos(px, m.get("lo52"), m.get("hi52"))
         row = {"symbol": sym, "name": sym, "price": px,
                "r13": r13, "r26": r26, "r52": r52, "vol": vol, "pos": pos,
-               "qualified": False, "reason": "", "score": None}
-        reason = None
+               "qualified": False, "reason": "", "needs": "", "score": None}
+        reason, needs = None, ""
         if not px or px < 5.0:
             reason = "no usable price"
+            needs = "needs a reliable price feed first"
         elif r13 is None or r26 is None or r52 is None or not vol or vol <= 0:
             reason = "missing data"
+            needs = "needs a full set of return data first"
         elif r26 <= 0 or r52 <= 0 or r13 <= 0:
             reason = "not rising over 3, 6 and 12 months together"
+            needs = (f"needs all three climbs positive — 3-month {r13:+.1f}%, "
+                     f"6-month {r26:+.1f}%, 12-month {r52:+.1f}%")
         elif vol > 45.0:
             reason = "swings too hard for this strategy"
+            needs = f"needs volatility below 45% — it swings {vol:.0f}%"
         elif pos is None or pos < 0.65:
             reason = "too far below its 52-week high"
+            needs = ("needs 52-week range data" if pos is None else
+                     f"needs to trade above 65% of its 52-week range — it is at {pos * 100:.0f}%")
         if reason:
             row["reason"] = reason
+            row["needs"] = needs
             rows.append(row)
             continue
         row["qualified"] = True
@@ -829,30 +965,42 @@ def score_aggressive(bars, as_of):
                "r13": round(r63 * 100, 1) if r63 is not None else None,
                "r26": round(r126 * 100, 1) if r126 is not None else None,
                "vol": round(vol * 100, 1) if vol else None, "pos": pos,
-               "qualified": False, "reason": "", "score": None}
-        reason = None
+               "qualified": False, "reason": "", "needs": "", "score": None}
+        reason, needs = None, ""
         if not h["dates"] or h["dates"][-1] != as_of:
             reason = "no fresh price today"  # stale/halted — never buy at an old price
+            needs = "needs a fresh price today before anything is trusted"
         elif len(closes) < 65:
             reason = "not enough stored history yet"
+            needs = f"needs {65 - len(closes)} more market days of stored history"
         elif px < 2.0:
             reason = "no usable price"
+            needs = "needs a share price above $2"
         elif r5 is None or r20 is None or r63 is None or not vol or vol <= 0:
             reason = "missing data"
+            needs = "needs a full set of return data first"
         elif r20 <= 0 or r63 <= 0:
             reason = "not rising over both 1 and 3 months"
+            needs = (f"needs both climbs positive — 1-month is {r20 * 100:+.1f}%, "
+                     f"3-month {r63 * 100:+.1f}%")
         elif r5 < -0.02:
             reason = "falling too hard this week"
+            needs = f"needs this week ({r5 * 100:+.1f}%) to steady above −2%"
         elif r5 > 0.15:
             reason = "vertical one-week spike — chases like this reverse"
+            needs = f"needs the spike ({r5 * 100:+.1f}% in a week) to cool below +15%"
         elif rsi is None:
             reason = "missing data"
+            needs = "needs more history for a momentum reading"
         elif rsi < 45:
             reason = "momentum too weak (RSI below 45)"
+            needs = f"needs momentum to firm up — RSI is {rsi:.0f}, it wants 45–75"
         elif rsi > 75:
             reason = "already euphoric (RSI above 75)"
+            needs = f"needs to cool off — RSI is {rsi:.0f}, it wants 45–75"
         if reason:
             row["reason"] = reason
+            row["needs"] = needs
             rows.append(row)
             continue
         row["qualified"] = True
@@ -897,24 +1045,32 @@ def score_growth(bars, as_of):
                "r13": round(r63 * 100, 1) if r63 is not None else None,
                "r26": round(r126 * 100, 1) if r126 is not None else None,
                "vol": round(vol * 100, 1) if vol else None, "pos": pos,
-               "qualified": False, "reason": "", "score": None}
-        reason = None
+               "qualified": False, "reason": "", "needs": "", "score": None}
+        reason, needs = None, ""
         if not h["dates"] or h["dates"][-1] != as_of:
             reason = "no fresh price today"  # stale/halted — never buy at an old price
+            needs = "needs a fresh price today before anything is trusted"
         elif len(closes) < 210:
             reason = "not enough stored history yet"
+            needs = f"needs {210 - len(closes)} more market days of stored history"
         elif not s50 or not s200 or not (px > s50 > s200):
             reason = "not in a confirmed uptrend (price vs 50/200-day averages)"
+            needs = "needs its price above a rising 50-day average, itself above the 200-day"
         elif r126 is None or r63 is None:
             reason = "missing data"
+            needs = "needs a full set of return data first"
         elif r126 <= 0:
             reason = "not rising over six months"
+            needs = f"needs a positive six-month climb — it is {r126 * 100:+.1f}%"
         elif vol is None:
             reason = "missing data"
+            needs = "needs more history for a volatility reading"
         elif vol > 0.45:
             reason = "swings too hard for this strategy"
+            needs = f"needs volatility below 45% — it swings {vol * 100:.0f}%"
         if reason:
             row["reason"] = reason
+            row["needs"] = needs
             rows.append(row)
             continue
         blocks_up = 0
@@ -1609,7 +1765,7 @@ def build_watchlists(state, ranked_agg, ranked_gro, rank_basis, regime_note,
 
 
 def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
-                 can_trade, as_of, bars):
+                 can_trade, as_of, bars, news=None):
     """The full evaluated universe per strategy — every scanned symbol with its
     numbers, its verdict, and the exact vintage of its price. The website
     renders this as the stock board, buy-highlights included."""
@@ -1633,6 +1789,8 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
                 "buy": buyable and buy_rank <= max(free, 0) + 3,
                 "held": r["symbol"] in held,
                 "reason": r.get("reason", ""),
+                "needs": r.get("needs", ""),
+                "news": r.get("news"),
                 "r3m": round(r["r13"], 1) if r.get("r13") is not None else (
                     round(r["r63"] * 100, 1) if r.get("r63") is not None else None),
                 "r6m": round(r["r26"], 1) if r.get("r26") is not None else None,
@@ -1657,6 +1815,9 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
         dt_rows.append({"symbol": s, "price": round(px, 2) if px else None,
                         "price_asof": price_asof, "qualified": False, "buy": False,
                         "held": False, "reason": "watching for a 2–8% morning gap",
+                        "needs": "needs a 2–8% gap up before 11:30 New York time, "
+                                 "still climbing 20 minutes after first sighting",
+                        "news": (news or {}).get(s),
                         "r3m": None, "r6m": None, "range_pos": None, "vol": None})
     out["daytrade"] = {"rows": dt_rows, "basis": "intraday gaps",
                        "note": ("Live gap percentages appear while the market is open. "
@@ -2312,6 +2473,18 @@ def run_intraday():
         "live Finnhub quotes (intraday) + rolling price store")
     site["intraday_date"] = today
     site["intraday_equity"] = round(equity, 2)
+    # the intraday pass doesn't recompute boards/watchlists — carry the last
+    # daily report's forward instead of wiping them off the site
+    try:
+        with open(SITE_PATH, encoding="utf-8") as f:
+            prev_site = json.load(f)
+        for k, sdata in (prev_site.get("strategies") or {}).items():
+            if k in site["strategies"]:
+                for fld in ("board", "watchlist"):
+                    if site["strategies"][k].get(fld) is None and sdata.get(fld) is not None:
+                        site["strategies"][k][fld] = sdata[fld]
+    except Exception:  # noqa: BLE001
+        pass
     save_json(STATE_PATH, state)
     save_json(SITE_PATH, site)
     day_pnl = sum(t["pnl_pct"] for t in strat["closed"] if t["exit_date"] == today)
@@ -2499,8 +2672,6 @@ def main():
         gro_universe = {s: h for s, h in bars.items() if s in set(SP_CORE)}
         board_agg = score_aggressive(agg_universe, as_of)
         board_gro = score_growth(gro_universe, as_of)
-        ranked_agg = [r for r in board_agg if r["qualified"]]
-        ranked_gro = [r for r in board_gro if r["qualified"]]
     elif FINNHUB_KEY:
         # No open-slot gate here on purpose: the board must publish a verdict
         # for every scanned symbol even when the model is fully invested —
@@ -2516,8 +2687,27 @@ def main():
             {s: m for s, m in metrics.items() if s in set(MOMENTUM)}, quotes)
         board_gro = score_growth_metrics(
             {s: m for s, m in metrics.items() if s in set(SP_CORE)}, quotes)
-        ranked_agg = [r for r in board_agg if r["qualified"]]
-        ranked_gro = [r for r in board_gro if r["qualified"]]
+
+    # news check: a price can rise into a story it hasn't digested. Qualified
+    # names with clearly negative weekly headlines are held back from buying;
+    # every headline that fed a verdict is published on the board.
+    news_map = {}
+    if FINNHUB_KEY:
+        held_syms = [p["symbol"] for k in ("aggressive", "growth")
+                     for p in state["strategies"][k]["positions"]]
+        news_syms = list(dict.fromkeys(
+            [r["symbol"] for r in board_agg if r["qualified"]][:12]
+            + [r["symbol"] for r in board_gro if r["qualified"]][:12]
+            + held_syms + list(DAYTRADE_WATCHLIST)))
+        try:
+            news_map = fetch_news_signals(news_syms, ny_today)
+        except Exception as e:  # noqa: BLE001
+            print(f"  ! news check unavailable this run: {e}")
+        if news_map:
+            apply_news_to_board(board_agg, news_map)
+            apply_news_to_board(board_gro, news_map)
+    ranked_agg = [r for r in board_agg if r["qualified"]]
+    ranked_gro = [r for r in board_gro if r["qualified"]]
 
     # regime filter: high-beta momentum bleeds when the broad market is below
     # its own 50-day trend — the Fast Mover sits in cash then
@@ -2593,7 +2783,7 @@ def main():
     watchlists = build_watchlists(
         state, ranked_agg, ranked_gro, rank_basis, regime_note, universe_ok, can_trade)
     boards = build_boards(state, board_agg, board_gro, rank_basis, regime_note,
-                          can_trade, as_of, bars)
+                          can_trade, as_of, bars, news=news_map)
     site = build_site_payload(state, bars, as_of, new_picks, data_source,
                               watchlists=watchlists, boards=boards)
 
