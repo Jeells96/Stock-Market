@@ -16,7 +16,7 @@ Every run:
   2. Replays every trading day since the last run: credits dividends,
      applies splits, checks stops/targets/trend-breaks on daily CLOSES,
      and records a daily equity point for each portfolio.
-  3. Fills empty slots with new ranked picks (entered at the latest close).
+  3. Buys one share of every newly qualifying ranked pick (at the latest close).
   4. Writes machine-readable state + a website payload + human reports.
 
 The git commit that follows each run timestamps the picks BEFORE their
@@ -136,8 +136,7 @@ STRATEGY_META = {
         "icon": "🚀",
         "tagline": "High-octane momentum swings. Big targets, hard stops, fast exits.",
         "horizon": "Days to weeks",
-        "risk_note": "Very high risk. Buys quality momentum (3-month climbers, not 1-week spikes), only when the broad market is above its 50-day trend. Once a trade is up 10% its stop moves to breakeven, so a winner cannot become a loser.",
-        "slots": 5,
+        "risk_note": "Very high risk. Buys one share of EVERY name that passes its tests (3-month climbers, not 1-week spikes), only when the broad market is above its 50-day trend. Once a trade is up 10% its stop moves to breakeven, so a winner cannot become a loser.",
         "target_pct": 0.20,
         "stop_pct": 0.08,
         "max_hold_bars": 15,
@@ -150,8 +149,7 @@ STRATEGY_META = {
         "icon": "📈",
         "tagline": "Quality large caps in confirmed uptrends. Steady compounding.",
         "horizon": "Weeks to months",
-        "risk_note": "Moderate risk. Rides established trends and steps aside when a trend breaks.",
-        "slots": 5,
+        "risk_note": "Moderate risk. Buys one share of every large cap in a confirmed uptrend; steps aside when a trend breaks.",
         "target_pct": 0.15,
         "stop_pct": 0.10,
         "max_hold_bars": None,  # exits on trend break instead
@@ -1507,8 +1505,15 @@ def open_position(strat, cand, as_of, budget, target_pct=None, stop_pct=None):
     return pos
 
 
-def fill_slots(key, strat, ranked, as_of, can_trade):
-    """Fill empty slots with the best-ranked candidates not held / cooling down."""
+MAX_OPEN_RECS = 150   # runaway guard only — far above anything a real day produces
+
+
+def buy_recommendations(key, strat, ranked, as_of, can_trade):
+    """Buy ONE SHARE of every ranked candidate not already held or cooling
+    down. There is no slot limit by design: a suggestion IS a purchase, so the
+    machine is scoreable on every recommendation it ever makes — never 'the
+    slots were full, that tip went untracked'. One share each keeps every
+    verdict equally auditable; the exit rules do the rest."""
     meta = STRATEGY_META[key]
     if not can_trade:
         return []
@@ -1517,19 +1522,18 @@ def fill_slots(key, strat, ranked, as_of, can_trade):
     cooling = {s for s, d in strat["cooldown"].items() if d >= cutoff}
     strat["cooldown"] = {s: d for s, d in strat["cooldown"].items() if d >= cutoff}
     opened = []
-    empty = meta["slots"] - len(strat["positions"])
-    if empty <= 0 or strat["cash"] <= 50:
-        return opened
-    budget_each = strat["cash"] / empty
     for cand in ranked:
-        if empty <= 0:
+        if len(strat["positions"]) >= MAX_OPEN_RECS:
+            print(f"  {key}: {MAX_OPEN_RECS} open recommendations — runaway guard tripped, skipping the rest")
             break
         if cand["symbol"] in held or cand["symbol"] in cooling:
             continue
-        opened.append(open_position(strat, cand, as_of, min(budget_each, strat["cash"]),
+        if not cand.get("price"):
+            continue
+        cost = cand["price"] * (1.0 + SLIPPAGE_BPS_DAILY / 10000.0)  # exactly one share, slippage included
+        opened.append(open_position(strat, cand, as_of, cost,
                                     meta.get("target_pct"), meta.get("stop_pct")))
         held.add(cand["symbol"])
-        empty -= 1
     return opened
 
 
@@ -1728,8 +1732,6 @@ def build_watchlists(state, ranked_agg, ranked_gro, rank_basis, regime_note,
     ranked_by_key = {"aggressive": ranked_agg, "growth": ranked_gro}
     for key, ranked in ranked_by_key.items():
         strat = state["strategies"][key]
-        meta = STRATEGY_META[key]
-        free = meta["slots"] - len(strat["positions"])
         held = {p["symbol"] for p in strat["positions"]}
         cooling = set(strat.get("cooldown") or {})
         items = []
@@ -1739,10 +1741,8 @@ def build_watchlists(state, ranked_agg, ranked_gro, rank_basis, regime_note,
                 status = "already owned"
             elif sym in cooling:
                 status = "recently traded — cooling off"
-            elif free <= 0:
-                status = "next in line when a slot frees up"
             else:
-                status = "qualified — buying at the next close"
+                status = "qualified — buying one share at the next close"
             items.append({
                 "symbol": sym,
                 "price": round(r.get("price") or 0, 2),
@@ -1761,8 +1761,6 @@ def build_watchlists(state, ranked_agg, ranked_gro, rank_basis, regime_note,
         elif not ranked:
             note = ("Nothing in the universe currently meets this strategy's standards. "
                     "That is a decision, not an outage — it re-checks at every close.")
-        elif free <= 0:
-            note = "All slots are full. These are the names queued for the next opening."
         elif not can_trade:
             note = ("These qualify now; purchases are made on the post-close run so every "
                     "fill uses an official closing price.")
@@ -1798,18 +1796,17 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
         strat = state["strategies"][key]
         held = {p["symbol"] for p in strat["positions"]}
         cooling = set(strat.get("cooldown") or {})
-        free = STRATEGY_META[key]["slots"] - len(strat["positions"])
         fresh = {p["symbol"] for p in strat["positions"] if p.get("entry_date") == as_of}
-        rows, buy_rank = [], 0
+        news_era = any(r.get("news") for r in board)
+        rows = []
         for r in board[:250]:
             is_held = r["symbol"] in held
+            checked = (not news_era) or (r.get("news") is not None)
             buyable = bool(r.get("qualified")) and not is_held                 and r["symbol"] not in cooling and not regime_note
-            if buyable:
-                buy_rank += 1
-            # accountability rule: a suggestion IS a purchase. Only names the
-            # machine actually takes into its own paper portfolio get the buy
-            # highlight — never a "next in line" it won't be scored on.
-            is_buy = buyable and buy_rank <= max(free, 0)
+            # accountability rule: a suggestion IS a purchase — one share of
+            # every name that passes every test (news check included). There
+            # is no slot limit, so no tip ever goes untracked.
+            is_buy = buyable and checked
             needs = r.get("needs", "")
             if r.get("qualified") and not is_buy and not is_held and not needs:
                 # qualified but not highlighted — say exactly what's in the way
@@ -1817,9 +1814,8 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
                     needs = "needs the overall market back above its own 50-day trend"
                 elif r["symbol"] in cooling:
                     needs = "recently traded — needs its cool-down days to pass"
-                else:
-                    needs = ("it already qualifies — it needs a slot to open or "
-                             "the names ranked above it to drop")
+                elif not checked:
+                    needs = "waiting its turn for the news check — nothing is bought unchecked"
             rows.append({
                 "symbol": r["symbol"],
                 "price": round(r["price"], 2) if r.get("price") else None,
@@ -1837,17 +1833,15 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
                 "range_pos": round(r["pos"] * 100) if r.get("pos") is not None else None,
                 "vol": round(r["vol"], 0) if r.get("vol") is not None else None,
             })
-        note = ""
+        note = ("One share of every stock that passes every test is bought — there is "
+                "no slot limit, so every recommendation ever made is scored in the "
+                "public record.")
         if regime_note and key == "aggressive":
             note = f"Buying is paused — {regime_note}."
-        elif free <= 0:
-            note = ("Every slot is full, so nothing new is suggested today — a suggestion "
-                    "here is always a stock the machine itself buys, so every one of its "
-                    "recommendations gets scored in the public record.")
         elif not can_trade:
             note = ("Highlighted names are what the machine itself buys on the post-close "
-                    "run at official closing prices — every suggestion lands in its own "
-                    "track record.")
+                    "run at official closing prices — one share each, every suggestion "
+                    "landing in its own track record.")
         out[key] = {"rows": rows, "note": note, "basis": rank_basis}
     # daytrade board: the fixed watchlist, previous closes attached
     dt_rows = []
@@ -1981,7 +1975,9 @@ def build_site_payload(state, bars, as_of, new_picks, data_source, watchlists=No
             "All trades are simulated with paper money and booked NET of modeled slippage "
             "(5 bps per fill, 10 bps intraday; commissions are zero, matching modern retail; "
             "the SPY benchmark is frictionless by convention). Daily strategies fill at official "
-            "closing prices. "
+            "closing prices. The two stock-picking strategies buy exactly ONE SHARE of every "
+            "name that passes every test — no slot limit — so the record scores every "
+            "recommendation ever made; the percentage curve tracks the same starting pot. "
             "Every position is re-checked at every market close without exception; a sell enters the "
             "record only when the model actually fires the signal, booked at that day's real closing "
             "price — never at the planned target or stop. Picks are committed to git before outcomes "
@@ -2231,7 +2227,7 @@ def simulate_exit_params(key, store, symbols, session_lo, session_hi,
                             "volume": {}, "name": s, "divs": {}, "splits": {},
                             "has_events": False}
         ranked = scorer(bars_view, as_of)
-        picks = ranked[:meta["slots"]]
+        picks = ranked[:(meta.get("slots") or 5)]
         if not picks:
             continue
         rets = []
@@ -2787,9 +2783,10 @@ def main():
     if FINNHUB_KEY:
         held_syms = [p["symbol"] for k in ("aggressive", "growth")
                      for p in state["strategies"][k]["positions"]]
+        held_set = set(held_syms)
         news_syms = list(dict.fromkeys(
-            [r["symbol"] for r in board_agg if r["qualified"]][:20]
-            + [r["symbol"] for r in board_gro if r["qualified"]][:20]
+            [r["symbol"] for r in board_agg if r["qualified"] and r["symbol"] not in held_set][:25]
+            + [r["symbol"] for r in board_gro if r["qualified"] and r["symbol"] not in held_set][:25]
             + held_syms + list(DAYTRADE_WATCHLIST)))
         try:
             news_map = fetch_news_signals(news_syms, ny_today)
@@ -2827,9 +2824,9 @@ def main():
         ranked_agg = []
     if ranked_agg or ranked_gro:
         print(f"Ranked candidates ({rank_basis}): aggressive {len(ranked_agg)}, growth {len(ranked_gro)}")
-    new_picks["aggressive"] = fill_slots(
+    new_picks["aggressive"] = buy_recommendations(
         "aggressive", state["strategies"]["aggressive"], ranked_agg, as_of, can_trade)
-    new_picks["growth"] = fill_slots(
+    new_picks["growth"] = buy_recommendations(
         "growth", state["strategies"]["growth"], ranked_gro, as_of, can_trade)
     if new_picks["aggressive"] or new_picks["growth"]:
         # upgrade fresh picks with full history (real company name + div/split

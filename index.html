@@ -809,8 +809,9 @@ function render(){
     })()}</p>
   </div>`;
 
-  // --- 3. holdings ---
-  const holds = (s.positions||[]).map(p=>{
+  // --- 3. holdings (display capped — the board above shows every one) ---
+  const HOLD_SHOW = 14;
+  const holds = (s.positions||[]).slice(0, HOLD_SHOW).map(p=>{
     const nm = p.name && p.name!==p.symbol ? `${esc(p.name)} (${esc(p.symbol)})` : esc(p.symbol);
     const px = livePrice(p);
     const pnl = p.entry_price ? (px/p.entry_price-1)*100 : 0;
@@ -822,7 +823,9 @@ function render(){
       at ${price(p.entry_price)}, now ${price(px)}, ${pctWords(pnl)}. ${plan}</p></div>`;
   }).join("") || `<div class="hold"><p>Nothing at the moment — everything is safely in cash, waiting for
       the right opportunity. When it buys, the instruction appears under <b>“What to do today.”</b></p></div>`;
-  const holdingsHtml = `<div class="card"><h2>What it's holding right now</h2>${holds}</div>`;
+  const holdMore = (s.positions||[]).length > HOLD_SHOW
+    ? `<p class="smallnote">…and ${(s.positions||[]).length - HOLD_SHOW} more — every one is on the board above, marked “Model owns it.”</p>` : "";
+  const holdingsHtml = `<div class="card"><h2>What it's holding right now</h2>${holds}${holdMore}</div>`;
 
   // --- 4. recent decisions ---
   const trades = (s.recent_trades||[]).slice(0,5).map(t=>

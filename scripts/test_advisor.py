@@ -124,7 +124,7 @@ def t5():
     assert len(strat["closed"]) == 0, strat["closed"]
 check("growth: no trend-break exit without 200 bars of history", t5)
 
-# ---------- test 6: fill_slots budget + cooldown ----------
+# ---------- test 6: one share of EVERY qualifying name, cooldown respected ----------
 def t6():
     strat = {"cash": 10000.0, "positions": [], "closed": [], "cooldown": {"HOT": DAYS[3]},
              "last_eval_date": DAYS[4], "activity": []}
@@ -137,14 +137,19 @@ def t6():
         {"symbol": "EEE", "name": "E", "price": 60.0, "thesis": "t"},
         {"symbol": "FFF", "name": "F", "price": 70.0, "thesis": "t"},
     ]
-    opened = adv.fill_slots("aggressive", strat, ranked, DAYS[4], True)
+    opened = adv.buy_recommendations("aggressive", strat, ranked, DAYS[4], True)
     syms = [p["symbol"] for p in opened]
     assert "HOT" not in syms, f"cooldown ignored: {syms}"
-    assert len(opened) == 5, len(opened)
-    approx(strat["cash"], 0.0, tol=0.5)
-    total = sum(p["shares"] * p["entry_price"] for p in opened)
-    approx(total, 10000.0, tol=0.5)
-check("fill_slots: 5 slots, equal budget, cooldown respected", t6)
+    assert len(opened) == 6, f"every non-cooling candidate is bought — no slot cap ({len(opened)})"
+    for p in opened:
+        approx(p["shares"], 1.0, tol=1e-9)   # exactly one share each
+    spent = 10000.0 - strat["cash"]
+    slip = 1.0 + adv.SLIPPAGE_BPS_DAILY / 10000.0
+    approx(spent, sum(r["price"] for r in ranked if r["symbol"] != "HOT") * slip, tol=0.01)
+    # not trading (pre-open replay) buys nothing
+    strat2 = {"cash": 10000.0, "positions": [], "closed": [], "cooldown": {}, "activity": []}
+    assert adv.buy_recommendations("aggressive", strat2, ranked, DAYS[4], False) == []
+check("one share of every qualifying name, cooldown respected", t6)
 
 # ---------- test 7: longterm inception + rebalance ----------
 def t7():
@@ -582,21 +587,24 @@ def t24():
     # a fully-invested strategy still shows the whole board, holdings flagged
     state = adv.bootstrap_state("2026-01-02")
     gro = state["strategies"]["growth"]
-    gro["positions"] = [{"symbol": "AAA", "shares": 1.0, "entry_price": 100.0}] * adv.STRATEGY_META["growth"]["slots"]
+    gro["positions"] = [{"symbol": "AAA", "shares": 1.0, "entry_price": 100.0}] * 5
     gro["positions"] = [dict(p, symbol=s) for p, s in zip(gro["positions"], ["AAA", "BBB", "CCC", "DDD", "EEE"])]
     gro["positions"][0]["entry_date"] = "2026-01-02"  # AAA bought at this very close
     gro["cooldown"] = {"COOL": "2026-01-01"}
     bars["COOL"] = hist("COOL")
+    bars["FRES"] = hist("FRES")
     board = adv.score_growth(bars, as_of)
     boards = adv.build_boards(state, [], board, "price-history", "", True, "2026-01-02", bars)
     rows = boards["growth"]["rows"]
-    assert len(rows) == 4, "board publishes even with zero open slots"
+    assert len(rows) == 5, "board publishes every verdict"
+    byfres = next(r for r in rows if r["symbol"] == "FRES")
+    assert byfres["buy"], "slots are never full — a qualifying name is always suggested AND bought"
     byrow = {r["symbol"]: r for r in rows}
     assert byrow["AAA"]["held"] and byrow["BBB"]["held"]
     assert not byrow["AAA"]["buy"], "held names are never buy-highlighted"
-    assert not any(r["buy"] for r in rows), "zero free slots means zero suggestions — every suggestion is a purchase"
     assert byrow["AAA"]["fresh"] and not byrow["BBB"]["fresh"], "same-close buys are flagged fresh"
-    assert "full" in boards["growth"]["note"], "fully-invested board explains itself"
+    assert "every" in boards["growth"]["note"].lower() and "bought" in boards["growth"]["note"], \
+        "board states the every-suggestion-is-a-purchase rule"
     old = byrow["OLD"]
     assert old["needs"], "every rejected symbol says what it needs"
     assert byrow["COOL"]["qualified"] and not byrow["COOL"]["buy"]
