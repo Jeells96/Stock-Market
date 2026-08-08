@@ -400,30 +400,28 @@ def t17():
     assert strat["last_eval_date"] == DAYS[3]
 check("daytrade consolidation flattens leftovers, marks cash", t17)
 
-# ---------- test 18: daytrade entry — gap band + confirmation ----------
+# ---------- test 18: daytrade entry — decidable from one quote ----------
 def t18():
     m = adv.STRATEGY_META["daytrade"]
-    # in band + rising vs prior check → enter
-    assert adv.daytrade_should_enter(103.0, 100.0, 102.5, m) is True
-    # first sighting (no prior mark) → never enter
-    assert adv.daytrade_should_enter(103.0, 100.0, None, m) is False
-    # fading vs prior check → never enter, even in band
+    # in band and holding above the open → BUY on the very first sighting
+    assert adv.daytrade_should_enter(103.0, 100.0, 102.0, m) is True
+    # in band but back below where it opened → the gap is fading, skip
     assert adv.daytrade_should_enter(103.0, 100.0, 103.5, m) is False
+    # exactly at the open counts as fading
+    assert adv.daytrade_should_enter(103.0, 100.0, 103.0, m) is False
     # gap too small → no
-    assert adv.daytrade_should_enter(101.5, 100.0, 101.0, m) is False
+    assert adv.daytrade_should_enter(101.5, 100.0, 100.5, m) is False
     # monster gap (>8%) fades — skip
-    assert adv.daytrade_should_enter(109.0, 100.0, 108.0, m) is False
+    assert adv.daytrade_should_enter(109.0, 100.0, 101.0, m) is False
     # bad prev close → no
     assert adv.daytrade_should_enter(103.0, 0.0, 102.0, m) is False
-    # sparse-cron fallback: no prior mark, but climbed since the open → enter
-    assert adv.daytrade_should_enter(103.0, 100.0, None, m, open_px=102.0, allow_open_confirm=True) is True
-    # no prior mark and fading off the open → no
-    assert adv.daytrade_should_enter(103.0, 100.0, None, m, open_px=103.5, allow_open_confirm=True) is False
-    # fallback disabled during opening-range noise → no
-    assert adv.daytrade_should_enter(103.0, 100.0, None, m, open_px=102.0, allow_open_confirm=False) is False
-    # prior mark always wins over the open fallback
-    assert adv.daytrade_should_enter(103.0, 100.0, 103.5, m, open_px=100.5, allow_open_confirm=True) is False
-check("daytrade entry: gap band + still-climbing confirmation", t18)
+    # no opening print available → the band alone decides
+    assert adv.daytrade_should_enter(103.0, 100.0, None, m) is True
+    assert adv.daytrade_should_enter(101.0, 100.0, None, m) is False
+    # band edges are inclusive
+    assert adv.daytrade_should_enter(102.0, 100.0, 101.0, m) is True
+    assert adv.daytrade_should_enter(108.0, 100.0, 101.0, m) is True
+check("daytrade entry: one quote decides — band + above the open", t18)
 
 # ---------- test 18b: aggressive breakeven ratchet in replay ----------
 def t18b():

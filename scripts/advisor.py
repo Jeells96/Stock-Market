@@ -168,7 +168,8 @@ STRATEGY_META = {
         "tagline": "Intraday momentum bursts. In and out the same day — always flat by the close.",
         "horizon": "Minutes to hours",
         "risk_note": (
-            "Extreme risk, smallest edges. Buys only 2-8% morning gaps that are still climbing "
+            "Extreme risk, smallest edges. Buys only 2-8% morning risers still above their "
+            "opening price"
             "20 minutes after first sighting, and only when the broad market is steady. Checks run "
             "about every 20 minutes; fills book at the quoted price of the check minus 10 bps modeled "
             "slippage, timestamped by the git commit. Stop jumps to breakeven once up 1.5%. "
@@ -1819,8 +1820,8 @@ def build_watchlists(state, ranked_agg, ranked_gro, rank_basis, regime_note,
     # the intraday sleeve watches a fixed list all session
     dt = state["strategies"].get("daytrade") or {"positions": []}
     out["daytrade"] = {
-        "note": ("These are the names it watches all session. It buys only the ones that gap "
-                 "up 2–8% before 11:30 in the morning and are still climbing 20 minutes later."),
+        "note": ("These are the names it watches all session. It buys the ones up 2–8% on the "
+                 "day and still above their opening price, before 11:30 in the morning."),
         "items": [{"symbol": s, "price": None, "status": "watching for a morning gap",
                    "why": "", "r3m": None, "r6m": None, "range_pos": None}
                   for s in DAYTRADE_WATCHLIST[:12]],
@@ -1896,16 +1897,16 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
         dt_rows.append({"symbol": s, "price": round(px, 2) if px else None,
                         "price_asof": price_asof, "qualified": False, "buy": False,
                         "held": False, "reason": "waiting for it to jump 2–8% in the morning",
-                        "needs": "needs to be up 2–8% on the day before 11:30 in the morning "
-                                 "New York time, and still climbing when the machine checks",
+                        "needs": "needs to be up 2–8% on the day and still above its opening "
+                                 "price, before 11:30 in the morning New York time",
                         "news": (news or {}).get(s),
                         "r3m": None, "r6m": None, "range_pos": None, "vol": None})
     out["daytrade"] = {"rows": dt_rows, "basis": "intraday gaps",
-                       "note": ("Each stock shows how far it has moved today once the market "
-                                "opens. One is bought only in the morning, when it is up "
-                                "between 2% and 8% and still climbing — big enough to mean "
-                                "something, not so big that it usually falls back. Everything "
-                                "bought is sold again before the closing bell.")}
+                       "note": ("Every stock here says buy or don't, live, from its own price. "
+                                "It is a buy when it is up between 2% and 8% today and still "
+                                "above its opening price, before 11:30 in the morning — big "
+                                "enough to mean something, not so far that it usually falls "
+                                "back. Anything bought is sold again before the closing bell.")}
     # longterm board: the five permanent holdings, target vs actual weight —
     # nothing is picked daily, but the board still shows exactly what the pot
     # owns, why, and how far each weight has drifted
@@ -2421,31 +2422,36 @@ def prev_close_from_store(store, sym, today):
     return None
 
 
-def daytrade_should_enter(px, prev_close, prior_mark, meta, open_px=None,
-                          allow_open_confirm=False):
-    """Entry test for one symbol at one intraday check.
+def daytrade_should_enter(px, prev_close, open_px, meta):
+    """Entry test for one symbol at one intraday check — and the SAME test the
+    website runs on its live quote, so a green 'Suggested buy' card is always a
+    stock this function is about to buy. Two conditions, both readable from a
+    single quote:
 
-    Conditions, all evidence-driven:
-      1. Gap band: up min_gap..max_gap vs yesterday's close. Small gaps are
+      1. Gap band: up min_gap..max_gap vs yesterday's close. Small moves are
          noise; monster gaps (>max_gap) statistically fade after the open.
-      2. Confirmation — the gap must still be CLIMBING, proven one of two ways:
-         * price higher than at the previous ~20-minute check (prior_mark); or
-         * no prior check exists this session and the price sits above the
-           session OPEN (allow_open_confirm, used once the opening-range noise
-           has settled). GitHub's scheduler fires the 20-minute checks
-           erratically — some mornings only one check lands in the window, and
-           without this fallback a gapper spotted once could never be bought.
+      2. Still above today's OPENING price — it has not already given the jump
+         back. (The old rule instead demanded a second sighting ~20 minutes
+         later. GitHub's scheduler rarely lands two checks inside the morning
+         window, so that rule produced zero trades in production while making
+         the site's verdict unknowable in the browser. This one is stricter in
+         the case that matters — a fading gap — and decidable instantly.)
+
+    The caller applies the rest: the morning window, the market-wide tape
+    filter, the news veto, the loss blacklist, and one shot per symbol per day.
     """
     if not prev_close or prev_close <= 0:
         return False
     gap = px / prev_close - 1.0
-    if gap < meta["min_gap"] or gap > meta["max_gap"]:
+    # the published band is inclusive ("up between 2% and 8%"); without the
+    # epsilon a stock at exactly +8% divides out to 0.08000000000000007 and the
+    # engine would refuse a name the website is calling a buy
+    eps = 1e-9
+    if gap < meta["min_gap"] - eps or gap > meta["max_gap"] + eps:
         return False
-    if prior_mark is not None:
-        return px > prior_mark
-    if allow_open_confirm and open_px and open_px > 0:
-        return px > open_px * 1.002  # climbed since the open, not fading off it
-    return False
+    if open_px and open_px > 0:
+        return px > open_px
+    return True   # no opening print available — the gap band alone decides
 
 
 def run_intraday():
@@ -2551,11 +2557,10 @@ def run_intraday():
                 continue
             px = q["c"]
             gap = px / prev_close - 1.0
-            if daytrade_should_enter(px, prev_close, marks.get(sym), meta,
-                                     open_px=q.get("o"),
-                                     allow_open_confirm=hm >= (9, 45)):
+            if daytrade_should_enter(px, prev_close, q.get("o"), meta):
                 candidates.append({"symbol": sym, "px": px, "gap": gap})
-            # remember this check's price — next run's confirmation baseline
+            # audit trail of what it saw in the band at this check (the entry
+            # decision no longer depends on it — see daytrade_should_enter)
             if meta["min_gap"] <= gap <= meta["max_gap"]:
                 marks[sym] = px
                 changed = True

@@ -223,6 +223,7 @@
   .chip{font-size:11px;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:3px;text-transform:uppercase}
   .chip.cbuy{background:var(--up);color:#06220f}
   .chip.csell{background:var(--down);color:#fff}
+  .chip.cno{background:rgba(148,163,184,0.12);color:#94a3b8;border:1px solid rgba(148,163,184,0.35)}
   .chip.cmine{background:rgba(56,189,248,0.18);color:#7dd3fc;border:1px solid #0284c7}
   /* the day's move and its verdict stack as blocks — an inline-block chip in a
      tight line-height overlapped the percentage above it on phones */
@@ -369,6 +370,10 @@ function pctWords(p){
   if(Math.abs(p) < 0.005) return "unchanged";
   return `<span class="${p>=0?"up":"down"}">${p>=0?"up":"down"} ${Math.abs(p).toFixed(1)}%</span>`;
 }
+function etClock(){
+  const et = new Date(new Date().toLocaleString("en-US",{timeZone:"America/New_York"}));
+  return {day: et.getDay(), mins: et.getHours()*60 + et.getMinutes()};
+}
 function marketStatus(){
   const et = new Date(new Date().toLocaleString("en-US",{timeZone:"America/New_York"}));
   const day = et.getDay(), mins = et.getHours()*60 + et.getMinutes();
@@ -471,20 +476,36 @@ function rebuildPump(){
                         || el.getAttribute("data-live-gap")));
   pumpSyms = set.slice(0, 60);
 }
-function noteQuote(sym, px, chg){
-  quoteInfo[sym] = {px, chg, t: new Date()};
+function noteQuote(sym, px, chg, open){
+  quoteInfo[sym] = {px, chg, t: new Date(), o: open};
   liveQuotes[sym] = px;
 }
-/* how far a stock has moved today, and — in plain words, never jargon —
-   whether that puts it in the range the Day Trader buys from */
+/* THE day-trade decision, in one place. The page and the engine run the same
+   three tests on the same single quote — up 2–8% on the day, still above the
+   opening price, inside the morning window — so a green card here is a stock
+   the machine itself buys at its next check. Never a maybe. */
+function daytradeVerdict(r){
+  const q = quoteInfo[r.symbol], c = etClock();
+  if(c.day === 0 || c.day === 6) return {buy:false, why:"the market is closed for the weekend"};
+  if(c.mins < 9*60+30)  return {buy:false, why:"the market has not opened yet — it decides after 9:30"};
+  if(c.mins >= 16*60)   return {buy:false, why:"the market has closed — it starts fresh tomorrow morning"};
+  if(c.mins > 11*60+30) return {buy:false, why:"past 11:30 — it only opens new trades in the morning"};
+  if(!q)                return {buy:false, why:"waiting for today's price"};
+  const spy = quoteInfo["SPY"];
+  if(spy && spy.chg <= -1) return {buy:false, why:"the whole market is down more than 1% — it sits out"};
+  if((r.news || {}).verdict === "negative")
+    return {buy:false, why:"bad news this week — it stays away until that clears"};
+  const g = q.chg || 0;
+  if(g < 0)  return {buy:false, why:`down ${Math.abs(g).toFixed(1)}% today — it only buys risers`};
+  if(g < 2)  return {buy:false, why:`only up ${g.toFixed(1)}% — it needs 2%`};
+  if(g > 8)  return {buy:false, why:`up ${g.toFixed(1)}% — too far to chase`};
+  if(q.o && q.px <= q.o) return {buy:false, why:"it has slipped back below where it opened"};
+  return {buy:true, why:`up ${g.toFixed(1)}% and holding above where it opened`};
+}
+/* how far a stock has moved today, in plain words */
 function gapHtml(g){
-  const pct = `<span class="gappct ${g >= 0 ? "up" : "down"}">${g >= 0 ? "+" : ""}${g.toFixed(2)}% today</span>`;
-  let verdict;
-  if(g >= 2 && g <= 8)  verdict = `<span class="chip cgap">In the buy range</span>`;
-  else if(g > 8)        verdict = `<span class="gapnote">jumped too far to chase</span>`;
-  else if(g >= 0)       verdict = `<span class="gapnote">needs to be up 2% to interest it</span>`;
-  else                  verdict = `<span class="gapnote">down today — it only buys risers</span>`;
-  return `<span class="gapwrap">${pct}${verdict}</span>`;
+  return `<span class="gapwrap"><span class="gappct ${g >= 0 ? "up" : "down"}">${
+    g >= 0 ? "+" : ""}${g.toFixed(2)}% today</span></span>`;
 }
 function stampText(sym, fallback){
   const q = quoteInfo[sym];
@@ -520,6 +541,18 @@ function applyLive(sym){
   });
   renderTabs();
   refreshMineAlarms();
+  refreshDaytradeVerdicts();
+}
+// a stock crossing into (or out of) the buy range must flip its card there and
+// then — the verdict is live, not a snapshot from last night's report
+let dtVerdictState = "";
+function refreshDaytradeVerdicts(){
+  if(currentTab !== "daytrade" || !DATA) return;
+  const rows = DATA.strategies?.daytrade?.board?.rows || [];
+  const sig = rows.map(r => r.symbol + (daytradeVerdict(r).buy ? "1" : "0")).join("|");
+  if(sig === dtVerdictState) return;
+  dtVerdictState = sig;
+  render();
 }
 let mineAlarmState = "";
 function refreshMineAlarms(){
@@ -543,7 +576,7 @@ async function quotePump(){
         const r = await fetch(`https://finnhub.io/api/v1/quote?symbol=${encodeURIComponent(sym)}&token=${FINNHUB_KEY}`);
         const j = await r.json();
         if(j && j.c){
-          noteQuote(sym, j.c, j.dp || 0);
+          noteQuote(sym, j.c, j.dp || 0, j.o);
           updateTickerItem(sym, j.c, j.dp || 0);
           if(!forTicker) applyLive(sym);
         }
@@ -716,9 +749,11 @@ function render(){
       note: s.watchlist.note, basis: s.watchlist.basis} : null);
   let boardHtml = "";
   if(board && (board.rows || []).length){
-    // boards run to 200+ names, so let the reader jump straight to the calls
-    const buyCount = board.rows.filter(r => r.buy || r.held).length;
-    const allRows = boardFilter === "buys" ? board.rows.filter(r => r.buy || r.held) : board.rows;
+    // boards run to 200+ names, so let the reader jump straight to the calls.
+    // Day-trade verdicts are decided live from the quote, not from the payload.
+    const rowIsBuy = r => r.held || (key === "daytrade" ? daytradeVerdict(r).buy : !!r.buy);
+    const buyCount = board.rows.filter(rowIsBuy).length;
+    const allRows = boardFilter === "buys" ? board.rows.filter(rowIsBuy) : board.rows;
     const shown = boardExpanded ? allRows : allRows.slice(0, 25);
     const rowsHtml = shown.map((r, i) => {
       const minePos = mineFor(key).find(p => p.symbol === r.symbol);
@@ -727,8 +762,9 @@ function render(){
       const cardId = key + ":" + r.symbol;
       const open = openCards.has(cardId);
       const nums = key === "daytrade"
-        ? `<span data-live-gap="${esc(r.symbol)}"><span class="gapwrap">
-             <span class="gapnote">today's move appears when the market opens</span></span></span>`
+        ? `<span data-live-gap="${esc(r.symbol)}">${quoteInfo[r.symbol]
+             ? gapHtml(quoteInfo[r.symbol].chg || 0)
+             : `<span class="gapwrap"><span class="gapnote">today's move appears when the market opens</span></span>`}</span>`
         // separators live in CSS (span + span::before) so hiding a metric on a
         // narrow screen never leaves a dangling " · "
         : [r.r3m != null ? `<span class="n3">3-mo <b>${r.r3m >= 0 ? "+" : ""}${r.r3m}%</b></span>` : "",
@@ -738,6 +774,10 @@ function render(){
         ? [minePos.target_price ? `above <b>${price(minePos.target_price)}</b>` : "",
            minePos.stop_price ? `below <b>${price(minePos.stop_price)}</b>` : ""].filter(Boolean)
         : [];
+      // the Day Trader's verdict is decided live from the current quote, not
+      // from the overnight payload — the answer is always buy or don't
+      const dtv = key === "daytrade" && !r.held ? daytradeVerdict(r) : null;
+      const isBuy = dtv ? dtv.buy : r.buy;
       let side, cls = "";
       if(youOwn && st.sell){
         cls = "sell";
@@ -746,7 +786,7 @@ function render(){
       } else if(youOwn){
         side = `<span class="chip cmine">You own this</span>
           <span class="bwhy">Sell ${minePlanBits.join(" · ")}${minePos.deadline ? ` · by <b>${fmtDate(minePos.deadline)}</b>` : ""}</span>`;
-      } else if(r.buy || r.held){
+      } else if(isBuy || r.held){
         // a suggestion IS a purchase, so "held" and "suggested" are the same
         // state — one label, never a separate 'model owns it' badge
         cls = "buy";
@@ -757,10 +797,13 @@ function render(){
           <span class="bwhy">${r.held
             ? `Bought ${key==="daytrade" && modelPos?.entry_time ? "today at " + esc(modelPos.entry_time) : "on " + fmtDate(modelPos?.entry_date)} at ${price(modelPos?.entry_price)}${
                 heldPnl != null ? ` — <b class="${heldPnl>=0?"up":"down"}">${heldPnl>=0?"+":""}${heldPnl.toFixed(1)}%</b> since` : ""}.`
-            : "The machine buys this at the next close — the result will be scored publicly."}</span>
+            : dtv
+              ? `${esc(dtv.why[0].toUpperCase() + dtv.why.slice(1))} — the machine buys it at its next check, within 20 minutes.`
+              : "The machine buys this at the next close — the result will be scored publicly."}</span>
           <button class="ibought" data-act="buyform" data-sym="${esc(r.symbol)}"><span class="lbl-long">You bought it? Track it here</span><span class="lbl-short">I bought it</span></button>`;
       } else {
-        side = `<span class="breason">${esc(r.reason)}</span>`;
+        side = `<span class="chip cno">Not now</span>
+          <span class="breason">${esc(dtv ? dtv.why : r.reason)}</span>`;
       }
       let detail = "";
       if(open){
