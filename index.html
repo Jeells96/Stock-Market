@@ -60,17 +60,26 @@
   .ticker-track{display:flex;animation:scroll 90s linear infinite;flex-shrink:0;will-change:transform}
   .ticker-track:hover{animation-play-state:paused}
   @keyframes scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
-  .ticker-item{display:inline-flex;align-items:center;gap:8px;padding:0 18px;font-size:12px;white-space:nowrap;border-right:1px solid rgba(201,169,97,0.08)}
+  .ticker-item{display:inline-flex;align-items:center;gap:7px;padding:0 13px;font-size:12px;white-space:nowrap;border-right:1px solid rgba(201,169,97,0.08)}
   .ticker-sym{color:var(--gold-bright);font-weight:600}
   /* fixed-width numeric cells: the loop slides the track by -50% of its OWN
      width, so any width change from a price update makes the scroll jump.
      Tabular digits + min-widths keep the track width constant. */
-  .ticker-px{color:var(--ivory);font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;min-width:70px;text-align:right}
-  .ticker-chg{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;min-width:82px;text-align:left}
+  .ticker-px{color:var(--ivory);font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;min-width:56px;text-align:right}
+  .ticker-chg{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;min-width:58px;text-align:left}
   .ticker-chg.up,.ticker-chg.down{font-weight:500}
 
   /* ---- the four tabs ---- */
-  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;position:relative;z-index:2}
+  /* the strategy switcher follows you down the page — on a 6,000px page you
+     should never have to scroll back up to change strategy */
+  .tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:22px;position:sticky;top:42px;z-index:40;
+    background:linear-gradient(180deg,var(--navy) 78%,rgba(10,22,40,0));padding:6px 0 10px;transition:gap .18s ease}
+  .tabs.stuck{gap:6px;box-shadow:0 8px 18px -12px rgba(0,0,0,0.8)}
+  .tabs.stuck .tabbtn{padding:7px 6px;flex-direction:row;display:flex;align-items:center;justify-content:center;gap:7px}
+  .tabs.stuck .tabbtn .icon{font-size:15px;display:inline;line-height:1}
+  .tabs.stuck .tabbtn .name{font-size:14px;display:inline;margin:0}
+  .tabs.stuck .tabbtn .val{font-size:11px;display:inline;margin:0}
+  .tabs.stuck .leader{display:none}
   .tabbtn{
     font-family:inherit;cursor:pointer;background:var(--card);color:var(--ivory);
     border:2px solid var(--line);border-radius:6px;padding:14px 6px 12px;
@@ -105,6 +114,13 @@
   .card h2{font-family:'Cormorant Garamond',serif;font-size:27px;font-weight:700;color:var(--gold-bright);margin-bottom:12px}
   .card p{margin-bottom:12px}
   .card p:last-child{margin-bottom:0}
+  /* fold-away reference sections (native <details>, keyboard-accessible) */
+  .foldcard summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:10px}
+  .foldcard summary::-webkit-details-marker{display:none}
+  .foldcard summary h2{margin:0}
+  .foldcard summary::after{content:"▾";margin-left:auto;color:var(--gold-dim);font-size:15px;transition:transform .15s}
+  .foldcard[open] summary::after{transform:rotate(180deg)}
+  .foldcard[open] summary{margin-bottom:14px}
   .todo{border-left:5px solid var(--gold)}
   .todo.has-buy{border-left-color:var(--up)}
   .todo.has-sell{border-left-color:var(--down)}
@@ -124,6 +140,8 @@
   .hrow b{color:#fff;font-weight:600}
   .hsym{font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:700;color:#fff}
   .hpnl{font-family:'JetBrains Mono',monospace;font-variant-numeric:tabular-nums;font-weight:700;text-align:right}
+  .hcell{display:flex;flex-direction:column;gap:1px;line-height:1.35}
+  .hlab{color:var(--gold-dim);font-size:10.5px;letter-spacing:.04em}
   .hprose{grid-column:1/-1;font-size:12.5px;line-height:1.6;color:var(--cream);padding:4px 2px 2px;cursor:default}
   @media(max-width:700px){
     .hrow{font-size:10.5px;gap:6px;padding:8px 2px}
@@ -136,8 +154,11 @@
   a{color:var(--gold-bright)}
 
   /* ---- the stock board: a grid of cards, three across at every size ---- */
-  .bgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:6px;align-items:start}
-  .bcard{position:relative;display:flex;flex-direction:column;gap:7px;padding:13px 13px 12px;
+  /* minmax(0,1fr), not 1fr: a plain 1fr track cannot shrink below its
+     min-content, so one nowrap chip would push the grid past the viewport
+     and give the whole page a horizontal scrollbar on phones */
+  .bgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:6px;align-items:start}
+  .bcard{position:relative;display:flex;flex-direction:column;gap:7px;padding:13px 13px 12px;min-width:0;overflow:hidden;
     border:1px solid var(--line);border-radius:8px;background:rgba(8,17,31,0.45)}
   .bcard[data-card]{cursor:pointer}
   .bcard[data-card]:hover{border-color:var(--line-strong)}
@@ -152,6 +173,7 @@
   .bstamp.live{color:var(--up)}
   .bnums{font-size:12px;color:var(--cream);line-height:1.5}
   .bnums b{color:#fff}
+  .bnums span + span::before{content:" · ";color:var(--gold-dim)}
   .breason{font-size:11px;color:var(--gold-dim);line-height:1.4}
   .bwhy{font-size:11px;color:var(--cream);line-height:1.4}
   .bside{display:flex;flex-direction:column;align-items:flex-start;gap:6px;margin-top:auto}
@@ -167,25 +189,34 @@
   .newslist .nup{color:var(--up)} .newslist .ndown{color:var(--down)}
   .newslist .nsrc{color:var(--gold-dim);font-size:10px}
   .bignum.up{color:var(--up)} .bignum.down{color:var(--down)}
-  /* phones: keep three across, shrink everything */
+  /* phones: keep three across, shrink everything. The long explanatory lines
+     collapse into the tap-open detail so a card stays roughly square instead
+     of a 100px-wide, 370px-tall ribbon. */
   @media(max-width:700px){
     .bgrid{gap:6px}
-    .bcard{padding:8px 8px 7px;gap:5px;border-radius:6px}
+    .bcard{padding:8px 7px 6px;gap:4px;border-radius:6px}
     .bsym{font-size:15px}
     .bpx{font-size:11px}
     .bstamp{font-size:8.5px}
-    .bnums{font-size:9.5px;line-height:1.45}
-    .breason,.bwhy{font-size:9.5px}
-    .brank{font-size:9px;top:6px;right:8px}
-    .chip{font-size:8.5px;padding:3px 6px;letter-spacing:.06em}
-    .ibought{font-size:10px;padding:5px 8px}
+    .bnums{font-size:9.5px;line-height:1.4}
+    .breason{font-size:9.5px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    .bcard .bside > .bwhy{display:none}          /* lives in the tap-open detail */
+    .bdetail .bwhy{display:block}
+    .brank{font-size:9px;top:5px;right:7px}
+    .chip{font-size:8.5px;padding:3px 5px;letter-spacing:.02em;white-space:nowrap}
+    .ibought{font-size:9.5px;padding:5px 4px;line-height:1.2;white-space:nowrap;width:100%}
     .btn2{font-size:10.5px;padding:6px 9px}
     .bpnl{font-size:15px}
     .bdetail{font-size:10.5px}
     .taphint{font-size:8px}
     .buyform label{font-size:11px}
     .buyform input{width:100%;max-width:120px;font-size:12px;padding:5px 7px}
+    .mineband .bcard .bwhy{display:block}        /* your own positions keep their plan */
+    .bcard .bnums .n6{display:none}              /* one horizon is enough on a 107px card */
+    .lbl-long{display:none}
   }
+  .lbl-short{display:none}
+  @media(max-width:700px){.lbl-short{display:inline}}
   .chip{font-size:11px;font-weight:700;letter-spacing:.1em;padding:4px 10px;border-radius:3px;text-transform:uppercase}
   .chip.cbuy{background:var(--up);color:#06220f}
   .chip.csell{background:var(--down);color:#fff}
@@ -210,6 +241,12 @@
   .minepos .row2{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
   .minepos.alarm{background:rgba(220,38,38,0.1);border-radius:6px;padding:13px 12px;border:1px solid var(--down)}
   .showmore{width:100%;margin-top:10px}
+  .bfilter{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 2px}
+  .fchip{font-family:inherit;cursor:pointer;font-size:12px;padding:7px 13px;border-radius:20px;
+    background:transparent;color:var(--cream);border:1px solid var(--line-strong)}
+  .fchip.on{background:var(--gold);color:#08111f;border-color:var(--gold);font-weight:700}
+  .fchip:hover{border-color:var(--gold)}
+  @media(max-width:700px){.fchip{font-size:11px;padding:6px 10px}}
 
   /* ---- watchlist ---- */
   .watchrow{display:grid;grid-template-columns:minmax(64px,auto) 1fr auto;gap:12px;align-items:baseline;
@@ -248,6 +285,16 @@
     .ticker-bar{margin:0 -12px}
     .tabs{grid-template-columns:repeat(2,1fr)}
     .card{padding:18px 16px}
+    .ticker-item{padding:0 9px;gap:5px;font-size:11px}
+    .ticker-px{min-width:48px}
+    .ticker-chg{min-width:50px}
+    .ticker-label{padding:0 10px;font-size:12px;letter-spacing:.12em}
+    /* stuck: 4 tiny pills in one row so the switcher costs almost no height */
+    .tabs.stuck{grid-template-columns:repeat(4,1fr)}
+    .tabs.stuck .tabbtn{padding:6px 2px;gap:3px;flex-direction:column}
+    .tabs.stuck .tabbtn .icon{font-size:13px}
+    .tabs.stuck .tabbtn .name{font-size:10px;font-family:inherit;letter-spacing:-0.2px}
+    .tabs.stuck .tabbtn .val{font-size:10px}
   }
 </style>
 </head>
@@ -403,16 +450,17 @@ let quoteInfo = {};      // sym -> {px, chg, t}
 let pumpSyms = [];       // high-priority rotation, rebuilt on each render
 let pumpIdx = 0, tickIdx = 0, beat = 0, pumpStarted = false;
 function rebuildPump(){
+  // quote exactly what is on screen. With one share of every qualifying name
+  // the portfolios run to 80+ stocks, and a blind list that long would put
+  // each symbol on a 2–3 minute refresh; the rendered set keeps every visible
+  // price genuinely live and stops the free API budget going to hidden rows.
   const set = [];
   const push = s => { if(s && !set.includes(s)) set.push(s); };
   MINE.positions.forEach(p => push(p.symbol));
-  ORDER.forEach(k => (DATA?.strategies[k]?.positions || []).forEach(p => push(p.symbol)));
-  const b = DATA?.strategies?.[currentTab]?.board;
-  if(b){
-    const rows = b.rows || [];
-    (currentTab === "daytrade" ? rows : rows.slice(0, 15)).forEach(r => push(r.symbol));
-  }
-  pumpSyms = set;
+  document.querySelectorAll("#content [data-live-px],#content [data-hold-pnl],#content [data-live-gap]")
+    .forEach(el => push(el.getAttribute("data-live-px") || el.getAttribute("data-hold-pnl")
+                        || el.getAttribute("data-live-gap")));
+  pumpSyms = set.slice(0, 60);
 }
 function noteQuote(sym, px, chg){
   quoteInfo[sym] = {px, chg, t: new Date()};
@@ -491,7 +539,10 @@ function livePrice(p){ return liveQuotes[p.symbol] || p.current_price; }
 function liveEquity(key){
   const s = DATA.strategies[key];
   if(!s) return 0;
-  return (s.cash||0) + (s.positions||[]).reduce((sum,p)=>sum+(p.shares||0)*livePrice(p),0);
+  const raw = (s.cash||0) + (s.positions||[]).reduce((sum,p)=>sum+(p.shares||0)*livePrice(p),0);
+  // same contribution-neutral scale the published curve uses: the pot takes in
+  // new money to buy every recommendation, and that must never move the %
+  return raw * (s.unit_scale != null ? s.unit_scale : 1);
 }
 
 /* ---------- rendering ---------- */
@@ -625,18 +676,16 @@ function render(){
       ${done.map(c => `${esc(c.symbol)} ${pctWords(c.pnl_pct)}`).join(" · ")}</p>` : "";
     mineHtml = `<div class="card mineband" ${mineAlarms.length ? 'id="mineAlarmCard"' : ""}>
       <h2>Your positions</h2>
-      ${rows ? `<div class="bgrid">${rows}</div>` : `<p>None right now. When a card on the board below turns green with
-        <b class="up">Suggested buy</b> and you buy the stock, press the green button on that
-        card — this page will then watch it for you and tell you exactly when to sell.</p>`}
+      ${rows ? `<div class="bgrid">${rows}</div>` : `<p class="smallnote">None right now. Buy something
+        green on the board below, press <b>“You bought it? Track it here”</b>, and this page
+        watches it and tells you when to sell.</p>`}
       ${doneHtml}
       <p class="smallnote">Saved in this browser only — the machine's own record stays separate.</p>
     </div>`;
   } else {
     mineHtml = `<div class="card mineband"><h2>Your positions</h2>
-      <p>None yet. When a card on the board below turns green with <b class="up">Suggested buy</b>
-      and you buy the stock, press the green button on that card — this page will then watch your
-      position, turn the card <b class="down">red</b> when it is time to sell, and tell you why.
-      You don't need to have been following along before.</p>
+      <p class="smallnote">None yet. Buy something green on the board below, press
+      <b>“You bought it? Track it here”</b>, and this page watches it and tells you when to sell.</p>
     </div>`;
   }
 
@@ -649,7 +698,9 @@ function render(){
       note: s.watchlist.note, basis: s.watchlist.basis} : null);
   let boardHtml = "";
   if(board && (board.rows || []).length){
-    const allRows = board.rows;
+    // boards run to 200+ names, so let the reader jump straight to the calls
+    const buyCount = board.rows.filter(r => r.buy || r.held).length;
+    const allRows = boardFilter === "buys" ? board.rows.filter(r => r.buy || r.held) : board.rows;
     const shown = boardExpanded ? allRows : allRows.slice(0, 25);
     const rowsHtml = shown.map((r, i) => {
       const minePos = mineFor(key).find(p => p.symbol === r.symbol);
@@ -659,9 +710,11 @@ function render(){
       const open = openCards.has(cardId);
       const nums = key === "daytrade"
         ? `<span data-live-gap="${esc(r.symbol)}">${r.price ? "prev close " + price(r.price) : "&mdash;"}</span>`
-        : [r.r3m != null ? `3-mo <b>${r.r3m >= 0 ? "+" : ""}${r.r3m}%</b>` : "",
-           r.r6m != null ? `6-mo <b>${r.r6m >= 0 ? "+" : ""}${r.r6m}%</b>` : "",
-           r.range_pos != null ? `<b>${r.range_pos}%</b> up its range` : ""].filter(Boolean).join(" · ");
+        // separators live in CSS (span + span::before) so hiding a metric on a
+        // narrow screen never leaves a dangling " · "
+        : [r.r3m != null ? `<span class="n3">3-mo <b>${r.r3m >= 0 ? "+" : ""}${r.r3m}%</b></span>` : "",
+           r.r6m != null ? `<span class="n6">6-mo <b>${r.r6m >= 0 ? "+" : ""}${r.r6m}%</b></span>` : "",
+           r.range_pos != null ? `<span class="nr"><b>${r.range_pos}%</b> up its range</span>` : ""].filter(Boolean).join("");
       const minePlanBits = minePos
         ? [minePos.target_price ? `above <b>${price(minePos.target_price)}</b>` : "",
            minePos.stop_price ? `below <b>${price(minePos.stop_price)}</b>` : ""].filter(Boolean)
@@ -686,7 +739,7 @@ function render(){
             ? `Bought ${key==="daytrade" && modelPos?.entry_time ? "today at " + esc(modelPos.entry_time) : "on " + fmtDate(modelPos?.entry_date)} at ${price(modelPos?.entry_price)}${
                 heldPnl != null ? ` — <b class="${heldPnl>=0?"up":"down"}">${heldPnl>=0?"+":""}${heldPnl.toFixed(1)}%</b> since` : ""}.`
             : "The machine buys this at the next close — the result will be scored publicly."}</span>
-          <button class="ibought" data-act="buyform" data-sym="${esc(r.symbol)}">You bought it? Track it here</button>`;
+          <button class="ibought" data-act="buyform" data-sym="${esc(r.symbol)}"><span class="lbl-long">You bought it? Track it here</span><span class="lbl-short">I bought it</span></button>`;
       } else {
         side = `<span class="breason">${esc(r.reason)}</span>`;
       }
@@ -747,8 +800,14 @@ function render(){
     }).join("");
     const more = allRows.length > shown.length
       ? `<button class="btn2 ghost showmore" data-act="showmore">Show all ${allRows.length} stocks</button>` : "";
+    const filterHtml = (key !== "longterm" && buyCount && buyCount < board.rows.length)
+      ? `<div class="bfilter">
+           <button class="fchip ${boardFilter === "buys" ? "on" : ""}" data-act="filter" data-f="buys">Suggested buys (${buyCount})</button>
+           <button class="fchip ${boardFilter === "buys" ? "" : "on"}" data-act="filter" data-f="all">Everything it scanned (${board.rows.length})</button>
+         </div>` : "";
     boardHtml = `<div class="card"><h2>The board</h2>
       ${board.note ? `<p class="watchnote">${esc(board.note)}</p>` : ""}
+      ${filterHtml}
       <div class="bgrid">${rowsHtml}</div>${more}
       <p class="smallnote">${key === "longterm"
         ? "These five never change — each card shows what the fund is for and how far its weight has drifted from target. Tap a card for the model's plan."
@@ -786,7 +845,10 @@ function render(){
   const pro = s.pro || {};
   const proCell = (label, v, suffix, tip) =>
     `<div class="procell" title="${tip}"><span class="k">${label}</span><span class="v">${v == null ? "&mdash;" : v + suffix}</span></div>`;
-  const proHtml = `<div class="card"><h2>By the numbers</h2>
+  // the institutional stats are reference material — folded away by default on
+  // phones so the actionable part of the page isn't buried under it
+  const proHtml = `<details class="card foldcard" ${window.innerWidth > 700 ? "open" : ""}>
+    <summary><h2>By the numbers</h2></summary>
     <div class="progrid">
       ${proCell("Sharpe ratio", pro.sharpe, "", "Return earned per unit of risk taken. Above 1 is good; above 2 is excellent.")}
       ${proCell("Volatility (ann.)", pro.ann_vol_pct, "%", "How much the value swings in a typical year. Lower is calmer.")}
@@ -822,7 +884,7 @@ function render(){
       if(key === "daytrade" && (tu.benched||[]).length) line += ` Currently benched for repeated losses: ${tu.benched.join(", ")}.`;
       return line;
     })()}</p>
-  </div>`;
+  </details>`;
 
   // --- 3. holdings: activity list — one row per stock, tap for the full story ---
   const holds = (s.positions||[]).map(p=>{
@@ -839,9 +901,9 @@ function render(){
       at ${price(p.entry_price)}, now ${price(px)}, ${pctWords(pnl)}. ${plan}`;
     return `<div class="hrow ${open ? "open" : ""}" data-hold="${esc(hid)}">
       <span class="hsym">${esc(p.symbol)}</span>
-      <span class="hcell">bought <b>${price(p.entry_price)}</b></span>
-      <span class="hcell">target <b>${p.target_price ? price(p.target_price) : "—"}</b></span>
-      <span class="hcell">stop <b>${p.stop_price ? price(p.stop_price) : "—"}</b></span>
+      <span class="hcell"><span class="hlab">bought</span><b>${price(p.entry_price)}</b></span>
+      <span class="hcell"><span class="hlab">target</span><b>${p.target_price ? price(p.target_price) : "—"}</b></span>
+      <span class="hcell"><span class="hlab">stop</span><b>${p.stop_price ? price(p.stop_price) : "—"}</b></span>
       <span class="hpnl ${pnl>=0?"up":"down"}" data-hold-pnl="${esc(p.symbol)}" data-entry="${p.entry_price}">${pnl>=0?"+":""}${pnl.toFixed(1)}%</span>
       ${open ? `<div class="hprose">${prose}</div>` : ""}
     </div>`;
@@ -854,7 +916,8 @@ function render(){
   const trades = (s.recent_trades||[]).slice(0,5).map(t=>
     `<div class="trade">${fmtDate(t.exit_date)} — sold <b>${esc(t.symbol)}</b> at ${price(t.exit_price)}
      (bought ${fmtDate(t.entry_date)} at ${price(t.entry_price)}): ${pctWords(t.pnl_pct)} · ${esc(t.reason)}</div>`).join("");
-  const tradesHtml = trades ? `<div class="card"><h2>Its last few decisions</h2>${trades}</div>` : "";
+  const tradesHtml = trades ? `<details class="card foldcard" ${window.innerWidth > 700 ? "open" : ""}>
+    <summary><h2>Its last few decisions</h2></summary>${trades}</details>` : "";
 
   // a re-render must never eat a half-filled buy/sell form: snapshot any open
   // form and its typed values, restore them after the rebuild
@@ -877,6 +940,7 @@ function render(){
 
 /* ---------- the chart: strategy line vs market reference, with hover ---------- */
 let boardExpanded = false;
+let boardFilter = "all";
 let openCards = new Set();
 let openHolds = new Set();
 function wireBoardActions(){
@@ -904,6 +968,7 @@ function wireBoardActions(){
     }
     const act = btn.dataset.act, sym = btn.dataset.sym, id = btn.dataset.id;
     if(act === "showmore"){ boardExpanded = true; render(); }
+    else if(act === "filter"){ boardFilter = btn.dataset.f; boardExpanded = false; render(); }
     else if(act === "buyform"){ const f = $("buyform-" + sym); if(f) f.style.display = "flex"; }
     else if(act === "buycancel"){ const f = $("buyform-" + sym); if(f) f.style.display = "none"; }
     else if(act === "buysave"){
@@ -1096,6 +1161,13 @@ window.addEventListener("hashchange", ()=>{
   if(ORDER.includes(k) && k!==currentTab){ currentTab=k; renderTabs(); render(); }
 });
 window.addEventListener("resize", ()=>{ if(DATA) drawChart(currentTab); });
+// shrink the sticky strategy switcher once it pins under the ticker. Reading
+// the pinned rect is reliable; offsetTop is not, because a sticky element
+// reports its shifted position once it sticks.
+window.addEventListener("scroll", ()=>{
+  const el = $("tabs");
+  if(el) el.classList.toggle("stuck", el.getBoundingClientRect().top <= 43);
+}, {passive:true});
 document.addEventListener("visibilitychange", async ()=>{
   if(document.visibilityState === "visible" && DATA){
     if(await loadData()){ renderTabs(); render(); }

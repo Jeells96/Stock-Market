@@ -1160,6 +1160,42 @@ def ensure_strategies(state, as_of):
                     {"date": as_of, "text": f"{STRATEGY_META[key]['label']} sleeve started with "
                      f"${STARTING_CAPITAL:,.0f}"}],
             }
+        # unitized accounting (see fund_strategy): every pot starts as
+        # STARTING_CAPITAL units worth $1 each
+        strat = state["strategies"][key]
+        strat.setdefault("units", float(STARTING_CAPITAL))
+        strat.setdefault("contributed", float(STARTING_CAPITAL))
+
+
+def raw_equity(strat):
+    """Dollar value of a sleeve right now, from the latest marks on file."""
+    return strat["cash"] + sum(
+        p["shares"] * (p.get("last_price") or p["entry_price"]) for p in strat["positions"])
+
+
+def unit_norm(strat, equity):
+    """Convert a dollar equity into the published, contribution-neutral figure.
+
+    The sleeves buy one share of EVERY name that qualifies, so the pot has to
+    accept new capital on busy days. Reporting raw dollars would then mix
+    'the picks did well' with 'more money went in'. So each pot is unitized
+    like a fund: contributions buy units at the prevailing unit price, and the
+    published number is always what a fixed $10,000 stake would be worth.
+    That is a true time-weighted return — directly comparable to the S&P."""
+    units = strat.get("units") or float(STARTING_CAPITAL)
+    return (equity / units * STARTING_CAPITAL) if units > 0 else equity
+
+
+def fund_strategy(strat, need, as_of):
+    """Wire in exactly the cash a new recommendation needs, issuing units at
+    the current unit price so the contribution itself moves the published
+    return by zero."""
+    equity = raw_equity(strat)
+    units = strat.get("units") or float(STARTING_CAPITAL)
+    unit_px = (equity / units) if (units > 0 and equity > 0) else 1.0
+    strat["units"] = units + need / unit_px
+    strat["contributed"] = strat.get("contributed", float(STARTING_CAPITAL)) + need
+    strat["cash"] += need
 
 
 def save_json(path, obj, compact=False):
@@ -1521,7 +1557,7 @@ def buy_recommendations(key, strat, ranked, as_of, can_trade):
     cutoff = (datetime.strptime(as_of, "%Y-%m-%d") - timedelta(days=COOLDOWN_DAYS)).strftime("%Y-%m-%d")
     cooling = {s for s, d in strat["cooldown"].items() if d >= cutoff}
     strat["cooldown"] = {s: d for s, d in strat["cooldown"].items() if d >= cutoff}
-    opened = []
+    opened, funded = [], 0.0
     for cand in ranked:
         if len(strat["positions"]) >= MAX_OPEN_RECS:
             print(f"  {key}: {MAX_OPEN_RECS} open recommendations — runaway guard tripped, skipping the rest")
@@ -1531,9 +1567,20 @@ def buy_recommendations(key, strat, ranked, as_of, can_trade):
         if not cand.get("price"):
             continue
         cost = cand["price"] * (1.0 + SLIPPAGE_BPS_DAILY / 10000.0)  # exactly one share, slippage included
+        if strat["cash"] < cost:
+            # a suggestion is always bought — top the pot up rather than skip
+            need = cost - strat["cash"]
+            fund_strategy(strat, need, as_of)
+            funded += need
         opened.append(open_position(strat, cand, as_of, cost,
                                     meta.get("target_pct"), meta.get("stop_pct")))
         held.add(cand["symbol"])
+    if funded:
+        strat["activity"].append(
+            {"date": as_of, "text": f"+${funded:,.0f} added to the pot to fund "
+                                    f"{len(opened)} new recommendation(s)"})
+        print(f"  {key}: added ${funded:,.0f} to buy every recommendation "
+              f"(reported % is unit-adjusted, so this does not flatter the record)")
     return opened
 
 
@@ -1929,10 +1976,15 @@ def build_site_payload(state, bars, as_of, new_picks, data_source, watchlists=No
                                for np in new_picks.get(key, [])),
             })
         equity = strat["cash"] + sum(p["current_value"] for p in positions)
+        units = strat.get("units") or float(STARTING_CAPITAL)
         strategies[key] = {
             "key": key, "label": meta["label"], "icon": meta["icon"],
             "tagline": meta["tagline"], "horizon": meta["horizon"], "risk_note": meta["risk_note"],
-            "equity": round(equity, 2), "cash": round(strat["cash"], 2),
+            "equity": round(unit_norm(strat, equity), 2), "cash": round(strat["cash"], 2),
+            # the site multiplies its own live equity by this to stay on the
+            # same contribution-neutral scale as the published curve
+            "unit_scale": round(STARTING_CAPITAL / units, 8) if units > 0 else 1.0,
+            "invested": round(strat.get("contributed", float(STARTING_CAPITAL)), 2),
             "max_hold_bars": meta.get("max_hold_bars"),
             **stats,
             "positions": positions,
@@ -2726,7 +2778,7 @@ def main():
         n_before = len(strat["closed"])
         marks = replay_strategy(key, strat, bars, calendar, as_of)
         for d, v in marks.items():
-            state["equity_history"].setdefault(d, {})[key] = round(v, 2)
+            state["equity_history"].setdefault(d, {})[key] = round(unit_norm(strat, v), 2)
         closed_now = strat["closed"][n_before:]
         for t in closed_now:
             print(f"  {STRATEGY_META[key]['icon']} closed {t['symbol']}: {t['pnl_pct']:+.2f}% ({t['reason']})")
@@ -2735,7 +2787,8 @@ def main():
     # safety-flattens anything left open and records one equity point per session
     dt_marks = consolidate_daytrade(state["strategies"]["daytrade"], bars, calendar, as_of)
     for d, v in dt_marks.items():
-        state["equity_history"].setdefault(d, {})["daytrade"] = round(v, 2)
+        state["equity_history"].setdefault(d, {})["daytrade"] = round(
+            unit_norm(state["strategies"]["daytrade"], v), 2)
 
     bench_marks = replay_benchmark(state["benchmark"], bars, calendar, as_of, can_trade)
     for d, v in bench_marks.items():
@@ -2854,7 +2907,7 @@ def main():
             val, px = position_value(pos, bars, as_of)
             pos["last_price"] = px
             total += val
-        state["equity_history"].setdefault(as_of, {})[key] = round(total, 2)
+        state["equity_history"].setdefault(as_of, {})[key] = round(unit_norm(strat, total), 2)
     if state["equity_history"].get(as_of, {}).get("benchmark") is None:
         h = bars[BENCHMARK_SYMBOL]
         px = last_close_at(h, as_of)

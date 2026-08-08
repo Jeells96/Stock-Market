@@ -84,6 +84,11 @@ the sleeve can never hold a position overnight.
 - **Every suggestion is a purchase.** The site never highlights a "suggested buy" it
   doesn't take into its own paper portfolio, so every recommendation — not a cherry-picked
   subset — gets scored in the public record.
+- **New money can't flatter the numbers.** Buying one share of everything that qualifies
+  means the pot sometimes needs topping up. Each sleeve is therefore unitized like a fund:
+  contributions buy units at the prevailing unit price, and every published percentage is
+  what a fixed $10,000 stake would have done — a true time-weighted return, directly
+  comparable to the S&P line beside it.
 - Every pick is committed to git **before its outcome is known**. The commit timestamp
   is GitHub's, not the bot's.
 - History can't be silently edited — any tampering would show in the

@@ -151,6 +151,37 @@ def t6():
     assert adv.buy_recommendations("aggressive", strat2, ranked, DAYS[4], False) == []
 check("one share of every qualifying name, cooldown respected", t6)
 
+# ---------- test 6b: a broke pot still buys every recommendation, honestly ----------
+def t6b():
+    # cash is spent, but the promise holds: it funds the buys AND the published
+    # percentage is unit-adjusted so new money can never flatter the record
+    strat = {"cash": 0.0, "units": 10000.0, "contributed": 10000.0,
+             "positions": [{"symbol": "OLD", "shares": 1.0, "entry_price": 100.0, "last_price": 110.0}],
+             "closed": [], "cooldown": {}, "activity": []}
+    # the invariant that matters: a contribution alone is EXACTLY neutral
+    pub = adv.unit_norm(strat, adv.raw_equity(strat))
+    adv.fund_strategy(strat, 5000.0, DAYS[4])
+    approx(adv.unit_norm(strat, adv.raw_equity(strat)), pub, tol=1e-6)
+    strat["cash"] = 0.0                       # spend it back down; broke again
+    strat["units"], strat["contributed"] = 10000.0, 10000.0
+    pub_before = adv.unit_norm(strat, adv.raw_equity(strat))
+    ranked = [{"symbol": s, "name": s, "price": 500.0, "thesis": "t"} for s in ("AAA", "BBB", "CCC")]
+    opened = adv.buy_recommendations("growth", strat, ranked, DAYS[4], True)
+    assert len(opened) == 3, "an empty pot never blocks a recommendation"
+    assert strat["cash"] >= -1e-9, f"cash must never go negative: {strat['cash']}"
+    assert strat["contributed"] > 10000.0, "the top-up is recorded as contributed capital"
+    assert all(abs(p["shares"] - 1.0) < 1e-9 for p in opened), "exactly one share each"
+    pub_after = adv.unit_norm(strat, adv.raw_equity(strat))
+    # the ONLY permitted difference is the modeled slippage paid on the fills
+    drop = pub_before - pub_after
+    assert 0 <= drop < 0.5, f"funding must not move the record beyond slippage: {drop}"
+    # a real 10% gain on the holdings still shows up in the published number
+    for p in strat["positions"]:
+        p["last_price"] = p["entry_price"] * 1.10
+    assert adv.unit_norm(strat, adv.raw_equity(strat)) > pub_after * 1.05, \
+        "real gains must still move the published return"
+check("empty pot still buys every recommendation; funding never flatters the %", t6b)
+
 # ---------- test 7: longterm inception + rebalance ----------
 def t7():
     bars = {s: mk_hist([100, 100, 100, 100, 100], name=s) for s in adv.LONGTERM_ALLOCATION}
