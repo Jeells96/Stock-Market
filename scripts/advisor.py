@@ -1895,16 +1895,17 @@ def build_boards(state, board_agg, board_gro, rank_basis, regime_note,
         px = (h["close"][h["dates"][-1]] if h and h["dates"] else None)
         dt_rows.append({"symbol": s, "price": round(px, 2) if px else None,
                         "price_asof": price_asof, "qualified": False, "buy": False,
-                        "held": False, "reason": "watching for a 2–8% morning gap",
-                        "needs": "needs a 2–8% gap up before 11:30 New York time "
-                                 "that is still climbing when the machine checks it",
+                        "held": False, "reason": "waiting for it to jump 2–8% in the morning",
+                        "needs": "needs to be up 2–8% on the day before 11:30 in the morning "
+                                 "New York time, and still climbing when the machine checks",
                         "news": (news or {}).get(s),
                         "r3m": None, "r6m": None, "range_pos": None, "vol": None})
     out["daytrade"] = {"rows": dt_rows, "basis": "intraday gaps",
-                       "note": ("Live gap percentages appear while the market is open. "
-                                "A name is bought only in the morning window, gapping 2–8% "
-                                "and still climbing — versus the last check, or versus the "
-                                "session open when it is the first check of the morning.")}
+                       "note": ("Each stock shows how far it has moved today once the market "
+                                "opens. One is bought only in the morning, when it is up "
+                                "between 2% and 8% and still climbing — big enough to mean "
+                                "something, not so big that it usually falls back. Everything "
+                                "bought is sold again before the closing bell.")}
     # longterm board: the five permanent holdings, target vs actual weight —
     # nothing is picked daily, but the board still shows exactly what the pot
     # owns, why, and how far each weight has drifted
