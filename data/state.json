@@ -329,25 +329,8 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 0.0,
+   "cash": 3457.6941721615813,
    "positions": [
-    {
-     "symbol": "DDOG",
-     "name": "DDOG",
-     "shares": 13.448169279593854,
-     "entry_price": 248.81856999999997,
-     "entry_date": "2026-08-10",
-     "raw_entry_price": 248.57,
-     "entry_time": "10:18",
-     "target_price": 256.0271,
-     "stop_price": 248.81856999999997,
-     "thesis": "Up 6.3% on the day at 10:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 255.04,
-     "bars_held": 0,
-     "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    },
     {
      "symbol": "CRWD",
      "name": "CRWD",
@@ -359,7 +342,7 @@
      "target_price": 231.5749,
      "stop_price": 220.3334,
      "thesis": "Up 4.9% on the day at 11:26 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 225.67,
+     "last_price": 226.5,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -376,7 +359,7 @@
      "target_price": 426.317,
      "stop_price": 405.62199999999996,
      "thesis": "Up 3.8% on the day at 11:26 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 415.18,
+     "last_price": 415.98,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -451,6 +434,20 @@
      "reason": "stop \u22122%",
      "entry_time": "10:18",
      "exit_time": "11:26"
+    },
+    {
+     "symbol": "DDOG",
+     "name": "DDOG",
+     "entry_date": "2026-08-10",
+     "entry_price": 248.8186,
+     "exit_date": "2026-08-10",
+     "exit_price": 257.1126,
+     "raw_exit_price": 257.37,
+     "slippage_bps": 10,
+     "pnl_pct": 3.33,
+     "reason": "target +3%",
+     "entry_time": "10:18",
+     "exit_time": "13:29"
     }
    ],
    "cooldown": {
@@ -458,7 +455,8 @@
     "CVNA": "2026-08-07",
     "MDB": "2026-08-07",
     "SMCI": "2026-08-10",
-    "JOBY": "2026-08-10"
+    "JOBY": "2026-08-10",
+    "DDOG": "2026-08-10"
    },
    "last_eval_date": "2026-08-07",
    "activity": [
@@ -548,7 +546,7 @@
   }
  },
  "runs": 13,
- "last_run_utc": "2026-08-10T16:33:28Z",
+ "last_run_utc": "2026-08-10T17:29:17Z",
  "intraday": {
   "date": "2026-08-10",
   "marks": {
