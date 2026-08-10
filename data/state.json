@@ -329,8 +329,60 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 10038.462747799418,
-   "positions": [],
+   "cash": 0.0,
+   "positions": [
+    {
+     "symbol": "DDOG",
+     "name": "DDOG",
+     "shares": 13.448169279593854,
+     "entry_price": 248.81856999999997,
+     "entry_date": "2026-08-10",
+     "raw_entry_price": 248.57,
+     "entry_time": "10:18",
+     "target_price": 256.0271,
+     "stop_price": 243.59859999999998,
+     "thesis": "Up 6.3% on the day at 10:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 248.57,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "SMCI",
+     "name": "SMCI",
+     "shares": 101.26662944043153,
+     "entry_price": 33.043009999999995,
+     "entry_date": "2026-08-10",
+     "raw_entry_price": 33.01,
+     "entry_time": "10:18",
+     "target_price": 34.000299999999996,
+     "stop_price": 32.349799999999995,
+     "thesis": "Up 6.0% on the day at 10:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 33.01,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "JOBY",
+     "name": "JOBY",
+     "shares": 369.78002630847845,
+     "entry_price": 9.049039999999998,
+     "entry_date": "2026-08-10",
+     "raw_entry_price": 9.04,
+     "entry_time": "10:18",
+     "target_price": 9.3112,
+     "stop_price": 8.8592,
+     "thesis": "Up 4.6% on the day at 10:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 9.04,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    }
+   ],
    "closed": [
     {
      "symbol": "IONQ",
@@ -395,6 +447,18 @@
     {
      "date": "2026-08-07",
      "text": "\u26a1 11:11 ET BUY IONQ @ $42.33 (+6.6% confirmed gap)"
+    },
+    {
+     "date": "2026-08-10",
+     "text": "\u26a1 10:18 ET BUY DDOG @ $248.57 (+6.3% confirmed gap)"
+    },
+    {
+     "date": "2026-08-10",
+     "text": "\u26a1 10:18 ET BUY SMCI @ $33.01 (+6.0% confirmed gap)"
+    },
+    {
+     "date": "2026-08-10",
+     "text": "\u26a1 10:18 ET BUY JOBY @ $9.04 (+4.6% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -446,34 +510,13 @@
   }
  },
  "runs": 13,
- "last_run_utc": "2026-08-10T12:01:21Z",
+ "last_run_utc": "2026-08-10T14:18:47Z",
  "intraday": {
-  "date": "2026-08-07",
+  "date": "2026-08-10",
   "marks": {
-   "SMCI": 30.25,
-   "COIN": 152.64,
-   "MSTR": 102.3,
-   "HOOD": 94.91,
-   "UPST": 30.78,
-   "RGTI": 17.03,
-   "ASTS": 69.88,
-   "RKLB": 80.28,
-   "ACHR": 5.49,
-   "JOBY": 8.6,
-   "HIMS": 31.2,
-   "CELH": 24.83,
-   "ELF": 98.31,
-   "DUOL": 127.39,
-   "SNOW": 324.85,
-   "DDOG": 234.96,
-   "U": 42.46,
-   "PATH": 14.84,
-   "SHOP": 152.43,
-   "TSLA": 330.26,
-   "NVDA": 223.67,
-   "DKNG": 23.2,
-   "NET": 303.9,
-   "SE": 114.1
+   "PLTR": 176.4,
+   "CRWD": 224.16,
+   "MDB": 414.17
   }
  }
 }
