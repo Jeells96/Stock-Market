@@ -342,41 +342,41 @@
      "target_price": 256.0271,
      "stop_price": 243.59859999999998,
      "thesis": "Up 6.3% on the day at 10:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 250.47,
+     "last_price": 250.71,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
      "divs_credited": []
     },
     {
-     "symbol": "SMCI",
-     "name": "SMCI",
-     "shares": 101.26662944043153,
-     "entry_price": 33.043009999999995,
+     "symbol": "CRWD",
+     "name": "CRWD",
+     "shares": 14.433356975342525,
+     "entry_price": 225.05482999999998,
      "entry_date": "2026-08-10",
-     "raw_entry_price": 33.01,
-     "entry_time": "10:18",
-     "target_price": 34.000299999999996,
-     "stop_price": 32.349799999999995,
-     "thesis": "Up 6.0% on the day at 10:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 32.77,
+     "raw_entry_price": 224.83,
+     "entry_time": "11:26",
+     "target_price": 231.5749,
+     "stop_price": 220.3334,
+     "thesis": "Up 4.9% on the day at 11:26 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 224.83,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
      "divs_credited": []
     },
     {
-     "symbol": "JOBY",
-     "name": "JOBY",
-     "shares": 369.78002630847845,
-     "entry_price": 9.049039999999998,
+     "symbol": "MDB",
+     "name": "MDB",
+     "shares": 7.840182770636048,
+     "entry_price": 414.31389999999993,
      "entry_date": "2026-08-10",
-     "raw_entry_price": 9.04,
-     "entry_time": "10:18",
-     "target_price": 9.3112,
-     "stop_price": 8.8592,
-     "thesis": "Up 4.6% on the day at 10:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 9.05,
+     "raw_entry_price": 413.9,
+     "entry_time": "11:26",
+     "target_price": 426.317,
+     "stop_price": 405.62199999999996,
+     "thesis": "Up 3.8% on the day at 11:26 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 413.9,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -423,12 +423,42 @@
      "slippage_bps": 10,
      "pnl_pct": 0.52,
      "reason": "overnight safety flat"
+    },
+    {
+     "symbol": "SMCI",
+     "name": "SMCI",
+     "entry_date": "2026-08-10",
+     "entry_price": 33.043,
+     "exit_date": "2026-08-10",
+     "exit_price": 32.1978,
+     "raw_exit_price": 32.23,
+     "slippage_bps": 10,
+     "pnl_pct": -2.56,
+     "reason": "stop \u22122%",
+     "entry_time": "10:18",
+     "exit_time": "11:26"
+    },
+    {
+     "symbol": "JOBY",
+     "name": "JOBY",
+     "entry_date": "2026-08-10",
+     "entry_price": 9.049,
+     "exit_date": "2026-08-10",
+     "exit_price": 8.7512,
+     "raw_exit_price": 8.76,
+     "slippage_bps": 10,
+     "pnl_pct": -3.29,
+     "reason": "stop \u22122%",
+     "entry_time": "10:18",
+     "exit_time": "11:26"
     }
    ],
    "cooldown": {
     "IONQ": "2026-08-07",
     "CVNA": "2026-08-07",
-    "MDB": "2026-08-07"
+    "MDB": "2026-08-07",
+    "SMCI": "2026-08-10",
+    "JOBY": "2026-08-10"
    },
    "last_eval_date": "2026-08-07",
    "activity": [
@@ -459,6 +489,14 @@
     {
      "date": "2026-08-10",
      "text": "\u26a1 10:18 ET BUY JOBY @ $9.04 (+4.6% confirmed gap)"
+    },
+    {
+     "date": "2026-08-10",
+     "text": "\u26a1 11:26 ET BUY CRWD @ $224.83 (+4.9% confirmed gap)"
+    },
+    {
+     "date": "2026-08-10",
+     "text": "\u26a1 11:26 ET BUY MDB @ $413.90 (+3.8% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -510,13 +548,12 @@
   }
  },
  "runs": 13,
- "last_run_utc": "2026-08-10T14:31:50Z",
+ "last_run_utc": "2026-08-10T15:27:43Z",
  "intraday": {
   "date": "2026-08-10",
   "marks": {
-   "PLTR": 176.4,
-   "CRWD": 224.16,
-   "MDB": 414.17
+   "PLTR": 178.16,
+   "CVNA": 72.75
   }
  }
 }
