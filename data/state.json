@@ -342,7 +342,7 @@
      "target_price": 256.0271,
      "stop_price": 243.59859999999998,
      "thesis": "Up 6.3% on the day at 10:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 249.2,
+     "last_price": 250.47,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -359,7 +359,7 @@
      "target_price": 34.000299999999996,
      "stop_price": 32.349799999999995,
      "thesis": "Up 6.0% on the day at 10:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 33.0,
+     "last_price": 32.77,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -376,7 +376,7 @@
      "target_price": 9.3112,
      "stop_price": 8.8592,
      "thesis": "Up 4.6% on the day at 10:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 9.07,
+     "last_price": 9.05,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -510,7 +510,7 @@
   }
  },
  "runs": 13,
- "last_run_utc": "2026-08-10T14:23:32Z",
+ "last_run_utc": "2026-08-10T14:31:50Z",
  "intraday": {
   "date": "2026-08-10",
   "marks": {
