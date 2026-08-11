@@ -329,25 +329,8 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 0.0,
+   "cash": 3248.5911339598133,
    "positions": [
-    {
-     "symbol": "VRT",
-     "name": "VRT",
-     "shares": 11.705698261111412,
-     "entry_price": 283.84355999999997,
-     "entry_date": "2026-08-11",
-     "raw_entry_price": 283.56,
-     "entry_time": "10:16",
-     "target_price": 292.0668,
-     "stop_price": 277.8888,
-     "thesis": "Up 5.0% on the day at 10:16 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 278.61,
-     "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    },
     {
      "symbol": "MELI",
      "name": "MELI",
@@ -359,7 +342,7 @@
      "target_price": 1941.5809,
      "stop_price": 1886.9150299999997,
      "thesis": "Up 3.3% on the day at 10:16 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 1920.75,
+     "last_price": 1928.18,
      "bars_held": 0,
      "be_locked": true,
      "splits_applied": [],
@@ -376,7 +359,7 @@
      "target_price": 448.4723,
      "stop_price": 426.7018,
      "thesis": "Up 4.5% on the day at 11:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 434.16,
+     "last_price": 431.99,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -503,6 +486,20 @@
      "reason": "target +3%",
      "entry_time": "10:16",
      "exit_time": "11:18"
+    },
+    {
+     "symbol": "VRT",
+     "name": "VRT",
+     "entry_date": "2026-08-11",
+     "entry_price": 283.8436,
+     "exit_date": "2026-08-11",
+     "exit_price": 277.5222,
+     "raw_exit_price": 277.8,
+     "slippage_bps": 10,
+     "pnl_pct": -2.23,
+     "reason": "stop \u22122%",
+     "entry_time": "10:16",
+     "exit_time": "14:09"
     }
    ],
    "cooldown": {
@@ -513,7 +510,8 @@
     "JOBY": "2026-08-10",
     "DDOG": "2026-08-10",
     "CRWD": "2026-08-10",
-    "ACHR": "2026-08-11"
+    "ACHR": "2026-08-11",
+    "VRT": "2026-08-11"
    },
    "last_eval_date": "2026-08-10",
    "activity": [
@@ -626,7 +624,7 @@
   }
  },
  "runs": 14,
- "last_run_utc": "2026-08-11T17:42:04Z",
+ "last_run_utc": "2026-08-11T18:09:06Z",
  "intraday": {
   "date": "2026-08-11",
   "marks": {
