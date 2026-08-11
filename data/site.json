@@ -5,7 +5,7 @@
   "last_change": null,
   "benched": []
  },
- "generated_at_utc": "2026-08-11T14:31:12Z",
+ "generated_at_utc": "2026-08-11T15:18:56Z",
  "as_of_date": "2026-08-10",
  "inception_date": "2026-07-31",
  "starting_capital": 10000.0,
@@ -8717,7 +8717,7 @@
    "tagline": "Intraday momentum bursts. In and out the same day \u2014 always flat by the close.",
    "horizon": "Minutes to hours",
    "risk_note": "Extreme risk, smallest edges. Buys only 2-8% morning risers still above their opening price20 minutes after first sighting, and only when the broad market is steady. Checks run about every 20 minutes; fills book at the quoted price of the check minus 10 bps modeled slippage, timestamped by the git commit. Stop jumps to breakeven once up 1.5%. Never holds overnight.",
-   "equity": 10023.67,
+   "equity": 10192.39,
    "cash": 0.0,
    "unit_scale": 1.0,
    "invested": 10000.0,
@@ -8725,9 +8725,9 @@
    "total_return_pct": -0.32,
    "vs_spy_pct": -3.8,
    "max_drawdown_pct": -0.7,
-   "closed_trades": 8,
-   "win_rate_pct": 50.0,
-   "avg_win_pct": 1.96,
+   "closed_trades": 9,
+   "win_rate_pct": 55.6,
+   "avg_win_pct": 3.03,
    "avg_loss_pct": -2.19,
    "positions": [
     {
@@ -8736,9 +8736,9 @@
      "entry_date": "2026-08-11",
      "entry_price": 283.84,
      "shares": 11.7057,
-     "current_price": 282.5,
-     "current_value": 3306.86,
-     "pnl_pct": -0.47,
+     "current_price": 279.19,
+     "current_value": 3268.11,
+     "pnl_pct": -1.64,
      "target_price": 292.07,
      "stop_price": 277.89,
      "bars_held": 0,
@@ -8747,39 +8747,53 @@
      "is_new": true
     },
     {
-     "symbol": "ACHR",
-     "name": "ACHR",
-     "entry_date": "2026-08-11",
-     "entry_price": 6.51,
-     "shares": 510.6566,
-     "current_price": 6.65,
-     "current_value": 3395.87,
-     "pnl_pct": 2.21,
-     "target_price": 6.7,
-     "stop_price": 6.51,
-     "bars_held": 0,
-     "entry_time": "10:16",
-     "thesis": "Up 3.8% on the day at 10:16 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "is_new": true
-    },
-    {
      "symbol": "MELI",
      "name": "MELI",
      "entry_date": "2026-08-11",
      "entry_price": 1886.92,
      "shares": 1.7609,
-     "current_price": 1885.98,
-     "current_value": 3320.94,
-     "pnl_pct": -0.05,
+     "current_price": 1909.25,
+     "current_value": 3361.92,
+     "pnl_pct": 1.18,
      "target_price": 1941.58,
      "stop_price": 1847.33,
      "bars_held": 0,
      "entry_time": "10:16",
      "thesis": "Up 3.3% on the day at 10:16 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
      "is_new": true
+    },
+    {
+     "symbol": "MDB",
+     "name": "MDB",
+     "entry_date": "2026-08-11",
+     "entry_price": 435.85,
+     "shares": 8.1816,
+     "current_price": 435.41,
+     "current_value": 3562.36,
+     "pnl_pct": -0.1,
+     "target_price": 448.47,
+     "stop_price": 426.7,
+     "bars_held": 0,
+     "entry_time": "11:18",
+     "thesis": "Up 4.5% on the day at 11:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "is_new": true
     }
    ],
    "recent_trades": [
+    {
+     "symbol": "ACHR",
+     "name": "ACHR",
+     "entry_date": "2026-08-11",
+     "entry_price": 6.5065,
+     "exit_date": "2026-08-11",
+     "exit_price": 6.983,
+     "raw_exit_price": 6.99,
+     "slippage_bps": 10,
+     "pnl_pct": 7.32,
+     "reason": "target +3%",
+     "entry_time": "10:16",
+     "exit_time": "11:18"
+    },
     {
      "symbol": "MDB",
      "name": "MDB",
@@ -8890,6 +8904,10 @@
    "recent_activity": [
     {
      "date": "2026-08-11",
+     "text": "\u26a1 11:18 ET BUY MDB @ $435.41 (+4.5% confirmed gap)"
+    },
+    {
+     "date": "2026-08-11",
      "text": "\u26a1 10:16 ET BUY MELI @ $1,885.03 (+3.3% confirmed gap)"
     },
     {
@@ -8915,10 +8933,6 @@
     {
      "date": "2026-08-10",
      "text": "\u26a1 10:18 ET BUY SMCI @ $33.01 (+6.0% confirmed gap)"
-    },
-    {
-     "date": "2026-08-10",
-     "text": "\u26a1 10:18 ET BUY DDOG @ $248.57 (+6.3% confirmed gap)"
     }
    ],
    "pro": {
@@ -8927,7 +8941,7 @@
     "beta": 0.12,
     "alpha_ann_pct": -30.5,
     "ann_return_pct": null,
-    "profit_factor": 0.89,
+    "profit_factor": 1.73,
     "sample_days": 6,
     "sortino": -2.94,
     "calmar": null,
@@ -11141,5 +11155,5 @@
  "data_source": "live Finnhub quotes (intraday) + rolling price store",
  "methodology_note": "All trades are simulated with paper money and booked NET of modeled slippage (5 bps per fill, 10 bps intraday; commissions are zero, matching modern retail; the SPY benchmark is frictionless by convention). Daily strategies fill at official closing prices. The two stock-picking strategies buy exactly ONE SHARE of every name that passes every test \u2014 no slot limit \u2014 so the record scores every recommendation ever made; the percentage curve tracks the same starting pot. Every position is re-checked at every market close without exception; a sell enters the record only when the model actually fires the signal, booked at that day's real closing price \u2014 never at the planned target or stop. Picks are committed to git before outcomes are known \u2014 the commit history is the proof. Not financial advice.",
  "intraday_date": "2026-08-11",
- "intraday_equity": 10023.67
+ "intraday_equity": 10192.39
 }

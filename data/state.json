@@ -342,26 +342,9 @@
      "target_price": 292.0668,
      "stop_price": 277.8888,
      "thesis": "Up 5.0% on the day at 10:16 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 282.5,
+     "last_price": 279.19,
      "bars_held": 0,
      "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "ACHR",
-     "name": "ACHR",
-     "shares": 510.65658444934644,
-     "entry_price": 6.506499999999999,
-     "entry_date": "2026-08-11",
-     "raw_entry_price": 6.5,
-     "entry_time": "10:16",
-     "target_price": 6.695,
-     "stop_price": 6.506499999999999,
-     "thesis": "Up 3.8% on the day at 10:16 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 6.65,
-     "bars_held": 0,
-     "be_locked": true,
      "splits_applied": [],
      "divs_credited": []
     },
@@ -376,7 +359,24 @@
      "target_price": 1941.5809,
      "stop_price": 1847.3293999999999,
      "thesis": "Up 3.3% on the day at 10:16 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 1885.98,
+     "last_price": 1909.25,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "MDB",
+     "name": "MDB",
+     "shares": 8.181616586889445,
+     "entry_price": 435.84540999999996,
+     "entry_date": "2026-08-11",
+     "raw_entry_price": 435.41,
+     "entry_time": "11:18",
+     "target_price": 448.4723,
+     "stop_price": 426.7018,
+     "thesis": "Up 4.5% on the day at 11:18 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 435.41,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -489,6 +489,20 @@
      "slippage_bps": 10,
      "pnl_pct": 0.47,
      "reason": "overnight safety flat"
+    },
+    {
+     "symbol": "ACHR",
+     "name": "ACHR",
+     "entry_date": "2026-08-11",
+     "entry_price": 6.5065,
+     "exit_date": "2026-08-11",
+     "exit_price": 6.983,
+     "raw_exit_price": 6.99,
+     "slippage_bps": 10,
+     "pnl_pct": 7.32,
+     "reason": "target +3%",
+     "entry_time": "10:16",
+     "exit_time": "11:18"
     }
    ],
    "cooldown": {
@@ -498,7 +512,8 @@
     "SMCI": "2026-08-10",
     "JOBY": "2026-08-10",
     "DDOG": "2026-08-10",
-    "CRWD": "2026-08-10"
+    "CRWD": "2026-08-10",
+    "ACHR": "2026-08-11"
    },
    "last_eval_date": "2026-08-10",
    "activity": [
@@ -549,6 +564,10 @@
     {
      "date": "2026-08-11",
      "text": "\u26a1 10:16 ET BUY MELI @ $1,885.03 (+3.3% confirmed gap)"
+    },
+    {
+     "date": "2026-08-11",
+     "text": "\u26a1 11:18 ET BUY MDB @ $435.41 (+4.5% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -607,14 +626,12 @@
   }
  },
  "runs": 14,
- "last_run_utc": "2026-08-11T14:31:12Z",
+ "last_run_utc": "2026-08-11T15:18:56Z",
  "intraday": {
   "date": "2026-08-11",
   "marks": {
-   "RIOT": 20.88,
-   "AMC": 2.48,
-   "IONQ": 43.41,
-   "MDB": 426.81
+   "RIOT": 20.02,
+   "TTD": 13.72
   }
  }
 }
