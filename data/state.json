@@ -329,8 +329,60 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 9981.427216281874,
-   "positions": [],
+   "cash": 0.0,
+   "positions": [
+    {
+     "symbol": "ARM",
+     "name": "ARM",
+     "shares": 11.614839385122309,
+     "entry_price": 286.45617,
+     "entry_date": "2026-08-13",
+     "raw_entry_price": 286.17,
+     "entry_time": "10:20",
+     "target_price": 294.7551,
+     "stop_price": 280.4466,
+     "thesis": "Up 5.3% on the day at 10:20 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 286.17,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "HOOD",
+     "name": "HOOD",
+     "shares": 33.36497276491117,
+     "entry_price": 99.71961999999999,
+     "entry_date": "2026-08-13",
+     "raw_entry_price": 99.62,
+     "entry_time": "10:20",
+     "target_price": 102.60860000000001,
+     "stop_price": 97.6276,
+     "thesis": "Up 5.0% on the day at 10:20 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 99.62,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "IONQ",
+     "name": "IONQ",
+     "shares": 70.34536691725822,
+     "entry_price": 47.29725,
+     "entry_date": "2026-08-13",
+     "raw_entry_price": 47.25,
+     "entry_time": "10:20",
+     "target_price": 48.667500000000004,
+     "stop_price": 46.305,
+     "thesis": "Up 4.5% on the day at 10:20 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 47.25,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    }
+   ],
    "closed": [
     {
      "symbol": "IONQ",
@@ -627,6 +679,18 @@
     {
      "date": "2026-08-12",
      "text": "\u26a1 11:18 ET BUY AMD @ $489.12 (+3.1% confirmed gap)"
+    },
+    {
+     "date": "2026-08-13",
+     "text": "\u26a1 10:20 ET BUY ARM @ $286.17 (+5.3% confirmed gap)"
+    },
+    {
+     "date": "2026-08-13",
+     "text": "\u26a1 10:20 ET BUY HOOD @ $99.62 (+5.0% confirmed gap)"
+    },
+    {
+     "date": "2026-08-13",
+     "text": "\u26a1 10:20 ET BUY IONQ @ $47.25 (+4.5% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -699,14 +763,25 @@
   }
  },
  "runs": 16,
- "last_run_utc": "2026-08-13T11:51:40Z",
+ "last_run_utc": "2026-08-13T14:21:07Z",
  "intraday": {
-  "date": "2026-08-12",
+  "date": "2026-08-13",
   "marks": {
-   "NVDA": 223.87,
-   "RIOT": 20.76,
-   "AMC": 2.45,
-   "NET": 316.45
+   "MSTR": 98.71,
+   "AMC": 2.64,
+   "CVNA": 74.44,
+   "AFRM": 76.26,
+   "RKLB": 83.49,
+   "ACHR": 6.52,
+   "CELH": 28.3,
+   "DUOL": 137.92,
+   "NET": 324.61,
+   "MDB": 456.74,
+   "DDOG": 247.27,
+   "TTD": 13.9,
+   "NU": 13.98,
+   "SHOP": 154.78,
+   "MU": 936.17
   }
  }
 }
