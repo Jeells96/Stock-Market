@@ -347,24 +347,7 @@
      "target_price": 517.6677,
      "stop_price": 492.53819999999996,
      "thesis": "Up 4.1% on the day at 10:13 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 501.41,
-     "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "SMCI",
-     "name": "SMCI",
-     "shares": 80.1638920509314,
-     "entry_price": 40.600559999999994,
-     "entry_date": "2026-08-14",
-     "raw_entry_price": 40.56,
-     "entry_time": "10:13",
-     "target_price": 41.7768,
-     "stop_price": 39.7488,
-     "thesis": "Up 3.6% on the day at 10:13 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 39.83,
+     "last_price": 504.31,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -381,7 +364,24 @@
      "target_price": 47.843500000000006,
      "stop_price": 45.521,
      "thesis": "Up 3.3% on the day at 10:13 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 46.3,
+     "last_price": 46.2,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "DKNG",
+     "name": "DKNG",
+     "shares": 120.57288021320113,
+     "entry_price": 26.116089999999996,
+     "entry_date": "2026-08-14",
+     "raw_entry_price": 26.09,
+     "entry_time": "11:09",
+     "target_price": 26.872700000000002,
+     "stop_price": 25.5682,
+     "thesis": "Up 2.6% on the day at 11:09 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 26.09,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -640,13 +640,27 @@
      "reason": "end of day \u2014 flat by the close",
      "entry_time": "10:20",
      "exit_time": "15:40"
+    },
+    {
+     "symbol": "SMCI",
+     "name": "SMCI",
+     "entry_date": "2026-08-14",
+     "entry_price": 40.6006,
+     "exit_date": "2026-08-14",
+     "exit_price": 39.2807,
+     "raw_exit_price": 39.32,
+     "slippage_bps": 10,
+     "pnl_pct": -3.25,
+     "reason": "stop \u22122%",
+     "entry_time": "10:13",
+     "exit_time": "11:09"
     }
    ],
    "cooldown": {
     "IONQ": "2026-08-13",
     "CVNA": "2026-08-07",
     "MDB": "2026-08-11",
-    "SMCI": "2026-08-10",
+    "SMCI": "2026-08-14",
     "JOBY": "2026-08-10",
     "DDOG": "2026-08-10",
     "CRWD": "2026-08-10",
@@ -752,6 +766,10 @@
     {
      "date": "2026-08-14",
      "text": "\u26a1 10:13 ET BUY IONQ @ $46.45 (+3.3% confirmed gap)"
+    },
+    {
+     "date": "2026-08-14",
+     "text": "\u26a1 11:09 ET BUY DKNG @ $26.09 (+2.6% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -831,14 +849,12 @@
   }
  },
  "runs": 17,
- "last_run_utc": "2026-08-14T14:19:44Z",
+ "last_run_utc": "2026-08-14T15:09:51Z",
  "intraday": {
   "date": "2026-08-14",
   "marks": {
-   "DKNG": 25.96,
-   "ROKU": 157.34,
-   "VRT": 294.76,
-   "MU": 977.87
+   "ROKU": 157.21,
+   "MU": 970.43
   }
  }
 }

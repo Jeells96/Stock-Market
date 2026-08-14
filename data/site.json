@@ -5,7 +5,7 @@
   "last_change": null,
   "benched": []
  },
- "generated_at_utc": "2026-08-14T14:19:44Z",
+ "generated_at_utc": "2026-08-14T15:09:51Z",
  "as_of_date": "2026-08-13",
  "inception_date": "2026-07-31",
  "starting_capital": 10000.0,
@@ -8779,7 +8779,7 @@
    "tagline": "Intraday momentum bursts. In and out the same day \u2014 always flat by the close.",
    "horizon": "Minutes to hours",
    "risk_note": "Extreme risk, smallest edges. Buys only 2-8% morning risers still above their opening price20 minutes after first sighting, and only when the broad market is steady. Checks run about every 20 minutes; fills book at the quoted price of the check minus 10 bps modeled slippage, timestamped by the git commit. Stop jumps to breakeven once up 1.5%. Never holds overnight.",
-   "equity": 9677.69,
+   "equity": 9642.27,
    "cash": 0.0,
    "unit_scale": 1.0,
    "invested": 10000.0,
@@ -8787,10 +8787,10 @@
    "total_return_pct": -2.36,
    "vs_spy_pct": -6.49,
    "max_drawdown_pct": -4.75,
-   "closed_trades": 19,
-   "win_rate_pct": 36.8,
+   "closed_trades": 20,
+   "win_rate_pct": 35.0,
    "avg_win_pct": 2.64,
-   "avg_loss_pct": -2.12,
+   "avg_loss_pct": -2.21,
    "positions": [
     {
      "symbol": "AMD",
@@ -8798,9 +8798,9 @@
      "entry_date": "2026-08-14",
      "entry_price": 503.09,
      "shares": 6.4694,
-     "current_price": 501.41,
-     "current_value": 3243.81,
-     "pnl_pct": -0.33,
+     "current_price": 504.31,
+     "current_value": 3262.57,
+     "pnl_pct": 0.24,
      "target_price": 517.67,
      "stop_price": 492.54,
      "bars_held": 0,
@@ -8809,39 +8809,53 @@
      "is_new": true
     },
     {
-     "symbol": "SMCI",
-     "name": "SMCI",
-     "entry_date": "2026-08-14",
-     "entry_price": 40.6,
-     "shares": 80.1639,
-     "current_price": 39.83,
-     "current_value": 3192.93,
-     "pnl_pct": -1.9,
-     "target_price": 41.78,
-     "stop_price": 39.75,
-     "bars_held": 0,
-     "entry_time": "10:13",
-     "thesis": "Up 3.6% on the day at 10:13 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "is_new": true
-    },
-    {
      "symbol": "IONQ",
      "name": "IONQ",
      "entry_date": "2026-08-14",
      "entry_price": 46.5,
      "shares": 69.9989,
-     "current_price": 46.3,
-     "current_value": 3240.95,
-     "pnl_pct": -0.42,
+     "current_price": 46.2,
+     "current_value": 3233.95,
+     "pnl_pct": -0.64,
      "target_price": 47.84,
      "stop_price": 45.52,
      "bars_held": 0,
      "entry_time": "10:13",
      "thesis": "Up 3.3% on the day at 10:13 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
      "is_new": true
+    },
+    {
+     "symbol": "DKNG",
+     "name": "DKNG",
+     "entry_date": "2026-08-14",
+     "entry_price": 26.12,
+     "shares": 120.5729,
+     "current_price": 26.09,
+     "current_value": 3145.75,
+     "pnl_pct": -0.1,
+     "target_price": 26.87,
+     "stop_price": 25.57,
+     "bars_held": 0,
+     "entry_time": "11:09",
+     "thesis": "Up 2.6% on the day at 11:09 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "is_new": true
     }
    ],
    "recent_trades": [
+    {
+     "symbol": "SMCI",
+     "name": "SMCI",
+     "entry_date": "2026-08-14",
+     "entry_price": 40.6006,
+     "exit_date": "2026-08-14",
+     "exit_price": 39.2807,
+     "raw_exit_price": 39.32,
+     "slippage_bps": 10,
+     "pnl_pct": -3.25,
+     "reason": "stop \u22122%",
+     "entry_time": "10:13",
+     "exit_time": "11:09"
+    },
     {
      "symbol": "HOOD",
      "name": "HOOD",
@@ -8987,21 +9001,13 @@
      "reason": "target +3%",
      "entry_time": "10:16",
      "exit_time": "11:18"
-    },
-    {
-     "symbol": "MDB",
-     "name": "MDB",
-     "entry_date": "2026-08-10",
-     "entry_price": 414.3139,
-     "exit_date": "2026-08-10",
-     "exit_price": 416.2533,
-     "raw_exit_price": 416.67,
-     "slippage_bps": 10,
-     "pnl_pct": 0.47,
-     "reason": "overnight safety flat"
     }
    ],
    "recent_activity": [
+    {
+     "date": "2026-08-14",
+     "text": "\u26a1 11:09 ET BUY DKNG @ $26.09 (+2.6% confirmed gap)"
+    },
     {
      "date": "2026-08-14",
      "text": "\u26a1 10:13 ET BUY IONQ @ $46.45 (+3.3% confirmed gap)"
@@ -9029,10 +9035,6 @@
     {
      "date": "2026-08-12",
      "text": "\u26a1 11:18 ET BUY AMD @ $489.12 (+3.1% confirmed gap)"
-    },
-    {
-     "date": "2026-08-12",
-     "text": "\u26a1 10:18 ET BUY ASTS @ $74.89 (+4.6% confirmed gap)"
     }
    ],
    "pro": {
@@ -9041,7 +9043,7 @@
     "beta": -0.4,
     "alpha_ann_pct": -18.7,
     "ann_return_pct": null,
-    "profit_factor": 0.73,
+    "profit_factor": 0.65,
     "sample_days": 9,
     "sortino": -3.47,
     "calmar": null,
@@ -11249,5 +11251,5 @@
  "data_source": "live Finnhub quotes (intraday) + rolling price store",
  "methodology_note": "All trades are simulated with paper money and booked NET of modeled slippage (5 bps per fill, 10 bps intraday; commissions are zero, matching modern retail; the SPY benchmark is frictionless by convention). Daily strategies fill at official closing prices. The two stock-picking strategies buy exactly ONE SHARE of every name that passes every test \u2014 no slot limit \u2014 so the record scores every recommendation ever made; the percentage curve tracks the same starting pot. Every position is re-checked at every market close without exception; a sell enters the record only when the model actually fires the signal, booked at that day's real closing price \u2014 never at the planned target or stop. Picks are committed to git before outcomes are known \u2014 the commit history is the proof. Not financial advice.",
  "intraday_date": "2026-08-14",
- "intraday_equity": 9677.69
+ "intraday_equity": 9642.27
 }
