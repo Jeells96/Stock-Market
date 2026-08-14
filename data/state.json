@@ -334,8 +334,60 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 9764.096727142087,
-   "positions": [],
+   "cash": 0.0,
+   "positions": [
+    {
+     "symbol": "AMD",
+     "name": "AMD",
+     "shares": 6.469383516555795,
+     "entry_price": 503.0925899999999,
+     "entry_date": "2026-08-14",
+     "raw_entry_price": 502.59,
+     "entry_time": "10:13",
+     "target_price": 517.6677,
+     "stop_price": 492.53819999999996,
+     "thesis": "Up 4.1% on the day at 10:13 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 502.59,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "SMCI",
+     "name": "SMCI",
+     "shares": 80.1638920509314,
+     "entry_price": 40.600559999999994,
+     "entry_date": "2026-08-14",
+     "raw_entry_price": 40.56,
+     "entry_time": "10:13",
+     "target_price": 41.7768,
+     "stop_price": 39.7488,
+     "thesis": "Up 3.6% on the day at 10:13 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 40.56,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "IONQ",
+     "name": "IONQ",
+     "shares": 69.9988689254204,
+     "entry_price": 46.496449999999996,
+     "entry_date": "2026-08-14",
+     "raw_entry_price": 46.45,
+     "entry_time": "10:13",
+     "target_price": 47.843500000000006,
+     "stop_price": 45.521,
+     "thesis": "Up 3.3% on the day at 10:13 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 46.45,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    }
+   ],
    "closed": [
     {
      "symbol": "IONQ",
@@ -688,6 +740,18 @@
     {
      "date": "2026-08-13",
      "text": "\u26a1 10:20 ET BUY IONQ @ $47.25 (+4.5% confirmed gap)"
+    },
+    {
+     "date": "2026-08-14",
+     "text": "\u26a1 10:13 ET BUY AMD @ $502.59 (+4.1% confirmed gap)"
+    },
+    {
+     "date": "2026-08-14",
+     "text": "\u26a1 10:13 ET BUY SMCI @ $40.56 (+3.6% confirmed gap)"
+    },
+    {
+     "date": "2026-08-14",
+     "text": "\u26a1 10:13 ET BUY IONQ @ $46.45 (+3.3% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -767,25 +831,14 @@
   }
  },
  "runs": 17,
- "last_run_utc": "2026-08-14T11:51:40Z",
+ "last_run_utc": "2026-08-14T14:14:06Z",
  "intraday": {
-  "date": "2026-08-13",
+  "date": "2026-08-14",
   "marks": {
-   "MSTR": 98.71,
-   "AMC": 2.64,
-   "CVNA": 74.44,
-   "AFRM": 76.26,
-   "RKLB": 83.49,
-   "ACHR": 6.52,
-   "CELH": 28.3,
-   "DUOL": 137.92,
-   "NET": 324.61,
-   "MDB": 456.74,
-   "DDOG": 247.27,
-   "TTD": 13.9,
-   "NU": 13.98,
-   "SHOP": 154.78,
-   "MU": 936.17
+   "DKNG": 25.96,
+   "ROKU": 157.34,
+   "VRT": 294.76,
+   "MU": 977.87
   }
  }
 }
