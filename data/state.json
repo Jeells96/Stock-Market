@@ -334,7 +334,7 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 3167.6534740389234,
+   "cash": 6325.816030176462,
    "positions": [
     {
      "symbol": "MU",
@@ -347,26 +347,9 @@
      "target_price": 1040.4854,
      "stop_price": 1011.1901799999998,
      "thesis": "Up 4.0% on the day at 09:47 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 1019.89,
+     "last_price": 1020.28,
      "bars_held": 0,
      "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "ELF",
-     "name": "ELF",
-     "shares": 34.29511694529785,
-     "entry_price": 94.20410999999999,
-     "entry_date": "2026-08-17",
-     "raw_entry_price": 94.11,
-     "entry_time": "10:03",
-     "target_price": 96.9333,
-     "stop_price": 92.2278,
-     "thesis": "Up 2.9% on the day at 10:03 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 92.65,
-     "bars_held": 0,
-     "be_locked": false,
      "splits_applied": [],
      "divs_credited": []
     }
@@ -707,6 +690,20 @@
      "reason": "stop \u22122%",
      "entry_time": "09:47",
      "exit_time": "11:39"
+    },
+    {
+     "symbol": "ELF",
+     "name": "ELF",
+     "entry_date": "2026-08-17",
+     "entry_price": 94.2041,
+     "exit_date": "2026-08-17",
+     "exit_price": 92.0878,
+     "raw_exit_price": 92.18,
+     "slippage_bps": 10,
+     "pnl_pct": -2.25,
+     "reason": "stop \u22122%",
+     "entry_time": "10:03",
+     "exit_time": "13:59"
     }
    ],
    "cooldown": {
@@ -726,7 +723,8 @@
     "ARM": "2026-08-13",
     "HOOD": "2026-08-13",
     "DKNG": "2026-08-14",
-    "RKLB": "2026-08-17"
+    "RKLB": "2026-08-17",
+    "ELF": "2026-08-17"
    },
    "last_eval_date": "2026-08-14",
    "activity": [
@@ -927,7 +925,7 @@
   }
  },
  "runs": 18,
- "last_run_utc": "2026-08-17T17:33:24Z",
+ "last_run_utc": "2026-08-17T17:59:21Z",
  "intraday": {
   "date": "2026-08-17",
   "marks": {
