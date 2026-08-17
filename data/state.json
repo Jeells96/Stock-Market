@@ -334,8 +334,60 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 9717.424051107337,
-   "positions": [],
+   "cash": 0.0,
+   "positions": [
+    {
+     "symbol": "RKLB",
+     "name": "RKLB",
+     "shares": 38.61001604729971,
+     "entry_price": 83.89380999999999,
+     "entry_date": "2026-08-17",
+     "raw_entry_price": 83.81,
+     "entry_time": "09:47",
+     "target_price": 86.32430000000001,
+     "stop_price": 82.1338,
+     "thesis": "Up 4.4% on the day at 09:47 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 83.81,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "MU",
+     "name": "MU",
+     "shares": 3.2032958927361346,
+     "entry_price": 1011.1901799999998,
+     "entry_date": "2026-08-17",
+     "raw_entry_price": 1010.18,
+     "entry_time": "09:47",
+     "target_price": 1040.4854,
+     "stop_price": 989.9763999999999,
+     "thesis": "Up 4.0% on the day at 09:47 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 1010.18,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "ASTS",
+     "name": "ASTS",
+     "shares": 44.272888834644796,
+     "entry_price": 73.16309,
+     "entry_date": "2026-08-17",
+     "raw_entry_price": 73.09,
+     "entry_time": "09:47",
+     "target_price": 75.2827,
+     "stop_price": 71.6282,
+     "thesis": "Up 3.0% on the day at 09:47 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 73.09,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    }
+   ],
    "closed": [
     {
      "symbol": "IONQ",
@@ -761,6 +813,18 @@
     {
      "date": "2026-08-14",
      "text": "\u26a1 11:09 ET BUY DKNG @ $26.09 (+2.6% confirmed gap)"
+    },
+    {
+     "date": "2026-08-17",
+     "text": "\u26a1 09:47 ET BUY RKLB @ $83.81 (+4.4% confirmed gap)"
+    },
+    {
+     "date": "2026-08-17",
+     "text": "\u26a1 09:47 ET BUY MU @ $1,010.18 (+4.0% confirmed gap)"
+    },
+    {
+     "date": "2026-08-17",
+     "text": "\u26a1 09:47 ET BUY ASTS @ $73.09 (+3.0% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -847,12 +911,11 @@
   }
  },
  "runs": 18,
- "last_run_utc": "2026-08-17T11:26:34Z",
+ "last_run_utc": "2026-08-17T13:48:49Z",
  "intraday": {
-  "date": "2026-08-14",
+  "date": "2026-08-17",
   "marks": {
-   "ROKU": 157.21,
-   "MU": 970.43
+   "ELF": 93.47
   }
  }
 }
