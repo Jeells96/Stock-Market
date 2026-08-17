@@ -334,7 +334,7 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 0.0,
+   "cash": 3167.6534740389234,
    "positions": [
     {
      "symbol": "MU",
@@ -347,26 +347,9 @@
      "target_price": 1040.4854,
      "stop_price": 1011.1901799999998,
      "thesis": "Up 4.0% on the day at 09:47 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 1032.47,
+     "last_price": 1032.77,
      "bars_held": 0,
      "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "ASTS",
-     "name": "ASTS",
-     "shares": 44.272888834644796,
-     "entry_price": 73.16309,
-     "entry_date": "2026-08-17",
-     "raw_entry_price": 73.09,
-     "entry_time": "09:47",
-     "target_price": 75.2827,
-     "stop_price": 71.6282,
-     "thesis": "Up 3.0% on the day at 09:47 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 71.77,
-     "bars_held": 0,
-     "be_locked": false,
      "splits_applied": [],
      "divs_credited": []
     },
@@ -381,7 +364,7 @@
      "target_price": 96.9333,
      "stop_price": 92.2278,
      "thesis": "Up 2.9% on the day at 10:03 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 93.19,
+     "last_price": 93.2,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -710,6 +693,20 @@
      "reason": "breakeven stop",
      "entry_time": "09:47",
      "exit_time": "10:03"
+    },
+    {
+     "symbol": "ASTS",
+     "name": "ASTS",
+     "entry_date": "2026-08-17",
+     "entry_price": 73.1631,
+     "exit_date": "2026-08-17",
+     "exit_price": 71.5484,
+     "raw_exit_price": 71.62,
+     "slippage_bps": 10,
+     "pnl_pct": -2.21,
+     "reason": "stop \u22122%",
+     "entry_time": "09:47",
+     "exit_time": "11:39"
     }
    ],
    "cooldown": {
@@ -723,7 +720,7 @@
     "ACHR": "2026-08-11",
     "VRT": "2026-08-12",
     "MELI": "2026-08-11",
-    "ASTS": "2026-08-12",
+    "ASTS": "2026-08-17",
     "MU": "2026-08-12",
     "AMD": "2026-08-14",
     "ARM": "2026-08-13",
@@ -930,7 +927,7 @@
   }
  },
  "runs": 18,
- "last_run_utc": "2026-08-17T15:35:18Z",
+ "last_run_utc": "2026-08-17T15:39:35Z",
  "intraday": {
   "date": "2026-08-17",
   "marks": {
