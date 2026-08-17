@@ -334,26 +334,8 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 6325.816030176462,
-   "positions": [
-    {
-     "symbol": "MU",
-     "name": "MU",
-     "shares": 3.2032958927361346,
-     "entry_price": 1011.1901799999998,
-     "entry_date": "2026-08-17",
-     "raw_entry_price": 1010.18,
-     "entry_time": "09:47",
-     "target_price": 1040.4854,
-     "stop_price": 1011.1901799999998,
-     "thesis": "Up 4.0% on the day at 09:47 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 1018.04,
-     "bars_held": 0,
-     "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    }
-   ],
+   "cash": 9555.76549094841,
+   "positions": [],
    "closed": [
     {
      "symbol": "IONQ",
@@ -704,6 +686,20 @@
      "reason": "stop \u22122%",
      "entry_time": "10:03",
      "exit_time": "13:59"
+    },
+    {
+     "symbol": "MU",
+     "name": "MU",
+     "entry_date": "2026-08-17",
+     "entry_price": 1011.1902,
+     "exit_date": "2026-08-17",
+     "exit_price": 1008.3207,
+     "raw_exit_price": 1009.33,
+     "slippage_bps": 10,
+     "pnl_pct": -0.28,
+     "reason": "breakeven stop",
+     "entry_time": "09:47",
+     "exit_time": "15:23"
     }
    ],
    "cooldown": {
@@ -718,7 +714,7 @@
     "VRT": "2026-08-12",
     "MELI": "2026-08-11",
     "ASTS": "2026-08-17",
-    "MU": "2026-08-12",
+    "MU": "2026-08-17",
     "AMD": "2026-08-14",
     "ARM": "2026-08-13",
     "HOOD": "2026-08-13",
@@ -925,7 +921,7 @@
   }
  },
  "runs": 18,
- "last_run_utc": "2026-08-17T18:48:54Z",
+ "last_run_utc": "2026-08-17T19:23:41Z",
  "intraday": {
   "date": "2026-08-17",
   "marks": {
