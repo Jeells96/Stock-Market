@@ -347,7 +347,7 @@
      "target_price": 1040.4854,
      "stop_price": 1011.1901799999998,
      "thesis": "Up 4.0% on the day at 09:47 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 1020.28,
+     "last_price": 1018.04,
      "bars_held": 0,
      "be_locked": true,
      "splits_applied": [],
@@ -925,7 +925,7 @@
   }
  },
  "runs": 18,
- "last_run_utc": "2026-08-17T17:59:21Z",
+ "last_run_utc": "2026-08-17T18:48:54Z",
  "intraday": {
   "date": "2026-08-17",
   "marks": {
