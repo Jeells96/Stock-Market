@@ -7,14 +7,14 @@
   "shares": 13.386343252613685,
   "cash": 0.0,
   "entry_date": "2026-07-31",
-  "last_eval_date": "2026-08-14",
+  "last_eval_date": "2026-08-17",
   "entry_price": 747.03,
   "splits_applied": [],
   "divs_credited": []
  },
  "strategies": {
   "aggressive": {
-   "cash": 0.0,
+   "cash": 1961.8657560479644,
    "positions": [
     {
      "symbol": "FTNT",
@@ -26,8 +26,8 @@
      "target_price": 201.94799999999998,
      "stop_price": 154.8268,
      "thesis": "Up 94% over three months and 100% over six, sitting 98% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+8.8% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 160.01,
-     "bars_held": 8,
+     "last_price": 155.85,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -42,8 +42,8 @@
      "target_price": 439.60799999999995,
      "stop_price": 337.0328,
      "thesis": "Up 94% over three months and 89% over six, sitting 99% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+8.8% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 384.27,
-     "bars_held": 8,
+     "last_price": 375.76,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -58,8 +58,8 @@
      "target_price": 253.464,
      "stop_price": 194.32240000000002,
      "thesis": "Up 82% over three months and 70% over six, sitting 95% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+11.4% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 216.95,
-     "bars_held": 8,
+     "last_price": 213.9,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -74,33 +74,31 @@
      "target_price": 177.384,
      "stop_price": 135.9944,
      "thesis": "Up 92% over three months and 55% over six, sitting 90% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+3.9% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 147.43,
-     "bars_held": 8,
+     "last_price": 143.24,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
-    },
+    }
+   ],
+   "closed": [
     {
      "symbol": "TENB",
      "name": "TENB",
-     "shares": 55.62049248052658,
-     "entry_price": 35.957969999999996,
      "entry_date": "2026-08-04",
-     "raw_entry_price": 35.94,
-     "target_price": 43.12799999999999,
-     "stop_price": 35.957969999999996,
-     "thesis": "Up 67% over three months and 54% over six, sitting 72% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+11.5% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 38.33,
-     "bars_held": 8,
-     "splits_applied": [],
-     "divs_credited": [],
-     "missing_runs": 0,
-     "be_locked": true
+     "entry_price": 35.958,
+     "exit_date": "2026-08-17",
+     "exit_price": 35.2724,
+     "raw_exit_price": 35.29,
+     "slippage_bps": 5,
+     "pnl_pct": -1.91,
+     "reason": "breakeven stop"
     }
    ],
-   "closed": [],
-   "cooldown": {},
-   "last_eval_date": "2026-08-14",
+   "cooldown": {
+    "TENB": "2026-08-17"
+   },
+   "last_eval_date": "2026-08-17",
    "activity": [
     {
      "date": "2026-08-04",
@@ -143,8 +141,8 @@
      "target_price": 359.50149999999996,
      "stop_price": 281.34900000000005,
      "thesis": "A confirmed climb: up 79% over six months and 85% over the year, trading 92% of the way up its 52-week range with moderate (35%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 355.42,
-     "bars_held": 8,
+     "last_price": 358.18,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -159,8 +157,8 @@
      "target_price": 213.01449999999997,
      "stop_price": 166.707,
      "thesis": "A confirmed climb: up 44% over six months and 69% over the year, trading 92% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 191.74,
-     "bars_held": 8,
+     "last_price": 193.04,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -175,8 +173,8 @@
      "target_price": 355.0395,
      "stop_price": 277.857,
      "thesis": "A confirmed climb: up 68% over six months and 131% over the year, trading 94% of the way up its 52-week range with moderate (39%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 341.67,
-     "bars_held": 8,
+     "last_price": 347.19,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -191,8 +189,8 @@
      "target_price": 468.6825,
      "stop_price": 366.795,
      "thesis": "A confirmed climb: up 47% over six months and 75% over the year, trading 76% of the way up its 52-week range with moderate (26%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 401.73,
-     "bars_held": 8,
+     "last_price": 395.62,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -216,7 +214,7 @@
    ],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-08-14",
+   "last_eval_date": "2026-08-17",
    "activity": [
     {
      "date": "2026-08-04",
@@ -254,8 +252,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "S&P 500 core \u2014 owns the 500 biggest US companies",
-     "last_price": 713.61,
-     "bars_held": 10,
+     "last_price": 710.27,
+     "bars_held": 11,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -269,8 +267,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Nasdaq-100 \u2014 concentrated big-tech growth",
-     "last_price": 731.07,
-     "bars_held": 10,
+     "last_price": 729.87,
+     "bars_held": 11,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -284,8 +282,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Dividend quality \u2014 cash-generating value companies",
-     "last_price": 34.52,
-     "bars_held": 10,
+     "last_price": 34.29,
+     "bars_held": 11,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -299,8 +297,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "International \u2014 diversification outside the US",
-     "last_price": 87.7,
-     "bars_held": 10,
+     "last_price": 87.87,
+     "bars_held": 11,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -314,8 +312,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Bonds \u2014 ballast that cushions stock drawdowns",
-     "last_price": 72.31,
-     "bars_held": 10,
+     "last_price": 72.16,
+     "bars_held": 11,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -323,7 +321,7 @@
    ],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-08-14",
+   "last_eval_date": "2026-08-17",
    "activity": [
     {
      "date": "2026-07-31",
@@ -722,7 +720,7 @@
     "RKLB": "2026-08-17",
     "ELF": "2026-08-17"
    },
-   "last_eval_date": "2026-08-14",
+   "last_eval_date": "2026-08-17",
    "activity": [
     {
      "date": "2026-07-31",
@@ -918,10 +916,17 @@
    "growth": 10613.84,
    "longterm": 10382.9,
    "benchmark": 10392.35
+  },
+  "2026-08-17": {
+   "daytrade": 9555.77,
+   "aggressive": 9824.93,
+   "growth": 10651.29,
+   "longterm": 10346.15,
+   "benchmark": 10343.23
   }
  },
- "runs": 18,
- "last_run_utc": "2026-08-17T19:23:41Z",
+ "runs": 19,
+ "last_run_utc": "2026-08-18T11:26:23Z",
  "intraday": {
   "date": "2026-08-17",
   "marks": {
