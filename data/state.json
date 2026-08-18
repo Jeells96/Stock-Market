@@ -332,8 +332,26 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 9555.76549094841,
-   "positions": [],
+   "cash": 6370.51032729894,
+   "positions": [
+    {
+     "symbol": "DUOL",
+     "name": "DUOL",
+     "shares": 23.257368005839144,
+     "entry_price": 136.95681999999996,
+     "entry_date": "2026-08-18",
+     "raw_entry_price": 136.82,
+     "entry_time": "09:38",
+     "target_price": 140.9246,
+     "stop_price": 134.0836,
+     "thesis": "Up 5.1% on the day at 09:38 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 136.82,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    }
+   ],
    "closed": [
     {
      "symbol": "IONQ",
@@ -833,6 +851,10 @@
     {
      "date": "2026-08-17",
      "text": "\u26a1 10:03 ET BUY ELF @ $94.11 (+2.9% confirmed gap)"
+    },
+    {
+     "date": "2026-08-18",
+     "text": "\u26a1 09:38 ET BUY DUOL @ $136.82 (+5.1% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -926,11 +948,9 @@
   }
  },
  "runs": 19,
- "last_run_utc": "2026-08-18T11:26:23Z",
+ "last_run_utc": "2026-08-18T13:39:06Z",
  "intraday": {
-  "date": "2026-08-17",
-  "marks": {
-   "MSTR": 95.19
-  }
+  "date": "2026-08-18",
+  "marks": {}
  }
 }
