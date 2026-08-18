@@ -332,7 +332,7 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 3185.25516364947,
+   "cash": 0.0,
    "positions": [
     {
      "symbol": "DUOL",
@@ -345,7 +345,7 @@
      "target_price": 140.9246,
      "stop_price": 136.95681999999996,
      "thesis": "Up 5.1% on the day at 09:38 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 139.26,
+     "last_price": 139.49,
      "bars_held": 0,
      "be_locked": true,
      "splits_applied": [],
@@ -362,7 +362,24 @@
      "target_price": 14.1316,
      "stop_price": 13.4456,
      "thesis": "Up 2.4% on the day at 09:50 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 13.66,
+     "last_price": 13.65,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "U",
+     "name": "U",
+     "shares": 68.60873416470271,
+     "entry_price": 46.426379999999995,
+     "entry_date": "2026-08-18",
+     "raw_entry_price": 46.38,
+     "entry_time": "11:17",
+     "target_price": 47.77140000000001,
+     "stop_price": 45.452400000000004,
+     "thesis": "Up 2.0% on the day at 11:17 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 46.38,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -876,6 +893,10 @@
     {
      "date": "2026-08-18",
      "text": "\u26a1 09:50 ET BUY TTD @ $13.72 (+2.4% confirmed gap)"
+    },
+    {
+     "date": "2026-08-18",
+     "text": "\u26a1 11:17 ET BUY U @ $46.38 (+2.0% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -969,7 +990,7 @@
   }
  },
  "runs": 19,
- "last_run_utc": "2026-08-18T15:16:10Z",
+ "last_run_utc": "2026-08-18T15:18:04Z",
  "intraday": {
   "date": "2026-08-18",
   "marks": {}
