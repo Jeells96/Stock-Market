@@ -332,7 +332,7 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 6370.51032729894,
+   "cash": 3185.25516364947,
    "positions": [
     {
      "symbol": "DUOL",
@@ -345,7 +345,24 @@
      "target_price": 140.9246,
      "stop_price": 134.0836,
      "thesis": "Up 5.1% on the day at 09:38 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 136.82,
+     "last_price": 138.18,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "TTD",
+     "name": "TTD",
+     "shares": 231.92952555094104,
+     "entry_price": 13.73372,
+     "entry_date": "2026-08-18",
+     "raw_entry_price": 13.72,
+     "entry_time": "09:50",
+     "target_price": 14.1316,
+     "stop_price": 13.4456,
+     "thesis": "Up 2.4% on the day at 09:50 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 13.72,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -855,6 +872,10 @@
     {
      "date": "2026-08-18",
      "text": "\u26a1 09:38 ET BUY DUOL @ $136.82 (+5.1% confirmed gap)"
+    },
+    {
+     "date": "2026-08-18",
+     "text": "\u26a1 09:50 ET BUY TTD @ $13.72 (+2.4% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -948,7 +969,7 @@
   }
  },
  "runs": 19,
- "last_run_utc": "2026-08-18T13:39:06Z",
+ "last_run_utc": "2026-08-18T13:51:42Z",
  "intraday": {
   "date": "2026-08-18",
   "marks": {}
