@@ -332,7 +332,7 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 0.0,
+   "cash": 3111.698714620989,
    "positions": [
     {
      "symbol": "DUOL",
@@ -345,26 +345,9 @@
      "target_price": 140.9246,
      "stop_price": 136.95681999999996,
      "thesis": "Up 5.1% on the day at 09:38 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 139.87,
+     "last_price": 140.38,
      "bars_held": 0,
      "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "TTD",
-     "name": "TTD",
-     "shares": 231.92952555094104,
-     "entry_price": 13.73372,
-     "entry_date": "2026-08-18",
-     "raw_entry_price": 13.72,
-     "entry_time": "09:50",
-     "target_price": 14.1316,
-     "stop_price": 13.4456,
-     "thesis": "Up 2.4% on the day at 09:50 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 13.61,
-     "bars_held": 0,
-     "be_locked": false,
      "splits_applied": [],
      "divs_credited": []
     },
@@ -379,7 +362,7 @@
      "target_price": 47.77140000000001,
      "stop_price": 45.452400000000004,
      "thesis": "Up 2.0% on the day at 11:17 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 46.88,
+     "last_price": 47.11,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -750,6 +733,20 @@
      "reason": "breakeven stop",
      "entry_time": "09:47",
      "exit_time": "15:23"
+    },
+    {
+     "symbol": "TTD",
+     "name": "TTD",
+     "entry_date": "2026-08-18",
+     "entry_price": 13.7337,
+     "exit_date": "2026-08-18",
+     "exit_price": 13.4166,
+     "raw_exit_price": 13.43,
+     "slippage_bps": 10,
+     "pnl_pct": -2.31,
+     "reason": "stop \u22122%",
+     "entry_time": "09:50",
+     "exit_time": "13:57"
     }
    ],
    "cooldown": {
@@ -770,7 +767,8 @@
     "HOOD": "2026-08-13",
     "DKNG": "2026-08-14",
     "RKLB": "2026-08-17",
-    "ELF": "2026-08-17"
+    "ELF": "2026-08-17",
+    "TTD": "2026-08-18"
    },
    "last_eval_date": "2026-08-17",
    "activity": [
@@ -990,7 +988,7 @@
   }
  },
  "runs": 19,
- "last_run_utc": "2026-08-18T17:21:25Z",
+ "last_run_utc": "2026-08-18T17:57:57Z",
  "intraday": {
   "date": "2026-08-18",
   "marks": {}
