@@ -344,7 +344,7 @@
      "target_price": 99.807,
      "stop_price": 94.962,
      "thesis": "Up 4.7% on the day at 09:39 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 98.25,
+     "last_price": 98.14,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -368,19 +368,19 @@
      "divs_credited": []
     },
     {
-     "symbol": "COIN",
-     "name": "COIN",
-     "shares": 20.54363651626398,
-     "entry_price": 156.72656999999998,
+     "symbol": "MARA",
+     "name": "MARA",
+     "shares": 346.51724399727476,
+     "entry_price": 9.619609999999998,
      "entry_date": "2026-08-19",
-     "raw_entry_price": 156.57,
-     "entry_time": "10:45",
-     "target_price": 161.2671,
-     "stop_price": 156.72656999999998,
-     "thesis": "Up 7.1% on the day at 10:45 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 160.56,
+     "raw_entry_price": 9.61,
+     "entry_time": "11:28",
+     "target_price": 9.898299999999999,
+     "stop_price": 9.4178,
+     "thesis": "Up 7.3% on the day at 11:28 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 9.61,
      "bars_held": 0,
-     "be_locked": true,
+     "be_locked": false,
      "splits_applied": [],
      "divs_credited": []
     }
@@ -819,6 +819,20 @@
      "reason": "target +3%",
      "entry_time": "09:51",
      "exit_time": "10:45"
+    },
+    {
+     "symbol": "COIN",
+     "name": "COIN",
+     "entry_date": "2026-08-19",
+     "entry_price": 156.7266,
+     "exit_date": "2026-08-19",
+     "exit_price": 162.2576,
+     "raw_exit_price": 162.42,
+     "slippage_bps": 10,
+     "pnl_pct": 3.53,
+     "reason": "target +3%",
+     "entry_time": "10:45",
+     "exit_time": "11:28"
     }
    ],
    "cooldown": {
@@ -843,7 +857,8 @@
     "TTD": "2026-08-18",
     "DUOL": "2026-08-19",
     "U": "2026-08-18",
-    "MSTR": "2026-08-19"
+    "MSTR": "2026-08-19",
+    "COIN": "2026-08-19"
    },
    "last_eval_date": "2026-08-18",
    "activity": [
@@ -990,6 +1005,10 @@
     {
      "date": "2026-08-19",
      "text": "\u26a1 10:45 ET BUY COIN @ $156.57 (+7.1% confirmed gap)"
+    },
+    {
+     "date": "2026-08-19",
+     "text": "\u26a1 11:28 ET BUY MARA @ $9.61 (+7.3% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1090,22 +1109,21 @@
   }
  },
  "runs": 20,
- "last_run_utc": "2026-08-19T15:16:55Z",
+ "last_run_utc": "2026-08-19T15:29:12Z",
  "intraday": {
   "date": "2026-08-19",
   "marks": {
-   "AFRM": 76.3,
-   "UPST": 30.76,
-   "CELH": 31.7,
-   "HOOD": 95.34,
-   "AMC": 2.54,
-   "NU": 14.77,
-   "TSLA": 346.75,
-   "MARA": 9.18,
-   "SOFI": 18.26,
-   "DKNG": 24.65,
-   "MELI": 1854.14,
-   "PATH": 16.06
+   "AFRM": 77.84,
+   "CELH": 31.65,
+   "HOOD": 97.77,
+   "AMC": 2.55,
+   "NU": 14.67,
+   "TSLA": 347.52,
+   "SOFI": 18.54,
+   "DKNG": 24.71,
+   "MELI": 1856.9,
+   "PATH": 16.15,
+   "RIOT": 19.54
   }
  }
 }
