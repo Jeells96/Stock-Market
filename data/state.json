@@ -344,7 +344,7 @@
      "target_price": 99.807,
      "stop_price": 94.962,
      "thesis": "Up 4.7% on the day at 09:39 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 96.68,
+     "last_price": 97.87,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -359,28 +359,28 @@
      "raw_entry_price": 28.38,
      "entry_time": "09:39",
      "target_price": 29.2314,
-     "stop_price": 27.8124,
+     "stop_price": 28.408379999999998,
      "thesis": "Up 3.6% on the day at 09:39 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 28.57,
+     "last_price": 29.05,
      "bars_held": 0,
-     "be_locked": false,
+     "be_locked": true,
      "splits_applied": [],
      "divs_credited": []
     },
     {
-     "symbol": "MSTR",
-     "name": "MSTR",
-     "shares": 32.149193448019616,
-     "entry_price": 96.9969,
+     "symbol": "COIN",
+     "name": "COIN",
+     "shares": 20.54363651626398,
+     "entry_price": 156.72656999999998,
      "entry_date": "2026-08-19",
-     "raw_entry_price": 96.9,
-     "entry_time": "09:51",
-     "target_price": 99.807,
-     "stop_price": 96.9969,
-     "thesis": "Up 4.7% on the day at 09:51 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 98.67,
+     "raw_entry_price": 156.57,
+     "entry_time": "10:45",
+     "target_price": 161.2671,
+     "stop_price": 153.43859999999998,
+     "thesis": "Up 7.1% on the day at 10:45 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 156.57,
      "bars_held": 0,
-     "be_locked": true,
+     "be_locked": false,
      "splits_applied": [],
      "divs_credited": []
     }
@@ -805,6 +805,20 @@
      "reason": "stop \u22122%",
      "entry_time": "09:39",
      "exit_time": "09:51"
+    },
+    {
+     "symbol": "MSTR",
+     "name": "MSTR",
+     "entry_date": "2026-08-19",
+     "entry_price": 96.9969,
+     "exit_date": "2026-08-19",
+     "exit_price": 100.1497,
+     "raw_exit_price": 100.25,
+     "slippage_bps": 10,
+     "pnl_pct": 3.25,
+     "reason": "target +3%",
+     "entry_time": "09:51",
+     "exit_time": "10:45"
     }
    ],
    "cooldown": {
@@ -828,7 +842,8 @@
     "ELF": "2026-08-17",
     "TTD": "2026-08-18",
     "DUOL": "2026-08-19",
-    "U": "2026-08-18"
+    "U": "2026-08-18",
+    "MSTR": "2026-08-19"
    },
    "last_eval_date": "2026-08-18",
    "activity": [
@@ -971,6 +986,10 @@
     {
      "date": "2026-08-19",
      "text": "\u26a1 09:51 ET BUY MSTR @ $96.90 (+4.7% confirmed gap)"
+    },
+    {
+     "date": "2026-08-19",
+     "text": "\u26a1 10:45 ET BUY COIN @ $156.57 (+7.1% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1071,17 +1090,22 @@
   }
  },
  "runs": 20,
- "last_run_utc": "2026-08-19T14:17:09Z",
+ "last_run_utc": "2026-08-19T14:46:14Z",
  "intraday": {
   "date": "2026-08-19",
   "marks": {
-   "COIN": 150.9,
-   "AFRM": 75.67,
-   "UPST": 30.11,
-   "CELH": 30.87,
-   "HOOD": 93.37,
-   "AMC": 2.44,
-   "NU": 14.75
+   "AFRM": 76.3,
+   "UPST": 30.76,
+   "CELH": 31.7,
+   "HOOD": 95.34,
+   "AMC": 2.54,
+   "NU": 14.77,
+   "TSLA": 346.75,
+   "MARA": 9.18,
+   "SOFI": 18.26,
+   "DKNG": 24.65,
+   "MELI": 1854.14,
+   "PATH": 16.06
   }
  }
 }
