@@ -331,7 +331,7 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 3292.493491602282,
+   "cash": 6612.270761166214,
    "positions": [
     {
      "symbol": "ELF",
@@ -344,24 +344,7 @@
      "target_price": 99.807,
      "stop_price": 96.9969,
      "thesis": "Up 4.7% on the day at 09:39 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 99.58,
-     "bars_held": 0,
-     "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "MARA",
-     "name": "MARA",
-     "shares": 346.51724399727476,
-     "entry_price": 9.619609999999998,
-     "entry_date": "2026-08-19",
-     "raw_entry_price": 9.61,
-     "entry_time": "11:28",
-     "target_price": 9.898299999999999,
-     "stop_price": 9.619609999999998,
-     "thesis": "Up 7.3% on the day at 11:28 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 9.64,
+     "last_price": 99.71,
      "bars_held": 0,
      "be_locked": true,
      "splits_applied": [],
@@ -830,6 +813,20 @@
      "reason": "target +3%",
      "entry_time": "09:39",
      "exit_time": "11:59"
+    },
+    {
+     "symbol": "MARA",
+     "name": "MARA",
+     "entry_date": "2026-08-19",
+     "entry_price": 9.6196,
+     "exit_date": "2026-08-19",
+     "exit_price": 9.5804,
+     "raw_exit_price": 9.59,
+     "slippage_bps": 10,
+     "pnl_pct": -0.41,
+     "reason": "breakeven stop",
+     "entry_time": "11:28",
+     "exit_time": "14:27"
     }
    ],
    "cooldown": {
@@ -856,7 +853,8 @@
     "U": "2026-08-18",
     "MSTR": "2026-08-19",
     "COIN": "2026-08-19",
-    "HIMS": "2026-08-19"
+    "HIMS": "2026-08-19",
+    "MARA": "2026-08-19"
    },
    "last_eval_date": "2026-08-18",
    "activity": [
@@ -1107,7 +1105,7 @@
   }
  },
  "runs": 20,
- "last_run_utc": "2026-08-19T17:55:13Z",
+ "last_run_utc": "2026-08-19T18:27:16Z",
  "intraday": {
   "date": "2026-08-19",
   "marks": {
