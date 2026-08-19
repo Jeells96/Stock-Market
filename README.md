@@ -5,15 +5,15 @@ A self-driving investment advisor that **runs itself**, **keeps score honestly**
 [`index.html`](index.html).
 
 <!-- ADVISOR:START -->
-### 📊 Live Track Record — as of 2026-08-17 (run #19)
+### 📊 Live Track Record — as of 2026-08-18 (run #20)
 
 | Strategy | Equity | Return | vs S&P 500 | Win Rate |
 |---|---|---|---|---|
-| ⚡ Day Trader | $9,555.77 | -4.44% | -7.87% | 33% |
-| 🚀 Get Rich Quick | $9,824.92 | -1.75% | -5.18% | 0% |
-| 📈 Dependable Growth | $10,651.30 | +6.51% | +3.08% | — |
-| 🏛️ Long-Term Success | $10,346.16 | +3.46% | +0.03% | — |
-| 🧭 SPY benchmark | $10,343.23 | +3.43% | — | — |
+| ⚡ Day Trader | $9,576.68 | -4.23% | -6.97% | 37% |
+| 🚀 Get Rich Quick | $9,841.67 | -1.58% | -4.32% | 0% |
+| 📈 Dependable Growth | $10,707.91 | +7.08% | +4.35% | 100% |
+| 🏛️ Long-Term Success | $10,278.93 | +2.79% | +0.06% | — |
+| 🧭 SPY benchmark | $10,273.35 | +2.73% | — | — |
 
 _Updated automatically every trading day · [full report](REPORT.md) · [verify in commit history](../../commits/main/data)_
 <!-- ADVISOR:END -->
