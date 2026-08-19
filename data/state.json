@@ -331,7 +331,7 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 0.0,
+   "cash": 3292.493491602282,
    "positions": [
     {
      "symbol": "ELF",
@@ -344,26 +344,9 @@
      "target_price": 99.807,
      "stop_price": 94.962,
      "thesis": "Up 4.7% on the day at 09:39 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 98.02,
+     "last_price": 97.93,
      "bars_held": 0,
      "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "HIMS",
-     "name": "HIMS",
-     "shares": 112.36922198715192,
-     "entry_price": 28.408379999999998,
-     "entry_date": "2026-08-19",
-     "raw_entry_price": 28.38,
-     "entry_time": "09:39",
-     "target_price": 29.2314,
-     "stop_price": 28.408379999999998,
-     "thesis": "Up 3.6% on the day at 09:39 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 29.22,
-     "bars_held": 0,
-     "be_locked": true,
      "splits_applied": [],
      "divs_credited": []
     },
@@ -376,11 +359,11 @@
      "raw_entry_price": 9.61,
      "entry_time": "11:28",
      "target_price": 9.898299999999999,
-     "stop_price": 9.4178,
+     "stop_price": 9.619609999999998,
      "thesis": "Up 7.3% on the day at 11:28 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 9.65,
+     "last_price": 9.79,
      "bars_held": 0,
-     "be_locked": false,
+     "be_locked": true,
      "splits_applied": [],
      "divs_credited": []
     }
@@ -833,6 +816,20 @@
      "reason": "target +3%",
      "entry_time": "10:45",
      "exit_time": "11:28"
+    },
+    {
+     "symbol": "HIMS",
+     "name": "HIMS",
+     "entry_date": "2026-08-19",
+     "entry_price": 28.4084,
+     "exit_date": "2026-08-19",
+     "exit_price": 29.3007,
+     "raw_exit_price": 29.33,
+     "slippage_bps": 10,
+     "pnl_pct": 3.14,
+     "reason": "target +3%",
+     "entry_time": "09:39",
+     "exit_time": "11:59"
     }
    ],
    "cooldown": {
@@ -858,7 +855,8 @@
     "DUOL": "2026-08-19",
     "U": "2026-08-18",
     "MSTR": "2026-08-19",
-    "COIN": "2026-08-19"
+    "COIN": "2026-08-19",
+    "HIMS": "2026-08-19"
    },
    "last_eval_date": "2026-08-18",
    "activity": [
@@ -1109,7 +1107,7 @@
   }
  },
  "runs": 20,
- "last_run_utc": "2026-08-19T15:40:06Z",
+ "last_run_utc": "2026-08-19T15:59:38Z",
  "intraday": {
   "date": "2026-08-19",
   "marks": {
