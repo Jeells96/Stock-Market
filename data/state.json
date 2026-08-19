@@ -344,24 +344,7 @@
      "target_price": 99.807,
      "stop_price": 94.962,
      "thesis": "Up 4.7% on the day at 09:39 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 96.9,
-     "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "DUOL",
-     "name": "DUOL",
-     "shares": 21.859198848415737,
-     "entry_price": 146.03588999999997,
-     "entry_date": "2026-08-19",
-     "raw_entry_price": 145.89,
-     "entry_time": "09:39",
-     "target_price": 150.2667,
-     "stop_price": 142.9722,
-     "thesis": "Up 4.5% on the day at 09:39 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 145.89,
+     "last_price": 98.17,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -378,7 +361,24 @@
      "target_price": 29.2314,
      "stop_price": 27.8124,
      "thesis": "Up 3.6% on the day at 09:39 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 28.38,
+     "last_price": 28.76,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "MSTR",
+     "name": "MSTR",
+     "shares": 32.149193448019616,
+     "entry_price": 96.9969,
+     "entry_date": "2026-08-19",
+     "raw_entry_price": 96.9,
+     "entry_time": "09:51",
+     "target_price": 99.807,
+     "stop_price": 94.962,
+     "thesis": "Up 4.7% on the day at 09:51 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 96.9,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -791,6 +791,20 @@
      "reason": "end of day \u2014 flat by the close",
      "entry_time": "11:17",
      "exit_time": "15:53"
+    },
+    {
+     "symbol": "DUOL",
+     "name": "DUOL",
+     "entry_date": "2026-08-19",
+     "entry_price": 146.0359,
+     "exit_date": "2026-08-19",
+     "exit_price": 142.6572,
+     "raw_exit_price": 142.8,
+     "slippage_bps": 10,
+     "pnl_pct": -2.31,
+     "reason": "stop \u22122%",
+     "entry_time": "09:39",
+     "exit_time": "09:51"
     }
    ],
    "cooldown": {
@@ -813,7 +827,7 @@
     "RKLB": "2026-08-17",
     "ELF": "2026-08-17",
     "TTD": "2026-08-18",
-    "DUOL": "2026-08-18",
+    "DUOL": "2026-08-19",
     "U": "2026-08-18"
    },
    "last_eval_date": "2026-08-18",
@@ -953,6 +967,10 @@
     {
      "date": "2026-08-19",
      "text": "\u26a1 09:39 ET BUY HIMS @ $28.38 (+3.6% confirmed gap)"
+    },
+    {
+     "date": "2026-08-19",
+     "text": "\u26a1 09:51 ET BUY MSTR @ $96.90 (+4.7% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1053,17 +1071,17 @@
   }
  },
  "runs": 20,
- "last_run_utc": "2026-08-19T13:40:21Z",
+ "last_run_utc": "2026-08-19T13:52:31Z",
  "intraday": {
   "date": "2026-08-19",
   "marks": {
-   "COIN": 150.04,
-   "MSTR": 95.78,
-   "SOFI": 18.08,
-   "AFRM": 76.04,
-   "UPST": 29.93,
-   "CELH": 30.72,
-   "ARM": 258.65
+   "COIN": 150.9,
+   "AFRM": 75.67,
+   "UPST": 30.11,
+   "CELH": 30.87,
+   "HOOD": 93.37,
+   "AMC": 2.44,
+   "NU": 14.75
   }
  }
 }
