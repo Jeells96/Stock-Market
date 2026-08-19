@@ -331,26 +331,8 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 6612.270761166214,
-   "positions": [
-    {
-     "symbol": "ELF",
-     "name": "ELF",
-     "shares": 32.9106142414383,
-     "entry_price": 96.9969,
-     "entry_date": "2026-08-19",
-     "raw_entry_price": 96.9,
-     "entry_time": "09:39",
-     "target_price": 99.807,
-     "stop_price": 96.9969,
-     "thesis": "Up 4.7% on the day at 09:39 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 99.71,
-     "bars_held": 0,
-     "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    }
-   ],
+   "cash": 9912.205874227962,
+   "positions": [],
    "closed": [
     {
      "symbol": "IONQ",
@@ -827,6 +809,20 @@
      "reason": "breakeven stop",
      "entry_time": "11:28",
      "exit_time": "14:27"
+    },
+    {
+     "symbol": "ELF",
+     "name": "ELF",
+     "entry_date": "2026-08-19",
+     "entry_price": 96.9969,
+     "exit_date": "2026-08-19",
+     "exit_price": 100.2696,
+     "raw_exit_price": 100.37,
+     "slippage_bps": 10,
+     "pnl_pct": 3.37,
+     "reason": "target +3%",
+     "entry_time": "09:39",
+     "exit_time": "15:05"
     }
    ],
    "cooldown": {
@@ -847,7 +843,7 @@
     "HOOD": "2026-08-13",
     "DKNG": "2026-08-14",
     "RKLB": "2026-08-17",
-    "ELF": "2026-08-17",
+    "ELF": "2026-08-19",
     "TTD": "2026-08-18",
     "DUOL": "2026-08-19",
     "U": "2026-08-18",
@@ -1105,7 +1101,7 @@
   }
  },
  "runs": 20,
- "last_run_utc": "2026-08-19T18:27:16Z",
+ "last_run_utc": "2026-08-19T19:05:23Z",
  "intraday": {
   "date": "2026-08-19",
   "marks": {
