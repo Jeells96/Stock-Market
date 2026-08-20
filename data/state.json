@@ -328,8 +328,60 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 9912.205874227962,
-   "positions": [],
+   "cash": 0.0,
+   "positions": [
+    {
+     "symbol": "HIMS",
+     "name": "HIMS",
+     "shares": 101.6246261356456,
+     "entry_price": 32.51248,
+     "entry_date": "2026-08-20",
+     "raw_entry_price": 32.48,
+     "entry_time": "09:42",
+     "target_price": 33.4544,
+     "stop_price": 31.830399999999997,
+     "thesis": "Up 4.5% on the day at 09:42 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 32.48,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "RIOT",
+     "name": "RIOT",
+     "shares": 163.48528265902763,
+     "entry_price": 20.21019,
+     "entry_date": "2026-08-20",
+     "raw_entry_price": 20.19,
+     "entry_time": "09:42",
+     "target_price": 20.795700000000004,
+     "stop_price": 19.7862,
+     "thesis": "Up 4.2% on the day at 09:42 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 20.19,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "SMCI",
+     "name": "SMCI",
+     "shares": 86.72537721717731,
+     "entry_price": 38.09806,
+     "entry_date": "2026-08-20",
+     "raw_entry_price": 38.06,
+     "entry_time": "09:42",
+     "target_price": 39.201800000000006,
+     "stop_price": 37.2988,
+     "thesis": "Up 4.0% on the day at 09:42 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 38.06,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    }
+   ],
    "closed": [
     {
      "symbol": "IONQ",
@@ -998,6 +1050,18 @@
     {
      "date": "2026-08-19",
      "text": "\u26a1 11:28 ET BUY MARA @ $9.61 (+7.3% confirmed gap)"
+    },
+    {
+     "date": "2026-08-20",
+     "text": "\u26a1 09:42 ET BUY HIMS @ $32.48 (+4.5% confirmed gap)"
+    },
+    {
+     "date": "2026-08-20",
+     "text": "\u26a1 09:42 ET BUY RIOT @ $20.19 (+4.2% confirmed gap)"
+    },
+    {
+     "date": "2026-08-20",
+     "text": "\u26a1 09:42 ET BUY SMCI @ $38.06 (+4.0% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1105,21 +1169,11 @@
   }
  },
  "runs": 21,
- "last_run_utc": "2026-08-20T11:27:52Z",
+ "last_run_utc": "2026-08-20T13:42:55Z",
  "intraday": {
-  "date": "2026-08-19",
+  "date": "2026-08-20",
   "marks": {
-   "AFRM": 77.84,
-   "CELH": 31.65,
-   "HOOD": 97.77,
-   "AMC": 2.55,
-   "NU": 14.67,
-   "TSLA": 347.52,
-   "SOFI": 18.54,
-   "DKNG": 24.71,
-   "MELI": 1856.9,
-   "PATH": 16.15,
-   "RIOT": 19.54
+   "COIN": 168.29
   }
  }
 }
