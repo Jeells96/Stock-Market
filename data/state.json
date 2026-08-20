@@ -341,7 +341,7 @@
      "target_price": 33.4544,
      "stop_price": 31.830399999999997,
      "thesis": "Up 4.5% on the day at 09:42 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 32.48,
+     "last_price": 32.81,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -358,24 +358,24 @@
      "target_price": 20.795700000000004,
      "stop_price": 19.7862,
      "thesis": "Up 4.2% on the day at 09:42 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 20.19,
+     "last_price": 19.95,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
      "divs_credited": []
     },
     {
-     "symbol": "SMCI",
-     "name": "SMCI",
-     "shares": 86.72537721717731,
-     "entry_price": 38.09806,
+     "symbol": "COIN",
+     "name": "COIN",
+     "shares": 18.828040240419885,
+     "entry_price": 170.58040999999997,
      "entry_date": "2026-08-20",
-     "raw_entry_price": 38.06,
-     "entry_time": "09:42",
-     "target_price": 39.201800000000006,
-     "stop_price": 37.2988,
-     "thesis": "Up 4.0% on the day at 09:42 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 38.06,
+     "raw_entry_price": 170.41,
+     "entry_time": "09:53",
+     "target_price": 175.5223,
+     "stop_price": 167.0018,
+     "thesis": "Up 6.4% on the day at 09:53 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 170.41,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -872,13 +872,27 @@
      "reason": "target +3%",
      "entry_time": "09:39",
      "exit_time": "15:05"
+    },
+    {
+     "symbol": "SMCI",
+     "name": "SMCI",
+     "entry_date": "2026-08-20",
+     "entry_price": 38.0981,
+     "exit_date": "2026-08-20",
+     "exit_price": 37.0329,
+     "raw_exit_price": 37.07,
+     "slippage_bps": 10,
+     "pnl_pct": -2.8,
+     "reason": "stop \u22122%",
+     "entry_time": "09:42",
+     "exit_time": "09:53"
     }
    ],
    "cooldown": {
     "IONQ": "2026-08-14",
     "CVNA": "2026-08-07",
     "MDB": "2026-08-11",
-    "SMCI": "2026-08-14",
+    "SMCI": "2026-08-20",
     "JOBY": "2026-08-10",
     "DDOG": "2026-08-10",
     "CRWD": "2026-08-10",
@@ -1062,6 +1076,10 @@
     {
      "date": "2026-08-20",
      "text": "\u26a1 09:42 ET BUY SMCI @ $38.06 (+4.0% confirmed gap)"
+    },
+    {
+     "date": "2026-08-20",
+     "text": "\u26a1 09:53 ET BUY COIN @ $170.41 (+6.4% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1169,11 +1187,13 @@
   }
  },
  "runs": 21,
- "last_run_utc": "2026-08-20T13:42:55Z",
+ "last_run_utc": "2026-08-20T13:54:18Z",
  "intraday": {
   "date": "2026-08-20",
   "marks": {
-   "COIN": 168.29
+   "AMC": 2.58,
+   "DKNG": 26.04,
+   "ELF": 101.97
   }
  }
 }
