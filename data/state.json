@@ -328,60 +328,8 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 0.0,
-   "positions": [
-    {
-     "symbol": "HIMS",
-     "name": "HIMS",
-     "shares": 101.6246261356456,
-     "entry_price": 32.51248,
-     "entry_date": "2026-08-20",
-     "raw_entry_price": 32.48,
-     "entry_time": "09:42",
-     "target_price": 33.4544,
-     "stop_price": 31.830399999999997,
-     "thesis": "Up 4.5% on the day at 09:42 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 32.32,
-     "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "RIOT",
-     "name": "RIOT",
-     "shares": 163.48528265902763,
-     "entry_price": 20.21019,
-     "entry_date": "2026-08-20",
-     "raw_entry_price": 20.19,
-     "entry_time": "09:42",
-     "target_price": 20.795700000000004,
-     "stop_price": 20.21019,
-     "thesis": "Up 4.2% on the day at 09:42 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 20.47,
-     "bars_held": 0,
-     "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "COIN",
-     "name": "COIN",
-     "shares": 18.828040240419885,
-     "entry_price": 170.58040999999997,
-     "entry_date": "2026-08-20",
-     "raw_entry_price": 170.41,
-     "entry_time": "09:53",
-     "target_price": 175.5223,
-     "stop_price": 170.58040999999997,
-     "thesis": "Up 6.4% on the day at 09:53 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 171.56,
-     "bars_held": 0,
-     "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    }
-   ],
+   "cash": 9897.419769182245,
+   "positions": [],
    "closed": [
     {
      "symbol": "IONQ",
@@ -886,6 +834,48 @@
      "reason": "stop \u22122%",
      "entry_time": "09:42",
      "exit_time": "09:53"
+    },
+    {
+     "symbol": "HIMS",
+     "name": "HIMS",
+     "entry_date": "2026-08-20",
+     "entry_price": 32.5125,
+     "exit_date": "2026-08-20",
+     "exit_price": 32.1378,
+     "raw_exit_price": 32.17,
+     "slippage_bps": 10,
+     "pnl_pct": -1.15,
+     "reason": "end of day \u2014 flat by the close",
+     "entry_time": "09:42",
+     "exit_time": "15:48"
+    },
+    {
+     "symbol": "RIOT",
+     "name": "RIOT",
+     "entry_date": "2026-08-20",
+     "entry_price": 20.2102,
+     "exit_date": "2026-08-20",
+     "exit_price": 20.8591,
+     "raw_exit_price": 20.88,
+     "slippage_bps": 10,
+     "pnl_pct": 3.21,
+     "reason": "target +3%",
+     "entry_time": "09:42",
+     "exit_time": "15:48"
+    },
+    {
+     "symbol": "COIN",
+     "name": "COIN",
+     "entry_date": "2026-08-20",
+     "entry_price": 170.5804,
+     "exit_date": "2026-08-20",
+     "exit_price": 171.0887,
+     "raw_exit_price": 171.26,
+     "slippage_bps": 10,
+     "pnl_pct": 0.3,
+     "reason": "end of day \u2014 flat by the close",
+     "entry_time": "09:53",
+     "exit_time": "15:48"
     }
    ],
    "cooldown": {
@@ -911,9 +901,10 @@
     "DUOL": "2026-08-19",
     "U": "2026-08-18",
     "MSTR": "2026-08-19",
-    "COIN": "2026-08-19",
-    "HIMS": "2026-08-19",
-    "MARA": "2026-08-19"
+    "COIN": "2026-08-20",
+    "HIMS": "2026-08-20",
+    "MARA": "2026-08-19",
+    "RIOT": "2026-08-20"
    },
    "last_eval_date": "2026-08-19",
    "activity": [
@@ -1187,7 +1178,7 @@
   }
  },
  "runs": 21,
- "last_run_utc": "2026-08-20T19:17:01Z",
+ "last_run_utc": "2026-08-20T19:48:55Z",
  "intraday": {
   "date": "2026-08-20",
   "marks": {
