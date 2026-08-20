@@ -7,31 +7,15 @@
   "shares": 13.386343252613685,
   "cash": 0.0,
   "entry_date": "2026-07-31",
-  "last_eval_date": "2026-08-18",
+  "last_eval_date": "2026-08-19",
   "entry_price": 747.03,
   "splits_applied": [],
   "divs_credited": []
  },
  "strategies": {
   "aggressive": {
-   "cash": 1961.8657560479644,
+   "cash": 3776.557376308308,
    "positions": [
-    {
-     "symbol": "FTNT",
-     "name": "FTNT",
-     "shares": 11.878308275893549,
-     "entry_price": 168.37414499999997,
-     "entry_date": "2026-08-04",
-     "raw_entry_price": 168.29,
-     "target_price": 201.94799999999998,
-     "stop_price": 154.8268,
-     "thesis": "Up 94% over three months and 100% over six, sitting 98% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+8.8% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 158.01,
-     "bars_held": 10,
-     "splits_applied": [],
-     "divs_credited": [],
-     "missing_runs": 0
-    },
     {
      "symbol": "PANW",
      "name": "PANW",
@@ -42,8 +26,8 @@
      "target_price": 439.60799999999995,
      "stop_price": 337.0328,
      "thesis": "Up 94% over three months and 89% over six, sitting 99% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+8.8% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 374.14,
-     "bars_held": 10,
+     "last_price": 359.76,
+     "bars_held": 11,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -58,8 +42,8 @@
      "target_price": 253.464,
      "stop_price": 194.32240000000002,
      "thesis": "Up 82% over three months and 70% over six, sitting 95% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+11.4% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 212.92,
-     "bars_held": 10,
+     "last_price": 201.63,
+     "bars_held": 11,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -74,8 +58,8 @@
      "target_price": 177.384,
      "stop_price": 135.9944,
      "thesis": "Up 92% over three months and 55% over six, sitting 90% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+3.9% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 143.92,
-     "bars_held": 10,
+     "last_price": 141.21,
+     "bars_held": 11,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -93,12 +77,25 @@
      "slippage_bps": 5,
      "pnl_pct": -1.91,
      "reason": "breakeven stop"
+    },
+    {
+     "symbol": "FTNT",
+     "name": "FTNT",
+     "entry_date": "2026-08-04",
+     "entry_price": 168.3741,
+     "exit_date": "2026-08-19",
+     "exit_price": 152.7736,
+     "raw_exit_price": 152.85,
+     "slippage_bps": 5,
+     "pnl_pct": -9.27,
+     "reason": "stop loss"
     }
    ],
    "cooldown": {
-    "TENB": "2026-08-17"
+    "TENB": "2026-08-17",
+    "FTNT": "2026-08-19"
    },
-   "last_eval_date": "2026-08-18",
+   "last_eval_date": "2026-08-19",
    "activity": [
     {
      "date": "2026-08-04",
@@ -141,8 +138,8 @@
      "target_price": 213.01449999999997,
      "stop_price": 166.707,
      "thesis": "A confirmed climb: up 44% over six months and 69% over the year, trading 92% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 191.87,
-     "bars_held": 10,
+     "last_price": 185.81,
+     "bars_held": 11,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -157,8 +154,8 @@
      "target_price": 355.0395,
      "stop_price": 277.857,
      "thesis": "A confirmed climb: up 68% over six months and 131% over the year, trading 94% of the way up its 52-week range with moderate (39%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 350.05,
-     "bars_held": 10,
+     "last_price": 346.26,
+     "bars_held": 11,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -173,8 +170,8 @@
      "target_price": 468.6825,
      "stop_price": 366.795,
      "thesis": "A confirmed climb: up 47% over six months and 75% over the year, trading 76% of the way up its 52-week range with moderate (26%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 393.93,
-     "bars_held": 10,
+     "last_price": 388.61,
+     "bars_held": 11,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -189,7 +186,7 @@
      "target_price": 179.62999999999997,
      "stop_price": 140.57999999999998,
      "thesis": "A confirmed climb: up 31% over six months and 54% over the year, trading 88% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 163.93,
+     "last_price": 159.76,
      "bars_held": 0,
      "splits_applied": [],
      "divs_credited": [],
@@ -213,7 +210,7 @@
    "cooldown": {
     "MPC": "2026-08-18"
    },
-   "last_eval_date": "2026-08-18",
+   "last_eval_date": "2026-08-19",
    "activity": [
     {
      "date": "2026-08-04",
@@ -251,8 +248,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "S&P 500 core \u2014 owns the 500 biggest US companies",
-     "last_price": 705.4,
-     "bars_held": 12,
+     "last_price": 706.91,
+     "bars_held": 13,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -266,8 +263,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Nasdaq-100 \u2014 concentrated big-tech growth",
-     "last_price": 717.51,
-     "bars_held": 12,
+     "last_price": 716.08,
+     "bars_held": 13,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -281,8 +278,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Dividend quality \u2014 cash-generating value companies",
-     "last_price": 34.51,
-     "bars_held": 12,
+     "last_price": 35.09,
+     "bars_held": 13,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -296,8 +293,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "International \u2014 diversification outside the US",
-     "last_price": 86.44,
-     "bars_held": 12,
+     "last_price": 86.97,
+     "bars_held": 13,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -311,8 +308,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Bonds \u2014 ballast that cushions stock drawdowns",
-     "last_price": 72.22,
-     "bars_held": 12,
+     "last_price": 72.56,
+     "bars_held": 13,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -320,7 +317,7 @@
    ],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-08-18",
+   "last_eval_date": "2026-08-19",
    "activity": [
     {
      "date": "2026-07-31",
@@ -852,7 +849,7 @@
     "HIMS": "2026-08-19",
     "MARA": "2026-08-19"
    },
-   "last_eval_date": "2026-08-18",
+   "last_eval_date": "2026-08-19",
    "activity": [
     {
      "date": "2026-07-31",
@@ -1098,10 +1095,17 @@
    "growth": 10707.9,
    "longterm": 10278.92,
    "benchmark": 10273.35
+  },
+  "2026-08-19": {
+   "daytrade": 9912.21,
+   "aggressive": 9557.51,
+   "growth": 10538.5,
+   "longterm": 10329.19,
+   "benchmark": 10294.9
   }
  },
- "runs": 20,
- "last_run_utc": "2026-08-19T19:05:23Z",
+ "runs": 21,
+ "last_run_utc": "2026-08-20T11:27:52Z",
  "intraday": {
   "date": "2026-08-19",
   "marks": {
