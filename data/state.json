@@ -322,7 +322,7 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 0.0,
+   "cash": 3284.8481391825676,
    "positions": [
     {
      "symbol": "COIN",
@@ -335,7 +335,7 @@
      "target_price": 191.02380000000002,
      "stop_price": 185.64545999999999,
      "thesis": "Up 7.6% on the day at 09:40 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 186.37,
+     "last_price": 185.74,
      "bars_held": 0,
      "be_locked": true,
      "splits_applied": [],
@@ -352,24 +352,7 @@
      "target_price": 19.3537,
      "stop_price": 18.80879,
      "thesis": "Up 4.9% on the day at 09:52 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 19.01,
-     "bars_held": 0,
-     "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "RGTI",
-     "name": "RGTI",
-     "shares": 182.57280818756388,
-     "entry_price": 17.29728,
-     "entry_date": "2026-08-21",
-     "raw_entry_price": 17.28,
-     "entry_time": "10:29",
-     "target_price": 17.7984,
-     "stop_price": 17.29728,
-     "thesis": "Up 7.6% on the day at 10:29 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 17.74,
+     "last_price": 18.93,
      "bars_held": 0,
      "be_locked": true,
      "splits_applied": [],
@@ -950,6 +933,20 @@
      "reason": "stop \u22122%",
      "entry_time": "09:40",
      "exit_time": "10:29"
+    },
+    {
+     "symbol": "RGTI",
+     "name": "RGTI",
+     "entry_date": "2026-08-21",
+     "entry_price": 17.2973,
+     "exit_date": "2026-08-21",
+     "exit_price": 17.992,
+     "raw_exit_price": 18.01,
+     "slippage_bps": 10,
+     "pnl_pct": 4.02,
+     "reason": "target +3%",
+     "entry_time": "10:29",
+     "exit_time": "15:08"
     }
    ],
    "cooldown": {
@@ -978,7 +975,8 @@
     "COIN": "2026-08-20",
     "HIMS": "2026-08-20",
     "MARA": "2026-08-21",
-    "RIOT": "2026-08-20"
+    "RIOT": "2026-08-20",
+    "RGTI": "2026-08-21"
    },
    "last_eval_date": "2026-08-20",
    "activity": [
@@ -1279,7 +1277,7 @@
   }
  },
  "runs": 22,
- "last_run_utc": "2026-08-21T18:29:03Z",
+ "last_run_utc": "2026-08-21T19:08:44Z",
  "intraday": {
   "date": "2026-08-21",
   "marks": {
