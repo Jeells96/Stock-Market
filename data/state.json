@@ -322,43 +322,8 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 3284.8481391825676,
-   "positions": [
-    {
-     "symbol": "COIN",
-     "name": "COIN",
-     "shares": 17.771185587090297,
-     "entry_price": 185.64545999999999,
-     "entry_date": "2026-08-21",
-     "raw_entry_price": 185.46,
-     "entry_time": "09:40",
-     "target_price": 191.02380000000002,
-     "stop_price": 185.64545999999999,
-     "thesis": "Up 7.6% on the day at 09:40 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 185.74,
-     "bars_held": 0,
-     "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "SOFI",
-     "name": "SOFI",
-     "shares": 181.0547021747818,
-     "entry_price": 18.80879,
-     "entry_date": "2026-08-21",
-     "raw_entry_price": 18.79,
-     "entry_time": "09:52",
-     "target_price": 19.3537,
-     "stop_price": 18.80879,
-     "thesis": "Up 4.9% on the day at 09:52 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 18.93,
-     "bars_held": 0,
-     "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    }
-   ],
+   "cash": 9996.119240496215,
+   "positions": [],
    "closed": [
     {
      "symbol": "IONQ",
@@ -947,6 +912,34 @@
      "reason": "target +3%",
      "entry_time": "10:29",
      "exit_time": "15:08"
+    },
+    {
+     "symbol": "COIN",
+     "name": "COIN",
+     "entry_date": "2026-08-21",
+     "entry_price": 185.6455,
+     "exit_date": "2026-08-21",
+     "exit_price": 185.1846,
+     "raw_exit_price": 185.37,
+     "slippage_bps": 10,
+     "pnl_pct": -0.25,
+     "reason": "breakeven stop",
+     "entry_time": "09:40",
+     "exit_time": "15:40"
+    },
+    {
+     "symbol": "SOFI",
+     "name": "SOFI",
+     "entry_date": "2026-08-21",
+     "entry_price": 18.8088,
+     "exit_date": "2026-08-21",
+     "exit_price": 18.8911,
+     "raw_exit_price": 18.91,
+     "slippage_bps": 10,
+     "pnl_pct": 0.44,
+     "reason": "end of day \u2014 flat by the close",
+     "entry_time": "09:52",
+     "exit_time": "15:40"
     }
    ],
    "cooldown": {
@@ -972,11 +965,12 @@
     "DUOL": "2026-08-19",
     "U": "2026-08-18",
     "MSTR": "2026-08-19",
-    "COIN": "2026-08-20",
+    "COIN": "2026-08-21",
     "HIMS": "2026-08-20",
     "MARA": "2026-08-21",
     "RIOT": "2026-08-20",
-    "RGTI": "2026-08-21"
+    "RGTI": "2026-08-21",
+    "SOFI": "2026-08-21"
    },
    "last_eval_date": "2026-08-20",
    "activity": [
@@ -1277,7 +1271,7 @@
   }
  },
  "runs": 22,
- "last_run_utc": "2026-08-21T19:08:44Z",
+ "last_run_utc": "2026-08-21T19:40:15Z",
  "intraday": {
   "date": "2026-08-21",
   "marks": {
