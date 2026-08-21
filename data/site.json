@@ -5,7 +5,7 @@
   "last_change": null,
   "benched": []
  },
- "generated_at_utc": "2026-08-21T13:57:00Z",
+ "generated_at_utc": "2026-08-21T14:30:15Z",
  "as_of_date": "2026-08-20",
  "inception_date": "2026-07-31",
  "starting_capital": 10000.0,
@@ -8458,7 +8458,7 @@
    "tagline": "Intraday momentum bursts. In and out the same day \u2014 always flat by the close.",
    "horizon": "Minutes to hours",
    "risk_note": "Extreme risk, smallest edges. Buys only 2-8% morning risers still above their opening price20 minutes after first sighting, and only when the broad market is steady. Checks run about every 20 minutes; fills book at the quoted price of the check minus 10 bps modeled slippage, timestamped by the git commit. Stop jumps to breakeven once up 1.5%. Never holds overnight.",
-   "equity": 10005.8,
+   "equity": 9932.82,
    "cash": 0.0,
    "unit_scale": 1.0,
    "invested": 10000.0,
@@ -8466,10 +8466,10 @@
    "total_return_pct": -1.03,
    "vs_spy_pct": -3.11,
    "max_drawdown_pct": -6.78,
-   "closed_trades": 41,
-   "win_rate_pct": 43.9,
+   "closed_trades": 42,
+   "win_rate_pct": 42.9,
    "avg_win_pct": 2.41,
-   "avg_loss_pct": -1.86,
+   "avg_loss_pct": -1.96,
    "positions": [
     {
      "symbol": "COIN",
@@ -8477,9 +8477,9 @@
      "entry_date": "2026-08-21",
      "entry_price": 185.65,
      "shares": 17.7712,
-     "current_price": 188.33,
-     "current_value": 3346.85,
-     "pnl_pct": 1.45,
+     "current_price": 187.42,
+     "current_value": 3330.68,
+     "pnl_pct": 0.96,
      "target_price": 191.02,
      "stop_price": 185.65,
      "bars_held": 0,
@@ -8488,39 +8488,53 @@
      "is_new": true
     },
     {
-     "symbol": "ASTS",
-     "name": "ASTS",
-     "entry_date": "2026-08-21",
-     "entry_price": 69.33,
-     "shares": 47.5865,
-     "current_price": 68.1,
-     "current_value": 3240.64,
-     "pnl_pct": -1.77,
-     "target_price": 71.34,
-     "stop_price": 67.87,
-     "bars_held": 0,
-     "entry_time": "09:40",
-     "thesis": "Up 6.5% on the day at 09:40 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "is_new": true
-    },
-    {
      "symbol": "SOFI",
      "name": "SOFI",
      "entry_date": "2026-08-21",
      "entry_price": 18.81,
      "shares": 181.0547,
-     "current_price": 18.88,
-     "current_value": 3418.31,
-     "pnl_pct": 0.38,
+     "current_price": 19.04,
+     "current_value": 3447.28,
+     "pnl_pct": 1.23,
      "target_price": 19.35,
      "stop_price": 18.41,
      "bars_held": 0,
      "entry_time": "09:52",
      "thesis": "Up 4.9% on the day at 09:52 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
      "is_new": true
+    },
+    {
+     "symbol": "RGTI",
+     "name": "RGTI",
+     "entry_date": "2026-08-21",
+     "entry_price": 17.3,
+     "shares": 182.5728,
+     "current_price": 17.28,
+     "current_value": 3154.86,
+     "pnl_pct": -0.1,
+     "target_price": 17.8,
+     "stop_price": 16.93,
+     "bars_held": 0,
+     "entry_time": "10:29",
+     "thesis": "Up 7.6% on the day at 10:29 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "is_new": true
     }
    ],
    "recent_trades": [
+    {
+     "symbol": "ASTS",
+     "name": "ASTS",
+     "entry_date": "2026-08-21",
+     "entry_price": 69.3293,
+     "exit_date": "2026-08-21",
+     "exit_price": 66.3636,
+     "raw_exit_price": 66.43,
+     "slippage_bps": 10,
+     "pnl_pct": -4.28,
+     "reason": "stop \u22122%",
+     "entry_time": "09:40",
+     "exit_time": "10:29"
+    },
     {
      "symbol": "MARA",
      "name": "MARA",
@@ -8674,23 +8688,13 @@
      "reason": "stop \u22122%",
      "entry_time": "09:39",
      "exit_time": "09:51"
-    },
-    {
-     "symbol": "U",
-     "name": "U",
-     "entry_date": "2026-08-18",
-     "entry_price": 46.4264,
-     "exit_date": "2026-08-18",
-     "exit_price": 46.8531,
-     "raw_exit_price": 46.9,
-     "slippage_bps": 10,
-     "pnl_pct": 0.92,
-     "reason": "end of day \u2014 flat by the close",
-     "entry_time": "11:17",
-     "exit_time": "15:53"
     }
    ],
    "recent_activity": [
+    {
+     "date": "2026-08-21",
+     "text": "\u26a1 10:29 ET BUY RGTI @ $17.28 (+7.6% confirmed gap)"
+    },
     {
      "date": "2026-08-21",
      "text": "\u26a1 09:52 ET BUY SOFI @ $18.79 (+4.9% confirmed gap)"
@@ -8718,10 +8722,6 @@
     {
      "date": "2026-08-20",
      "text": "\u26a1 09:42 ET BUY RIOT @ $20.19 (+4.2% confirmed gap)"
-    },
-    {
-     "date": "2026-08-20",
-     "text": "\u26a1 09:42 ET BUY HIMS @ $32.48 (+4.5% confirmed gap)"
     }
    ],
    "pro": {
@@ -8730,7 +8730,7 @@
     "beta": -0.15,
     "alpha_ann_pct": -9.8,
     "ann_return_pct": null,
-    "profit_factor": 1.02,
+    "profit_factor": 0.92,
     "sample_days": 14,
     "sortino": -0.93,
     "calmar": null,
@@ -10919,5 +10919,5 @@
  "data_source": "live Finnhub quotes (intraday) + rolling price store",
  "methodology_note": "All trades are simulated with paper money and booked NET of modeled slippage (5 bps per fill, 10 bps intraday; commissions are zero, matching modern retail; the SPY benchmark is frictionless by convention). Daily strategies fill at official closing prices. The two stock-picking strategies buy exactly ONE SHARE of every name that passes every test \u2014 no slot limit \u2014 so the record scores every recommendation ever made; the percentage curve tracks the same starting pot. Every position is re-checked at every market close without exception; a sell enters the record only when the model actually fires the signal, booked at that day's real closing price \u2014 never at the planned target or stop. Picks are committed to git before outcomes are known \u2014 the commit history is the proof. Not financial advice.",
  "intraday_date": "2026-08-21",
- "intraday_equity": 10005.8
+ "intraday_equity": 9932.82
 }

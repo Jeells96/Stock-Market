@@ -335,26 +335,9 @@
      "target_price": 191.02380000000002,
      "stop_price": 185.64545999999999,
      "thesis": "Up 7.6% on the day at 09:40 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 188.33,
+     "last_price": 187.42,
      "bars_held": 0,
      "be_locked": true,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "ASTS",
-     "name": "ASTS",
-     "shares": 47.5865445997945,
-     "entry_price": 69.32925999999999,
-     "entry_date": "2026-08-21",
-     "raw_entry_price": 69.26,
-     "entry_time": "09:40",
-     "target_price": 71.3378,
-     "stop_price": 67.87480000000001,
-     "thesis": "Up 6.5% on the day at 09:40 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 68.1,
-     "bars_held": 0,
-     "be_locked": false,
      "splits_applied": [],
      "divs_credited": []
     },
@@ -369,7 +352,24 @@
      "target_price": 19.3537,
      "stop_price": 18.414199999999997,
      "thesis": "Up 4.9% on the day at 09:52 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 18.88,
+     "last_price": 19.04,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "RGTI",
+     "name": "RGTI",
+     "shares": 182.57280818756388,
+     "entry_price": 17.29728,
+     "entry_date": "2026-08-21",
+     "raw_entry_price": 17.28,
+     "entry_time": "10:29",
+     "target_price": 17.7984,
+     "stop_price": 16.9344,
+     "thesis": "Up 7.6% on the day at 10:29 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 17.28,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -936,6 +936,20 @@
      "reason": "target +3%",
      "entry_time": "09:40",
      "exit_time": "09:52"
+    },
+    {
+     "symbol": "ASTS",
+     "name": "ASTS",
+     "entry_date": "2026-08-21",
+     "entry_price": 69.3293,
+     "exit_date": "2026-08-21",
+     "exit_price": 66.3636,
+     "raw_exit_price": 66.43,
+     "slippage_bps": 10,
+     "pnl_pct": -4.28,
+     "reason": "stop \u22122%",
+     "entry_time": "09:40",
+     "exit_time": "10:29"
     }
    ],
    "cooldown": {
@@ -949,7 +963,7 @@
     "ACHR": "2026-08-11",
     "VRT": "2026-08-12",
     "MELI": "2026-08-11",
-    "ASTS": "2026-08-17",
+    "ASTS": "2026-08-21",
     "MU": "2026-08-17",
     "AMD": "2026-08-14",
     "ARM": "2026-08-13",
@@ -1147,6 +1161,10 @@
     {
      "date": "2026-08-21",
      "text": "\u26a1 09:52 ET BUY SOFI @ $18.79 (+4.9% confirmed gap)"
+    },
+    {
+     "date": "2026-08-21",
+     "text": "\u26a1 10:29 ET BUY RGTI @ $17.28 (+7.6% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1261,17 +1279,18 @@
   }
  },
  "runs": 22,
- "last_run_utc": "2026-08-21T13:57:00Z",
+ "last_run_utc": "2026-08-21T14:30:15Z",
  "intraday": {
   "date": "2026-08-21",
   "marks": {
-   "SMCI": 37.45,
-   "RIOT": 21.86,
-   "RDDT": 153.74,
-   "IONQ": 42.62,
-   "RGTI": 16.67,
-   "ACHR": 6.23,
-   "NU": 14.55
+   "IONQ": 44.06,
+   "ACHR": 6.28,
+   "NU": 14.67,
+   "TSLA": 361.2,
+   "AMC": 2.53,
+   "UPST": 29.62,
+   "HIMS": 32.91,
+   "ELF": 100.74
   }
  }
 }
