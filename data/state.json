@@ -333,28 +333,11 @@
      "raw_entry_price": 185.46,
      "entry_time": "09:40",
      "target_price": 191.02380000000002,
-     "stop_price": 181.7508,
+     "stop_price": 185.64545999999999,
      "thesis": "Up 7.6% on the day at 09:40 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 185.46,
+     "last_price": 189.61,
      "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "MARA",
-     "name": "MARA",
-     "shares": 275.57224740650224,
-     "entry_price": 11.97196,
-     "entry_date": "2026-08-21",
-     "raw_entry_price": 11.96,
-     "entry_time": "09:40",
-     "target_price": 12.318800000000001,
-     "stop_price": 11.7208,
-     "thesis": "Up 7.3% on the day at 09:40 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 11.96,
-     "bars_held": 0,
-     "be_locked": false,
+     "be_locked": true,
      "splits_applied": [],
      "divs_credited": []
     },
@@ -369,7 +352,24 @@
      "target_price": 71.3378,
      "stop_price": 67.87480000000001,
      "thesis": "Up 6.5% on the day at 09:40 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 69.26,
+     "last_price": 68.11,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "SOFI",
+     "name": "SOFI",
+     "shares": 181.0547021747818,
+     "entry_price": 18.80879,
+     "entry_date": "2026-08-21",
+     "raw_entry_price": 18.79,
+     "entry_time": "09:52",
+     "target_price": 19.3537,
+     "stop_price": 18.414199999999997,
+     "thesis": "Up 4.9% on the day at 09:52 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 18.79,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -922,6 +922,20 @@
      "reason": "end of day \u2014 flat by the close",
      "entry_time": "09:53",
      "exit_time": "15:48"
+    },
+    {
+     "symbol": "MARA",
+     "name": "MARA",
+     "entry_date": "2026-08-21",
+     "entry_price": 11.972,
+     "exit_date": "2026-08-21",
+     "exit_price": 12.3576,
+     "raw_exit_price": 12.37,
+     "slippage_bps": 10,
+     "pnl_pct": 3.22,
+     "reason": "target +3%",
+     "entry_time": "09:40",
+     "exit_time": "09:52"
     }
    ],
    "cooldown": {
@@ -949,7 +963,7 @@
     "MSTR": "2026-08-19",
     "COIN": "2026-08-20",
     "HIMS": "2026-08-20",
-    "MARA": "2026-08-19",
+    "MARA": "2026-08-21",
     "RIOT": "2026-08-20"
    },
    "last_eval_date": "2026-08-20",
@@ -1129,6 +1143,10 @@
     {
      "date": "2026-08-21",
      "text": "\u26a1 09:40 ET BUY ASTS @ $69.26 (+6.5% confirmed gap)"
+    },
+    {
+     "date": "2026-08-21",
+     "text": "\u26a1 09:52 ET BUY SOFI @ $18.79 (+4.9% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1243,18 +1261,17 @@
   }
  },
  "runs": 22,
- "last_run_utc": "2026-08-21T13:41:30Z",
+ "last_run_utc": "2026-08-21T13:53:33Z",
  "intraday": {
   "date": "2026-08-21",
   "marks": {
-   "SMCI": 37.29,
-   "RIOT": 21.87,
-   "SOFI": 18.5,
-   "AMC": 2.55,
-   "RDDT": 153.84,
-   "IONQ": 43.61,
-   "RGTI": 16.97,
-   "HIMS": 32.58
+   "SMCI": 37.45,
+   "RIOT": 21.86,
+   "RDDT": 153.74,
+   "IONQ": 42.62,
+   "RGTI": 16.67,
+   "ACHR": 6.23,
+   "NU": 14.55
   }
  }
 }
