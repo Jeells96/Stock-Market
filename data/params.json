@@ -1,0 +1,21 @@
+{
+ "overrides": {},
+ "blacklist": {
+  "SMCI": "2026-10-22",
+  "ASTS": "2026-10-22"
+ },
+ "history": [
+  {
+   "date": "2026-08-23",
+   "strategy": "daytrade",
+   "changes": {
+    "blacklist": [
+     "ASTS",
+     "SMCI"
+    ]
+   },
+   "reason": "benched ASTS, SMCI for 60 days after repeated losses"
+  }
+ ],
+ "reviewed_trades": {}
+}
