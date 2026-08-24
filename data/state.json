@@ -352,24 +352,24 @@
      "target_price": 35.6071,
      "stop_price": 33.8786,
      "thesis": "Up 3.6% on the day at 09:46 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 34.47,
+     "last_price": 34.59,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
      "divs_credited": []
     },
     {
-     "symbol": "MSTR",
-     "name": "MSTR",
-     "shares": 27.219813850652347,
-     "entry_price": 122.41229,
+     "symbol": "MARA",
+     "name": "MARA",
+     "shares": 287.2454719247328,
+     "entry_price": 11.981969999999999,
      "entry_date": "2026-08-24",
-     "raw_entry_price": 122.29,
-     "entry_time": "09:57",
-     "target_price": 125.95870000000001,
-     "stop_price": 119.8442,
-     "thesis": "Up 2.5% on the day at 09:57 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 122.48,
+     "raw_entry_price": 11.97,
+     "entry_time": "10:36",
+     "target_price": 12.3291,
+     "stop_price": 11.7306,
+     "thesis": "Up 6.3% on the day at 10:36 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 11.97,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -992,6 +992,20 @@
      "reason": "end of day \u2014 flat by the close",
      "entry_time": "09:52",
      "exit_time": "15:40"
+    },
+    {
+     "symbol": "MSTR",
+     "name": "MSTR",
+     "entry_date": "2026-08-24",
+     "entry_price": 122.4123,
+     "exit_date": "2026-08-24",
+     "exit_price": 126.4434,
+     "raw_exit_price": 126.57,
+     "slippage_bps": 10,
+     "pnl_pct": 3.29,
+     "reason": "target +3%",
+     "entry_time": "09:57",
+     "exit_time": "10:36"
     }
    ],
    "cooldown": {
@@ -1016,7 +1030,7 @@
     "TTD": "2026-08-18",
     "DUOL": "2026-08-19",
     "U": "2026-08-18",
-    "MSTR": "2026-08-19",
+    "MSTR": "2026-08-24",
     "COIN": "2026-08-21",
     "HIMS": "2026-08-20",
     "MARA": "2026-08-21",
@@ -1221,6 +1235,10 @@
     {
      "date": "2026-08-24",
      "text": "\u26a1 09:57 ET BUY MSTR @ $122.29 (+2.5% confirmed gap)"
+    },
+    {
+     "date": "2026-08-24",
+     "text": "\u26a1 10:36 ET BUY MARA @ $11.97 (+6.3% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1342,9 +1360,14 @@
   }
  },
  "runs": 23,
- "last_run_utc": "2026-08-24T14:00:53Z",
+ "last_run_utc": "2026-08-24T14:37:05Z",
  "intraday": {
   "date": "2026-08-24",
-  "marks": {}
+  "marks": {
+   "RIOT": 20.64,
+   "ELF": 104.7,
+   "MELI": 1970.91,
+   "NU": 14.98
+  }
  }
 }
