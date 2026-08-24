@@ -322,8 +322,43 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 9996.119240496215,
-   "positions": [],
+   "cash": 3332.0397468320716,
+   "positions": [
+    {
+     "symbol": "AMC",
+     "name": "AMC",
+     "shares": 1223.7908219839248,
+     "entry_price": 2.72272,
+     "entry_date": "2026-08-24",
+     "raw_entry_price": 2.72,
+     "entry_time": "09:46",
+     "target_price": 2.8016,
+     "stop_price": 2.6656,
+     "thesis": "Up 6.7% on the day at 09:46 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 2.72,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "CELH",
+     "name": "CELH",
+     "shares": 96.28900884571235,
+     "entry_price": 34.604569999999995,
+     "entry_date": "2026-08-24",
+     "raw_entry_price": 34.57,
+     "entry_time": "09:46",
+     "target_price": 35.6071,
+     "stop_price": 33.8786,
+     "thesis": "Up 3.6% on the day at 09:46 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 34.57,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    }
+   ],
    "closed": [
     {
      "symbol": "IONQ",
@@ -1157,6 +1192,14 @@
     {
      "date": "2026-08-21",
      "text": "\u26a1 10:29 ET BUY RGTI @ $17.28 (+7.6% confirmed gap)"
+    },
+    {
+     "date": "2026-08-24",
+     "text": "\u26a1 09:46 ET BUY AMC @ $2.72 (+6.7% confirmed gap)"
+    },
+    {
+     "date": "2026-08-24",
+     "text": "\u26a1 09:46 ET BUY CELH @ $34.57 (+3.6% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1278,18 +1321,9 @@
   }
  },
  "runs": 23,
- "last_run_utc": "2026-08-24T11:30:53Z",
+ "last_run_utc": "2026-08-24T13:47:02Z",
  "intraday": {
-  "date": "2026-08-21",
-  "marks": {
-   "IONQ": 44.06,
-   "ACHR": 6.28,
-   "NU": 14.67,
-   "TSLA": 361.2,
-   "AMC": 2.53,
-   "UPST": 29.62,
-   "HIMS": 32.91,
-   "ELF": 100.74
-  }
+  "date": "2026-08-24",
+  "marks": {}
  }
 }
