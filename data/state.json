@@ -322,60 +322,8 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 0.0,
-   "positions": [
-    {
-     "symbol": "AMC",
-     "name": "AMC",
-     "shares": 1223.7908219839248,
-     "entry_price": 2.72272,
-     "entry_date": "2026-08-24",
-     "raw_entry_price": 2.72,
-     "entry_time": "09:46",
-     "target_price": 2.8016,
-     "stop_price": 2.6656,
-     "thesis": "Up 6.7% on the day at 09:46 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 2.71,
-     "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "CELH",
-     "name": "CELH",
-     "shares": 96.28900884571235,
-     "entry_price": 34.604569999999995,
-     "entry_date": "2026-08-24",
-     "raw_entry_price": 34.57,
-     "entry_time": "09:46",
-     "target_price": 35.6071,
-     "stop_price": 33.8786,
-     "thesis": "Up 3.6% on the day at 09:46 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 34.9,
-     "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "ELF",
-     "name": "ELF",
-     "shares": 31.904256947741747,
-     "entry_price": 104.51440999999998,
-     "entry_date": "2026-08-24",
-     "raw_entry_price": 104.41,
-     "entry_time": "10:53",
-     "target_price": 107.5423,
-     "stop_price": 102.3218,
-     "thesis": "Up 2.4% on the day at 10:53 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 105.11,
-     "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    }
-   ],
+   "cash": 9963.945963548069,
+   "positions": [],
    "closed": [
     {
      "symbol": "IONQ",
@@ -1020,6 +968,48 @@
      "reason": "stop \u22122%",
      "entry_time": "10:36",
      "exit_time": "10:53"
+    },
+    {
+     "symbol": "AMC",
+     "name": "AMC",
+     "entry_date": "2026-08-24",
+     "entry_price": 2.7227,
+     "exit_date": "2026-08-24",
+     "exit_price": 2.6573,
+     "raw_exit_price": 2.66,
+     "slippage_bps": 10,
+     "pnl_pct": -2.4,
+     "reason": "stop \u22122%",
+     "entry_time": "09:46",
+     "exit_time": "15:47"
+    },
+    {
+     "symbol": "CELH",
+     "name": "CELH",
+     "entry_date": "2026-08-24",
+     "entry_price": 34.6046,
+     "exit_date": "2026-08-24",
+     "exit_price": 34.7053,
+     "raw_exit_price": 34.74,
+     "slippage_bps": 10,
+     "pnl_pct": 0.29,
+     "reason": "end of day \u2014 flat by the close",
+     "entry_time": "09:46",
+     "exit_time": "15:47"
+    },
+    {
+     "symbol": "ELF",
+     "name": "ELF",
+     "entry_date": "2026-08-24",
+     "entry_price": 104.5144,
+     "exit_date": "2026-08-24",
+     "exit_price": 105.6343,
+     "raw_exit_price": 105.74,
+     "slippage_bps": 10,
+     "pnl_pct": 1.07,
+     "reason": "end of day \u2014 flat by the close",
+     "entry_time": "10:53",
+     "exit_time": "15:47"
     }
    ],
    "cooldown": {
@@ -1040,7 +1030,7 @@
     "HOOD": "2026-08-13",
     "DKNG": "2026-08-14",
     "RKLB": "2026-08-17",
-    "ELF": "2026-08-19",
+    "ELF": "2026-08-24",
     "TTD": "2026-08-18",
     "DUOL": "2026-08-19",
     "U": "2026-08-18",
@@ -1050,7 +1040,9 @@
     "MARA": "2026-08-24",
     "RIOT": "2026-08-20",
     "RGTI": "2026-08-21",
-    "SOFI": "2026-08-21"
+    "SOFI": "2026-08-21",
+    "AMC": "2026-08-24",
+    "CELH": "2026-08-24"
    },
    "last_eval_date": "2026-08-21",
    "activity": [
@@ -1378,7 +1370,7 @@
   }
  },
  "runs": 23,
- "last_run_utc": "2026-08-24T19:02:39Z",
+ "last_run_utc": "2026-08-24T19:47:18Z",
  "intraday": {
   "date": "2026-08-24",
   "marks": {
