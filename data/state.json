@@ -322,7 +322,7 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 3332.0397468320716,
+   "cash": 0.0,
    "positions": [
     {
      "symbol": "AMC",
@@ -335,7 +335,7 @@
      "target_price": 2.8016,
      "stop_price": 2.6656,
      "thesis": "Up 6.7% on the day at 09:46 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 2.72,
+     "last_price": 2.7,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -352,7 +352,24 @@
      "target_price": 35.6071,
      "stop_price": 33.8786,
      "thesis": "Up 3.6% on the day at 09:46 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 34.57,
+     "last_price": 34.4,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "MSTR",
+     "name": "MSTR",
+     "shares": 27.219813850652347,
+     "entry_price": 122.41229,
+     "entry_date": "2026-08-24",
+     "raw_entry_price": 122.29,
+     "entry_time": "09:57",
+     "target_price": 125.95870000000001,
+     "stop_price": 119.8442,
+     "thesis": "Up 2.5% on the day at 09:57 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 122.29,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -1200,6 +1217,10 @@
     {
      "date": "2026-08-24",
      "text": "\u26a1 09:46 ET BUY CELH @ $34.57 (+3.6% confirmed gap)"
+    },
+    {
+     "date": "2026-08-24",
+     "text": "\u26a1 09:57 ET BUY MSTR @ $122.29 (+2.5% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1321,7 +1342,7 @@
   }
  },
  "runs": 23,
- "last_run_utc": "2026-08-24T13:47:02Z",
+ "last_run_utc": "2026-08-24T13:58:09Z",
  "intraday": {
   "date": "2026-08-24",
   "marks": {}
