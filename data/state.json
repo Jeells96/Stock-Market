@@ -335,7 +335,7 @@
      "target_price": 2.8016,
      "stop_price": 2.6656,
      "thesis": "Up 6.7% on the day at 09:46 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 2.7,
+     "last_price": 2.71,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -352,24 +352,24 @@
      "target_price": 35.6071,
      "stop_price": 33.8786,
      "thesis": "Up 3.6% on the day at 09:46 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 34.59,
+     "last_price": 34.64,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
      "divs_credited": []
     },
     {
-     "symbol": "MARA",
-     "name": "MARA",
-     "shares": 287.2454719247328,
-     "entry_price": 11.981969999999999,
+     "symbol": "ELF",
+     "name": "ELF",
+     "shares": 31.904256947741747,
+     "entry_price": 104.51440999999998,
      "entry_date": "2026-08-24",
-     "raw_entry_price": 11.97,
-     "entry_time": "10:36",
-     "target_price": 12.3291,
-     "stop_price": 11.7306,
-     "thesis": "Up 6.3% on the day at 10:36 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 11.97,
+     "raw_entry_price": 104.41,
+     "entry_time": "10:53",
+     "target_price": 107.5423,
+     "stop_price": 102.3218,
+     "thesis": "Up 2.4% on the day at 10:53 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 104.41,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -1006,6 +1006,20 @@
      "reason": "target +3%",
      "entry_time": "09:57",
      "exit_time": "10:36"
+    },
+    {
+     "symbol": "MARA",
+     "name": "MARA",
+     "entry_date": "2026-08-24",
+     "entry_price": 11.982,
+     "exit_date": "2026-08-24",
+     "exit_price": 11.6084,
+     "raw_exit_price": 11.62,
+     "slippage_bps": 10,
+     "pnl_pct": -3.12,
+     "reason": "stop \u22122%",
+     "entry_time": "10:36",
+     "exit_time": "10:53"
     }
    ],
    "cooldown": {
@@ -1033,7 +1047,7 @@
     "MSTR": "2026-08-24",
     "COIN": "2026-08-21",
     "HIMS": "2026-08-20",
-    "MARA": "2026-08-21",
+    "MARA": "2026-08-24",
     "RIOT": "2026-08-20",
     "RGTI": "2026-08-21",
     "SOFI": "2026-08-21"
@@ -1239,6 +1253,10 @@
     {
      "date": "2026-08-24",
      "text": "\u26a1 10:36 ET BUY MARA @ $11.97 (+6.3% confirmed gap)"
+    },
+    {
+     "date": "2026-08-24",
+     "text": "\u26a1 10:53 ET BUY ELF @ $104.41 (+2.4% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1360,14 +1378,11 @@
   }
  },
  "runs": 23,
- "last_run_utc": "2026-08-24T14:37:05Z",
+ "last_run_utc": "2026-08-24T14:54:06Z",
  "intraday": {
   "date": "2026-08-24",
   "marks": {
-   "RIOT": 20.64,
-   "ELF": 104.7,
-   "MELI": 1970.91,
-   "NU": 14.98
+   "RIOT": 20.29
   }
  }
 }
