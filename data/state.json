@@ -322,8 +322,60 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 9963.945963548069,
-   "positions": [],
+   "cash": 0.0,
+   "positions": [
+    {
+     "symbol": "AMD",
+     "name": "AMD",
+     "shares": 7.006054443419058,
+     "entry_price": 474.0635899999999,
+     "entry_date": "2026-08-25",
+     "raw_entry_price": 473.59,
+     "entry_time": "09:44",
+     "target_price": 487.79769999999996,
+     "stop_price": 464.11819999999994,
+     "thesis": "Up 3.7% on the day at 09:44 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 473.59,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "ARM",
+     "name": "ARM",
+     "shares": 13.419604949884048,
+     "entry_price": 247.49724999999998,
+     "entry_date": "2026-08-25",
+     "raw_entry_price": 247.25,
+     "entry_time": "09:44",
+     "target_price": 254.66750000000002,
+     "stop_price": 242.305,
+     "thesis": "Up 3.5% on the day at 09:44 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 247.25,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "VRT",
+     "name": "VRT",
+     "shares": 12.580561628341664,
+     "entry_price": 264.00374,
+     "entry_date": "2026-08-25",
+     "raw_entry_price": 263.74,
+     "entry_time": "09:44",
+     "target_price": 271.6522,
+     "stop_price": 258.4652,
+     "thesis": "Up 3.4% on the day at 09:44 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 263.74,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    }
+   ],
    "closed": [
     {
      "symbol": "IONQ",
@@ -1249,6 +1301,18 @@
     {
      "date": "2026-08-24",
      "text": "\u26a1 10:53 ET BUY ELF @ $104.41 (+2.4% confirmed gap)"
+    },
+    {
+     "date": "2026-08-25",
+     "text": "\u26a1 09:44 ET BUY AMD @ $473.59 (+3.7% confirmed gap)"
+    },
+    {
+     "date": "2026-08-25",
+     "text": "\u26a1 09:44 ET BUY ARM @ $247.25 (+3.5% confirmed gap)"
+    },
+    {
+     "date": "2026-08-25",
+     "text": "\u26a1 09:44 ET BUY VRT @ $263.74 (+3.4% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1377,11 +1441,18 @@
   }
  },
  "runs": 24,
- "last_run_utc": "2026-08-25T11:27:15Z",
+ "last_run_utc": "2026-08-25T13:45:02Z",
  "intraday": {
-  "date": "2026-08-24",
+  "date": "2026-08-25",
   "marks": {
-   "RIOT": 20.29
+   "NVDA": 212.72,
+   "HOOD": 106.41,
+   "AMC": 2.74,
+   "RDDT": 155.77,
+   "MDB": 412.17,
+   "SE": 119.12,
+   "SHOP": 153.83,
+   "MU": 931.87
   }
  }
 }
