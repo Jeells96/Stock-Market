@@ -322,26 +322,8 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 6491.636998450869,
-   "positions": [
-    {
-     "symbol": "AMD",
-     "name": "AMD",
-     "shares": 7.006054443419058,
-     "entry_price": 474.0635899999999,
-     "entry_date": "2026-08-25",
-     "raw_entry_price": 473.59,
-     "entry_time": "09:44",
-     "target_price": 487.79769999999996,
-     "stop_price": 464.11819999999994,
-     "thesis": "Up 3.7% on the day at 09:44 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 479.8,
-     "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    }
-   ],
+   "cash": 9843.341290963523,
+   "positions": [],
    "closed": [
     {
      "symbol": "IONQ",
@@ -1056,6 +1038,20 @@
      "reason": "stop \u22122%",
      "entry_time": "09:44",
      "exit_time": "13:23"
+    },
+    {
+     "symbol": "AMD",
+     "name": "AMD",
+     "entry_date": "2026-08-25",
+     "entry_price": 474.0636,
+     "exit_date": "2026-08-25",
+     "exit_price": 478.4011,
+     "raw_exit_price": 478.88,
+     "slippage_bps": 10,
+     "pnl_pct": 0.91,
+     "reason": "end of day \u2014 flat by the close",
+     "entry_time": "09:44",
+     "exit_time": "15:59"
     }
    ],
    "cooldown": {
@@ -1071,7 +1067,7 @@
     "MELI": "2026-08-11",
     "ASTS": "2026-08-21",
     "MU": "2026-08-17",
-    "AMD": "2026-08-14",
+    "AMD": "2026-08-25",
     "ARM": "2026-08-25",
     "HOOD": "2026-08-13",
     "DKNG": "2026-08-14",
@@ -1435,7 +1431,7 @@
   }
  },
  "runs": 24,
- "last_run_utc": "2026-08-25T19:38:22Z",
+ "last_run_utc": "2026-08-25T19:59:41Z",
  "intraday": {
   "date": "2026-08-25",
   "marks": {
