@@ -331,24 +331,7 @@
      "target_price": 239.9797,
      "stop_price": 228.3302,
      "thesis": "Up 4.5% on the day at 09:50 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 233.28,
-     "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    },
-    {
-     "symbol": "UPST",
-     "name": "UPST",
-     "shares": 103.53240453969617,
-     "entry_price": 31.691659999999995,
-     "entry_date": "2026-08-26",
-     "raw_entry_price": 31.66,
-     "entry_time": "09:50",
-     "target_price": 32.6098,
-     "stop_price": 31.026799999999998,
-     "thesis": "Up 3.5% on the day at 09:50 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 31.22,
+     "last_price": 228.39,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -365,7 +348,24 @@
      "target_price": 6.2829999999999995,
      "stop_price": 5.978,
      "thesis": "Up 2.3% on the day at 09:50 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 6.1,
+     "last_price": 6.03,
+     "bars_held": 0,
+     "be_locked": false,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "AMC",
+     "name": "AMC",
+     "shares": 1156.9444413639649,
+     "entry_price": 2.74274,
+     "entry_date": "2026-08-26",
+     "raw_entry_price": 2.74,
+     "entry_time": "10:39",
+     "target_price": 2.8222000000000005,
+     "stop_price": 2.6852,
+     "thesis": "Up 3.4% on the day at 10:39 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
+     "last_price": 2.74,
      "bars_held": 0,
      "be_locked": false,
      "splits_applied": [],
@@ -1100,6 +1100,20 @@
      "reason": "end of day \u2014 flat by the close",
      "entry_time": "09:44",
      "exit_time": "15:59"
+    },
+    {
+     "symbol": "UPST",
+     "name": "UPST",
+     "entry_date": "2026-08-26",
+     "entry_price": 31.6917,
+     "exit_date": "2026-08-26",
+     "exit_price": 30.6493,
+     "raw_exit_price": 30.68,
+     "slippage_bps": 10,
+     "pnl_pct": -3.29,
+     "reason": "stop \u22122%",
+     "entry_time": "09:50",
+     "exit_time": "10:39"
     }
    ],
    "cooldown": {
@@ -1132,7 +1146,8 @@
     "RGTI": "2026-08-21",
     "SOFI": "2026-08-21",
     "AMC": "2026-08-24",
-    "CELH": "2026-08-24"
+    "CELH": "2026-08-24",
+    "UPST": "2026-08-26"
    },
    "last_eval_date": "2026-08-25",
    "activity": [
@@ -1363,6 +1378,10 @@
     {
      "date": "2026-08-26",
      "text": "\u26a1 09:50 ET BUY ACHR @ $6.10 (+2.3% confirmed gap)"
+    },
+    {
+     "date": "2026-08-26",
+     "text": "\u26a1 10:39 ET BUY AMC @ $2.74 (+3.4% confirmed gap)"
     }
    ],
    "units": 10000.0,
@@ -1498,12 +1517,12 @@
   }
  },
  "runs": 25,
- "last_run_utc": "2026-08-26T14:02:51Z",
+ "last_run_utc": "2026-08-26T14:39:57Z",
  "intraday": {
   "date": "2026-08-26",
   "marks": {
-   "AMD": 489.05,
-   "AMC": 2.71
+   "NET": 283.4,
+   "VRT": 262.13
   }
  }
 }
