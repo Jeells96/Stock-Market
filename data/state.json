@@ -7,32 +7,15 @@
   "shares": 13.386343252613685,
   "cash": 0.0,
   "entry_date": "2026-07-31",
-  "last_eval_date": "2026-08-24",
+  "last_eval_date": "2026-08-25",
   "entry_price": 747.03,
   "splits_applied": [],
   "divs_credited": []
  },
  "strategies": {
   "aggressive": {
-   "cash": 7390.413786823561,
-   "positions": [
-    {
-     "symbol": "PANW",
-     "name": "PANW",
-     "shares": 5.456680951438896,
-     "entry_price": 366.52316999999994,
-     "entry_date": "2026-08-04",
-     "raw_entry_price": 366.34,
-     "target_price": 439.60799999999995,
-     "stop_price": 337.0328,
-     "thesis": "Up 94% over three months and 89% over six, sitting 99% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+8.8% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 350.9,
-     "bars_held": 14,
-     "splits_applied": [],
-     "divs_credited": [],
-     "missing_runs": 0
-    }
-   ],
+   "cash": 9244.212279289944,
+   "positions": [],
    "closed": [
     {
      "symbol": "TENB",
@@ -81,15 +64,28 @@
      "slippage_bps": 5,
      "pnl_pct": -9.33,
      "reason": "stop loss"
+    },
+    {
+     "symbol": "PANW",
+     "name": "PANW",
+     "entry_date": "2026-08-04",
+     "entry_price": 366.5232,
+     "exit_date": "2026-08-25",
+     "exit_price": 339.7301,
+     "raw_exit_price": 339.9,
+     "slippage_bps": 5,
+     "pnl_pct": -7.31,
+     "reason": "time exit (15 days)"
     }
    ],
    "cooldown": {
     "TENB": "2026-08-17",
     "FTNT": "2026-08-19",
     "CRWD": "2026-08-20",
-    "OKTA": "2026-08-20"
+    "OKTA": "2026-08-20",
+    "PANW": "2026-08-25"
    },
-   "last_eval_date": "2026-08-24",
+   "last_eval_date": "2026-08-25",
    "activity": [
     {
      "date": "2026-08-04",
@@ -132,8 +128,8 @@
      "target_price": 213.01449999999997,
      "stop_price": 166.707,
      "thesis": "A confirmed climb: up 44% over six months and 69% over the year, trading 92% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 190.92,
-     "bars_held": 14,
+     "last_price": 192.95,
+     "bars_held": 15,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -148,8 +144,8 @@
      "target_price": 355.0395,
      "stop_price": 277.857,
      "thesis": "A confirmed climb: up 68% over six months and 131% over the year, trading 94% of the way up its 52-week range with moderate (39%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 346.0,
-     "bars_held": 14,
+     "last_price": 340.41,
+     "bars_held": 15,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -164,8 +160,8 @@
      "target_price": 468.6825,
      "stop_price": 366.795,
      "thesis": "A confirmed climb: up 47% over six months and 75% over the year, trading 76% of the way up its 52-week range with moderate (26%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 398.76,
-     "bars_held": 14,
+     "last_price": 396.59,
+     "bars_held": 15,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -180,7 +176,7 @@
      "target_price": 179.62999999999997,
      "stop_price": 140.57999999999998,
      "thesis": "A confirmed climb: up 31% over six months and 54% over the year, trading 88% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 162.14,
+     "last_price": 163.65,
      "bars_held": 0,
      "splits_applied": [],
      "divs_credited": [],
@@ -204,7 +200,7 @@
    "cooldown": {
     "MPC": "2026-08-18"
    },
-   "last_eval_date": "2026-08-24",
+   "last_eval_date": "2026-08-25",
    "activity": [
     {
      "date": "2026-08-04",
@@ -242,8 +238,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "S&P 500 core \u2014 owns the 500 biggest US companies",
-     "last_price": 701.83,
-     "bars_held": 16,
+     "last_price": 704.02,
+     "bars_held": 17,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -257,8 +253,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Nasdaq-100 \u2014 concentrated big-tech growth",
-     "last_price": 706.32,
-     "bars_held": 16,
+     "last_price": 710.72,
+     "bars_held": 17,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -272,8 +268,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Dividend quality \u2014 cash-generating value companies",
-     "last_price": 35.21,
-     "bars_held": 16,
+     "last_price": 35.11,
+     "bars_held": 17,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -287,8 +283,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "International \u2014 diversification outside the US",
-     "last_price": 87.2,
-     "bars_held": 16,
+     "last_price": 88.12,
+     "bars_held": 17,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -302,8 +298,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Bonds \u2014 ballast that cushions stock drawdowns",
-     "last_price": 72.37,
-     "bars_held": 16,
+     "last_price": 72.67,
+     "bars_held": 17,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -311,7 +307,7 @@
    ],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-08-24",
+   "last_eval_date": "2026-08-25",
    "activity": [
     {
      "date": "2026-07-31",
@@ -1086,7 +1082,7 @@
     "AMC": "2026-08-24",
     "CELH": "2026-08-24"
    },
-   "last_eval_date": "2026-08-24",
+   "last_eval_date": "2026-08-25",
    "activity": [
     {
      "date": "2026-07-31",
@@ -1428,10 +1424,17 @@
    "growth": 10672.21,
    "longterm": 10278.48,
    "benchmark": 10220.07
+  },
+  "2026-08-25": {
+   "daytrade": 9843.34,
+   "aggressive": 9244.21,
+   "growth": 10666.6,
+   "longterm": 10313.08,
+   "benchmark": 10252.73
   }
  },
- "runs": 24,
- "last_run_utc": "2026-08-25T19:59:41Z",
+ "runs": 25,
+ "last_run_utc": "2026-08-26T11:30:20Z",
  "intraday": {
   "date": "2026-08-25",
   "marks": {
