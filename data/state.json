@@ -7,7 +7,7 @@
   "shares": 13.386343252613685,
   "cash": 0.0,
   "entry_date": "2026-07-31",
-  "last_eval_date": "2026-08-25",
+  "last_eval_date": "2026-08-27",
   "entry_price": 747.03,
   "splits_applied": [],
   "divs_credited": []
@@ -85,7 +85,7 @@
     "OKTA": "2026-08-20",
     "PANW": "2026-08-25"
    },
-   "last_eval_date": "2026-08-25",
+   "last_eval_date": "2026-08-27",
    "activity": [
     {
      "date": "2026-08-04",
@@ -128,8 +128,8 @@
      "target_price": 213.01449999999997,
      "stop_price": 166.707,
      "thesis": "A confirmed climb: up 44% over six months and 69% over the year, trading 92% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 192.95,
-     "bars_held": 15,
+     "last_price": 193.37,
+     "bars_held": 16,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -144,8 +144,8 @@
      "target_price": 355.0395,
      "stop_price": 277.857,
      "thesis": "A confirmed climb: up 68% over six months and 131% over the year, trading 94% of the way up its 52-week range with moderate (39%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 340.41,
-     "bars_held": 15,
+     "last_price": 346.59,
+     "bars_held": 16,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -160,8 +160,8 @@
      "target_price": 468.6825,
      "stop_price": 366.795,
      "thesis": "A confirmed climb: up 47% over six months and 75% over the year, trading 76% of the way up its 52-week range with moderate (26%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 396.59,
-     "bars_held": 15,
+     "last_price": 395.05,
+     "bars_held": 16,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -176,7 +176,7 @@
      "target_price": 179.62999999999997,
      "stop_price": 140.57999999999998,
      "thesis": "A confirmed climb: up 31% over six months and 54% over the year, trading 88% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 163.65,
+     "last_price": 162.24,
      "bars_held": 0,
      "splits_applied": [],
      "divs_credited": [],
@@ -200,7 +200,7 @@
    "cooldown": {
     "MPC": "2026-08-18"
    },
-   "last_eval_date": "2026-08-25",
+   "last_eval_date": "2026-08-27",
    "activity": [
     {
      "date": "2026-08-04",
@@ -238,8 +238,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "S&P 500 core \u2014 owns the 500 biggest US companies",
-     "last_price": 704.02,
-     "bars_held": 17,
+     "last_price": 708.75,
+     "bars_held": 18,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -253,8 +253,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Nasdaq-100 \u2014 concentrated big-tech growth",
-     "last_price": 710.72,
-     "bars_held": 17,
+     "last_price": 721.11,
+     "bars_held": 18,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -268,8 +268,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Dividend quality \u2014 cash-generating value companies",
-     "last_price": 35.11,
-     "bars_held": 17,
+     "last_price": 34.83,
+     "bars_held": 18,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -283,8 +283,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "International \u2014 diversification outside the US",
-     "last_price": 88.12,
-     "bars_held": 17,
+     "last_price": 87.93,
+     "bars_held": 18,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -298,8 +298,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Bonds \u2014 ballast that cushions stock drawdowns",
-     "last_price": 72.67,
-     "bars_held": 17,
+     "last_price": 72.54,
+     "bars_held": 18,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -307,7 +307,7 @@
    ],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-08-25",
+   "last_eval_date": "2026-08-27",
    "activity": [
     {
      "date": "2026-07-31",
@@ -318,26 +318,8 @@
    "contributed": 10000.0
   },
   "daytrade": {
-   "cash": 6275.447795542401,
-   "positions": [
-    {
-     "symbol": "VRT",
-     "name": "VRT",
-     "shares": 12.152300617741743,
-     "entry_price": 262.39212999999995,
-     "entry_date": "2026-08-26",
-     "raw_entry_price": 262.13,
-     "entry_time": "10:54",
-     "target_price": 269.9939,
-     "stop_price": 256.8874,
-     "thesis": "Up 2.5% on the day at 10:54 ET and still climbing 20 minutes after first sighting. Out at +3%, \u22122%, or the closing bell \u2014 and the stop moves to breakeven once up 1.5%.",
-     "last_price": 264.52,
-     "bars_held": 0,
-     "be_locked": false,
-     "splits_applied": [],
-     "divs_credited": []
-    }
-   ],
+   "cash": 9544.546934377551,
+   "positions": [],
    "closed": [
     {
      "symbol": "IONQ",
@@ -1122,6 +1104,18 @@
      "reason": "stop \u22122%",
      "entry_time": "10:39",
      "exit_time": "13:51"
+    },
+    {
+     "symbol": "VRT",
+     "name": "VRT",
+     "entry_date": "2026-08-26",
+     "entry_price": 262.3921,
+     "exit_date": "2026-08-27",
+     "exit_price": 269.0107,
+     "raw_exit_price": 269.28,
+     "slippage_bps": 10,
+     "pnl_pct": 2.52,
+     "reason": "overnight safety flat"
     }
    ],
    "cooldown": {
@@ -1133,7 +1127,7 @@
     "DDOG": "2026-08-26",
     "CRWD": "2026-08-10",
     "ACHR": "2026-08-26",
-    "VRT": "2026-08-25",
+    "VRT": "2026-08-27",
     "MELI": "2026-08-11",
     "ASTS": "2026-08-21",
     "MU": "2026-08-17",
@@ -1157,7 +1151,7 @@
     "CELH": "2026-08-24",
     "UPST": "2026-08-26"
    },
-   "last_eval_date": "2026-08-25",
+   "last_eval_date": "2026-08-27",
    "activity": [
     {
      "date": "2026-07-31",
@@ -1526,10 +1520,17 @@
    "growth": 10666.6,
    "longterm": 10313.08,
    "benchmark": 10252.73
+  },
+  "2026-08-27": {
+   "daytrade": 9544.55,
+   "aggressive": 9244.21,
+   "growth": 10685.55,
+   "longterm": 10350.06,
+   "benchmark": 10322.21
   }
  },
- "runs": 25,
- "last_run_utc": "2026-08-26T19:21:59Z",
+ "runs": 26,
+ "last_run_utc": "2026-08-28T06:02:02Z",
  "intraday": {
   "date": "2026-08-26",
   "marks": {
