@@ -2,7 +2,8 @@
  "overrides": {},
  "blacklist": {
   "SMCI": "2026-10-22",
-  "ASTS": "2026-10-22"
+  "ASTS": "2026-10-22",
+  "VRT": "2026-10-29"
  },
  "history": [
   {
@@ -15,6 +16,16 @@
     ]
    },
    "reason": "benched ASTS, SMCI for 60 days after repeated losses"
+  },
+  {
+   "date": "2026-08-30",
+   "strategy": "daytrade",
+   "changes": {
+    "blacklist": [
+     "VRT"
+    ]
+   },
+   "reason": "benched VRT for 60 days after repeated losses"
   }
  ],
  "reviewed_trades": {}
