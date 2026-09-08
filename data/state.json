@@ -7,7 +7,7 @@
   "shares": 13.386343252613685,
   "cash": 0.0,
   "entry_date": "2026-07-31",
-  "last_eval_date": "2026-08-27",
+  "last_eval_date": "2026-09-04",
   "entry_price": 747.03,
   "splits_applied": [],
   "divs_credited": []
@@ -85,7 +85,7 @@
     "OKTA": "2026-08-20",
     "PANW": "2026-08-25"
    },
-   "last_eval_date": "2026-08-27",
+   "last_eval_date": "2026-09-04",
    "activity": [
     {
      "date": "2026-08-04",
@@ -116,7 +116,7 @@
    "contributed": 10000.0
   },
   "growth": {
-   "cash": 2340.5775439908725,
+   "cash": 4739.757832705065,
    "positions": [
     {
      "symbol": "STT",
@@ -128,24 +128,8 @@
      "target_price": 213.01449999999997,
      "stop_price": 166.707,
      "thesis": "A confirmed climb: up 44% over six months and 69% over the year, trading 92% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 193.37,
-     "bars_held": 16,
-     "splits_applied": [],
-     "divs_credited": [],
-     "missing_runs": 0
-    },
-    {
-     "symbol": "VLO",
-     "name": "VLO",
-     "shares": 6.474914973439979,
-     "entry_price": 308.884365,
-     "entry_date": "2026-08-04",
-     "raw_entry_price": 308.73,
-     "target_price": 355.0395,
-     "stop_price": 277.857,
-     "thesis": "A confirmed climb: up 68% over six months and 131% over the year, trading 94% of the way up its 52-week range with moderate (39%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 346.59,
-     "bars_held": 16,
+     "last_price": 194.26,
+     "bars_held": 17,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -160,8 +144,8 @@
      "target_price": 468.6825,
      "stop_price": 366.795,
      "thesis": "A confirmed climb: up 47% over six months and 75% over the year, trading 76% of the way up its 52-week range with moderate (26%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 395.05,
-     "bars_held": 16,
+     "last_price": 397.14,
+     "bars_held": 17,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -176,7 +160,7 @@
      "target_price": 179.62999999999997,
      "stop_price": 140.57999999999998,
      "thesis": "A confirmed climb: up 31% over six months and 54% over the year, trading 88% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 162.24,
+     "last_price": 164.84,
      "bars_held": 0,
      "splits_applied": [],
      "divs_credited": [],
@@ -195,12 +179,25 @@
      "slippage_bps": 5,
      "pnl_pct": 17.03,
      "reason": "target hit"
+    },
+    {
+     "symbol": "VLO",
+     "name": "VLO",
+     "entry_date": "2026-08-04",
+     "entry_price": 308.8844,
+     "exit_date": "2026-09-04",
+     "exit_price": 370.5346,
+     "raw_exit_price": 370.72,
+     "slippage_bps": 5,
+     "pnl_pct": 19.96,
+     "reason": "target hit"
     }
    ],
    "cooldown": {
-    "MPC": "2026-08-18"
+    "MPC": "2026-08-18",
+    "VLO": "2026-09-04"
    },
-   "last_eval_date": "2026-08-27",
+   "last_eval_date": "2026-09-04",
    "activity": [
     {
      "date": "2026-08-04",
@@ -238,8 +235,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "S&P 500 core \u2014 owns the 500 biggest US companies",
-     "last_price": 708.75,
-     "bars_held": 18,
+     "last_price": 708.01,
+     "bars_held": 19,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -253,8 +250,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Nasdaq-100 \u2014 concentrated big-tech growth",
-     "last_price": 721.11,
-     "bars_held": 18,
+     "last_price": 718.96,
+     "bars_held": 19,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -268,8 +265,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Dividend quality \u2014 cash-generating value companies",
-     "last_price": 34.83,
-     "bars_held": 18,
+     "last_price": 34.8,
+     "bars_held": 19,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -283,8 +280,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "International \u2014 diversification outside the US",
-     "last_price": 87.93,
-     "bars_held": 18,
+     "last_price": 88.41,
+     "bars_held": 19,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -298,8 +295,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Bonds \u2014 ballast that cushions stock drawdowns",
-     "last_price": 72.54,
-     "bars_held": 18,
+     "last_price": 71.95,
+     "bars_held": 19,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -307,7 +304,7 @@
    ],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-08-27",
+   "last_eval_date": "2026-09-04",
    "activity": [
     {
      "date": "2026-07-31",
@@ -1151,7 +1148,7 @@
     "CELH": "2026-08-24",
     "UPST": "2026-08-26"
    },
-   "last_eval_date": "2026-08-27",
+   "last_eval_date": "2026-09-04",
    "activity": [
     {
      "date": "2026-07-31",
@@ -1527,10 +1524,17 @@
    "growth": 10685.55,
    "longterm": 10350.06,
    "benchmark": 10322.21
+  },
+  "2026-09-04": {
+   "daytrade": 9544.55,
+   "aggressive": 9244.21,
+   "growth": 10893.72,
+   "longterm": 10335.22,
+   "benchmark": 10310.03
   }
  },
- "runs": 26,
- "last_run_utc": "2026-08-28T06:02:02Z",
+ "runs": 27,
+ "last_run_utc": "2026-09-08T00:10:13Z",
  "intraday": {
   "date": "2026-08-26",
   "marks": {
