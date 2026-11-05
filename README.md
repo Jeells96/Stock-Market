@@ -34,29 +34,35 @@ honest yardstick.
 ## How it fires by itself
 
 A scheduled GitHub Action ([`.github/workflows/advisor.yml`](.github/workflows/advisor.yml))
-runs [`scripts/advisor.py`](scripts/advisor.py) twice every trading day:
+runs [`scripts/advisor.py`](scripts/advisor.py) every trading day:
 
-- **Post-close (~5:45pm ET)** — the trading run: marks outcomes on the session that just
-  ended, applies stops/targets, and enters new picks at that day's closing price. The
-  commit lands while tomorrow's outcome is still unknown — that's the proof.
-- **Pre-open (~6:40am ET)** — a catch-up run: replays anything a failed evening run
-  missed. It never opens positions (the engine refuses to trade at a stale close, so
-  overnight gaps can't be gamed and a delayed cron firing mid-session is harmless).
-  Scheduled early on purpose — GitHub's cron often fires late, and this leaves hours of
-  slack before the open.
+- **Post-close (evening ET)** — the trading run that does the real work: marks outcomes on
+  the session that just ended, applies stops/targets, and enters new picks at that day's
+  closing price. The commit lands while tomorrow's outcome is still unknown — that's the
+  proof. It fires several times across the evening because GitHub's cron is delayed by
+  minutes to hours and sometimes skips a slot; whichever run actually lands after the close
+  does the work, and the rest find the record already current and stop.
+- **Pre-open (morning ET)** — a harmless catch-up pass that never opens positions (the
+  engine refuses to trade at a stale close, so a delayed cron firing mid-session can't be
+  gamed).
 
 Each run replays every trading day since the previous run — crediting dividends, applying
 splits, checking stops and targets on daily closes only — then commits the updated record
 to this repository.
 
-**Data resilience.** Yahoo and Stooq both rate-limit datacenter IPs, so the engine falls
-back through Yahoo chart → Yahoo spark → Stooq → Finnhub end-of-day quotes, and keeps its
-own rolling price store (`data/prices.json`) that grows one close per symbol per session.
-Stock ranking works from day one either way: when the store is still shallow, the two
-stock-picking strategies rank on Finnhub's precomputed trailing return windows (3-month,
-6-month, 1-year, volatility, 52-week range) instead of waiting months for stored history.
-If every source is blocked on a pre-open catch-up pass, the run exits quietly rather than
-failing — the post-close run does the real work.
+**Data resilience.** Yahoo and Stooq both rate-limit datacenter IPs — on GitHub's shared
+runner IPs they are effectively always blocked — so the engine falls back through Yahoo
+chart → Yahoo spark → Stooq → **Finnhub official end-of-day closes**, which is the source
+that actually carries the record. Because Finnhub's floor only reads a *completed* close
+(it refuses to pass a live mid-session price off as a close), the record can only advance on
+a run that fires after the 4pm ET close — which is why the evening has several scheduled
+attempts. The engine keeps its own rolling price store (`data/prices.json`, one close per
+symbol per session); stock ranking works from day one either way, since when the store is
+shallow the two stock-picking strategies rank on Finnhub's precomputed trailing-return
+windows (3-month, 6-month, 1-year, volatility, 52-week range) instead of waiting months for
+stored history. A pass where every source is blocked (a pre-open or mid-session run) is a
+routine no-op: it exits cleanly and **never fails the job or emails** — an outage surfaces
+only as the website's own staleness banner, not as alert spam.
 
 The ⚡ Day Trader sleeve has its own schedule
 ([`.github/workflows/daytrader.yml`](.github/workflows/daytrader.yml)): checks roughly

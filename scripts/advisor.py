@@ -2660,44 +2660,50 @@ def main():
         for strat in state["strategies"].values():
             held_syms += [p["symbol"] for p in strat["positions"]]
 
-    # 1) critical symbols (full history + div/split events) — must succeed
+    # 1) critical symbols (full history + div/split events) — must succeed.
+    #    On GitHub's datacenter IPs Yahoo and Stooq are permanently rate-limited,
+    #    so Finnhub's end-of-day floor is the real workhorse. Go to it promptly:
+    #    only burn the 180s Yahoo cooldown when Finnhub CAN'T help this pass
+    #    (mid-session, or no key), so a post-close run finishes inside its budget.
     critical = list(dict.fromkeys([BENCHMARK_SYMBOL] + list(LONGTERM_ALLOCATION) + held_syms))
     bars_critical = fetch_portfolio_bars(critical)
-    if BENCHMARK_SYMBOL not in bars_critical:
-        # Yahoo rate-limit penalties are usually minutes-long; wait one long
-        # beat and try again before failing the run
-        print("Benchmark fetch failed — cooling down 180s before one more attempt…")
-        time.sleep(180)
-        bars_critical = fetch_portfolio_bars(critical)
     finnhub_floor = False
     if BENCHMARK_SYMBOL not in bars_critical and FINNHUB_KEY:
-        # absolute floor: end-of-day closes from Finnhub keep the daily record
-        # alive even when every history source is blocked
         print("History sources down — falling back to Finnhub end-of-day closes.")
         floor_bars = finnhub_close_bars(critical)
         if BENCHMARK_SYMBOL in floor_bars:
             bars_critical = floor_bars
             finnhub_floor = True
     if BENCHMARK_SYMBOL not in bars_critical:
-        # No data this pass. That is routine for the pre-open catch-up run when
-        # every history source is rate-limited and the market has not closed yet
-        # (the Finnhub floor refuses to treat a live price as a close). Exit
-        # quietly if the record is already current — the post-close run does the
-        # real work. Only shout when the record is genuinely falling behind.
+        # Finnhub couldn't help (mid-session, holiday, or no key). Give Yahoo one
+        # more chance after a cooldown — its rate-limit penalties are minutes-long.
+        print("Benchmark fetch failed — cooling down 180s before one more attempt…")
+        time.sleep(180)
+        bars_critical = fetch_portfolio_bars(critical)
+        if BENCHMARK_SYMBOL not in bars_critical and FINNHUB_KEY and not finnhub_floor:
+            floor_bars = finnhub_close_bars(critical)
+            if BENCHMARK_SYMBOL in floor_bars:
+                bars_critical = floor_bars
+                finnhub_floor = True
+    if BENCHMARK_SYMBOL not in bars_critical:
+        # No data available on this pass — every history source is blocked and
+        # the market hasn't closed yet (the Finnhub floor refuses to treat a live
+        # price as a close). This is a routine transient on GitHub's shared IPs,
+        # NOT a code failure, so NEVER fail the job over it — a non-zero exit just
+        # emails the owner about a condition they can't act on. Exit cleanly; the
+        # next post-close run does the real work, and the website's own staleness
+        # banner is the honest signal if an outage ever runs long. (Genuine bugs
+        # still surface: an unhandled exception exits non-zero on its own.)
         prior = load_state()
         recorded = sorted((prior or {}).get("equity_history", {}).keys())
         last = recorded[-1] if recorded else None
-        behind = 99
+        behind = "?"
         if last:
             behind = (datetime.now(timezone.utc).date()
                       - datetime.strptime(last, "%Y-%m-%d").date()).days
-        if prior and behind <= 4:
-            print(f"No market data available this pass (last record {last}, {behind}d ago) — "
-                  "nothing to do. The post-close run will catch up.")
-            sys.exit(0)
-        print("FATAL: no benchmark data and the record is falling behind — "
-              f"last recorded session {last}.")
-        sys.exit(1)
+        print(f"No market data available this pass (last record {last}, {behind}d ago) — "
+              "nothing to do. A post-close run catches the record up when the market has closed.")
+        sys.exit(0)
     missing_held = [s for s in held_syms if s not in bars_critical]
     if missing_held:
         print(f"  warning: no data for held positions: {missing_held}")
@@ -2746,8 +2752,10 @@ def main():
 
     calendar = bars[BENCHMARK_SYMBOL]["dates"]
     if not calendar:
-        print("FATAL: benchmark has no completed sessions — aborting without touching state.")
-        sys.exit(1)
+        # Defensive: benchmark resolved but carries no dated session. Nothing to
+        # mark; leave state untouched and exit cleanly (never email over it).
+        print("No completed benchmark session to work from this pass — nothing to do.")
+        sys.exit(0)
     as_of = calendar[-1]
     print(f"Market data as of {as_of} ({len(calendar)} sessions, {len(bars)} symbols)")
 
