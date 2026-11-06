@@ -18,11 +18,11 @@
    "VRT"
   ]
  },
- "generated_at_utc": "2026-11-06T02:27:59Z",
+ "generated_at_utc": "2026-11-06T08:06:09Z",
  "as_of_date": "2026-11-05",
  "inception_date": "2026-07-31",
  "starting_capital": 10000.0,
- "runs": 28,
+ "runs": 29,
  "benchmark": {
   "symbol": "SPY",
   "equity": 9812.19,
@@ -63,7 +63,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 53% over three months and 103% over six, sitting 85% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+2.9% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "ELF",
@@ -79,7 +79,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 32% over three months and 88% over six, sitting 83% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+0.6% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "ROKU",
@@ -95,7 +95,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 11% over three months and 32% over six, sitting 97% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+4.1% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "AMC",
@@ -111,7 +111,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 32% over three months and 143% over six, sitting 82% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+14.3% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "LLY",
@@ -127,7 +127,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 21% over three months and 47% over six, sitting 86% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+3.2% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "QRVO",
@@ -143,7 +143,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 30% over three months and 50% over six, sitting 85% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (-1.8% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "PCTY",
@@ -159,7 +159,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 16% over three months and 56% over six, sitting 90% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+1.5% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "CART",
@@ -175,7 +175,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 31% over three months and 40% over six, sitting 86% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+3.7% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "OSCR",
@@ -191,7 +191,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 17% over three months and 90% over six, sitting 88% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+14.3% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "VRNS",
@@ -207,7 +207,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 12% over three months and 84% over six, sitting 95% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (-0.0% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "WDAY",
@@ -223,7 +223,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 18% over three months and 59% over six, sitting 71% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+3.3% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "U",
@@ -239,7 +239,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 20% over three months and 57% over six, sitting 91% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+8.1% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "ABNB",
@@ -255,7 +255,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 16% over three months and 25% over six, sitting 72% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+6.0% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "TOST",
@@ -271,7 +271,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "Up 2% over three months and 22% over six, sitting 74% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+12.3% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "is_new": true
+     "is_new": false
     }
    ],
    "recent_trades": [
@@ -387,7 +387,7 @@
     "t_stat": -0.59
    },
    "watchlist": {
-    "note": "Ranked highest by this strategy's model at the latest close.",
+    "note": "These qualify now; purchases are made on the post-close run so every fill uses an official closing price.",
     "items": [
      {
       "symbol": "PAYC",
@@ -477,11 +477,17 @@
       "reason": "meets every test \u2014 genuine multi-month momentum",
       "needs": "",
       "news": {
-       "n": 34,
+       "n": 33,
        "pos": 9,
-       "neg": 4,
+       "neg": 5,
        "verdict": "positive",
        "top": [
+        {
+         "h": "BTIG Downgrades Paycom Software to Neutral from Buy",
+         "s": "Fintel",
+         "d": "2026-11-06",
+         "sent": -1
+        },
         {
          "h": "Paycom Q3 Earnings Beat Estimates on Revenue Growth, Margin Gains",
          "s": "Yahoo",
@@ -496,12 +502,6 @@
         },
         {
          "h": "Paycom Software (PAYC) Beats And Lifts Guidance, Is The Stock Fully Valued?",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Does Earnings Beat Change The Bull Case For Paycom (PAYC)?",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
@@ -523,34 +523,34 @@
       "reason": "meets every test \u2014 genuine multi-month momentum",
       "needs": "",
       "news": {
-       "n": 38,
-       "pos": 17,
-       "neg": 2,
+       "n": 40,
+       "pos": 18,
+       "neg": 4,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Dow Jones Futures Fall, Techs Bounce After Nasdaq Dives 5.5%; Nvidia, Sandisk, CoreWeave, SpaceX Plunge",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
+        {
+         "h": "Is e.l.f. Beauty (ELF) Undervalued As Earnings Beat And Guidance Rise?",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "Dow Jones Futures Fall; Nasdaq Dives 5.5%, Nvidia, Sandisk, CoreWeave, SpaceX Plunge, But Sell-Off Spreads Beyond AI",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
         {
          "h": "Dow Jones Futures: Nasdaq Dives 5.5%, Nvidia, Sandisk, CoreWeave, SpaceX Plunge, But Sell-Off Spreads Beyond AI",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
-        },
-        {
-         "h": "e.l.f. Beauty Inc (ELF) (Q2 2027) Earnings Call Highlights: 51% Sales Surge, Raised Outlook and ...",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "E.l.f. Beauty growth driven by innovation, not just pricing power",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "ELF Beauty (NYSE:ELF) Combines Strong Growth With a High-Quality Breakout Setup",
-         "s": "ChartMill",
-         "d": "2026-11-05",
-         "sent": 1
         }
        ]
       },
@@ -569,7 +569,7 @@
       "reason": "meets every test \u2014 genuine multi-month momentum",
       "needs": "",
       "news": {
-       "n": 40,
+       "n": 39,
        "pos": 14,
        "neg": 1,
        "verdict": "positive",
@@ -615,8 +615,8 @@
       "reason": "meets every test \u2014 genuine multi-month momentum",
       "needs": "",
       "news": {
-       "n": 37,
-       "pos": 10,
+       "n": 34,
+       "pos": 7,
        "neg": 0,
        "verdict": "positive",
        "top": [
@@ -728,11 +728,23 @@
       "reason": "meets every test \u2014 genuine multi-month momentum",
       "needs": "",
       "news": {
-       "n": 14,
-       "pos": 4,
+       "n": 16,
+       "pos": 6,
        "neg": 0,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Paylocity Holding Corp (PCTY) (Q1 2027) Earnings Call Highlights: Revenue Beat and Raised ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "Paylocity (PCTY) Tops Q1 Earnings and Revenue Estimates",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Paylocity\u2019s (NASDAQ:PCTY) Q3 CY2026: beats on revenue, full-year outlook slightly exceeds expectations",
          "s": "Yahoo",
@@ -742,18 +754,6 @@
         {
          "h": "4 Software Stocks Likely to Deliver an Earnings Beat This Season",
          "s": "Yahoo",
-         "d": "2026-10-30",
-         "sent": 1
-        },
-        {
-         "h": "Paylocity Holding (NASDAQ:PCTY): A Quality Stock With Strong Metrics and Valuation Checks",
-         "s": "ChartMill",
-         "d": "2026-10-30",
-         "sent": 1
-        },
-        {
-         "h": "Cantor Fitzgerald Maintains Overweight on Paylocity Holding, Raises Price Target to $200",
-         "s": "Benzinga",
          "d": "2026-10-30",
          "sent": 1
         }
@@ -820,8 +820,8 @@
       "reason": "meets every test \u2014 genuine multi-month momentum",
       "needs": "",
       "news": {
-       "n": 19,
-       "pos": 8,
+       "n": 24,
+       "pos": 9,
        "neg": 0,
        "verdict": "positive",
        "top": [
@@ -838,14 +838,14 @@
          "sent": 1
         },
         {
-         "h": "Oscar Health Announces Financial Results for Third Quarter 2026 and Raises Full Year 2026 Outlook",
+         "h": "Oscar Health, Inc. (OSCR) Beats Q3 Earnings and Revenue Estimates",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
         },
         {
-         "h": "Oscar Health Raises FY2026 Sales Guidance from $18.700B-$19.000B to $19.000B-$19.300B vs $18.732B Est",
-         "s": "Benzinga",
+         "h": "Oscar Health (NYSE:OSCR) surprises with strong Q3 2026, full-year sales guidance is optimistic",
+         "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
         }
@@ -912,11 +912,17 @@
       "reason": "meets every test \u2014 genuine multi-month momentum",
       "needs": "",
       "news": {
-       "n": 25,
-       "pos": 4,
+       "n": 19,
+       "pos": 5,
        "neg": 0,
        "verdict": "positive",
        "top": [
+        {
+         "h": "indie Semiconductor, Inc. (INDI) Reports Q3 Loss, Beats Revenue Estimates",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Motorola Beats Q3 Earnings Estimates on Strong Demand, Record Orders",
          "s": "Yahoo",
@@ -932,12 +938,6 @@
         {
          "h": "Kodiact Raises $2.5M to Help Manufacturers Get Ahead of Raw-Material Volatility",
          "s": "Yahoo",
-         "d": "2026-11-02",
-         "sent": 1
-        },
-        {
-         "h": "Workday (NASDAQ:WDAY): Affordable Growth at a Reasonable Valuation",
-         "s": "ChartMill",
          "d": "2026-11-02",
          "sent": 1
         }
@@ -958,33 +958,33 @@
       "reason": "meets every test \u2014 genuine multi-month momentum",
       "needs": "",
       "news": {
-       "n": 21,
-       "pos": 3,
+       "n": 38,
+       "pos": 6,
        "neg": 1,
        "verdict": "positive",
        "top": [
         {
+         "h": "Unity Soars 8% as Vector Ad Engine Delivers \u201cFirst GAAP Profitable Quarter Since Our IPO\u201d",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "AppLovin Soars 30% on Record Quarter and Strong Outlook; Magnite Surges 17%, Trade Desk Falls 2%",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "AppLovin Soars 27% on Record Q3 Beat as CEO Calls Last Quarter\u2019s Miss \u201cOur Own Foot Fault\u201d",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
          "h": "Unity Software (NYSE:U) Q3 Earnings Beat and Above-Consensus Q4 Guidance Send Shares Higher",
          "s": "ChartMill",
          "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Unity Software Q3 Adj. EPS $0.44 Beats $0.06 Estimate, Sales $622.092M Beat $567.442M Estimate",
-         "s": "Benzinga",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Roblox Plunges 19% as Daily Users Shrink and GTA VI Clouds Holiday Outlook; Unity Drops 4%, Take-Two Dips",
-         "s": "Yahoo",
-         "d": "2026-10-30",
-         "sent": -1
-        },
-        {
-         "h": "Roblox Is Up 21% in October: Will Earnings Derail the RBLX Stock Rally?",
-         "s": "Yahoo",
-         "d": "2026-10-29",
          "sent": 1
         }
        ]
@@ -1005,7 +1005,7 @@
       "needs": "",
       "news": {
        "n": 40,
-       "pos": 14,
+       "pos": 12,
        "neg": 1,
        "verdict": "positive",
        "top": [
@@ -1050,9 +1050,9 @@
       "reason": "meets every test \u2014 genuine multi-month momentum",
       "needs": "",
       "news": {
-       "n": 39,
+       "n": 32,
        "pos": 6,
-       "neg": 5,
+       "neg": 2,
        "verdict": "positive",
        "top": [
         {
@@ -1233,7 +1233,7 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is +32.2%, 6-month -5.2%",
       "news": {
-       "n": 11,
+       "n": 10,
        "pos": 2,
        "neg": 0,
        "verdict": "positive",
@@ -1355,10 +1355,16 @@
       "needs": "needs both climbs positive \u2014 3-month is +19.8%, 6-month -1.4%",
       "news": {
        "n": 40,
-       "pos": 5,
+       "pos": 6,
        "neg": 6,
-       "verdict": "negative",
+       "verdict": "mixed",
        "top": [
+        {
+         "h": "Zero To Sixty: Fort Worth Gets Tesla Robotaxi While UBS Upgrades Rivian And Citigroup Shuffles EV Holdings",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Stocks slide as Wall Street's post-election rally fizzles",
          "s": "Yahoo",
@@ -1373,12 +1379,6 @@
         },
         {
          "h": "SpaceX and Tesla Stock Plunges Have Wiped About $450 Billion in Value Since the Midterms. Is It Time to Buy?",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
-        },
-        {
-         "h": "Tesla Sinks 12%, SpaceX Down 9% as Midterm Sweep Puts Merger on \u201cA Much Tougher Regulatory Roadmap\u201d",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
@@ -1507,8 +1507,8 @@
       "reason": "in the lower half of its 52-week range",
       "needs": "needs to climb past 55% of its 52-week range \u2014 it is at 41%",
       "news": {
-       "n": 40,
-       "pos": 10,
+       "n": 34,
+       "pos": 8,
        "neg": 1,
        "verdict": "positive",
        "top": [
@@ -1637,7 +1637,7 @@
       "news": {
        "n": 40,
        "pos": 14,
-       "neg": 5,
+       "neg": 4,
        "verdict": "positive",
        "top": [
         {
@@ -1681,11 +1681,23 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is +5.5%, 6-month -8.8%",
       "news": {
-       "n": 29,
-       "pos": 9,
+       "n": 31,
+       "pos": 11,
        "neg": 0,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Celsius Holdings (CELH) Recasts Leadership Around Three Business Units And Zero Sugar Growth",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "Celsius Holdings Inc (CELH) Q3 2026 Earnings Call Highlights: Alani Nu's Record Quarter Powers ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Celsius (NASDAQ:CELH) Q3 Revenue and Adjusted EPS Beat Estimates, Lifting Shares Premarket",
          "s": "ChartMill",
@@ -1694,18 +1706,6 @@
         },
         {
          "h": "Celsius Holdings stock jumps on Q3 beat as Alani Nu growth offsets weakness",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Celsius (NASDAQ:CELH) surprises with strong Q3 2026, stock soars",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Celsius Holdings Inc. (CELH) Q3 Earnings and Revenues Beat Estimates",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
@@ -1940,7 +1940,7 @@
       "needs": "needs both climbs positive \u2014 3-month is -4.8%, 6-month +5.8%",
       "news": {
        "n": 40,
-       "pos": 5,
+       "pos": 4,
        "neg": 3,
        "verdict": "positive",
        "top": [
@@ -2076,7 +2076,7 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -6.9%, 6-month +27.5%",
       "news": {
-       "n": 9,
+       "n": 8,
        "pos": 1,
        "neg": 1,
        "verdict": "mixed",
@@ -2122,11 +2122,17 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -7.1%, 6-month -6.0%",
       "news": {
-       "n": 40,
-       "pos": 6,
+       "n": 37,
+       "pos": 4,
        "neg": 5,
-       "verdict": "positive",
+       "verdict": "negative",
        "top": [
+        {
+         "h": "DraftKings (NASDAQ:DKNG) misses Q3 2026 revenue estimates, stock drops 23%",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
         {
          "h": "DraftKings (NASDAQ:DKNG) Shares Plunge After Q3 Revenue Miss and Weak Guidance",
          "s": "ChartMill",
@@ -2141,12 +2147,6 @@
         },
         {
          "h": "DraftKings (DKNG) Reports Q3 Loss, Misses Revenue Estimates",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
-        },
-        {
-         "h": "DraftKings Stock Dives on Q3 Miss, Lower Guidance: Company Sees Up to $750M in 2027 Prediction Markets Revenue",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
@@ -2183,11 +2183,17 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -7.9%, 6-month +12.0%",
       "news": {
-       "n": 40,
-       "pos": 15,
+       "n": 37,
+       "pos": 11,
        "neg": 5,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Affirm Holdings Inc (AFRM) (Q1 2027) Earnings Call Highlights: 34% GMV Growth, AI Underwriting ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Affirm\u2019s (NASDAQ:AFRM) Q3 CY2026: strong sales but stock drops 10.4%",
          "s": "Yahoo",
@@ -2205,12 +2211,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
-        },
-        {
-         "h": "Affirm Holdings (AFRM) Q1 Earnings and Revenues Beat Estimates",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
         }
        ]
       },
@@ -2291,32 +2291,32 @@
       "needs": "needs both climbs positive \u2014 3-month is -8.7%, 6-month +0.8%",
       "news": {
        "n": 40,
-       "pos": 1,
+       "pos": 4,
        "neg": 3,
-       "verdict": "negative",
+       "verdict": "positive",
        "top": [
         {
-         "h": "Dow Jones Futures Fall; Nasdaq Dives 5.5%, Nvidia, Sandisk, CoreWeave, SpaceX Plunge, But Sell-Off Spreads Beyond AI",
+         "h": "TSS Inc (TSSI) (Q3 2026) Earnings Call Highlights: Record Systems Integration Revenue Drives ...",
          "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
-        },
-        {
-         "h": "Stocks slide as Wall Street's post-election rally fizzles",
-         "s": "Yahoo",
-         "d": "2026-11-05",
+         "d": "2026-11-06",
          "sent": 1
         },
         {
-         "h": "Update: Nasdaq Enters Correction Territory Amid Data Center Anxiety; Nvidia Tumbles Over 9%",
+         "h": "The Nasdaq Plunges 5%. What the Data Center Crash Means for Investors",
          "s": "Yahoo",
-         "d": "2026-11-05",
+         "d": "2026-11-06",
          "sent": -1
         },
         {
-         "h": "Stock Market Today: Nasdaq Craters 5% As Chips Sell Off; Arm Misses Key Metric (Live Coverage)",
+         "h": "Rocket Lab Stock Has Lost About 70% From Its Record. Is It Finally a Buy?",
          "s": "Yahoo",
-         "d": "2026-11-05",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "Dow Jones Futures Fall, Techs Bounce After Nasdaq Dives 5.5%; Nvidia, Sandisk, CoreWeave, SpaceX Plunge",
+         "s": "Yahoo",
+         "d": "2026-11-06",
          "sent": -1
         }
        ]
@@ -2337,32 +2337,32 @@
       "needs": "needs both climbs positive \u2014 3-month is -9.0%, 6-month +22.6%",
       "news": {
        "n": 40,
-       "pos": 8,
-       "neg": 2,
+       "pos": 13,
+       "neg": 3,
        "verdict": "positive",
        "top": [
         {
-         "h": "Polen 5Perspectives Large Growth Composite Q3 2026 Portfolio Performance And Attribution",
-         "s": "SeekingAlpha",
-         "d": "2026-11-04",
-         "sent": 1
-        },
-        {
-         "h": "Polen 5Perspectives Small Growth Composite Q3 2026 Portfolio Attribution And Activity",
-         "s": "SeekingAlpha",
-         "d": "2026-11-04",
-         "sent": 1
-        },
-        {
-         "h": "Cloudflare (NET) Shares Outperform Following Accelerating Revenue Growth and Raised Outlook",
+         "h": "Dow Jones Futures Fall, Techs Bounce After Nasdaq Dives 5.5%; Nvidia, Sandisk, CoreWeave, SpaceX Plunge",
          "s": "Yahoo",
-         "d": "2026-11-04",
+         "d": "2026-11-06",
+         "sent": -1
+        },
+        {
+         "h": "Cloudflare (NYSE:NET) Q3 Beat and Above-Consensus Guidance Fuel Rebound",
+         "s": "ChartMill",
+         "d": "2026-11-06",
          "sent": 1
         },
         {
-         "h": "JPMorgan Just Upgraded Cloudflare Stock. Here's Why.",
+         "h": "SentinelOne (S) Expands AI Security Ties, Is The Stock Trading At A Discount?",
          "s": "Yahoo",
-         "d": "2026-11-04",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Cloudflare Earnings Beat. Software Maker Rebounds From AI Stock Rout.",
+         "s": "Yahoo",
+         "d": "2026-11-05",
          "sent": 1
         }
        ]
@@ -2474,10 +2474,16 @@
       "needs": "needs both climbs positive \u2014 3-month is -11.0%, 6-month +46.7%",
       "news": {
        "n": 40,
-       "pos": 4,
-       "neg": 8,
+       "pos": 2,
+       "neg": 9,
        "verdict": "negative",
        "top": [
+        {
+         "h": "Micron freezes Taiwan plant as workers demand bigger cut",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
         {
          "h": "S&P 500 After-Hours Movers: ABNB and SNDK Gain, AXON and SOLV Fall",
          "s": "ChartMill",
@@ -2495,12 +2501,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
-        },
-        {
-         "h": "Micron Stock Falls After Report of $4.5 Billion Taiwan Pause",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
         }
        ]
       },
@@ -2549,7 +2549,7 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -12.7%, 6-month +24.6%",
       "news": {
-       "n": 19,
+       "n": 16,
        "pos": 4,
        "neg": 1,
        "verdict": "positive",
@@ -2655,10 +2655,10 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -15.8%, 6-month -2.7%",
       "news": {
-       "n": 9,
-       "pos": 4,
+       "n": 6,
+       "pos": 1,
        "neg": 0,
-       "verdict": "positive",
+       "verdict": "mixed",
        "top": [
         {
          "h": "Can Hims & Hers Stock Rally 50% After This Dip?",
@@ -2667,22 +2667,22 @@
          "sent": 1
         },
         {
-         "h": "Teladoc Soars 11% on Q3 Beat and Raised Outlook as \u201cInsurance Revenue Exceeded Our Expectations\u201d",
+         "h": "Hims & Hers Health (HIMS) Stock Looks Reasonable After Its 263% Run",
          "s": "Yahoo",
-         "d": "2026-10-29",
-         "sent": 1
+         "d": "2026-11-06",
+         "sent": 0
         },
         {
-         "h": "Eli Lilly Soars 5% as Mounjaro and Zepbound Demand Drives $5.5 Billion Guidance Raise",
+         "h": "Why Hims & Hers Health, Inc. (HIMS) Dipped More Than Broader Market Today",
          "s": "Yahoo",
-         "d": "2026-10-29",
-         "sent": 1
+         "d": "2026-11-05",
+         "sent": 0
         },
         {
-         "h": "Eli Lilly Jumps 8% as Strong Quarter Lifts Revenue Outlook; Novo Nordisk Ticks Up, Viking Therapeutics Eases",
+         "h": "Hims & Hers Benefits Adds Gr\u00fcns, Medjet, Tonal, and Viome for Whole-Body Health and Support When You Need It Most",
          "s": "Yahoo",
-         "d": "2026-10-29",
-         "sent": 1
+         "d": "2026-11-05",
+         "sent": 0
         }
        ]
       },
@@ -2761,9 +2761,9 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -17.2%, 6-month -17.0%",
       "news": {
-       "n": 27,
+       "n": 23,
        "pos": 6,
-       "neg": 3,
+       "neg": 2,
        "verdict": "positive",
        "top": [
         {
@@ -2897,7 +2897,7 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -22.2%, 6-month -28.0%",
       "news": {
-       "n": 22,
+       "n": 18,
        "pos": 2,
        "neg": 0,
        "verdict": "positive",
@@ -3051,10 +3051,22 @@
       "needs": "needs both climbs positive \u2014 3-month is -26.0%, 6-month -36.1%",
       "news": {
        "n": 40,
-       "pos": 7,
-       "neg": 4,
+       "pos": 9,
+       "neg": 3,
        "verdict": "positive",
        "top": [
+        {
+         "h": "IonQ Inc (IONQ) (Q3 2026) Earnings Call Highlights: Record Revenue, DARPA Milestone and ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "IonQ, Inc. (IONQ) Reports Q3 Loss, Tops Revenue Estimates",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "IonQ climbs 3% on earnings beat and raised guidance",
          "s": "Yahoo",
@@ -3063,18 +3075,6 @@
         },
         {
          "h": "IonQ (NYSE:IONQ) beats expectations in strong Q3 2026, guides for strong full-year sales",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "IonQ Announces Record 3Q26 Revenues and Raises FY2026 Guidance to $505 - $515 Million as Backlog Grows to $1.2 Billion",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Rigetti Q3 Earnings: Will Commercial Progress Translate Into Growth?",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
@@ -3097,10 +3097,16 @@
       "needs": "needs both climbs positive \u2014 3-month is -26.0%, 6-month -37.4%",
       "news": {
        "n": 40,
-       "pos": 4,
+       "pos": 5,
        "neg": 5,
-       "verdict": "negative",
+       "verdict": "mixed",
        "top": [
+        {
+         "h": "GE Vernova Is Up 18% in 2026 After Three Guidance Raises: Take Profits, or Buy More?",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Caterpillar Sinks Another 6%, Vertiv Down 14%, Quanta Down 12% as AI Selloff Spreads to Industrials",
          "s": "Yahoo",
@@ -3118,12 +3124,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
-        },
-        {
-         "h": "Vistra Sinks 16% in a Week to a New 52-Week Low. Is the Texas Selloff Overdone?",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
         }
        ]
       },
@@ -3143,7 +3143,7 @@
       "needs": "needs both climbs positive \u2014 3-month is -27.8%, 6-month -3.7%",
       "news": {
        "n": 40,
-       "pos": 5,
+       "pos": 4,
        "neg": 10,
        "verdict": "negative",
        "top": [
@@ -3219,10 +3219,22 @@
       "needs": "needs both climbs positive \u2014 3-month is -30.0%, 6-month -33.5%",
       "news": {
        "n": 40,
-       "pos": 5,
-       "neg": 4,
+       "pos": 6,
+       "neg": 5,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Rocket Lab Stock Slides As Neutron Delay Puts Focus On Earnings",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
+        {
+         "h": "Rocket Lab Stock Has Lost About 70% From Its Record. Is It Finally a Buy?",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Rocket Lab Sinks 12% as AI Stock Sell-Off Hits Space: \u201cAbsolute Slaughter\u201d",
          "s": "Yahoo",
@@ -3234,18 +3246,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
-        },
-        {
-         "h": "Rocket Lab Falls 4%, SpaceX Down 4% as Midterms Make Musk the \u201cBiggest Loser\u201d",
-         "s": "Yahoo",
-         "d": "2026-11-04",
-         "sent": -1
-        },
-        {
-         "h": "Got $5,000? 2 Growth Stocks Powering the Next Phase of the Space Economy.",
-         "s": "Yahoo",
-         "d": "2026-11-04",
-         "sent": 1
         }
        ]
       },
@@ -3264,7 +3264,7 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -30.2%, 6-month -7.0%",
       "news": {
-       "n": 13,
+       "n": 9,
        "pos": 4,
        "neg": 2,
        "verdict": "positive",
@@ -3310,7 +3310,7 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -30.2%, 6-month -45.4%",
       "news": {
-       "n": 30,
+       "n": 27,
        "pos": 8,
        "neg": 1,
        "verdict": "positive",
@@ -3446,7 +3446,7 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -33.2%, 6-month -35.9%",
       "news": {
-       "n": 38,
+       "n": 34,
        "pos": 7,
        "neg": 4,
        "verdict": "positive",
@@ -3530,7 +3530,7 @@
      },
      {
       "symbol": "BITF",
-      "price": 2.19,
+      "price": 2.1,
       "price_asof": "2026-11-05 close",
       "qualified": false,
       "buy": false,
@@ -3644,9 +3644,9 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -38.9%, 6-month -40.1%",
       "news": {
-       "n": 32,
+       "n": 30,
        "pos": 5,
-       "neg": 7,
+       "neg": 6,
        "verdict": "negative",
        "top": [
         {
@@ -3691,10 +3691,16 @@
       "needs": "needs both climbs positive \u2014 3-month is -39.1%, 6-month -47.2%",
       "news": {
        "n": 40,
-       "pos": 8,
+       "pos": 9,
        "neg": 0,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Canaccord Genuity Upgrades Joby Aviation to Buy from Hold",
+         "s": "Fintel",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Joby Advances in Final FAA Stage as Revenue Beats Estimates",
          "s": "Yahoo",
@@ -3710,12 +3716,6 @@
         {
          "h": "Canaccord Genuity Upgrades Joby Aviation to Buy, Lowers Price Target to $7",
          "s": "Benzinga",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "JOBY Stock Rises After Hours On Q3 Revenue Beat, Advances Final Stages Of FAA Certification For EVTOL",
-         "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
         }
@@ -3923,7 +3923,7 @@
       "vol": 110.0
      }
     ],
-    "note": "One share of every stock that passes every test is bought \u2014 there is no slot limit, so every recommendation ever made is scored in the public record.",
+    "note": "Highlighted names are what the machine itself buys on the post-close run at official closing prices \u2014 one share each, every suggestion landing in its own track record.",
     "basis": "metrics"
    },
    "rules": {
@@ -3940,14 +3940,14 @@
    "tagline": "Quality large caps in confirmed uptrends. Steady compounding.",
    "horizon": "Weeks to months",
    "risk_note": "Moderate risk. Buys one share of every large cap in a confirmed uptrend; steps aside when a trend breaks.",
-   "equity": 10504.84,
+   "equity": 10537.05,
    "cash": 0.0,
    "unit_scale": 0.73808221,
    "invested": 13862.2,
    "max_hold_bars": null,
-   "total_return_pct": 5.05,
-   "vs_spy_pct": 6.93,
-   "max_drawdown_pct": -3.57,
+   "total_return_pct": 5.37,
+   "vs_spy_pct": 7.25,
+   "max_drawdown_pct": -3.27,
    "closed_trades": 2,
    "win_rate_pct": 100.0,
    "avg_win_pct": 18.5,
@@ -3991,9 +3991,9 @@
      "entry_date": "2026-08-04",
      "entry_price": 156.28,
      "shares": 12.7977,
-     "current_price": 149.31,
-     "current_value": 1910.82,
-     "pnl_pct": -4.46,
+     "current_price": 152.72,
+     "current_value": 1954.46,
+     "pnl_pct": -2.28,
      "target_price": 179.63,
      "stop_price": 140.58,
      "bars_held": 0,
@@ -4015,7 +4015,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 43% over six months and 37% over the year, trading 90% of the way up its 52-week range with moderate (21%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "TMO",
@@ -4031,7 +4031,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 50% over six months and 25% over the year, trading 87% of the way up its 52-week range with moderate (26%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "BDX",
@@ -4047,7 +4047,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 40% over six months and 49% over the year, trading 100% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "MA",
@@ -4063,7 +4063,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 36% over six months and 22% over the year, trading 92% of the way up its 52-week range with moderate (22%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "V",
@@ -4079,7 +4079,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 33% over six months and 28% over the year, trading 90% of the way up its 52-week range with moderate (21%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "GILD",
@@ -4095,7 +4095,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 33% over six months and 42% over the year, trading 86% of the way up its 52-week range with moderate (27%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "CTAS",
@@ -4111,7 +4111,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 35% over six months and 24% over the year, trading 94% of the way up its 52-week range with moderate (22%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "TRV",
@@ -4127,7 +4127,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 34% over six months and 48% over the year, trading 95% of the way up its 52-week range with moderate (19%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "LLY",
@@ -4143,7 +4143,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 47% over six months and 56% over the year, trading 86% of the way up its 52-week range with moderate (32%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "PSX",
@@ -4159,7 +4159,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 47% over six months and 91% over the year, trading 70% of the way up its 52-week range with moderate (35%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "ADP",
@@ -4175,7 +4175,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 40% over six months and 15% over the year, trading 98% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "MDT",
@@ -4191,7 +4191,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 32% over six months and 16% over the year, trading 95% of the way up its 52-week range with moderate (27%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "ROP",
@@ -4207,7 +4207,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 37% over six months and 10% over the year, trading 98% of the way up its 52-week range with moderate (33%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "KO",
@@ -4223,7 +4223,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 22% over six months and 40% over the year, trading 97% of the way up its 52-week range with moderate (17%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "AMGN",
@@ -4239,7 +4239,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 45% over six months and 61% over the year, trading 88% of the way up its 52-week range with moderate (33%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "RSG",
@@ -4255,7 +4255,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 19% over six months and 18% over the year, trading 100% of the way up its 52-week range with moderate (20%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "MCK",
@@ -4271,7 +4271,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 31% over six months and 27% over the year, trading 99% of the way up its 52-week range with moderate (31%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "DHR",
@@ -4287,7 +4287,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 33% over six months and 9% over the year, trading 80% of the way up its 52-week range with moderate (29%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "ECL",
@@ -4303,7 +4303,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 21% over six months and 22% over the year, trading 87% of the way up its 52-week range with moderate (18%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "PFE",
@@ -4319,7 +4319,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 17% over six months and 27% over the year, trading 84% of the way up its 52-week range with moderate (21%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "PM",
@@ -4335,7 +4335,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 27% over six months and 43% over the year, trading 82% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "AJG",
@@ -4351,7 +4351,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 39% over six months and 15% over the year, trading 98% of the way up its 52-week range with moderate (34%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     },
     {
      "symbol": "MET",
@@ -4367,7 +4367,7 @@
      "bars_held": 0,
      "entry_time": null,
      "thesis": "A confirmed climb: up 28% over six months and 29% over the year, trading 89% of the way up its 52-week range with moderate (22%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "is_new": true
+     "is_new": false
     }
    ],
    "recent_trades": [
@@ -4431,23 +4431,23 @@
     }
    ],
    "pro": {
-    "ann_vol_pct": 22.4,
-    "sharpe": 2.88,
-    "beta": 0.56,
-    "alpha_ann_pct": 76.8,
-    "ann_return_pct": 86.0,
+    "ann_vol_pct": 21.7,
+    "sharpe": 3.14,
+    "beta": 0.52,
+    "alpha_ann_pct": 79.6,
+    "ann_return_pct": 93.3,
     "profit_factor": null,
     "sample_days": 20,
-    "sortino": 4.45,
-    "calmar": 24.09,
+    "sortino": 5.02,
+    "calmar": 28.5,
     "best_day_pct": 3.07,
-    "worst_day_pct": -3.57,
+    "worst_day_pct": -3.27,
     "underwater_days": 6,
     "turnover_yr": null,
-    "t_stat": 1.15
+    "t_stat": 1.19
    },
    "watchlist": {
-    "note": "Ranked highest by this strategy's model at the latest close.",
+    "note": "These qualify now; purchases are made on the post-close run so every fill uses an official closing price.",
     "items": [
      {
       "symbol": "ABBV",
@@ -4635,6 +4635,12 @@
        "verdict": "positive",
        "top": [
         {
+         "h": "Becton Dickinson & Co (BDX) (Q4 2026) Earnings Call Highlights: Strong Q4 Beat, $19 Billion ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
          "h": "Becton Dickinson, Cardinal Health Beat Quarterly Views",
          "s": "Yahoo",
          "d": "2026-11-05",
@@ -4648,12 +4654,6 @@
         },
         {
          "h": "BD\u2019s (NYSE:BDX) Q3 CY2026: beats on revenue, but full year guidance comes in just below expectations",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "MCK Q2 Earnings Beat Estimates on Specialty Growth, Outlook Raised",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
@@ -4722,7 +4722,7 @@
       "needs": "",
       "news": {
        "n": 40,
-       "pos": 13,
+       "pos": 12,
        "neg": 3,
        "verdict": "positive",
        "top": [
@@ -4813,9 +4813,9 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 29,
+       "n": 28,
        "pos": 9,
-       "neg": 2,
+       "neg": 1,
        "verdict": "positive",
        "top": [
         {
@@ -4859,9 +4859,9 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 18,
-       "pos": 7,
-       "neg": 1,
+       "n": 14,
+       "pos": 5,
+       "neg": 0,
        "verdict": "positive",
        "top": [
         {
@@ -4951,8 +4951,8 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 40,
-       "pos": 11,
+       "n": 37,
+       "pos": 8,
        "neg": 0,
        "verdict": "positive",
        "top": [
@@ -4997,11 +4997,17 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 39,
-       "pos": 9,
+       "n": 32,
+       "pos": 7,
        "neg": 1,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Jobs- Solid Private Sector Growth in October",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
         {
          "h": "'Pretty solid job growth:' Private US employers added 86,000 jobs in October",
          "s": "Yahoo",
@@ -5016,12 +5022,6 @@
         },
         {
          "h": "TransUnion Stock Barely Moves Since Posting Q3 Earnings & Revenue Beat",
-         "s": "Yahoo",
-         "d": "2026-11-03",
-         "sent": 1
-        },
-        {
-         "h": "Gartner Q3 Earnings Beat Estimates, Revenues Move Up 2% Y/Y",
          "s": "Yahoo",
          "d": "2026-11-03",
          "sent": 1
@@ -5043,11 +5043,17 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 40,
-       "pos": 2,
+       "n": 38,
+       "pos": 3,
        "neg": 2,
-       "verdict": "mixed",
+       "verdict": "positive",
        "top": [
+        {
+         "h": "ICU Medical (ICUI) Beats Q3 Earnings and Revenue Estimates",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "These 12 stocks are good bets to beat the 10-year Treasury over the next decade",
          "s": "Yahoo",
@@ -5064,12 +5070,6 @@
          "h": "Medtronic (MDT) Ascends While Market Falls: Some Facts to Note",
          "s": "Yahoo",
          "d": "2026-11-02",
-         "sent": -1
-        },
-        {
-         "h": "Alphatec Sinks 36% on Guidance Cut as Q3 Revenue Falls Short",
-         "s": "Yahoo",
-         "d": "2026-10-30",
          "sent": -1
         }
        ]
@@ -5089,7 +5089,7 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 16,
+       "n": 13,
        "pos": 3,
        "neg": 0,
        "verdict": "positive",
@@ -5141,6 +5141,12 @@
        "verdict": "positive",
        "top": [
         {
+         "h": "Monster Beverage Corp (MNST) Q3 2026 Earnings Call Highlights: International Surge Drives Sales ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
          "h": "2% Undervalued? Coca Cola (KO) As Earnings Beat Lifts Guidance And Dividend",
          "s": "Yahoo",
          "d": "2026-11-05",
@@ -5156,12 +5162,6 @@
          "h": "PepsiCo Jumps 15.1% in a Month as Investors Weigh What Comes Next",
          "s": "Yahoo",
          "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Can PepsiCo's Snack Pricing Strategy Drive Volume Growth?",
-         "s": "Yahoo",
-         "d": "2026-11-04",
          "sent": 1
         }
        ]
@@ -5227,8 +5227,8 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 35,
-       "pos": 14,
+       "n": 25,
+       "pos": 10,
        "neg": 0,
        "verdict": "positive",
        "top": [
@@ -5319,8 +5319,8 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 34,
-       "pos": 5,
+       "n": 28,
+       "pos": 3,
        "neg": 0,
        "verdict": "positive",
        "top": [
@@ -5343,10 +5343,10 @@
          "sent": 1
         },
         {
-         "h": "Repligen Soars 5% as RBC Raises Price Target to $200 After Full-Year Guidance Hike",
+         "h": "Are You Overpaying For Abbott Stock Versus Its Rivals?",
          "s": "Yahoo",
-         "d": "2026-10-29",
-         "sent": 1
+         "d": "2026-11-05",
+         "sent": 0
         }
        ]
       },
@@ -5365,8 +5365,8 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 12,
-       "pos": 4,
+       "n": 11,
+       "pos": 3,
        "neg": 0,
        "verdict": "positive",
        "top": [
@@ -5389,10 +5389,10 @@
          "sent": 1
         },
         {
-         "h": "Wells Fargo Maintains Equal-Weight on Ecolab, Raises Price Target to $315",
-         "s": "Benzinga",
-         "d": "2026-10-29",
-         "sent": 1
+         "h": "Is Cintas Stock Really Expensive?",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 0
         }
        ]
       },
@@ -5457,7 +5457,7 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 19,
+       "n": 17,
        "pos": 6,
        "neg": 0,
        "verdict": "positive",
@@ -5503,9 +5503,9 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 29,
+       "n": 20,
        "pos": 9,
-       "neg": 5,
+       "neg": 1,
        "verdict": "positive",
        "top": [
         {
@@ -5549,8 +5549,8 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 21,
-       "pos": 5,
+       "n": 19,
+       "pos": 4,
        "neg": 0,
        "verdict": "positive",
        "top": [
@@ -5590,11 +5590,42 @@
       "price": 417.28,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 40,
+       "pos": 15,
+       "neg": 1,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Marriott's Long-Term Unit Growth May Face Challenges, UBS Says",
+         "s": "Yahoo",
+         "d": "2026-11-03",
+         "sent": 1
+        },
+        {
+         "h": "Goldman Sachs Maintains Buy on Marriott International, Raises Price Target to $456",
+         "s": "Benzinga",
+         "d": "2026-11-03",
+         "sent": 1
+        },
+        {
+         "h": "Evercore ISI Group Maintains Outperform on Marriott International, Raises Price Target to $455",
+         "s": "Benzinga",
+         "d": "2026-11-03",
+         "sent": 1
+        },
+        {
+         "h": "Wells Fargo Maintains Overweight on Marriott International, Raises Price Target to $463",
+         "s": "Benzinga",
+         "d": "2026-11-03",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 17.6,
       "r6m": 19.7,
       "range_pos": 91,
@@ -5605,11 +5636,42 @@
       "price": 84.46,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 24,
+       "pos": 6,
+       "neg": 0,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "DXCM Q3 deep dive: clinical momentum and new product launches support growth trajectory",
+         "s": "Yahoo",
+         "d": "2026-11-01",
+         "sent": 1
+        },
+        {
+         "h": "Canaccord Genuity Maintains Buy on DexCom, Raises Price Target to $97",
+         "s": "Benzinga",
+         "d": "2026-10-30",
+         "sent": 1
+        },
+        {
+         "h": "JP Morgan Maintains Neutral on DexCom, Raises Price Target to $85",
+         "s": "Benzinga",
+         "d": "2026-10-30",
+         "sent": 1
+        },
+        {
+         "h": "DexCom Stock Up on Q3 Earnings & Revenue Beat, Margins Rise",
+         "s": "Yahoo",
+         "d": "2026-10-30",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 7.0,
       "r6m": 44.2,
       "range_pos": 79,
@@ -5620,11 +5682,42 @@
       "price": 187.77,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 34,
+       "pos": 9,
+       "neg": 0,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "3M's Safety & Industrial Growth Picks Up: Can the Momentum Sustain?",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Dow Rallies 1,590 Points on Midterm Relief: Stock Market Today",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "The Dow Rallies Back Above a Key Average, but Five Charts Made Even Bigger Moves Today",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Stock Market Today: Dow Soars On Election Landslide; Building, Retail, Healthcare Areas Jump (Live Coverage)",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 6.5,
       "r6m": 36.1,
       "range_pos": 87,
@@ -5635,11 +5728,42 @@
       "price": 36.89,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 40,
+       "pos": 12,
+       "neg": 1,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Is PepsiCo a Buy or a Wait as Value Clashes With Slower EPS Growth?",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "PepsiCo Jumps 15.1% in a Month as Investors Weigh What Comes Next",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "UBS Maintains Buy on Keurig Dr Pepper, Raises Price Target to $42",
+         "s": "Benzinga",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Citigroup Maintains Buy on Keurig Dr Pepper, Raises Price Target to $40",
+         "s": "Benzinga",
+         "d": "2026-11-04",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 19.6,
       "r6m": 26.5,
       "range_pos": 97,
@@ -5650,11 +5774,42 @@
       "price": 122.46,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 31,
+       "pos": 9,
+       "neg": 1,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Aflac Just Extended Its Dividend Growth Streak to 44 Years. Is It a Buy?",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "RDN Q3 Earnings Beat on Specialty Strength, Revenues Rise Y/Y",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "PRU Q3 Earnings Beat Estimates on PGIM and U.S. Protection Strength",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Barclays Maintains Underweight on Prudential Financial, Raises Price Target to $98",
+         "s": "Benzinga",
+         "d": "2026-11-04",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 5.4,
       "r6m": 28.4,
       "range_pos": 85,
@@ -5665,11 +5820,42 @@
       "price": 106.83,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 17,
+       "pos": 3,
+       "neg": 1,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "New Dividend Growth ETF Enters the Market",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Trump Warns of a \u20181929-Style Economic Depression\u2019 Ahead of the Midterms. The S&P 500 Has Risen After All 19 Midterms Sin",
+         "s": "Yahoo",
+         "d": "2026-11-02",
+         "sent": -1
+        },
+        {
+         "h": "CBOE Q3 Earnings Beat Estimates on Strong Options Volumes",
+         "s": "Yahoo",
+         "d": "2026-10-30",
+         "sent": 1
+        },
+        {
+         "h": "Netflix initiated, Instacart upgraded: Wall Street's top analyst calls",
+         "s": "Yahoo",
+         "d": "2026-10-30",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 16.0,
       "r6m": 20.1,
       "range_pos": 90,
@@ -5680,64 +5866,50 @@
       "price": 542.5,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 40,
+       "pos": 16,
+       "neg": 2,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Evotec Reports Third Quarter and Nine-Month 2026 Results: Building Growth Momentum Toward 2030 Goals",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Barclays Maintains Overweight on Vertex Pharmaceuticals, Raises Price Target to $626",
+         "s": "Benzinga",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Vertex Slumps On Light Pain Drug Sales, But A Key Kidney Catalyst Lies Ahead",
+         "s": "Yahoo",
+         "d": "2026-11-03",
+         "sent": -1
+        },
+        {
+         "h": "Vertex Q3 Earnings Call Highlights Revenue Beat and Pipeline Expansion",
+         "s": "Yahoo",
+         "d": "2026-11-03",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 13.2,
       "r6m": 29.5,
       "range_pos": 84,
       "vol": 30.0
      },
      {
-      "symbol": "GWW",
-      "price": 1451.39,
-      "price_asof": "2026-11-05 close",
-      "qualified": true,
-      "buy": false,
-      "held": false,
-      "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
-      "r3m": 7.5,
-      "r6m": 20.4,
-      "range_pos": 100,
-      "vol": 21.0
-     },
-     {
-      "symbol": "MRK",
-      "price": 146.94,
-      "price_asof": "2026-11-05 close",
-      "qualified": true,
-      "buy": false,
-      "held": false,
-      "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
-      "r3m": 17.2,
-      "r6m": 34.1,
-      "range_pos": 87,
-      "vol": 37.0
-     },
-     {
-      "symbol": "SPGI",
-      "price": 472.41,
-      "price_asof": "2026-11-05 close",
-      "qualified": true,
-      "buy": false,
-      "held": false,
-      "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
-      "r3m": 17.5,
-      "r6m": 19.5,
-      "range_pos": 69,
-      "vol": 25.0
-     },
-     {
       "symbol": "BK",
-      "price": 149.31,
+      "price": 152.72,
       "price_asof": "2026-11-05 close",
       "qualified": true,
       "buy": false,
@@ -5753,19 +5925,142 @@
       },
       "r3m": 4.0,
       "r6m": 26.6,
-      "range_pos": 73,
+      "range_pos": 78,
       "vol": 22.0
+     },
+     {
+      "symbol": "GWW",
+      "price": 1451.39,
+      "price_asof": "2026-11-05 close",
+      "qualified": true,
+      "buy": true,
+      "held": false,
+      "reason": "meets every test \u2014 durable, calm uptrend",
+      "needs": "",
+      "news": {
+       "n": 30,
+       "pos": 6,
+       "neg": 0,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Grainger Needs Stronger Core Margins To Justify Its Rally",
+         "s": "SeekingAlpha",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "W.W. Grainger Inc (GWW) (Q3 2026) Earnings Call Highlights: Double-Digit Sales Growth, Margin ...",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "IBD Stock Of The Day Grainger Surges On Best Revenue Growth In 5 Years",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Grainger Beats Earnings Estimates in Q3, Hikes '26 Guidance",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        }
+       ]
+      },
+      "r3m": 7.5,
+      "r6m": 20.4,
+      "range_pos": 100,
+      "vol": 21.0
+     },
+     {
+      "symbol": "MRK",
+      "price": 146.94,
+      "price_asof": "2026-11-05 close",
+      "qualified": true,
+      "buy": true,
+      "held": false,
+      "reason": "meets every test \u2014 durable, calm uptrend",
+      "needs": "",
+      "news": {
+       "n": 40,
+       "pos": 7,
+       "neg": 0,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Halozyme Therapeutics Inc (HALO) (Q3 2026) Earnings Call Highlights: Record Revenue, Raised ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "RVMD Q3 Earnings & Sales Beat Estimates on Encouraging Rasonque Uptake",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Business Development Supports Merck & Co.\u2019s (MRK) Next Growth Chapter",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "SMMT's Q3 Earnings Beat Estimates, Ivonescimab Development in Focus",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        }
+       ]
+      },
+      "r3m": 17.2,
+      "r6m": 34.1,
+      "range_pos": 87,
+      "vol": 37.0
      },
      {
       "symbol": "REGN",
       "price": 902.9,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 40,
+       "pos": 16,
+       "neg": 3,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Moderna Soars 8% on Early Multiple Myeloma Data for Its Three-in-One mRNA Therapy",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Why Regeneron (REGN) Might be Well Poised for a Surge",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "BAYRY Q3 Earnings and Revenues Miss Estimates, Pharma Performs Well",
+         "s": "Yahoo",
+         "d": "2026-11-03",
+         "sent": -1
+        },
+        {
+         "h": "Regeneron's 'Strong Commercial' Q3 Underscores Core Business Health, RBC Capital Markets Says",
+         "s": "Yahoo",
+         "d": "2026-11-02",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 21.1,
       "r6m": 32.7,
       "range_pos": 78,
@@ -5776,11 +6071,42 @@
       "price": 167.1,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 40,
+       "pos": 4,
+       "neg": 0,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "8 Of 11 Sectors Rise Wednesday As Growth Leads",
+         "s": "Benzinga",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Chasity Monroe Named CEO Of The Mane Choice, Will Champion Efforts In \u2018Groundbreaking Hair Growth Technology\u2019",
+         "s": "Yahoo",
+         "d": "2026-11-03",
+         "sent": 1
+        },
+        {
+         "h": "5 Most Undervalued Dividend Growth Stocks According to Hedge Funds",
+         "s": "Yahoo",
+         "d": "2026-11-01",
+         "sent": 1
+        },
+        {
+         "h": "SCHD Vs. FDVV: Which Dividend ETF Wins Into 2027",
+         "s": "SeekingAlpha",
+         "d": "2026-11-01",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 14.0,
       "r6m": 13.6,
       "range_pos": 96,
@@ -5791,11 +6117,42 @@
       "price": 52.9,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 9,
+       "pos": 3,
+       "neg": 0,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "IBD Stock Of The Day Grainger Surges On Best Revenue Growth In 5 Years",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Fastenal (NASDAQ:FAST): Strong Technicals and a Defined Breakout Setup",
+         "s": "ChartMill",
+         "d": "2026-10-31",
+         "sent": 1
+        },
+        {
+         "h": "Global Foundation Anchor Bolt Market Report 2026: Size, Share, Trends, and Forecast to 2030 | Capitalize on Smart Infras",
+         "s": "Yahoo",
+         "d": "2026-10-30",
+         "sent": 1
+        },
+        {
+         "h": "Global Industrial: A Small Float, Big Momentum, And A Valuation Dilemma",
+         "s": "SeekingAlpha",
+         "d": "2026-11-05",
+         "sent": 0
+        }
+       ]
+      },
       "r3m": 6.4,
       "r6m": 18.5,
       "range_pos": 94,
@@ -5806,11 +6163,42 @@
       "price": 649.8,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 17,
+       "pos": 5,
+       "neg": 0,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Coty Q1 Earnings Beat Estimates Despite Sales Decline, Margins Down",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "EL's Fiscal 2030 Roadmap Targets Stronger Growth & Higher Margins",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Chewy vs. Five Below: Stable Growth vs. Seasonal Revenue Spikes in Retail",
+         "s": "Yahoo",
+         "d": "2026-11-03",
+         "sent": 1
+        },
+        {
+         "h": "Will Ulta (ULTA) Beat Estimates Again in Its Next Earnings Report?",
+         "s": "Yahoo",
+         "d": "2026-11-03",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 22.5,
       "r6m": 24.2,
       "range_pos": 76,
@@ -5821,11 +6209,42 @@
       "price": 100.82,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 38,
+       "pos": 11,
+       "neg": 0,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "CAH Shares Post New Record, EW Stock Hits Over Three-Year High \u2013 What\u2019s Driving Today\u2019s Rally?",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Evercore ISI Group Maintains Outperform on Edwards Lifesciences, Raises Price Target to $112",
+         "s": "Benzinga",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "BTIG Maintains Buy on Edwards Lifesciences, Raises Price Target to $115",
+         "s": "Benzinga",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Edwards Lifesciences (EW) Trial Win Puts Fair Value Back In Focus",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 11.7,
       "r6m": 18.3,
       "range_pos": 100,
@@ -5836,11 +6255,42 @@
       "price": 371.63,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 13,
+       "pos": 3,
+       "neg": 1,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "What Makes Chubb (CB) a Strong Momentum Stock: Buy Now?",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "UNM Q3 Earnings Beat Estimates on Premium Growth and Investment Income",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Can Chubb's Currys Partnership Expand Embedded Insurance Growth?",
+         "s": "Yahoo",
+         "d": "2026-11-03",
+         "sent": 1
+        },
+        {
+         "h": "CNA Q3 Earnings Miss on Higher LTC Reserves, Catastrophe Losses",
+         "s": "Yahoo",
+         "d": "2026-11-03",
+         "sent": -1
+        }
+       ]
+      },
       "r3m": 6.1,
       "r6m": 14.7,
       "range_pos": 97,
@@ -5851,11 +6301,42 @@
       "price": 272.32,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 40,
+       "pos": 5,
+       "neg": 1,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Johnson & Johnson wins FDA approval for Rybrevant cancer treatment",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "Johnson & Johnson announces U.S. FDA Approval of RYBREVANT FASPRO\u2122 (amivantamab and hyaluronidase-lpuj) as First and Onl",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "Zimmer Biomet Soars 15% as Hip and Tech Growth Lifts Guidance, \u201cValidating the Progress\u201d of Its Strategy",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Moderna Soars 8% on Early Multiple Myeloma Data for Its Three-in-One mRNA Therapy",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 7.3,
       "r6m": 21.6,
       "range_pos": 90,
@@ -5866,11 +6347,42 @@
       "price": 174.0,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 40,
+       "pos": 11,
+       "neg": 0,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Hyperliquid Strategies Files for FCM Status as Quarterly Revenue Tops $13M",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Circle\u2019s Earnings Beat Is a Sign Stablecoins Have Arrived. A Payoff for Crypto Stocks May Take Longer.",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Intercontinental Exchange (ICE) Stock Fair Value Edges Higher As Analysts Weigh Growth And Risks",
+         "s": "Yahoo",
+         "d": "2026-11-03",
+         "sent": 1
+        },
+        {
+         "h": "Beat the Market Like Zacks: Marathon Petroleum, Amgen, Chevron in Focus",
+         "s": "Yahoo",
+         "d": "2026-11-02",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 16.7,
       "r6m": 13.0,
       "range_pos": 96,
@@ -5881,11 +6393,42 @@
       "price": 369.64,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 13,
+       "pos": 4,
+       "neg": 0,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Citigroup Maintains Neutral on Hilton Worldwide Holdings, Raises Price Target to $400",
+         "s": "Benzinga",
+         "d": "2026-11-03",
+         "sent": 1
+        },
+        {
+         "h": "HLT Q3 deep dive: business travel and new development drive growth, margin expands",
+         "s": "Yahoo",
+         "d": "2026-10-31",
+         "sent": 1
+        },
+        {
+         "h": "Argus Research Maintains Buy on Hilton Worldwide Holdings, Raises Price Target to $410",
+         "s": "Benzinga",
+         "d": "2026-10-30",
+         "sent": 1
+        },
+        {
+         "h": "Mizuho Upgrades Hilton Worldwide Holdings to Outperform from Neutral",
+         "s": "Fintel",
+         "d": "2026-10-30",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 16.6,
       "r6m": 12.3,
       "range_pos": 100,
@@ -5896,11 +6439,42 @@
       "price": 157.95,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 40,
+       "pos": 7,
+       "neg": 0,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Coty Q1 Earnings Beat Estimates Despite Sales Decline, Margins Down",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Zevia PBC (ZVIA) (Q3 2026) Earnings Call Highlights: Strong 18. ...",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Usana Health Sciences Inc (USNA) (Q3 2026) Earnings Call Highlights: Haya Subscriber Growth and ...",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "These 12 stocks are good bets to beat the 10-year Treasury over the next decade",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 10.4,
       "r6m": 26.5,
       "range_pos": 85,
@@ -5911,11 +6485,42 @@
       "price": 507.48,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 28,
+       "pos": 7,
+       "neg": 0,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Stock Market Crash Or Rally? Plan For Both",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Dow Soars 1,200 Points, S&P 500 and Nasdaq Jump 2% as Wall Street Celebrates Midterm Results",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Policy relief sparks surge in health insurance and hospital stocks",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        },
+        {
+         "h": "Truist Securities Reiterates Buy on HCA Healthcare, Raises Price Target to $510",
+         "s": "Benzinga",
+         "d": "2026-11-03",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 24.7,
       "r6m": 17.9,
       "range_pos": 76,
@@ -5926,11 +6531,42 @@
       "price": 47.83,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 33,
+       "pos": 6,
+       "neg": 1,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Monster Beverage Corp (MNST) Q3 2026 Earnings Call Highlights: International Surge Drives Sales ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "Monster\u2019s (NASDAQ:MNST) Q3 2026 sales beat estimates but stock drops",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "S&P 500 After-Hours Movers: ABNB and SNDK Gain, AXON and SOLV Fall",
+         "s": "ChartMill",
+         "d": "2026-11-05",
+         "sent": -1
+        },
+        {
+         "h": "Update: US Equity Futures Mixed Pre-Bell as AI Stocks Dip Following Democrats' Midterm Win",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 3.2,
       "r6m": 26.4,
       "range_pos": 86,
@@ -5941,11 +6577,42 @@
       "price": 517.01,
       "price_asof": "2026-11-05 close",
       "qualified": true,
-      "buy": false,
+      "buy": true,
       "held": false,
       "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "waiting its turn for the news check \u2014 nothing is bought unchecked",
-      "news": null,
+      "needs": "",
+      "news": {
+       "n": 34,
+       "pos": 9,
+       "neg": 1,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Motorola Beats Q3 Earnings Estimates on Strong Demand, Record Orders",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Motorola Solutions Inc (MSI) (Q3 2026) Earnings Call Highlights: Record Backlog and Raised ...",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Motorola Solutions (NYSE:MSI) posts better-than-expected sales in Q3 2026 but quarterly revenue guidance slightly misses",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": -1
+        },
+        {
+         "h": "Axon Trades on Its 2027 Growth. Here\u2019s What the November 5 Report Has to Prove",
+         "s": "Yahoo",
+         "d": "2026-11-04",
+         "sent": 1
+        }
+       ]
+      },
       "r3m": 13.4,
       "r6m": 14.0,
       "range_pos": 100,
@@ -6507,6 +7174,12 @@
        "verdict": "negative",
        "top": [
         {
+         "h": "Chatham Lodging Trust (CLDT) (Q3 2026) Earnings Call Highlights: Silicon Valley Surge Drives ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
          "h": "Nasdaq Plunges 1,421 Points, Dow Slides 1,833 Points in Tech Rout: Stock Market Today",
          "s": "Yahoo",
          "d": "2026-11-05",
@@ -6521,12 +7194,6 @@
         {
          "h": "Microsoft Q3 Earnings: The Only Top AI Hyperscaler Generating Positive FCF (Rating Downgrade)",
          "s": "SeekingAlpha",
-         "d": "2026-11-05",
-         "sent": -1
-        },
-        {
-         "h": "CoreWeave Sinks 9% as Microsoft Rejects Nscale\u2019s Texas Expansion: \u201cThe First Person Who\u2019s Going to Suffer\u201d",
-         "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
         }
@@ -6544,14 +7211,26 @@
       "qualified": false,
       "buy": false,
       "held": false,
-      "reason": "passes every price test, but this week's news is negative (8 bad headlines) \u2014 waiting for it to clear",
+      "reason": "passes every price test, but this week's news is negative (9 bad headlines) \u2014 waiting for it to clear",
       "needs": "needs the negative headlines to stop",
       "news": {
        "n": 40,
-       "pos": 2,
-       "neg": 8,
+       "pos": 3,
+       "neg": 9,
        "verdict": "negative",
        "top": [
+        {
+         "h": "MP Materials Corp (MP) (Q3 2026) Earnings Call Highlights: Rare Earth Output Surges 41% as ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "Dow Jones Futures Fall, Techs Bounce After Nasdaq Dives 5.5%; Nvidia, Sandisk, CoreWeave, SpaceX Plunge",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
         {
          "h": "Dow Jones Futures Fall; Nasdaq Dives 5.5%, Nvidia, Sandisk, CoreWeave, SpaceX Plunge, But Sell-Off Spreads Beyond AI",
          "s": "Yahoo",
@@ -6563,18 +7242,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
-        },
-        {
-         "h": "Apple (AAPL) Stock Could Be 30% Overvalued Despite Record iPhone Sales",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Apple: Record Revenue Ahead, But Memory Costs Could Eat The Growth",
-         "s": "SeekingAlpha",
-         "d": "2026-11-05",
-         "sent": 1
         }
        ]
       },
@@ -6582,6 +7249,52 @@
       "r6m": 24.8,
       "range_pos": 91,
       "vol": 22.0
+     },
+     {
+      "symbol": "SPGI",
+      "price": 472.41,
+      "price_asof": "2026-11-05 close",
+      "qualified": false,
+      "buy": false,
+      "held": false,
+      "reason": "passes every price test, but this week's news is negative (5 bad headlines) \u2014 waiting for it to clear",
+      "needs": "needs the negative headlines to stop",
+      "news": {
+       "n": 40,
+       "pos": 3,
+       "neg": 5,
+       "verdict": "negative",
+       "top": [
+        {
+         "h": "Does The Fall In MasTec Stock Change Anything?",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
+        {
+         "h": "Can D-Wave Quantum Stock Fall 50%?",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": -1
+        },
+        {
+         "h": "Is Palantir Stock Ready For Slower Growth?",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "What Is Driving The Fall In CoreWeave Stock?",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": -1
+        }
+       ]
+      },
+      "r3m": 17.5,
+      "r6m": 19.5,
+      "range_pos": 69,
+      "vol": 25.0
      },
      {
       "symbol": "CRWD",
@@ -6715,10 +7428,16 @@
       "needs": "needs all three climbs positive \u2014 3-month -11.0%, 6-month +46.7%, 12-month +264.7%",
       "news": {
        "n": 40,
-       "pos": 4,
-       "neg": 8,
+       "pos": 2,
+       "neg": 9,
        "verdict": "negative",
        "top": [
+        {
+         "h": "Micron freezes Taiwan plant as workers demand bigger cut",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
         {
          "h": "S&P 500 After-Hours Movers: ABNB and SNDK Gain, AXON and SOLV Fall",
          "s": "ChartMill",
@@ -6736,12 +7455,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
-        },
-        {
-         "h": "Micron Stock Falls After Report of $4.5 Billion Taiwan Pause",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
         }
        ]
       },
@@ -6762,8 +7475,8 @@
       "news": {
        "n": 40,
        "pos": 7,
-       "neg": 7,
-       "verdict": "mixed",
+       "neg": 4,
+       "verdict": "positive",
        "top": [
         {
          "h": "Stock Market Today, Nov. 5: Intel Falls on Weak Fourth-Quarter Sales Outlook Amid Chip Selloff",
@@ -6837,7 +7550,7 @@
       "needs": "needs volatility below 45% \u2014 it swings 49%",
       "news": {
        "n": 40,
-       "pos": 14,
+       "pos": 12,
        "neg": 1,
        "verdict": "positive",
        "top": [
@@ -6944,7 +7657,7 @@
       "news": {
        "n": 40,
        "pos": 14,
-       "neg": 5,
+       "neg": 4,
        "verdict": "positive",
        "top": [
         {
@@ -7184,7 +7897,7 @@
       "reason": "not rising over 3, 6 and 12 months together",
       "needs": "needs all three climbs positive \u2014 3-month -7.3%, 6-month +14.1%, 12-month +49.3%",
       "news": {
-       "n": 13,
+       "n": 12,
        "pos": 3,
        "neg": 0,
        "verdict": "positive",
@@ -7817,32 +8530,32 @@
       "needs": "needs all three climbs positive \u2014 3-month -8.7%, 6-month +0.8%, 12-month +0.7%",
       "news": {
        "n": 40,
-       "pos": 1,
+       "pos": 4,
        "neg": 3,
-       "verdict": "negative",
+       "verdict": "positive",
        "top": [
         {
-         "h": "Dow Jones Futures Fall; Nasdaq Dives 5.5%, Nvidia, Sandisk, CoreWeave, SpaceX Plunge, But Sell-Off Spreads Beyond AI",
+         "h": "TSS Inc (TSSI) (Q3 2026) Earnings Call Highlights: Record Systems Integration Revenue Drives ...",
          "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
-        },
-        {
-         "h": "Stocks slide as Wall Street's post-election rally fizzles",
-         "s": "Yahoo",
-         "d": "2026-11-05",
+         "d": "2026-11-06",
          "sent": 1
         },
         {
-         "h": "Update: Nasdaq Enters Correction Territory Amid Data Center Anxiety; Nvidia Tumbles Over 9%",
+         "h": "The Nasdaq Plunges 5%. What the Data Center Crash Means for Investors",
          "s": "Yahoo",
-         "d": "2026-11-05",
+         "d": "2026-11-06",
          "sent": -1
         },
         {
-         "h": "Stock Market Today: Nasdaq Craters 5% As Chips Sell Off; Arm Misses Key Metric (Live Coverage)",
+         "h": "Rocket Lab Stock Has Lost About 70% From Its Record. Is It Finally a Buy?",
          "s": "Yahoo",
-         "d": "2026-11-05",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "Dow Jones Futures Fall, Techs Bounce After Nasdaq Dives 5.5%; Nvidia, Sandisk, CoreWeave, SpaceX Plunge",
+         "s": "Yahoo",
+         "d": "2026-11-06",
          "sent": -1
         }
        ]
@@ -7983,10 +8696,16 @@
       "needs": "needs all three climbs positive \u2014 3-month +19.8%, 6-month -1.4%, 12-month -13.3%",
       "news": {
        "n": 40,
-       "pos": 5,
+       "pos": 6,
        "neg": 6,
-       "verdict": "negative",
+       "verdict": "mixed",
        "top": [
+        {
+         "h": "Zero To Sixty: Fort Worth Gets Tesla Robotaxi While UBS Upgrades Rivian And Citigroup Shuffles EV Holdings",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Stocks slide as Wall Street's post-election rally fizzles",
          "s": "Yahoo",
@@ -8001,12 +8720,6 @@
         },
         {
          "h": "SpaceX and Tesla Stock Plunges Have Wiped About $450 Billion in Value Since the Midterms. Is It Time to Buy?",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
-        },
-        {
-         "h": "Tesla Sinks 12%, SpaceX Down 9% as Midterm Sweep Puts Merger on \u201cA Much Tougher Regulatory Roadmap\u201d",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
@@ -8904,7 +9617,7 @@
       "vol": 23.0
      }
     ],
-    "note": "One share of every stock that passes every test is bought \u2014 there is no slot limit, so every recommendation ever made is scored in the public record.",
+    "note": "Highlighted names are what the machine itself buys on the post-close run at official closing prices \u2014 one share each, every suggestion landing in its own track record.",
     "basis": "metrics"
    },
    "rules": {
@@ -9491,10 +10204,16 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 5,
+       "pos": 6,
        "neg": 6,
-       "verdict": "negative",
+       "verdict": "mixed",
        "top": [
+        {
+         "h": "Zero To Sixty: Fort Worth Gets Tesla Robotaxi While UBS Upgrades Rivian And Citigroup Shuffles EV Holdings",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Stocks slide as Wall Street's post-election rally fizzles",
          "s": "Yahoo",
@@ -9509,12 +10228,6 @@
         },
         {
          "h": "SpaceX and Tesla Stock Plunges Have Wiped About $450 Billion in Value Since the Midterms. Is It Time to Buy?",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
-        },
-        {
-         "h": "Tesla Sinks 12%, SpaceX Down 9% as Midterm Sweep Puts Merger on \u201cA Much Tougher Regulatory Roadmap\u201d",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
@@ -9537,32 +10250,32 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 1,
+       "pos": 4,
        "neg": 3,
-       "verdict": "negative",
+       "verdict": "positive",
        "top": [
         {
-         "h": "Dow Jones Futures Fall; Nasdaq Dives 5.5%, Nvidia, Sandisk, CoreWeave, SpaceX Plunge, But Sell-Off Spreads Beyond AI",
+         "h": "TSS Inc (TSSI) (Q3 2026) Earnings Call Highlights: Record Systems Integration Revenue Drives ...",
          "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
-        },
-        {
-         "h": "Stocks slide as Wall Street's post-election rally fizzles",
-         "s": "Yahoo",
-         "d": "2026-11-05",
+         "d": "2026-11-06",
          "sent": 1
         },
         {
-         "h": "Update: Nasdaq Enters Correction Territory Amid Data Center Anxiety; Nvidia Tumbles Over 9%",
+         "h": "The Nasdaq Plunges 5%. What the Data Center Crash Means for Investors",
          "s": "Yahoo",
-         "d": "2026-11-05",
+         "d": "2026-11-06",
          "sent": -1
         },
         {
-         "h": "Stock Market Today: Nasdaq Craters 5% As Chips Sell Off; Arm Misses Key Metric (Live Coverage)",
+         "h": "Rocket Lab Stock Has Lost About 70% From Its Record. Is It Finally a Buy?",
          "s": "Yahoo",
-         "d": "2026-11-05",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "Dow Jones Futures Fall, Techs Bounce After Nasdaq Dives 5.5%; Nvidia, Sandisk, CoreWeave, SpaceX Plunge",
+         "s": "Yahoo",
+         "d": "2026-11-06",
          "sent": -1
         }
        ]
@@ -9584,8 +10297,8 @@
       "news": {
        "n": 40,
        "pos": 7,
-       "neg": 7,
-       "verdict": "mixed",
+       "neg": 4,
+       "verdict": "positive",
        "top": [
         {
          "h": "Stock Market Today, Nov. 5: Intel Falls on Weak Fourth-Quarter Sales Outlook Amid Chip Selloff",
@@ -9766,9 +10479,9 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 32,
+       "n": 30,
        "pos": 5,
-       "neg": 7,
+       "neg": 6,
        "verdict": "negative",
        "top": [
         {
@@ -9951,7 +10664,7 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 5,
+       "pos": 4,
        "neg": 3,
        "verdict": "positive",
        "top": [
@@ -9996,7 +10709,7 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 11,
+       "n": 10,
        "pos": 2,
        "neg": 0,
        "verdict": "positive",
@@ -10042,8 +10755,8 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 37,
-       "pos": 10,
+       "n": 34,
+       "pos": 7,
        "neg": 0,
        "verdict": "positive",
        "top": [
@@ -10134,11 +10847,17 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 40,
-       "pos": 6,
+       "n": 37,
+       "pos": 4,
        "neg": 5,
-       "verdict": "positive",
+       "verdict": "negative",
        "top": [
+        {
+         "h": "DraftKings (NASDAQ:DKNG) misses Q3 2026 revenue estimates, stock drops 23%",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
         {
          "h": "DraftKings (NASDAQ:DKNG) Shares Plunge After Q3 Revenue Miss and Weak Guidance",
          "s": "ChartMill",
@@ -10153,12 +10872,6 @@
         },
         {
          "h": "DraftKings (DKNG) Reports Q3 Loss, Misses Revenue Estimates",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
-        },
-        {
-         "h": "DraftKings Stock Dives on Q3 Miss, Lower Guidance: Company Sees Up to $750M in 2027 Prediction Markets Revenue",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
@@ -10180,8 +10893,8 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 40,
-       "pos": 10,
+       "n": 34,
+       "pos": 8,
        "neg": 1,
        "verdict": "positive",
        "top": [
@@ -10226,11 +10939,17 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 40,
-       "pos": 15,
+       "n": 37,
+       "pos": 11,
        "neg": 5,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Affirm Holdings Inc (AFRM) (Q1 2027) Earnings Call Highlights: 34% GMV Growth, AI Underwriting ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Affirm\u2019s (NASDAQ:AFRM) Q3 CY2026: strong sales but stock drops 10.4%",
          "s": "Yahoo",
@@ -10248,12 +10967,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
-        },
-        {
-         "h": "Affirm Holdings (AFRM) Q1 Earnings and Revenues Beat Estimates",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
         }
        ]
       },
@@ -10319,10 +11032,22 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 7,
-       "neg": 4,
+       "pos": 9,
+       "neg": 3,
        "verdict": "positive",
        "top": [
+        {
+         "h": "IonQ Inc (IONQ) (Q3 2026) Earnings Call Highlights: Record Revenue, DARPA Milestone and ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "IonQ, Inc. (IONQ) Reports Q3 Loss, Tops Revenue Estimates",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "IonQ climbs 3% on earnings beat and raised guidance",
          "s": "Yahoo",
@@ -10331,18 +11056,6 @@
         },
         {
          "h": "IonQ (NYSE:IONQ) beats expectations in strong Q3 2026, guides for strong full-year sales",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "IonQ Announces Record 3Q26 Revenues and Raises FY2026 Guidance to $505 - $515 Million as Backlog Grows to $1.2 Billion",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Rigetti Q3 Earnings: Will Commercial Progress Translate Into Growth?",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
@@ -10364,7 +11077,7 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 38,
+       "n": 34,
        "pos": 7,
        "neg": 4,
        "verdict": "positive",
@@ -10457,10 +11170,22 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 5,
-       "neg": 4,
+       "pos": 6,
+       "neg": 5,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Rocket Lab Stock Slides As Neutron Delay Puts Focus On Earnings",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
+        {
+         "h": "Rocket Lab Stock Has Lost About 70% From Its Record. Is It Finally a Buy?",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Rocket Lab Sinks 12% as AI Stock Sell-Off Hits Space: \u201cAbsolute Slaughter\u201d",
          "s": "Yahoo",
@@ -10472,18 +11197,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
-        },
-        {
-         "h": "Rocket Lab Falls 4%, SpaceX Down 4% as Midterms Make Musk the \u201cBiggest Loser\u201d",
-         "s": "Yahoo",
-         "d": "2026-11-04",
-         "sent": -1
-        },
-        {
-         "h": "Got $5,000? 2 Growth Stocks Powering the Next Phase of the Space Economy.",
-         "s": "Yahoo",
-         "d": "2026-11-04",
-         "sent": 1
         }
        ]
       },
@@ -10502,7 +11215,7 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 22,
+       "n": 18,
        "pos": 2,
        "neg": 0,
        "verdict": "positive",
@@ -10549,10 +11262,16 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 8,
+       "pos": 9,
        "neg": 0,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Canaccord Genuity Upgrades Joby Aviation to Buy from Hold",
+         "s": "Fintel",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Joby Advances in Final FAA Stage as Revenue Beats Estimates",
          "s": "Yahoo",
@@ -10568,12 +11287,6 @@
         {
          "h": "Canaccord Genuity Upgrades Joby Aviation to Buy, Lowers Price Target to $7",
          "s": "Benzinga",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "JOBY Stock Rises After Hours On Q3 Revenue Beat, Advances Final Stages Of FAA Certification For EVTOL",
-         "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
         }
@@ -10594,10 +11307,10 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 9,
-       "pos": 4,
+       "n": 6,
+       "pos": 1,
        "neg": 0,
-       "verdict": "positive",
+       "verdict": "mixed",
        "top": [
         {
          "h": "Can Hims & Hers Stock Rally 50% After This Dip?",
@@ -10606,22 +11319,22 @@
          "sent": 1
         },
         {
-         "h": "Teladoc Soars 11% on Q3 Beat and Raised Outlook as \u201cInsurance Revenue Exceeded Our Expectations\u201d",
+         "h": "Hims & Hers Health (HIMS) Stock Looks Reasonable After Its 263% Run",
          "s": "Yahoo",
-         "d": "2026-10-29",
-         "sent": 1
+         "d": "2026-11-06",
+         "sent": 0
         },
         {
-         "h": "Eli Lilly Soars 5% as Mounjaro and Zepbound Demand Drives $5.5 Billion Guidance Raise",
+         "h": "Why Hims & Hers Health, Inc. (HIMS) Dipped More Than Broader Market Today",
          "s": "Yahoo",
-         "d": "2026-10-29",
-         "sent": 1
+         "d": "2026-11-05",
+         "sent": 0
         },
         {
-         "h": "Eli Lilly Jumps 8% as Strong Quarter Lifts Revenue Outlook; Novo Nordisk Ticks Up, Viking Therapeutics Eases",
+         "h": "Hims & Hers Benefits Adds Gr\u00fcns, Medjet, Tonal, and Viome for Whole-Body Health and Support When You Need It Most",
          "s": "Yahoo",
-         "d": "2026-10-29",
-         "sent": 1
+         "d": "2026-11-05",
+         "sent": 0
         }
        ]
       },
@@ -10640,11 +11353,23 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 29,
-       "pos": 9,
+       "n": 31,
+       "pos": 11,
        "neg": 0,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Celsius Holdings (CELH) Recasts Leadership Around Three Business Units And Zero Sugar Growth",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "Celsius Holdings Inc (CELH) Q3 2026 Earnings Call Highlights: Alani Nu's Record Quarter Powers ...",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Celsius (NASDAQ:CELH) Q3 Revenue and Adjusted EPS Beat Estimates, Lifting Shares Premarket",
          "s": "ChartMill",
@@ -10653,18 +11378,6 @@
         },
         {
          "h": "Celsius Holdings stock jumps on Q3 beat as Alani Nu growth offsets weakness",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Celsius (NASDAQ:CELH) surprises with strong Q3 2026, stock soars",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Celsius Holdings Inc. (CELH) Q3 Earnings and Revenues Beat Estimates",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
@@ -10686,34 +11399,34 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 38,
-       "pos": 17,
-       "neg": 2,
+       "n": 40,
+       "pos": 18,
+       "neg": 4,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Dow Jones Futures Fall, Techs Bounce After Nasdaq Dives 5.5%; Nvidia, Sandisk, CoreWeave, SpaceX Plunge",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
+        {
+         "h": "Is e.l.f. Beauty (ELF) Undervalued As Earnings Beat And Guidance Rise?",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
+        {
+         "h": "Dow Jones Futures Fall; Nasdaq Dives 5.5%, Nvidia, Sandisk, CoreWeave, SpaceX Plunge, But Sell-Off Spreads Beyond AI",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
         {
          "h": "Dow Jones Futures: Nasdaq Dives 5.5%, Nvidia, Sandisk, CoreWeave, SpaceX Plunge, But Sell-Off Spreads Beyond AI",
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
-        },
-        {
-         "h": "e.l.f. Beauty Inc (ELF) (Q2 2027) Earnings Call Highlights: 51% Sales Surge, Raised Outlook and ...",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "E.l.f. Beauty growth driven by innovation, not just pricing power",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "ELF Beauty (NYSE:ELF) Combines Strong Growth With a High-Quality Breakout Setup",
-         "s": "ChartMill",
-         "d": "2026-11-05",
-         "sent": 1
         }
        ]
       },
@@ -10825,32 +11538,32 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 8,
-       "neg": 2,
+       "pos": 13,
+       "neg": 3,
        "verdict": "positive",
        "top": [
         {
-         "h": "Polen 5Perspectives Large Growth Composite Q3 2026 Portfolio Performance And Attribution",
-         "s": "SeekingAlpha",
-         "d": "2026-11-04",
-         "sent": 1
-        },
-        {
-         "h": "Polen 5Perspectives Small Growth Composite Q3 2026 Portfolio Attribution And Activity",
-         "s": "SeekingAlpha",
-         "d": "2026-11-04",
-         "sent": 1
-        },
-        {
-         "h": "Cloudflare (NET) Shares Outperform Following Accelerating Revenue Growth and Raised Outlook",
+         "h": "Dow Jones Futures Fall, Techs Bounce After Nasdaq Dives 5.5%; Nvidia, Sandisk, CoreWeave, SpaceX Plunge",
          "s": "Yahoo",
-         "d": "2026-11-04",
+         "d": "2026-11-06",
+         "sent": -1
+        },
+        {
+         "h": "Cloudflare (NYSE:NET) Q3 Beat and Above-Consensus Guidance Fuel Rebound",
+         "s": "ChartMill",
+         "d": "2026-11-06",
          "sent": 1
         },
         {
-         "h": "JPMorgan Just Upgraded Cloudflare Stock. Here's Why.",
+         "h": "SentinelOne (S) Expands AI Security Ties, Is The Stock Trading At A Discount?",
          "s": "Yahoo",
-         "d": "2026-11-04",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "Cloudflare Earnings Beat. Software Maker Rebounds From AI Stock Rout.",
+         "s": "Yahoo",
+         "d": "2026-11-05",
          "sent": 1
         }
        ]
@@ -10916,7 +11629,7 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 19,
+       "n": 16,
        "pos": 4,
        "neg": 1,
        "verdict": "positive",
@@ -11008,7 +11721,7 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 40,
+       "n": 39,
        "pos": 14,
        "neg": 1,
        "verdict": "positive",
@@ -11054,7 +11767,7 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 30,
+       "n": 27,
        "pos": 8,
        "neg": 1,
        "verdict": "positive",
@@ -11100,7 +11813,7 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 13,
+       "n": 9,
        "pos": 4,
        "neg": 2,
        "verdict": "positive",
@@ -11192,9 +11905,9 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 27,
+       "n": 23,
        "pos": 6,
-       "neg": 3,
+       "neg": 2,
        "verdict": "positive",
        "top": [
         {
@@ -11238,33 +11951,33 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 21,
-       "pos": 3,
+       "n": 38,
+       "pos": 6,
        "neg": 1,
        "verdict": "positive",
        "top": [
         {
+         "h": "Unity Soars 8% as Vector Ad Engine Delivers \u201cFirst GAAP Profitable Quarter Since Our IPO\u201d",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "AppLovin Soars 30% on Record Quarter and Strong Outlook; Magnite Surges 17%, Trade Desk Falls 2%",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
+         "h": "AppLovin Soars 27% on Record Q3 Beat as CEO Calls Last Quarter\u2019s Miss \u201cOur Own Foot Fault\u201d",
+         "s": "Yahoo",
+         "d": "2026-11-05",
+         "sent": 1
+        },
+        {
          "h": "Unity Software (NYSE:U) Q3 Earnings Beat and Above-Consensus Q4 Guidance Send Shares Higher",
          "s": "ChartMill",
          "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Unity Software Q3 Adj. EPS $0.44 Beats $0.06 Estimate, Sales $622.092M Beat $567.442M Estimate",
-         "s": "Benzinga",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Roblox Plunges 19% as Daily Users Shrink and GTA VI Clouds Holiday Outlook; Unity Drops 4%, Take-Two Dips",
-         "s": "Yahoo",
-         "d": "2026-10-30",
-         "sent": -1
-        },
-        {
-         "h": "Roblox Is Up 21% in October: Will Earnings Derail the RBLX Stock Rally?",
-         "s": "Yahoo",
-         "d": "2026-10-29",
          "sent": 1
         }
        ]
@@ -11284,7 +11997,7 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 9,
+       "n": 8,
        "pos": 1,
        "neg": 1,
        "verdict": "mixed",
@@ -11331,10 +12044,16 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 4,
+       "pos": 5,
        "neg": 5,
-       "verdict": "negative",
+       "verdict": "mixed",
        "top": [
+        {
+         "h": "GE Vernova Is Up 18% in 2026 After Three Guidance Raises: Take Profits, or Buy More?",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": 1
+        },
         {
          "h": "Caterpillar Sinks Another 6%, Vertiv Down 14%, Quanta Down 12% as AI Selloff Spreads to Industrials",
          "s": "Yahoo",
@@ -11352,12 +12071,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
-        },
-        {
-         "h": "Vistra Sinks 16% in a Week to a New 52-Week Low. Is the Texas Selloff Overdone?",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
         }
        ]
       },
@@ -11399,7 +12112,7 @@
       "news": {
        "n": 40,
        "pos": 14,
-       "neg": 5,
+       "neg": 4,
        "verdict": "positive",
        "top": [
         {
@@ -11444,7 +12157,7 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 5,
+       "pos": 4,
        "neg": 10,
        "verdict": "negative",
        "top": [
@@ -11490,10 +12203,16 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 4,
-       "neg": 8,
+       "pos": 2,
+       "neg": 9,
        "verdict": "negative",
        "top": [
+        {
+         "h": "Micron freezes Taiwan plant as workers demand bigger cut",
+         "s": "Yahoo",
+         "d": "2026-11-06",
+         "sent": -1
+        },
         {
          "h": "S&P 500 After-Hours Movers: ABNB and SNDK Gain, AXON and SOLV Fall",
          "s": "ChartMill",
@@ -11511,12 +12230,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": 1
-        },
-        {
-         "h": "Micron Stock Falls After Report of $4.5 Billion Taiwan Pause",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
         }
        ]
       },
@@ -11629,7 +12342,7 @@
    10666.6,
    10685.55,
    10893.72,
-   10504.84
+   10537.05
   ],
   "longterm": [
    10000.0,

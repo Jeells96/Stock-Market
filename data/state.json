@@ -29,7 +29,8 @@
      "last_price": 250.02,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "ELF",
@@ -44,7 +45,8 @@
      "last_price": 109.85,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "ROKU",
@@ -59,7 +61,8 @@
      "last_price": 160.37,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "AMC",
@@ -74,7 +77,8 @@
      "last_price": 3.08,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "LLY",
@@ -89,7 +93,8 @@
      "last_price": 1364.73,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "QRVO",
@@ -104,7 +109,8 @@
      "last_price": 114.17,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "PCTY",
@@ -119,7 +125,8 @@
      "last_price": 169.57,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "CART",
@@ -134,7 +141,8 @@
      "last_price": 57.79,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "OSCR",
@@ -149,7 +157,8 @@
      "last_price": 33.18,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "VRNS",
@@ -164,7 +173,8 @@
      "last_price": 48.73,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "WDAY",
@@ -179,7 +189,8 @@
      "last_price": 200.17,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "U",
@@ -194,7 +205,8 @@
      "last_price": 48.8,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "ABNB",
@@ -209,7 +221,8 @@
      "last_price": 170.13,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "TOST",
@@ -224,7 +237,8 @@
      "last_price": 35.16,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     }
    ],
    "closed": [
@@ -421,7 +435,7 @@
      "target_price": 179.62999999999997,
      "stop_price": 140.57999999999998,
      "thesis": "A confirmed climb: up 31% over six months and 54% over the year, trading 88% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 149.31,
+     "last_price": 152.72,
      "bars_held": 0,
      "splits_applied": [],
      "divs_credited": [],
@@ -440,7 +454,8 @@
      "last_price": 288.24,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "TMO",
@@ -455,7 +470,8 @@
      "last_price": 676.94,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "BDX",
@@ -470,7 +486,8 @@
      "last_price": 213.55,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "MA",
@@ -485,7 +502,8 @@
      "last_price": 655.92,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "V",
@@ -500,7 +518,8 @@
      "last_price": 422.59,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "GILD",
@@ -515,7 +534,8 @@
      "last_price": 167.57,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "CTAS",
@@ -530,7 +550,8 @@
      "last_price": 226.41,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "TRV",
@@ -545,7 +566,8 @@
      "last_price": 402.89,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "LLY",
@@ -560,7 +582,8 @@
      "last_price": 1364.73,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "PSX",
@@ -575,7 +598,8 @@
      "last_price": 247.04,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "ADP",
@@ -590,7 +614,8 @@
      "last_price": 307.14,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "MDT",
@@ -605,7 +630,8 @@
      "last_price": 104.84,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "ROP",
@@ -620,7 +646,8 @@
      "last_price": 490.96,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "KO",
@@ -635,7 +662,8 @@
      "last_price": 95.73,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "AMGN",
@@ -650,7 +678,8 @@
      "last_price": 460.28,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "RSG",
@@ -665,7 +694,8 @@
      "last_price": 249.42,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "MCK",
@@ -680,7 +710,8 @@
      "last_price": 1072.0,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "DHR",
@@ -695,7 +726,8 @@
      "last_price": 226.34,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "ECL",
@@ -710,7 +742,8 @@
      "last_price": 305.83,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "PFE",
@@ -725,7 +758,8 @@
      "last_price": 29.88,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "PM",
@@ -740,7 +774,8 @@
      "last_price": 201.5,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "AJG",
@@ -755,7 +790,8 @@
      "last_price": 288.11,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     },
     {
      "symbol": "MET",
@@ -770,7 +806,8 @@
      "last_price": 99.75,
      "bars_held": 0,
      "splits_applied": [],
-     "divs_credited": []
+     "divs_credited": [],
+     "missing_runs": 0
     }
    ],
    "closed": [
@@ -2234,13 +2271,13 @@
   "2026-11-05": {
    "daytrade": 9544.55,
    "aggressive": 9242.83,
-   "growth": 10504.84,
+   "growth": 10537.05,
    "longterm": 9870.81,
    "benchmark": 9812.19
   }
  },
- "runs": 28,
- "last_run_utc": "2026-11-06T02:27:59Z",
+ "runs": 29,
+ "last_run_utc": "2026-11-06T08:06:09Z",
  "intraday": {
   "date": "2026-08-26",
   "marks": {
