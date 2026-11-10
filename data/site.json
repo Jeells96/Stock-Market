@@ -18,11 +18,11 @@
    "VRT"
   ]
  },
- "generated_at_utc": "2026-11-10T05:18:09Z",
+ "generated_at_utc": "2026-11-10T08:20:46Z",
  "as_of_date": "2026-11-09",
  "inception_date": "2026-07-31",
  "starting_capital": 10000.0,
- "runs": 31,
+ "runs": 32,
  "benchmark": {
   "symbol": "SPY",
   "equity": 10075.77,
@@ -728,7 +728,7 @@
       "reason": "meets every test \u2014 genuine multi-month momentum",
       "needs": "",
       "news": {
-       "n": 10,
+       "n": 11,
        "pos": 1,
        "neg": 1,
        "verdict": "mixed",
@@ -746,13 +746,13 @@
          "sent": 1
         },
         {
-         "h": "Varonis Systems (VRNS) Posts Mixed Q3 Results, Is The Stock Fully Valued?",
+         "h": "Varonis Extends Atlas to the Browser and Endpoint, Adds AI Gateway",
          "s": "Yahoo",
-         "d": "2026-11-04",
+         "d": "2026-11-09",
          "sent": 0
         },
         {
-         "h": "Is Varonis Systems (VRNS) Still Cheap After Its $6.3b Deal?",
+         "h": "Varonis Systems (VRNS) Posts Mixed Q3 Results, Is The Stock Fully Valued?",
          "s": "Yahoo",
          "d": "2026-11-04",
          "sent": 0
@@ -918,6 +918,12 @@
        "verdict": "positive",
        "top": [
         {
+         "h": "Why Did U, MRNA, ABNB Stocks Surge To 52-Week Highs Today?",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": 1
+        },
+        {
          "h": "Netflix resumed, Starbucks downgraded: Wall Street's top analyst calls",
          "s": "Yahoo",
          "d": "2026-11-09",
@@ -934,12 +940,6 @@
          "s": "Benzinga",
          "d": "2026-11-09",
          "sent": 1
-        },
-        {
-         "h": "Stock Market Today: Nvidia Board Opens Probe Into Jensen Huang as Wall Street Licks Its AI Wounds",
-         "s": "ChartMill",
-         "d": "2026-11-09",
-         "sent": -1
         }
        ]
       },
@@ -1113,7 +1113,7 @@
       "news": {
        "n": 40,
        "pos": 18,
-       "neg": 1,
+       "neg": 0,
        "verdict": "positive",
        "top": [
         {
@@ -1163,6 +1163,12 @@
        "verdict": "positive",
        "top": [
         {
+         "h": "Unity Software Consensus Price Target Raised 15.24% to $59.63",
+         "s": "Fintel",
+         "d": "2026-11-10",
+         "sent": 1
+        },
+        {
          "h": "U Q3 2026 deep dive: AI-driven product momentum and new creator platforms underpin growth",
          "s": "Yahoo",
          "d": "2026-11-09",
@@ -1177,12 +1183,6 @@
         {
          "h": "Freedom Capital Markets Maintains Buy on Unity Software, Raises Price Target to $62",
          "s": "Benzinga",
-         "d": "2026-11-06",
-         "sent": 1
-        },
-        {
-         "h": "Unity Software Stocks Rise 4.2% After Record Quarter and 65% Growth Guide",
-         "s": "Yahoo",
          "d": "2026-11-06",
          "sent": 1
         }
@@ -1325,10 +1325,16 @@
       "needs": "needs this week (-4.0%) to steady above \u22122%",
       "news": {
        "n": 40,
-       "pos": 7,
+       "pos": 8,
        "neg": 3,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Baron International Growth Fund Q3 2026 New Investments",
+         "s": "SeekingAlpha",
+         "d": "2026-11-10",
+         "sent": 1
+        },
         {
          "h": "Hims' Roller Coaster Ride Continues With Surprise Losses, Light Sales And A Guidance Cut",
          "s": "Yahoo",
@@ -1343,12 +1349,6 @@
         },
         {
          "h": "AHA26: Lilly\u2019s Foundayo benefits beyond weight loss in Phase III sleep apnoea win",
-         "s": "Yahoo",
-         "d": "2026-11-09",
-         "sent": 1
-        },
-        {
-         "h": "Global Gene Therapy for Hearing Loss Market Report 2026 | Capture Growth to $1.71B by 2030 as Regeneron, Lilly, Sensorio",
          "s": "Yahoo",
          "d": "2026-11-09",
          "sent": 1
@@ -1976,6 +1976,12 @@
        "verdict": "positive",
        "top": [
         {
+         "h": "Affirm\u2019s Levchin Calls \u201c30-Plus\u201d Growth the Floor. GMV Just Grew 34%",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
+        {
          "h": "Learn Why The Bull Case For Affirm Holdings Stock Could Change Following Earnings Beat",
          "s": "Yahoo",
          "d": "2026-11-06",
@@ -1990,12 +1996,6 @@
         {
          "h": "Affirm Q1 Earnings Beat Estimates on Strong GMV and Card Growth",
          "s": "Yahoo",
-         "d": "2026-11-06",
-         "sent": 1
-        },
-        {
-         "h": "Scotiabank Maintains Sector Outperform on Affirm Holdings, Raises Price Target to $97",
-         "s": "Benzinga",
          "d": "2026-11-06",
          "sent": 1
         }
@@ -2032,10 +2032,22 @@
       "needs": "needs both climbs positive \u2014 3-month is -10.5%, 6-month +9.9%",
       "news": {
        "n": 40,
-       "pos": 14,
+       "pos": 11,
        "neg": 1,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Stock Market Today, Nov. 9: Markets Rally as Semiconductor Gains Lift Nasdaq",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
+        {
+         "h": "Cloudflare Jumps 11%, Nebius Surges 9% as AI Cloud Stocks Defy NVIDIA\u2019s Slide; CoreWeave Rallies 6% on Wayve Deal",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
         {
          "h": "Stock Market Today: Nvidia Board Opens Probe Into Jensen Huang as Wall Street Licks Its AI Wounds",
          "s": "ChartMill",
@@ -2046,18 +2058,6 @@
          "h": "Cloudflare (NET) Stock Jumps After Q3 Earnings Expose Loss Pressure",
          "s": "Yahoo",
          "d": "2026-11-07",
-         "sent": 1
-        },
-        {
-         "h": "JP Morgan Maintains Overweight on Cloudflare, Raises Price Target to $375",
-         "s": "Benzinga",
-         "d": "2026-11-06",
-         "sent": 1
-        },
-        {
-         "h": "Cloudflare Stocks Surge 10.9% After 39% Revenue Jump and Fresh Guidance",
-         "s": "Yahoo",
-         "d": "2026-11-06",
          "sent": 1
         }
        ]
@@ -2170,7 +2170,7 @@
       "news": {
        "n": 40,
        "pos": 5,
-       "neg": 3,
+       "neg": 2,
        "verdict": "positive",
        "top": [
         {
@@ -2474,10 +2474,16 @@
       "needs": "needs both climbs positive \u2014 3-month is -16.7%, 6-month -5.0%",
       "news": {
        "n": 40,
-       "pos": 4,
-       "neg": 4,
+       "pos": 3,
+       "neg": 3,
        "verdict": "mixed",
        "top": [
+        {
+         "h": "Asia stocks rally as Korean chips surge and oil retreat lifts sentiment",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": 1
+        },
         {
          "h": "Nvidia Faces Class Action Suit Over Huang Allegations; Senator Seeks Probe, Analyst Puts CEO Exit Odds At 15%",
          "s": "Yahoo",
@@ -2495,12 +2501,6 @@
          "s": "Yahoo",
          "d": "2026-11-10",
          "sent": -1
-        },
-        {
-         "h": "Alphabet Almost Sets a Record No One Wants",
-         "s": "Yahoo",
-         "d": "2026-11-10",
-         "sent": 1
         }
        ]
       },
@@ -2596,10 +2596,16 @@
       "needs": "needs both climbs positive \u2014 3-month is -17.7%, 6-month -1.3%",
       "news": {
        "n": 40,
-       "pos": 5,
-       "neg": 5,
-       "verdict": "mixed",
+       "pos": 4,
+       "neg": 6,
+       "verdict": "negative",
        "top": [
+        {
+         "h": "HIMS Stock Slides Overnight: Retail Bets On Peptides Comeback As Stanford Neuroscientist Joins Board",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": -1
+        },
         {
          "h": "Hims & Hers Health misses revenue estimates and misses earnings estimates in Third Quarter 2026",
          "s": "Fintel",
@@ -2614,12 +2620,6 @@
         },
         {
          "h": "HIMS Stock Tumbles After-Hours On Surprise Q3 Loss And Cut Profit Outlook: Retail Demands Answers",
-         "s": "Yahoo",
-         "d": "2026-11-09",
-         "sent": -1
-        },
-        {
-         "h": "Hims & Hers Health, Inc. (HIMS) Q3 Earnings and Revenues Miss Estimates",
          "s": "Yahoo",
          "d": "2026-11-09",
          "sent": -1
@@ -2642,10 +2642,16 @@
       "needs": "needs both climbs positive \u2014 3-month is -18.6%, 6-month -17.9%",
       "news": {
        "n": 40,
-       "pos": 6,
-       "neg": 5,
+       "pos": 7,
+       "neg": 3,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Riot Platforms Gains Another 5% as Morgan Stanley Raises Its Target to $41",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
         {
          "h": "Riot Platforms (RIOT) Stock Gets Fair Value Trim As Analysts Weigh Lease Wins And Funding Costs",
          "s": "Yahoo",
@@ -2663,12 +2669,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
-        },
-        {
-         "h": "Bernstein Maintains Outperform on Riot Platforms, Raises Price Target to $30",
-         "s": "Benzinga",
-         "d": "2026-11-05",
-         "sent": 1
         }
        ]
       },
@@ -2810,8 +2810,8 @@
       "news": {
        "n": 40,
        "pos": 3,
-       "neg": 3,
-       "verdict": "mixed",
+       "neg": 2,
+       "verdict": "positive",
        "top": [
         {
          "h": "Dow Adds 1,104 Points Even as Nvidia Sinks: Stock Market Today",
@@ -3083,10 +3083,22 @@
       "needs": "needs both climbs positive \u2014 3-month is -26.6%, 6-month -32.0%",
       "news": {
        "n": 40,
-       "pos": 14,
-       "neg": 1,
+       "pos": 10,
+       "neg": 2,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Cantor Fitzgerald Cut Its IonQ Target to $60. It Still Sees 84% Upside",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": -1
+        },
+        {
+         "h": "IonQ Gains Another 9%, Rigetti Up 9%, D-Wave Up 7% as Quantum Rally Extends Into Rivals\u2019 Earnings",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
         {
          "h": "Stock Market Today: Nvidia Board Opens Probe Into Jensen Huang as Wall Street Licks Its AI Wounds",
          "s": "ChartMill",
@@ -3097,18 +3109,6 @@
          "h": "IonQ's Record Revenue Includes a Big SkyWater Boost: Does That Change the Story?",
          "s": "Yahoo",
          "d": "2026-11-07",
-         "sent": 1
-        },
-        {
-         "h": "Infleqtion (INFQ) Mirrors Quantum, Tech Rally on Rosy Growth Prospects, Shares Climb 19.5%",
-         "s": "Yahoo",
-         "d": "2026-11-07",
-         "sent": 1
-        },
-        {
-         "h": "IonQ (IONQ) Stock Jumps After Q3 Earnings Turn Profitable",
-         "s": "Yahoo",
-         "d": "2026-11-06",
          "sent": 1
         }
        ]
@@ -3327,7 +3327,7 @@
       "news": {
        "n": 40,
        "pos": 7,
-       "neg": 5,
+       "neg": 4,
        "verdict": "positive",
        "top": [
         {
@@ -3447,11 +3447,23 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -34.5%, 6-month -35.7%",
       "news": {
-       "n": 39,
-       "pos": 9,
+       "n": 40,
+       "pos": 10,
        "neg": 3,
        "verdict": "positive",
        "top": [
+        {
+         "h": "IonQ Gains Another 9%, Rigetti Up 9%, D-Wave Up 7% as Quantum Rally Extends Into Rivals\u2019 Earnings",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
+        {
+         "h": "3 Top Quantum Stocks To Watch With Up To 71% Revenue Growth",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
         {
          "h": "Infleqtion (INFQ) Mirrors Quantum, Tech Rally on Rosy Growth Prospects, Shares Climb 19.5%",
          "s": "Yahoo",
@@ -3462,18 +3474,6 @@
          "h": "Rigetti Computing (RGTI) Q3 Earnings Loom, Shares Surge 19%",
          "s": "Yahoo",
          "d": "2026-11-07",
-         "sent": 1
-        },
-        {
-         "h": "Rigetti Soars 17%, D-Wave Up 17% as IonQ Raises Guidance to \u201cAn Industry Record\u201d",
-         "s": "Yahoo",
-         "d": "2026-11-06",
-         "sent": 1
-        },
-        {
-         "h": "IonQ Beat and Raised. Can the Quantum Stock Buck the Tech Selloff?",
-         "s": "Yahoo",
-         "d": "2026-11-06",
          "sent": 1
         }
        ]
@@ -3524,10 +3524,16 @@
       "needs": "needs both climbs positive \u2014 3-month is -35.9%, 6-month -32.6%",
       "news": {
        "n": 40,
-       "pos": 10,
+       "pos": 11,
        "neg": 5,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Rocket Lab Corp (RKLB) Q3 2026 Earnings Call Highlights: Record Revenue and Backlog Surge as ...",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": 1
+        },
         {
          "h": "RKLB Stock Sinks After-Hours On Q3 Earnings Miss, But Neutron Launches Now Fetch $70M \u2013 And New Buyers Face A 2030s Wait",
          "s": "Yahoo",
@@ -3544,12 +3550,6 @@
          "h": "Rocket Lab (RKLB) Wins NASA Spot In $10 Billion Lunar Delivery Contracts",
          "s": "Yahoo",
          "d": "2026-11-10",
-         "sent": 1
-        },
-        {
-         "h": "Dow Jones Soars 1,132 Points As Amazon, Tesla Rally, But Nvidia Dives; CPI Inflation Report Next",
-         "s": "Yahoo",
-         "d": "2026-11-09",
          "sent": 1
         }
        ]
@@ -3584,11 +3584,23 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -37.1%, 6-month -47.8%",
       "news": {
-       "n": 29,
+       "n": 36,
        "pos": 6,
-       "neg": 5,
-       "verdict": "positive",
+       "neg": 7,
+       "verdict": "negative",
        "top": [
+        {
+         "h": "MARA Stock Slips Overnight On Revenue Miss: CEO Says Market Is Becoming More Selective About How AI Infrastructure Is Fi",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": -1
+        },
+        {
+         "h": "Marathon Digital Holdings, Inc. (MARA) Reports Q3 Loss, Misses Revenue Estimates",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": -1
+        },
         {
          "h": "3 Crypto Earnings to Watch as Q3 Rally Gains Meet a Weaker November",
          "s": "Yahoo",
@@ -3600,18 +3612,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
-        },
-        {
-         "h": "Riot Platforms Sinks 6% as AI Data Center Selloff Deepens",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
-        },
-        {
-         "h": "Learn Why The Bull Case For MARA Holdings (MARA) Could Change Following Power Plant Approval",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
         }
        ]
       },
@@ -4795,10 +4795,16 @@
       "needs": "",
       "news": {
        "n": 40,
-       "pos": 12,
+       "pos": 13,
        "neg": 1,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Mastercard (MA) Expands Its Business Banking Reach Through New Partnerships",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": 1
+        },
         {
          "h": "Mastercard Sees New Growth in AI Payments, Cybersecurity and Digital Assets",
          "s": "Yahoo",
@@ -4816,12 +4822,6 @@
          "s": "Fintel",
          "d": "2026-11-07",
          "sent": -1
-        },
-        {
-         "h": "Mastercard Hit a Record as Visa Raised Its Dividend 16%. Here\u2019s Where Mastercard\u2019s Cash Goes",
-         "s": "Yahoo",
-         "d": "2026-11-06",
-         "sent": 1
         }
        ]
       },
@@ -5209,10 +5209,16 @@
       "needs": "",
       "news": {
        "n": 40,
-       "pos": 7,
+       "pos": 8,
        "neg": 3,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Baron International Growth Fund Q3 2026 New Investments",
+         "s": "SeekingAlpha",
+         "d": "2026-11-10",
+         "sent": 1
+        },
         {
          "h": "Hims' Roller Coaster Ride Continues With Surprise Losses, Light Sales And A Guidance Cut",
          "s": "Yahoo",
@@ -5227,12 +5233,6 @@
         },
         {
          "h": "AHA26: Lilly\u2019s Foundayo benefits beyond weight loss in Phase III sleep apnoea win",
-         "s": "Yahoo",
-         "d": "2026-11-09",
-         "sent": 1
-        },
-        {
-         "h": "Global Gene Therapy for Hearing Loss Market Report 2026 | Capture Growth to $1.71B by 2030 as Regeneron, Lilly, Sensorio",
          "s": "Yahoo",
          "d": "2026-11-09",
          "sent": 1
@@ -5622,7 +5622,7 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 6,
+       "n": 7,
        "pos": 2,
        "neg": 0,
        "verdict": "positive",
@@ -5640,15 +5640,15 @@
          "sent": 1
         },
         {
-         "h": "4 Insurance Brokerage Stocks to Benefit From Higher Demand",
+         "h": "Zacks Industry Outlook Highlights Erie Indemnity, Willis Towers Watson, Arthur J. Gallagher and Brown and Brown",
          "s": "Yahoo",
-         "d": "2026-11-09",
+         "d": "2026-11-10",
          "sent": 0
         },
         {
-         "h": "Madison Mid Cap Fund Q3 2026 Portfolio Activity",
-         "s": "SeekingAlpha",
-         "d": "2026-11-06",
+         "h": "4 Insurance Brokerage Stocks to Benefit From Higher Demand",
+         "s": "Yahoo",
+         "d": "2026-11-09",
          "sent": 0
         }
        ]
@@ -5766,6 +5766,12 @@
        "verdict": "positive",
        "top": [
         {
+         "h": "Earnings Breadth Hits Near-Record Highs, But Cracks Emerge At The Margins",
+         "s": "SeekingAlpha",
+         "d": "2026-11-10",
+         "sent": 1
+        },
+        {
          "h": "Tech leads Asian stock rally as traders track Wall St rebound",
          "s": "Yahoo",
          "d": "2026-11-10",
@@ -5782,12 +5788,6 @@
          "s": "Yahoo",
          "d": "2026-11-09",
          "sent": -1
-        },
-        {
-         "h": "DELL Rallies 130% in a Year: Can AI Momentum Fuel More Gains?",
-         "s": "Yahoo",
-         "d": "2026-11-09",
-         "sent": 1
         }
        ]
       },
@@ -5807,10 +5807,22 @@
       "needs": "",
       "news": {
        "n": 40,
-       "pos": 5,
+       "pos": 6,
        "neg": 2,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Quantexa Launches Supply Chain Integrity & Fraud Solution with PwC, to Expose Hidden Risk Across Multi-Tier Supplier Net",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": -1
+        },
+        {
+         "h": "CRWV Rallies Ahead Of Quarterly Report: Wells Fargo Calls CoreWeave \u2018Highest Quality\u2019 Firm Among Neocloud Peers, Sees Up",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": 1
+        },
         {
          "h": "Tech leads Asian stock rally as traders track Wall St rebound",
          "s": "Yahoo",
@@ -5821,18 +5833,6 @@
          "h": "Alphabet Almost Sets a Record No One Wants",
          "s": "Yahoo",
          "d": "2026-11-10",
-         "sent": 1
-        },
-        {
-         "h": "Adobe (ADBE) Expands AI Reach, Is The 25% Discount Too Wide?",
-         "s": "Yahoo",
-         "d": "2026-11-09",
-         "sent": 1
-        },
-        {
-         "h": "Stocks Stage A Broad-Based Relief Rally",
-         "s": "SeekingAlpha",
-         "d": "2026-11-09",
          "sent": 1
         }
        ]
@@ -6379,11 +6379,17 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 39,
-       "pos": 10,
+       "n": 40,
+       "pos": 11,
        "neg": 1,
        "verdict": "positive",
        "top": [
+        {
+         "h": "As Organic Sales Growth Accelerates, 3M Seems Attractive",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": 1
+        },
         {
          "h": "3 Value Dividend Stocks To Watch As Rate Cut Hopes Fade",
          "s": "Yahoo",
@@ -6399,12 +6405,6 @@
         {
          "h": "3M's Safety & Industrial Growth Picks Up: Can the Momentum Sustain?",
          "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
-        },
-        {
-         "h": "Goldman Sachs Maintains Buy on 3M, Raises Price Target to $225",
-         "s": "Benzinga",
          "d": "2026-11-05",
          "sent": 1
         }
@@ -7153,7 +7153,7 @@
       "needs": "needs the negative headlines to stop",
       "news": {
        "n": 40,
-       "pos": 4,
+       "pos": 3,
        "neg": 10,
        "verdict": "negative",
        "top": [
@@ -7326,6 +7326,12 @@
        "verdict": "positive",
        "top": [
         {
+         "h": "Why Did U, MRNA, ABNB Stocks Surge To 52-Week Highs Today?",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": 1
+        },
+        {
          "h": "Netflix resumed, Starbucks downgraded: Wall Street's top analyst calls",
          "s": "Yahoo",
          "d": "2026-11-09",
@@ -7342,12 +7348,6 @@
          "s": "Benzinga",
          "d": "2026-11-09",
          "sent": 1
-        },
-        {
-         "h": "Stock Market Today: Nvidia Board Opens Probe Into Jensen Huang as Wall Street Licks Its AI Wounds",
-         "s": "ChartMill",
-         "d": "2026-11-09",
-         "sent": -1
         }
        ]
       },
@@ -7443,10 +7443,16 @@
       "needs": "needs all three climbs positive \u2014 3-month -7.1%, 6-month +26.4%, 12-month +88.9%",
       "news": {
        "n": 40,
-       "pos": 9,
-       "neg": 2,
+       "pos": 10,
+       "neg": 1,
        "verdict": "positive",
        "top": [
+        {
+         "h": "3 Growth Stocks To Watch With Up To 58% Earnings Growth",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": 1
+        },
         {
          "h": "Stock Market Today, Nov. 9: AMD Jumps on Oppenheimer Upgrade and Google Cloud Chip Selection",
          "s": "Yahoo",
@@ -7464,12 +7470,6 @@
          "s": "Yahoo",
          "d": "2026-11-09",
          "sent": -1
-        },
-        {
-         "h": "AMD Stock Surges on Expanded Partnership With Google. What Comes Next.",
-         "s": "Yahoo",
-         "d": "2026-11-09",
-         "sent": 1
         }
        ]
       },
@@ -7986,8 +7986,8 @@
       "news": {
        "n": 40,
        "pos": 3,
-       "neg": 3,
-       "verdict": "mixed",
+       "neg": 2,
+       "verdict": "positive",
        "top": [
         {
          "h": "Dow Adds 1,104 Points Even as Nvidia Sinks: Stock Market Today",
@@ -8706,10 +8706,16 @@
       "needs": "needs all three climbs positive \u2014 3-month -16.7%, 6-month -5.0%, 12-month -0.8%",
       "news": {
        "n": 40,
-       "pos": 4,
-       "neg": 4,
+       "pos": 3,
+       "neg": 3,
        "verdict": "mixed",
        "top": [
+        {
+         "h": "Asia stocks rally as Korean chips surge and oil retreat lifts sentiment",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": 1
+        },
         {
          "h": "Nvidia Faces Class Action Suit Over Huang Allegations; Senator Seeks Probe, Analyst Puts CEO Exit Odds At 15%",
          "s": "Yahoo",
@@ -8727,12 +8733,6 @@
          "s": "Yahoo",
          "d": "2026-11-10",
          "sent": -1
-        },
-        {
-         "h": "Alphabet Almost Sets a Record No One Wants",
-         "s": "Yahoo",
-         "d": "2026-11-10",
-         "sent": 1
         }
        ]
       },
@@ -10246,10 +10246,16 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 4,
-       "neg": 4,
+       "pos": 3,
+       "neg": 3,
        "verdict": "mixed",
        "top": [
+        {
+         "h": "Asia stocks rally as Korean chips surge and oil retreat lifts sentiment",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": 1
+        },
         {
          "h": "Nvidia Faces Class Action Suit Over Huang Allegations; Senator Seeks Probe, Analyst Puts CEO Exit Odds At 15%",
          "s": "Yahoo",
@@ -10267,12 +10273,6 @@
          "s": "Yahoo",
          "d": "2026-11-10",
          "sent": -1
-        },
-        {
-         "h": "Alphabet Almost Sets a Record No One Wants",
-         "s": "Yahoo",
-         "d": "2026-11-10",
-         "sent": 1
         }
        ]
       },
@@ -10292,10 +10292,16 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 9,
-       "neg": 2,
+       "pos": 10,
+       "neg": 1,
        "verdict": "positive",
        "top": [
+        {
+         "h": "3 Growth Stocks To Watch With Up To 58% Earnings Growth",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": 1
+        },
         {
          "h": "Stock Market Today, Nov. 9: AMD Jumps on Oppenheimer Upgrade and Google Cloud Chip Selection",
          "s": "Yahoo",
@@ -10313,12 +10319,6 @@
          "s": "Yahoo",
          "d": "2026-11-09",
          "sent": -1
-        },
-        {
-         "h": "AMD Stock Surges on Expanded Partnership With Google. What Comes Next.",
-         "s": "Yahoo",
-         "d": "2026-11-09",
-         "sent": 1
         }
        ]
       },
@@ -10385,7 +10385,7 @@
       "news": {
        "n": 40,
        "pos": 5,
-       "neg": 3,
+       "neg": 2,
        "verdict": "positive",
        "top": [
         {
@@ -10475,11 +10475,23 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 29,
+       "n": 36,
        "pos": 6,
-       "neg": 5,
-       "verdict": "positive",
+       "neg": 7,
+       "verdict": "negative",
        "top": [
+        {
+         "h": "MARA Stock Slips Overnight On Revenue Miss: CEO Says Market Is Becoming More Selective About How AI Infrastructure Is Fi",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": -1
+        },
+        {
+         "h": "Marathon Digital Holdings, Inc. (MARA) Reports Q3 Loss, Misses Revenue Estimates",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": -1
+        },
         {
          "h": "3 Crypto Earnings to Watch as Q3 Rally Gains Meet a Weaker November",
          "s": "Yahoo",
@@ -10491,18 +10503,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
-        },
-        {
-         "h": "Riot Platforms Sinks 6% as AI Data Center Selloff Deepens",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": -1
-        },
-        {
-         "h": "Learn Why The Bull Case For MARA Holdings (MARA) Could Change Following Power Plant Approval",
-         "s": "Yahoo",
-         "d": "2026-11-05",
-         "sent": 1
         }
        ]
       },
@@ -10522,10 +10522,16 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 6,
-       "neg": 5,
+       "pos": 7,
+       "neg": 3,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Riot Platforms Gains Another 5% as Morgan Stanley Raises Its Target to $41",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
         {
          "h": "Riot Platforms (RIOT) Stock Gets Fair Value Trim As Analysts Weigh Lease Wins And Funding Costs",
          "s": "Yahoo",
@@ -10543,12 +10549,6 @@
          "s": "Yahoo",
          "d": "2026-11-05",
          "sent": -1
-        },
-        {
-         "h": "Bernstein Maintains Outperform on Riot Platforms, Raises Price Target to $30",
-         "s": "Benzinga",
-         "d": "2026-11-05",
-         "sent": 1
         }
        ]
       },
@@ -10941,6 +10941,12 @@
        "verdict": "positive",
        "top": [
         {
+         "h": "Affirm\u2019s Levchin Calls \u201c30-Plus\u201d Growth the Floor. GMV Just Grew 34%",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
+        {
          "h": "Learn Why The Bull Case For Affirm Holdings Stock Could Change Following Earnings Beat",
          "s": "Yahoo",
          "d": "2026-11-06",
@@ -10955,12 +10961,6 @@
         {
          "h": "Affirm Q1 Earnings Beat Estimates on Strong GMV and Card Growth",
          "s": "Yahoo",
-         "d": "2026-11-06",
-         "sent": 1
-        },
-        {
-         "h": "Scotiabank Maintains Sector Outperform on Affirm Holdings, Raises Price Target to $97",
-         "s": "Benzinga",
          "d": "2026-11-06",
          "sent": 1
         }
@@ -11028,10 +11028,22 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 14,
-       "neg": 1,
+       "pos": 10,
+       "neg": 2,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Cantor Fitzgerald Cut Its IonQ Target to $60. It Still Sees 84% Upside",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": -1
+        },
+        {
+         "h": "IonQ Gains Another 9%, Rigetti Up 9%, D-Wave Up 7% as Quantum Rally Extends Into Rivals\u2019 Earnings",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
         {
          "h": "Stock Market Today: Nvidia Board Opens Probe Into Jensen Huang as Wall Street Licks Its AI Wounds",
          "s": "ChartMill",
@@ -11042,18 +11054,6 @@
          "h": "IonQ's Record Revenue Includes a Big SkyWater Boost: Does That Change the Story?",
          "s": "Yahoo",
          "d": "2026-11-07",
-         "sent": 1
-        },
-        {
-         "h": "Infleqtion (INFQ) Mirrors Quantum, Tech Rally on Rosy Growth Prospects, Shares Climb 19.5%",
-         "s": "Yahoo",
-         "d": "2026-11-07",
-         "sent": 1
-        },
-        {
-         "h": "IonQ (IONQ) Stock Jumps After Q3 Earnings Turn Profitable",
-         "s": "Yahoo",
-         "d": "2026-11-06",
          "sent": 1
         }
        ]
@@ -11073,11 +11073,23 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 39,
-       "pos": 9,
+       "n": 40,
+       "pos": 10,
        "neg": 3,
        "verdict": "positive",
        "top": [
+        {
+         "h": "IonQ Gains Another 9%, Rigetti Up 9%, D-Wave Up 7% as Quantum Rally Extends Into Rivals\u2019 Earnings",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
+        {
+         "h": "3 Top Quantum Stocks To Watch With Up To 71% Revenue Growth",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
         {
          "h": "Infleqtion (INFQ) Mirrors Quantum, Tech Rally on Rosy Growth Prospects, Shares Climb 19.5%",
          "s": "Yahoo",
@@ -11088,18 +11100,6 @@
          "h": "Rigetti Computing (RGTI) Q3 Earnings Loom, Shares Surge 19%",
          "s": "Yahoo",
          "d": "2026-11-07",
-         "sent": 1
-        },
-        {
-         "h": "Rigetti Soars 17%, D-Wave Up 17% as IonQ Raises Guidance to \u201cAn Industry Record\u201d",
-         "s": "Yahoo",
-         "d": "2026-11-06",
-         "sent": 1
-        },
-        {
-         "h": "IonQ Beat and Raised. Can the Quantum Stock Buck the Tech Selloff?",
-         "s": "Yahoo",
-         "d": "2026-11-06",
          "sent": 1
         }
        ]
@@ -11166,10 +11166,16 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 10,
+       "pos": 11,
        "neg": 5,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Rocket Lab Corp (RKLB) Q3 2026 Earnings Call Highlights: Record Revenue and Backlog Surge as ...",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": 1
+        },
         {
          "h": "RKLB Stock Sinks After-Hours On Q3 Earnings Miss, But Neutron Launches Now Fetch $70M \u2013 And New Buyers Face A 2030s Wait",
          "s": "Yahoo",
@@ -11186,12 +11192,6 @@
          "h": "Rocket Lab (RKLB) Wins NASA Spot In $10 Billion Lunar Delivery Contracts",
          "s": "Yahoo",
          "d": "2026-11-10",
-         "sent": 1
-        },
-        {
-         "h": "Dow Jones Soars 1,132 Points As Amazon, Tesla Rally, But Nvidia Dives; CPI Inflation Report Next",
-         "s": "Yahoo",
-         "d": "2026-11-09",
          "sent": 1
         }
        ]
@@ -11304,10 +11304,16 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 5,
-       "neg": 5,
-       "verdict": "mixed",
+       "pos": 4,
+       "neg": 6,
+       "verdict": "negative",
        "top": [
+        {
+         "h": "HIMS Stock Slides Overnight: Retail Bets On Peptides Comeback As Stanford Neuroscientist Joins Board",
+         "s": "Yahoo",
+         "d": "2026-11-10",
+         "sent": -1
+        },
         {
          "h": "Hims & Hers Health misses revenue estimates and misses earnings estimates in Third Quarter 2026",
          "s": "Fintel",
@@ -11322,12 +11328,6 @@
         },
         {
          "h": "HIMS Stock Tumbles After-Hours On Surprise Q3 Loss And Cut Profit Outlook: Retail Demands Answers",
-         "s": "Yahoo",
-         "d": "2026-11-09",
-         "sent": -1
-        },
-        {
-         "h": "Hims & Hers Health, Inc. (HIMS) Q3 Earnings and Revenues Miss Estimates",
          "s": "Yahoo",
          "d": "2026-11-09",
          "sent": -1
@@ -11443,7 +11443,7 @@
       "news": {
        "n": 40,
        "pos": 18,
-       "neg": 1,
+       "neg": 0,
        "verdict": "positive",
        "top": [
         {
@@ -11534,10 +11534,22 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 14,
+       "pos": 11,
        "neg": 1,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Stock Market Today, Nov. 9: Markets Rally as Semiconductor Gains Lift Nasdaq",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
+        {
+         "h": "Cloudflare Jumps 11%, Nebius Surges 9% as AI Cloud Stocks Defy NVIDIA\u2019s Slide; CoreWeave Rallies 6% on Wayve Deal",
+         "s": "Yahoo",
+         "d": "2026-11-09",
+         "sent": 1
+        },
         {
          "h": "Stock Market Today: Nvidia Board Opens Probe Into Jensen Huang as Wall Street Licks Its AI Wounds",
          "s": "ChartMill",
@@ -11548,18 +11560,6 @@
          "h": "Cloudflare (NET) Stock Jumps After Q3 Earnings Expose Loss Pressure",
          "s": "Yahoo",
          "d": "2026-11-07",
-         "sent": 1
-        },
-        {
-         "h": "JP Morgan Maintains Overweight on Cloudflare, Raises Price Target to $375",
-         "s": "Benzinga",
-         "d": "2026-11-06",
-         "sent": 1
-        },
-        {
-         "h": "Cloudflare Stocks Surge 10.9% After 39% Revenue Jump and Fresh Guidance",
-         "s": "Yahoo",
-         "d": "2026-11-06",
          "sent": 1
         }
        ]
@@ -11953,6 +11953,12 @@
        "verdict": "positive",
        "top": [
         {
+         "h": "Unity Software Consensus Price Target Raised 15.24% to $59.63",
+         "s": "Fintel",
+         "d": "2026-11-10",
+         "sent": 1
+        },
+        {
          "h": "U Q3 2026 deep dive: AI-driven product momentum and new creator platforms underpin growth",
          "s": "Yahoo",
          "d": "2026-11-09",
@@ -11967,12 +11973,6 @@
         {
          "h": "Freedom Capital Markets Maintains Buy on Unity Software, Raises Price Target to $62",
          "s": "Benzinga",
-         "d": "2026-11-06",
-         "sent": 1
-        },
-        {
-         "h": "Unity Software Stocks Rise 4.2% After Record Quarter and 65% Growth Guide",
-         "s": "Yahoo",
          "d": "2026-11-06",
          "sent": 1
         }
@@ -12041,7 +12041,7 @@
       "news": {
        "n": 40,
        "pos": 7,
-       "neg": 5,
+       "neg": 4,
        "verdict": "positive",
        "top": [
         {
@@ -12200,8 +12200,8 @@
       "news": {
        "n": 40,
        "pos": 3,
-       "neg": 3,
-       "verdict": "mixed",
+       "neg": 2,
+       "verdict": "positive",
        "top": [
         {
          "h": "Dow Adds 1,104 Points Even as Nvidia Sinks: Stock Market Today",
