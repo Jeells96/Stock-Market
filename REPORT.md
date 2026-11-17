@@ -1,6 +1,6 @@
 # 📊 Advisor Daily Report
 
-**As of 2026-11-16** · generated 2026-11-17T05:36:17Z · run #37 · inception 2026-07-31 · each portfolio started with $10,000 of paper money
+**As of 2026-11-16** · generated 2026-11-17T09:04:14Z · run #38 · inception 2026-07-31 · each portfolio started with $10,000 of paper money
 
 | Strategy | Equity | Total Return | vs S&P 500 | Max Drawdown | Trades | Win Rate |
 |---|---|---|---|---|---|---|

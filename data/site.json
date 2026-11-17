@@ -18,11 +18,11 @@
    "VRT"
   ]
  },
- "generated_at_utc": "2026-11-17T05:36:17Z",
+ "generated_at_utc": "2026-11-17T09:04:14Z",
  "as_of_date": "2026-11-16",
  "inception_date": "2026-07-31",
  "starting_capital": 10000.0,
- "runs": 37,
+ "runs": 38,
  "benchmark": {
   "symbol": "SPY",
   "equity": 9905.22,
@@ -477,11 +477,17 @@
       "reason": "meets every test \u2014 genuine multi-month momentum",
       "needs": "",
       "news": {
-       "n": 15,
-       "pos": 4,
+       "n": 18,
+       "pos": 5,
        "neg": 0,
        "verdict": "positive",
        "top": [
+        {
+         "h": "e.l.f. Brands Expands Impact Through Glow For Glory Contest with the National Women\u2019s Soccer League (NWSL)",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
         {
          "h": "ELF Beauty (NYSE:ELF): A Minervini Trend Template Case Study With High-Growth Momentum",
          "s": "ChartMill",
@@ -498,12 +504,6 @@
          "h": "Can Estee Lauder's New Skin Science Strategy Fuel Long-Term Growth?",
          "s": "Yahoo",
          "d": "2026-11-11",
-         "sent": 1
-        },
-        {
-         "h": "Morgan Stanley Maintains Equal-Weight on e.l.f. Beauty, Raises Price Target to $125",
-         "s": "Benzinga",
-         "d": "2026-11-10",
          "sent": 1
         }
        ]
@@ -1227,9 +1227,15 @@
       "news": {
        "n": 40,
        "pos": 0,
-       "neg": 15,
+       "neg": 16,
        "verdict": "negative",
        "top": [
+        {
+         "h": "\u201cStriking\u201d Parallels Between Anthropic and SpaceX IPOs as Crypto Slides Again",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": -1
+        },
         {
          "h": "Robinhood Stocks Fall 5.4% as Crypto Rout Pressures a Shrinking Revenue Line",
          "s": "Yahoo",
@@ -1244,12 +1250,6 @@
         },
         {
          "h": "Bitcoin falls as Anthropic IPO looms; Strategy and Strive buy the dip",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "Crypto Stocks Slide as Bitcoin Sinks and Strategy Leads the Retreat",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": -1
@@ -1288,9 +1288,15 @@
       "news": {
        "n": 40,
        "pos": 0,
-       "neg": 7,
+       "neg": 8,
        "verdict": "negative",
        "top": [
+        {
+         "h": "Stephen King Tells Elon Musk \u2018You Sound Like Trump\u2019 After Billionaire Warns Democrats Will \u2018Execute Their Plan to End De",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": -1
+        },
         {
          "h": "Tesla board member Joe Gebbia: Nvidia should \u201creinstate\u201d Jensen Huang to let investigation play out",
          "s": "Yahoo",
@@ -1305,12 +1311,6 @@
         },
         {
          "h": "Elon Musk Warns Against Pushing Founders Out \u2014 Steve Jobs and Travis Kalanick Lessons Resurface as Jensen Huang Exits Nv",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "Tesla Stocks Fall 2.8% as SpaceX Merger Talk Turns to Who Buys Whom",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": -1
@@ -1855,11 +1855,17 @@
       "reason": "not rising over both 3 and 6 months",
       "needs": "needs both climbs positive \u2014 3-month is -4.7%, 6-month +47.3%",
       "news": {
-       "n": 30,
-       "pos": 4,
+       "n": 31,
+       "pos": 5,
        "neg": 1,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Shopify Just Dropped 13% in a Month While Taking \u201cNearly Half\u201d of US E-Commerce Growth",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
         {
          "h": "What Capital Group Growth ETF (CGGR) Bought: SpaceX Leads on Wednesday",
          "s": "Yahoo",
@@ -1876,12 +1882,6 @@
          "h": "The Post-Midterm Rally Clock Is Ticking\u2014and These 3 AI Stocks Stand Out",
          "s": "Yahoo",
          "d": "2026-11-12",
-         "sent": 1
-        },
-        {
-         "h": "Global Omnichannel Retail Market Report 2026 | Capitalize on Unified Commerce Growth to $22.26 Billion by 2030 with Adob",
-         "s": "Yahoo",
-         "d": "2026-11-11",
          "sent": 1
         }
        ]
@@ -2256,6 +2256,12 @@
        "verdict": "negative",
        "top": [
         {
+         "h": "\u201cStriking\u201d Parallels Between Anthropic and SpaceX IPOs as Crypto Slides Again",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": -1
+        },
+        {
          "h": "Coinbase Stocks Fall 7.54% as Bitcoin Slides Toward $64,000 and Trading Volumes Shrink",
          "s": "Yahoo",
          "d": "2026-11-16",
@@ -2269,12 +2275,6 @@
         },
         {
          "h": "Crypto Stocks Slide as Bitcoin Sinks and Strategy Leads the Retreat",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "Tom Lee Points to Anthropic IPO as Ether Slide Cuts Bitmine\u2019s Holdings to $11.8 Billion",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": -1
@@ -2647,10 +2647,16 @@
       "needs": "needs both climbs positive \u2014 3-month is -19.9%, 6-month +1.5%",
       "news": {
        "n": 40,
-       "pos": 1,
+       "pos": 2,
        "neg": 8,
        "verdict": "negative",
        "top": [
+        {
+         "h": "\u201cWhat Would It Take\u201d for Investors to Finally Admit that Micron Is Poised to Win for the Long Term?",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
         {
          "h": "Today's Most-Active S&P 500 Stocks: Ford Leads Volume as SMCI and Micron Fall",
          "s": "ChartMill",
@@ -2665,12 +2671,6 @@
         },
         {
          "h": "Micron Stocks Sink Nearly 7% After Judge Lets DRAM Supply Lawsuit Proceed",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "Micron Sinks 5% as Tighter US Chip Export Rules Deepen Memory Selloff",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": -1
@@ -2966,33 +2966,33 @@
       "needs": "needs both climbs positive \u2014 3-month is -27.7%, 6-month -26.2%",
       "news": {
        "n": 40,
-       "pos": 4,
-       "neg": 1,
+       "pos": 5,
+       "neg": 4,
        "verdict": "positive",
        "top": [
         {
-         "h": "Physical AI Leader Agile Robots Raises $500 Million Series F at $8.5 Billion Valuation to Accelerate Global Growth",
+         "h": "SpaceX Has 33 Analysts Covering It and Just 1 \u201cStrong Sell.\u201d Here\u2019s What That Analyst Sees That the Other 32 Don\u2019t.",
          "s": "Yahoo",
          "d": "2026-11-17",
          "sent": 1
         },
         {
-         "h": "AMD\u2019s Nvidia Rally Fades: Michael Burry Calls AMD \u2018Too Expensive As Eternal Alternative\u2019",
+         "h": "\u201cWhat Would It Take\u201d for Investors to Finally Admit that Micron Is Poised to Win for the Long Term?",
          "s": "Yahoo",
          "d": "2026-11-17",
          "sent": 1
         },
         {
-         "h": "Tesla board member Joe Gebbia: Nvidia should \u201creinstate\u201d Jensen Huang to let investigation play out",
+         "h": "ASUS Ramps Up NVIDIA Vera Rubin NVL72 Shipments in Q4 Amid Strong Demand, Showcasing AI Factory Reference Architecture a",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
+        {
+         "h": "Nvidia Director Reportedly Warns of \u2018Irreplaceable Talent\u2019 Loss: Board Urged to Bring Back Jensen Huang as NVDA Stock Sl",
          "s": "Yahoo",
          "d": "2026-11-17",
          "sent": -1
-        },
-        {
-         "h": "Taiwan Semiconductor Booked a Record NT$587 Billion Month. The Stock Has Lost Nearly 10% in Three Days Anyway",
-         "s": "Yahoo",
-         "d": "2026-11-17",
-         "sent": 1
         }
        ]
       },
@@ -3775,7 +3775,7 @@
       "news": {
        "n": 40,
        "pos": 4,
-       "neg": 13,
+       "neg": 12,
        "verdict": "negative",
        "top": [
         {
@@ -4520,15 +4520,6 @@
       "range_pos": 88
      },
      {
-      "symbol": "MSI",
-      "price": 534.17,
-      "status": "qualified \u2014 buying one share at the next close",
-      "why": "A confirmed climb: up 36% over six months and 39% over the year, trading 93% of the way up its 52-week range with moderate (20%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-      "r3m": 13.9,
-      "r6m": 35.7,
-      "range_pos": 93
-     },
-     {
       "symbol": "ADP",
       "price": 313.43,
       "status": "already owned",
@@ -4554,6 +4545,15 @@
       "r3m": 16.9,
       "r6m": 30.4,
       "range_pos": 89
+     },
+     {
+      "symbol": "LLY",
+      "price": 1431.67,
+      "status": "already owned",
+      "why": "A confirmed climb: up 46% over six months and 41% over the year, trading 95% of the way up its 52-week range with moderate (31%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+      "r3m": 22.3,
+      "r6m": 45.8,
+      "range_pos": 95
      }
     ],
     "scanned": 219,
@@ -4744,52 +4744,6 @@
       "r6m": 52.5,
       "range_pos": 88,
       "vol": 28.0
-     },
-     {
-      "symbol": "MSI",
-      "price": 534.17,
-      "price_asof": "2026-11-16 close",
-      "qualified": true,
-      "buy": true,
-      "held": false,
-      "reason": "meets every test \u2014 durable, calm uptrend",
-      "needs": "",
-      "news": {
-       "n": 17,
-       "pos": 2,
-       "neg": 2,
-       "verdict": "mixed",
-       "top": [
-        {
-         "h": "Why Did Axon Stock Fall?",
-         "s": "Yahoo",
-         "d": "2026-11-13",
-         "sent": -1
-        },
-        {
-         "h": "Motorola Solutions (MSI) Stock Looks Overvalued Even After Strong Cash Flow Growth",
-         "s": "Yahoo",
-         "d": "2026-11-13",
-         "sent": 1
-        },
-        {
-         "h": "Is TE Connectivity\u2019s Buyback Still Lifting Earnings Per Share?",
-         "s": "Yahoo",
-         "d": "2026-11-11",
-         "sent": 1
-        },
-        {
-         "h": "Axon Sinks 27% in a Week to a New 52-Week Low. Is the Selling Overdone?",
-         "s": "Yahoo",
-         "d": "2026-11-10",
-         "sent": -1
-        }
-       ]
-      },
-      "r3m": 13.9,
-      "r6m": 35.7,
-      "range_pos": 93,
-      "vol": 20.0
      },
      {
       "symbol": "ADP",
@@ -5169,11 +5123,17 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 10,
+       "n": 11,
        "pos": 0,
        "neg": 0,
        "verdict": "mixed",
        "top": [
+        {
+         "h": "Citi\u2019s software stock picks: AI upside and a new contender enters the spotlight",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 0
+        },
         {
          "h": "Is Roche Holding (SWX:ROP) Overvalued After CHMP Backed Gazyva For Lupus?",
          "s": "Yahoo",
@@ -5188,12 +5148,6 @@
         },
         {
          "h": "More than 170 Law Firms, Including 40% of the Am Law 200, Trust Aderant Milana for Cloud Docketing",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": 0
-        },
-        {
-         "h": "Citi Names Top Application Software Stocks After Q3 Results",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": 0
@@ -5307,11 +5261,17 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 19,
-       "pos": 5,
+       "n": 20,
+       "pos": 6,
        "neg": 0,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Trading at just 8x P/E with 464% EPS growth: Is Valero a bargain?",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
         {
          "h": "New Strong Buy Stocks for November 13th",
          "s": "Yahoo",
@@ -5326,12 +5286,6 @@
         },
         {
          "h": "Par Pacific Is Now Undervalued: Is It a Strong Entry Point?",
-         "s": "Yahoo",
-         "d": "2026-11-10",
-         "sent": 1
-        },
-        {
-         "h": "Can PBF's Chalmette Jet Fuel Expansion Drive Margin Growth?",
          "s": "Yahoo",
          "d": "2026-11-10",
          "sent": 1
@@ -5620,6 +5574,52 @@
       "vol": 21.0
      },
      {
+      "symbol": "AAPL",
+      "price": 352.78,
+      "price_asof": "2026-11-16 close",
+      "qualified": true,
+      "buy": true,
+      "held": false,
+      "reason": "meets every test \u2014 durable, calm uptrend",
+      "needs": "",
+      "news": {
+       "n": 40,
+       "pos": 3,
+       "neg": 2,
+       "verdict": "positive",
+       "top": [
+        {
+         "h": "Elon Musk Warns Against Pushing Founders Out \u2014 Steve Jobs and Travis Kalanick Lessons Resurface as Jensen Huang Exits Nv",
+         "s": "Yahoo",
+         "d": "2026-11-16",
+         "sent": -1
+        },
+        {
+         "h": "What iShares S&P 500 Growth ETF (IVW) Bought: NVIDIA Leads on Thursday",
+         "s": "Yahoo",
+         "d": "2026-11-16",
+         "sent": 1
+        },
+        {
+         "h": "What iShares Russell 1000 Growth (IWF) Bought: FTAI Aviation Leads on Nov. 12",
+         "s": "Yahoo",
+         "d": "2026-11-16",
+         "sent": 1
+        },
+        {
+         "h": "WisdomTree U.S. Dividend Growth (DGRW) Adds Microsoft and Nvidia on Nov. 12",
+         "s": "Yahoo",
+         "d": "2026-11-16",
+         "sent": 1
+        }
+       ]
+      },
+      "r3m": 16.5,
+      "r6m": 20.9,
+      "range_pos": 93,
+      "vol": 22.0
+     },
+     {
       "symbol": "AJG",
       "price": 287.0,
       "price_asof": "2026-11-16 close",
@@ -5721,7 +5721,7 @@
       "reason": "meets every test \u2014 durable, calm uptrend",
       "needs": "",
       "news": {
-       "n": 14,
+       "n": 15,
        "pos": 4,
        "neg": 0,
        "verdict": "positive",
@@ -7160,6 +7160,52 @@
       "vol": 31.0
      },
      {
+      "symbol": "MSI",
+      "price": 534.17,
+      "price_asof": "2026-11-16 close",
+      "qualified": false,
+      "buy": false,
+      "held": false,
+      "reason": "passes every price test, but this week's news is negative (3 bad headlines) \u2014 waiting for it to clear",
+      "needs": "needs the negative headlines to stop",
+      "news": {
+       "n": 18,
+       "pos": 2,
+       "neg": 3,
+       "verdict": "negative",
+       "top": [
+        {
+         "h": "Axon Sinks 21% in a Month on Delayed Federal Drone Deals: \u201cJust a Timing Piece\u201d",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": -1
+        },
+        {
+         "h": "Why Did Axon Stock Fall?",
+         "s": "Yahoo",
+         "d": "2026-11-13",
+         "sent": -1
+        },
+        {
+         "h": "Motorola Solutions (MSI) Stock Looks Overvalued Even After Strong Cash Flow Growth",
+         "s": "Yahoo",
+         "d": "2026-11-13",
+         "sent": 1
+        },
+        {
+         "h": "Is TE Connectivity\u2019s Buyback Still Lifting Earnings Per Share?",
+         "s": "Yahoo",
+         "d": "2026-11-11",
+         "sent": 1
+        }
+       ]
+      },
+      "r3m": 13.9,
+      "r6m": 35.7,
+      "range_pos": 93,
+      "vol": 20.0
+     },
+     {
       "symbol": "TRV",
       "price": 403.06,
       "price_asof": "2026-11-16 close",
@@ -7204,52 +7250,6 @@
       "r6m": 35.2,
       "range_pos": 90,
       "vol": 19.0
-     },
-     {
-      "symbol": "AAPL",
-      "price": 352.78,
-      "price_asof": "2026-11-16 close",
-      "qualified": false,
-      "buy": false,
-      "held": false,
-      "reason": "passes every price test, but this week's news is negative (4 bad headlines) \u2014 waiting for it to clear",
-      "needs": "needs the negative headlines to stop",
-      "news": {
-       "n": 40,
-       "pos": 3,
-       "neg": 4,
-       "verdict": "negative",
-       "top": [
-        {
-         "h": "Elon Musk Warns Against Pushing Founders Out \u2014 Steve Jobs and Travis Kalanick Lessons Resurface as Jensen Huang Exits Nv",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "What iShares S&P 500 Growth ETF (IVW) Bought: NVIDIA Leads on Thursday",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": 1
-        },
-        {
-         "h": "What iShares Russell 1000 Growth (IWF) Bought: FTAI Aviation Leads on Nov. 12",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": 1
-        },
-        {
-         "h": "WisdomTree U.S. Dividend Growth (DGRW) Adds Microsoft and Nvidia on Nov. 12",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": 1
-        }
-       ]
-      },
-      "r3m": 16.5,
-      "r6m": 20.9,
-      "range_pos": 93,
-      "vol": 22.0
      },
      {
       "symbol": "MSFT",
@@ -7307,7 +7307,7 @@
       "reason": "passes every price test, but this week's news is negative (5 bad headlines) \u2014 waiting for it to clear",
       "needs": "needs the negative headlines to stop",
       "news": {
-       "n": 32,
+       "n": 33,
        "pos": 2,
        "neg": 5,
        "verdict": "negative",
@@ -7354,7 +7354,7 @@
       "needs": "needs the negative headlines to stop",
       "news": {
        "n": 40,
-       "pos": 3,
+       "pos": 2,
        "neg": 4,
        "verdict": "negative",
        "top": [
@@ -7490,11 +7490,17 @@
       "reason": "not rising over 3, 6 and 12 months together",
       "needs": "needs all three climbs positive \u2014 3-month -4.7%, 6-month +47.3%, 12-month +0.5%",
       "news": {
-       "n": 30,
-       "pos": 4,
+       "n": 31,
+       "pos": 5,
        "neg": 1,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Shopify Just Dropped 13% in a Month While Taking \u201cNearly Half\u201d of US E-Commerce Growth",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
         {
          "h": "What Capital Group Growth ETF (CGGR) Bought: SpaceX Leads on Wednesday",
          "s": "Yahoo",
@@ -7511,12 +7517,6 @@
          "h": "The Post-Midterm Rally Clock Is Ticking\u2014and These 3 AI Stocks Stand Out",
          "s": "Yahoo",
          "d": "2026-11-12",
-         "sent": 1
-        },
-        {
-         "h": "Global Omnichannel Retail Market Report 2026 | Capitalize on Unified Commerce Growth to $22.26 Billion by 2030 with Adob",
-         "s": "Yahoo",
-         "d": "2026-11-11",
          "sent": 1
         }
        ]
@@ -7747,10 +7747,16 @@
       "needs": "needs volatility below 45% \u2014 it swings 80%",
       "news": {
        "n": 40,
-       "pos": 3,
-       "neg": 6,
+       "pos": 4,
+       "neg": 5,
        "verdict": "negative",
        "top": [
+        {
+         "h": "3 Growth Stocks To Watch With Earnings Growth Over 18%",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
         {
          "h": "AMD\u2019s Nvidia Rally Fades: Michael Burry Calls AMD \u2018Too Expensive As Eternal Alternative\u2019",
          "s": "Yahoo",
@@ -7765,12 +7771,6 @@
         },
         {
          "h": "NVDL 2X NVIDIA ETF Sinks 9% as NVIDIA Falls 4% on Jensen Huang Fallout Ahead of Earnings; AMD Drops 5%",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "AMD Stocks Fall 4.25% as $2.5 Billion Anthropic Stake Meets AI Profit-Taking",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": -1
@@ -8453,10 +8453,16 @@
       "needs": "needs all three climbs positive \u2014 3-month -19.9%, 6-month +1.5%, 12-month +228.5%",
       "news": {
        "n": 40,
-       "pos": 1,
+       "pos": 2,
        "neg": 8,
        "verdict": "negative",
        "top": [
+        {
+         "h": "\u201cWhat Would It Take\u201d for Investors to Finally Admit that Micron Is Poised to Win for the Long Term?",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
         {
          "h": "Today's Most-Active S&P 500 Stocks: Ford Leads Volume as SMCI and Micron Fall",
          "s": "ChartMill",
@@ -8471,12 +8477,6 @@
         },
         {
          "h": "Micron Stocks Sink Nearly 7% After Judge Lets DRAM Supply Lawsuit Proceed",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "Micron Sinks 5% as Tighter US Chip Export Rules Deepen Memory Selloff",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": -1
@@ -9040,9 +9040,15 @@
       "news": {
        "n": 40,
        "pos": 0,
-       "neg": 7,
+       "neg": 8,
        "verdict": "negative",
        "top": [
+        {
+         "h": "Stephen King Tells Elon Musk \u2018You Sound Like Trump\u2019 After Billionaire Warns Democrats Will \u2018Execute Their Plan to End De",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": -1
+        },
         {
          "h": "Tesla board member Joe Gebbia: Nvidia should \u201creinstate\u201d Jensen Huang to let investigation play out",
          "s": "Yahoo",
@@ -9057,12 +9063,6 @@
         },
         {
          "h": "Elon Musk Warns Against Pushing Founders Out \u2014 Steve Jobs and Travis Kalanick Lessons Resurface as Jensen Huang Exits Nv",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "Tesla Stocks Fall 2.8% as SpaceX Merger Talk Turns to Who Buys Whom",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": -1
@@ -9445,33 +9445,33 @@
       "needs": "needs all three climbs positive \u2014 3-month -27.7%, 6-month -26.2%, 12-month -12.8%",
       "news": {
        "n": 40,
-       "pos": 4,
-       "neg": 1,
+       "pos": 5,
+       "neg": 4,
        "verdict": "positive",
        "top": [
         {
-         "h": "Physical AI Leader Agile Robots Raises $500 Million Series F at $8.5 Billion Valuation to Accelerate Global Growth",
+         "h": "SpaceX Has 33 Analysts Covering It and Just 1 \u201cStrong Sell.\u201d Here\u2019s What That Analyst Sees That the Other 32 Don\u2019t.",
          "s": "Yahoo",
          "d": "2026-11-17",
          "sent": 1
         },
         {
-         "h": "AMD\u2019s Nvidia Rally Fades: Michael Burry Calls AMD \u2018Too Expensive As Eternal Alternative\u2019",
+         "h": "\u201cWhat Would It Take\u201d for Investors to Finally Admit that Micron Is Poised to Win for the Long Term?",
          "s": "Yahoo",
          "d": "2026-11-17",
          "sent": 1
         },
         {
-         "h": "Tesla board member Joe Gebbia: Nvidia should \u201creinstate\u201d Jensen Huang to let investigation play out",
+         "h": "ASUS Ramps Up NVIDIA Vera Rubin NVL72 Shipments in Q4 Amid Strong Demand, Showcasing AI Factory Reference Architecture a",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
+        {
+         "h": "Nvidia Director Reportedly Warns of \u2018Irreplaceable Talent\u2019 Loss: Board Urged to Bring Back Jensen Huang as NVDA Stock Sl",
          "s": "Yahoo",
          "d": "2026-11-17",
          "sent": -1
-        },
-        {
-         "h": "Taiwan Semiconductor Booked a Record NT$587 Billion Month. The Stock Has Lost Nearly 10% in Three Days Anyway",
-         "s": "Yahoo",
-         "d": "2026-11-17",
-         "sent": 1
         }
        ]
       },
@@ -10159,9 +10159,15 @@
       "news": {
        "n": 40,
        "pos": 0,
-       "neg": 7,
+       "neg": 8,
        "verdict": "negative",
        "top": [
+        {
+         "h": "Stephen King Tells Elon Musk \u2018You Sound Like Trump\u2019 After Billionaire Warns Democrats Will \u2018Execute Their Plan to End De",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": -1
+        },
         {
          "h": "Tesla board member Joe Gebbia: Nvidia should \u201creinstate\u201d Jensen Huang to let investigation play out",
          "s": "Yahoo",
@@ -10176,12 +10182,6 @@
         },
         {
          "h": "Elon Musk Warns Against Pushing Founders Out \u2014 Steve Jobs and Travis Kalanick Lessons Resurface as Jensen Huang Exits Nv",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "Tesla Stocks Fall 2.8% as SpaceX Merger Talk Turns to Who Buys Whom",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": -1
@@ -10204,33 +10204,33 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 4,
-       "neg": 1,
+       "pos": 5,
+       "neg": 4,
        "verdict": "positive",
        "top": [
         {
-         "h": "Physical AI Leader Agile Robots Raises $500 Million Series F at $8.5 Billion Valuation to Accelerate Global Growth",
+         "h": "SpaceX Has 33 Analysts Covering It and Just 1 \u201cStrong Sell.\u201d Here\u2019s What That Analyst Sees That the Other 32 Don\u2019t.",
          "s": "Yahoo",
          "d": "2026-11-17",
          "sent": 1
         },
         {
-         "h": "AMD\u2019s Nvidia Rally Fades: Michael Burry Calls AMD \u2018Too Expensive As Eternal Alternative\u2019",
+         "h": "\u201cWhat Would It Take\u201d for Investors to Finally Admit that Micron Is Poised to Win for the Long Term?",
          "s": "Yahoo",
          "d": "2026-11-17",
          "sent": 1
         },
         {
-         "h": "Tesla board member Joe Gebbia: Nvidia should \u201creinstate\u201d Jensen Huang to let investigation play out",
+         "h": "ASUS Ramps Up NVIDIA Vera Rubin NVL72 Shipments in Q4 Amid Strong Demand, Showcasing AI Factory Reference Architecture a",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
+        {
+         "h": "Nvidia Director Reportedly Warns of \u2018Irreplaceable Talent\u2019 Loss: Board Urged to Bring Back Jensen Huang as NVDA Stock Sl",
          "s": "Yahoo",
          "d": "2026-11-17",
          "sent": -1
-        },
-        {
-         "h": "Taiwan Semiconductor Booked a Record NT$587 Billion Month. The Stock Has Lost Nearly 10% in Three Days Anyway",
-         "s": "Yahoo",
-         "d": "2026-11-17",
-         "sent": 1
         }
        ]
       },
@@ -10250,10 +10250,16 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 3,
-       "neg": 6,
+       "pos": 4,
+       "neg": 5,
        "verdict": "negative",
        "top": [
+        {
+         "h": "3 Growth Stocks To Watch With Earnings Growth Over 18%",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
         {
          "h": "AMD\u2019s Nvidia Rally Fades: Michael Burry Calls AMD \u2018Too Expensive As Eternal Alternative\u2019",
          "s": "Yahoo",
@@ -10268,12 +10274,6 @@
         },
         {
          "h": "NVDL 2X NVIDIA ETF Sinks 9% as NVIDIA Falls 4% on Jensen Huang Fallout Ahead of Earnings; AMD Drops 5%",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "AMD Stocks Fall 4.25% as $2.5 Billion Anthropic Stake Meets AI Profit-Taking",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": -1
@@ -10347,6 +10347,12 @@
        "verdict": "negative",
        "top": [
         {
+         "h": "\u201cStriking\u201d Parallels Between Anthropic and SpaceX IPOs as Crypto Slides Again",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": -1
+        },
+        {
          "h": "Coinbase Stocks Fall 7.54% as Bitcoin Slides Toward $64,000 and Trading Volumes Shrink",
          "s": "Yahoo",
          "d": "2026-11-16",
@@ -10360,12 +10366,6 @@
         },
         {
          "h": "Crypto Stocks Slide as Bitcoin Sinks and Strategy Leads the Retreat",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "Tom Lee Points to Anthropic IPO as Ether Slide Cuts Bitmine\u2019s Holdings to $11.8 Billion",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": -1
@@ -10389,9 +10389,15 @@
       "news": {
        "n": 40,
        "pos": 0,
-       "neg": 15,
+       "neg": 16,
        "verdict": "negative",
        "top": [
+        {
+         "h": "\u201cStriking\u201d Parallels Between Anthropic and SpaceX IPOs as Crypto Slides Again",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": -1
+        },
         {
          "h": "Robinhood Stocks Fall 5.4% as Crypto Rout Pressures a Shrinking Revenue Line",
          "s": "Yahoo",
@@ -10406,12 +10412,6 @@
         },
         {
          "h": "Bitcoin falls as Anthropic IPO looms; Strategy and Strive buy the dip",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "Crypto Stocks Slide as Bitcoin Sinks and Strategy Leads the Retreat",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": -1
@@ -11033,7 +11033,7 @@
       "news": {
        "n": 40,
        "pos": 4,
-       "neg": 13,
+       "neg": 12,
        "verdict": "negative",
        "top": [
         {
@@ -11353,11 +11353,17 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 15,
-       "pos": 4,
+       "n": 18,
+       "pos": 5,
        "neg": 0,
        "verdict": "positive",
        "top": [
+        {
+         "h": "e.l.f. Brands Expands Impact Through Glow For Glory Contest with the National Women\u2019s Soccer League (NWSL)",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
         {
          "h": "ELF Beauty (NYSE:ELF): A Minervini Trend Template Case Study With High-Growth Momentum",
          "s": "ChartMill",
@@ -11374,12 +11380,6 @@
          "h": "Can Estee Lauder's New Skin Science Strategy Fuel Long-Term Growth?",
          "s": "Yahoo",
          "d": "2026-11-11",
-         "sent": 1
-        },
-        {
-         "h": "Morgan Stanley Maintains Equal-Weight on e.l.f. Beauty, Raises Price Target to $125",
-         "s": "Benzinga",
-         "d": "2026-11-10",
          "sent": 1
         }
        ]
@@ -12064,11 +12064,17 @@
       "reason": "waiting for it to jump 2\u20138% in the morning",
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
-       "n": 30,
-       "pos": 4,
+       "n": 31,
+       "pos": 5,
        "neg": 1,
        "verdict": "positive",
        "top": [
+        {
+         "h": "Shopify Just Dropped 13% in a Month While Taking \u201cNearly Half\u201d of US E-Commerce Growth",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
         {
          "h": "What Capital Group Growth ETF (CGGR) Bought: SpaceX Leads on Wednesday",
          "s": "Yahoo",
@@ -12085,12 +12091,6 @@
          "h": "The Post-Midterm Rally Clock Is Ticking\u2014and These 3 AI Stocks Stand Out",
          "s": "Yahoo",
          "d": "2026-11-12",
-         "sent": 1
-        },
-        {
-         "h": "Global Omnichannel Retail Market Report 2026 | Capitalize on Unified Commerce Growth to $22.26 Billion by 2030 with Adob",
-         "s": "Yahoo",
-         "d": "2026-11-11",
          "sent": 1
         }
        ]
@@ -12157,10 +12157,16 @@
       "needs": "needs to be up 2\u20138% on the day and still above its opening price, before 11:30 in the morning New York time",
       "news": {
        "n": 40,
-       "pos": 1,
+       "pos": 2,
        "neg": 8,
        "verdict": "negative",
        "top": [
+        {
+         "h": "\u201cWhat Would It Take\u201d for Investors to Finally Admit that Micron Is Poised to Win for the Long Term?",
+         "s": "Yahoo",
+         "d": "2026-11-17",
+         "sent": 1
+        },
         {
          "h": "Today's Most-Active S&P 500 Stocks: Ford Leads Volume as SMCI and Micron Fall",
          "s": "ChartMill",
@@ -12175,12 +12181,6 @@
         },
         {
          "h": "Micron Stocks Sink Nearly 7% After Judge Lets DRAM Supply Lawsuit Proceed",
-         "s": "Yahoo",
-         "d": "2026-11-16",
-         "sent": -1
-        },
-        {
-         "h": "Micron Sinks 5% as Tighter US Chip Export Rules Deepen Memory Selloff",
          "s": "Yahoo",
          "d": "2026-11-16",
          "sent": -1
