@@ -7,14 +7,14 @@
   "shares": 13.386343252613685,
   "cash": 0.0,
   "entry_date": "2026-07-31",
-  "last_eval_date": "2026-11-17",
+  "last_eval_date": "2026-11-18",
   "entry_price": 747.03,
   "splits_applied": [],
   "divs_credited": []
  },
  "strategies": {
   "aggressive": {
-   "cash": 6689.613084289944,
+   "cash": 6539.084849289944,
    "positions": [
     {
      "symbol": "PAYC",
@@ -26,8 +26,8 @@
      "target_price": 300.024,
      "stop_price": 230.0184,
      "thesis": "Up 53% over three months and 103% over six, sitting 85% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+2.9% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 247.9,
-     "bars_held": 8,
+     "last_price": 243.48,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -42,8 +42,8 @@
      "target_price": 131.82,
      "stop_price": 101.062,
      "thesis": "Up 32% over three months and 88% over six, sitting 83% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+0.6% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 111.21,
-     "bars_held": 8,
+     "last_price": 113.77,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -65,23 +65,6 @@
      "missing_runs": 0
     },
     {
-     "symbol": "AMC",
-     "name": "AMC",
-     "shares": 1.0,
-     "entry_price": 3.08154,
-     "entry_date": "2026-11-05",
-     "raw_entry_price": 3.08,
-     "target_price": 3.6959999999999997,
-     "stop_price": 3.08154,
-     "thesis": "Up 32% over three months and 143% over six, sitting 82% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+14.3% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 3.18,
-     "bars_held": 8,
-     "splits_applied": [],
-     "divs_credited": [],
-     "missing_runs": 0,
-     "be_locked": true
-    },
-    {
      "symbol": "LLY",
      "name": "LLY",
      "shares": 1.0,
@@ -91,8 +74,8 @@
      "target_price": 1637.676,
      "stop_price": 1255.5516,
      "thesis": "Up 21% over three months and 47% over six, sitting 86% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+3.2% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 1415.55,
-     "bars_held": 8,
+     "last_price": 1382.75,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -123,8 +106,8 @@
      "target_price": 203.48399999999998,
      "stop_price": 156.0044,
      "thesis": "Up 16% over three months and 56% over six, sitting 90% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+1.5% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 177.5,
-     "bars_held": 8,
+     "last_price": 174.97,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -139,8 +122,8 @@
      "target_price": 69.348,
      "stop_price": 53.1668,
      "thesis": "Up 31% over three months and 40% over six, sitting 86% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+3.7% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 58.52,
-     "bars_held": 8,
+     "last_price": 58.66,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -155,8 +138,8 @@
      "target_price": 58.47599999999999,
      "stop_price": 44.8316,
      "thesis": "Up 12% over three months and 84% over six, sitting 95% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (-0.0% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 49.02,
-     "bars_held": 8,
+     "last_price": 49.23,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -171,8 +154,8 @@
      "target_price": 58.559999999999995,
      "stop_price": 44.896,
      "thesis": "Up 20% over three months and 57% over six, sitting 91% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+8.1% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 50.36,
-     "bars_held": 8,
+     "last_price": 48.96,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -187,8 +170,8 @@
      "target_price": 204.15599999999998,
      "stop_price": 170.21506499999998,
      "thesis": "Up 16% over three months and 25% over six, sitting 72% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+6.0% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 180.94,
-     "bars_held": 8,
+     "last_price": 180.21,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0,
@@ -204,11 +187,56 @@
      "target_price": 42.19199999999999,
      "stop_price": 32.3472,
      "thesis": "Up 2% over three months and 22% over six, sitting 74% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+12.3% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
-     "last_price": 33.65,
-     "bars_held": 8,
+     "last_price": 34.0,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
+    },
+    {
+     "symbol": "GME",
+     "name": "GME",
+     "shares": 1.0,
+     "entry_price": 26.543264999999998,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 26.53,
+     "target_price": 31.836,
+     "stop_price": 24.407600000000002,
+     "thesis": "Up 41% over three months and 17% over six, sitting 83% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (-0.7% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
+     "last_price": 26.53,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "GTLB",
+     "name": "GTLB",
+     "shares": 1.0,
+     "entry_price": 44.52225,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 44.5,
+     "target_price": 53.4,
+     "stop_price": 40.940000000000005,
+     "thesis": "Up 17% over three months and 115% over six, sitting 66% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (+1.4% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
+     "last_price": 44.5,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "SWKS",
+     "name": "SWKS",
+     "shares": 1.0,
+     "entry_price": 82.471215,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 82.43,
+     "target_price": 98.91600000000001,
+     "stop_price": 75.83560000000001,
+     "thesis": "Up 27% over three months and 28% over six, sitting 74% of the way up its 52-week range \u2014 a steady climb rather than a one-week spike (-2.0% this week). Target +20%, stop \u22128% moving to breakeven at +10%, out after 15 trading days regardless.",
+     "last_price": 82.43,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
     }
    ],
    "closed": [
@@ -295,13 +323,26 @@
      "slippage_bps": 5,
      "pnl_pct": -8.77,
      "reason": "stop loss"
+    },
+    {
+     "symbol": "AMC",
+     "name": "AMC",
+     "entry_date": "2026-11-05",
+     "entry_price": 3.0815,
+     "exit_date": "2026-11-18",
+     "exit_price": 3.0085,
+     "raw_exit_price": 3.01,
+     "slippage_bps": 5,
+     "pnl_pct": -2.37,
+     "reason": "breakeven stop"
     }
    ],
    "cooldown": {
     "OSCR": "2026-11-17",
-    "WDAY": "2026-11-17"
+    "WDAY": "2026-11-17",
+    "AMC": "2026-11-18"
    },
-   "last_eval_date": "2026-11-17",
+   "last_eval_date": "2026-11-18",
    "activity": [
     {
      "date": "2026-08-04",
@@ -390,30 +431,26 @@
     {
      "date": "2026-11-09",
      "text": "AMC up 10% \u2014 stop moved to breakeven"
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY GME @ $26.53 \u2014 Up 41% over three months and 17% over six, sitting 83% of the way up its 52-week"
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY GTLB @ $44.50 \u2014 Up 17% over three months and 115% over six, sitting 66% of the way up its 52-wee"
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY SWKS @ $82.43 \u2014 Up 27% over three months and 28% over six, sitting 74% of the way up its 52-week"
     }
    ],
    "units": 10000.0,
    "contributed": 10000.0
   },
   "growth": {
-   "cash": 1785.8286750378525,
+   "cash": 0.0,
    "positions": [
-    {
-     "symbol": "UNH",
-     "name": "UNH",
-     "shares": 4.904920867991964,
-     "entry_price": 407.75377499999996,
-     "entry_date": "2026-08-04",
-     "raw_entry_price": 407.55,
-     "target_price": 468.6825,
-     "stop_price": 366.795,
-     "thesis": "A confirmed climb: up 47% over six months and 75% over the year, trading 76% of the way up its 52-week range with moderate (26%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 389.68,
-     "bars_held": 26,
-     "splits_applied": [],
-     "divs_credited": [],
-     "missing_runs": 0
-    },
     {
      "symbol": "BK",
      "name": "BK",
@@ -440,8 +477,8 @@
      "target_price": 331.476,
      "stop_price": 259.416,
      "thesis": "A confirmed climb: up 43% over six months and 37% over the year, trading 90% of the way up its 52-week range with moderate (21%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 292.82,
-     "bars_held": 8,
+     "last_price": 286.01,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -456,8 +493,8 @@
      "target_price": 778.481,
      "stop_price": 609.2460000000001,
      "thesis": "A confirmed climb: up 50% over six months and 25% over the year, trading 87% of the way up its 52-week range with moderate (26%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 686.79,
-     "bars_held": 8,
+     "last_price": 692.74,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -472,8 +509,8 @@
      "target_price": 245.58249999999998,
      "stop_price": 192.19500000000002,
      "thesis": "A confirmed climb: up 40% over six months and 49% over the year, trading 100% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 215.42,
-     "bars_held": 8,
+     "last_price": 216.08,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -488,8 +525,8 @@
      "target_price": 754.3079999999999,
      "stop_price": 590.328,
      "thesis": "A confirmed climb: up 36% over six months and 22% over the year, trading 92% of the way up its 52-week range with moderate (22%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 645.73,
-     "bars_held": 8,
+     "last_price": 643.37,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -504,8 +541,8 @@
      "target_price": 485.97849999999994,
      "stop_price": 380.33099999999996,
      "thesis": "A confirmed climb: up 33% over six months and 28% over the year, trading 90% of the way up its 52-week range with moderate (21%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 416.77,
-     "bars_held": 8,
+     "last_price": 415.22,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -520,8 +557,8 @@
      "target_price": 192.70549999999997,
      "stop_price": 150.813,
      "thesis": "A confirmed climb: up 33% over six months and 42% over the year, trading 86% of the way up its 52-week range with moderate (27%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 170.26,
-     "bars_held": 8,
+     "last_price": 168.98,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -536,8 +573,8 @@
      "target_price": 260.37149999999997,
      "stop_price": 203.769,
      "thesis": "A confirmed climb: up 35% over six months and 24% over the year, trading 94% of the way up its 52-week range with moderate (22%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 222.2,
-     "bars_held": 8,
+     "last_price": 222.0,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -552,8 +589,8 @@
      "target_price": 463.32349999999997,
      "stop_price": 362.601,
      "thesis": "A confirmed climb: up 34% over six months and 48% over the year, trading 95% of the way up its 52-week range with moderate (19%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 397.58,
-     "bars_held": 8,
+     "last_price": 391.58,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -568,8 +605,8 @@
      "target_price": 1569.4395,
      "stop_price": 1228.257,
      "thesis": "A confirmed climb: up 47% over six months and 56% over the year, trading 86% of the way up its 52-week range with moderate (32%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 1415.55,
-     "bars_held": 8,
+     "last_price": 1382.75,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -584,8 +621,8 @@
      "target_price": 284.09599999999995,
      "stop_price": 222.33599999999998,
      "thesis": "A confirmed climb: up 47% over six months and 91% over the year, trading 70% of the way up its 52-week range with moderate (35%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 256.93,
-     "bars_held": 8,
+     "last_price": 244.83,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -600,8 +637,8 @@
      "target_price": 353.21099999999996,
      "stop_price": 276.426,
      "thesis": "A confirmed climb: up 40% over six months and 15% over the year, trading 98% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 308.29,
-     "bars_held": 8,
+     "last_price": 305.57,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -616,8 +653,8 @@
      "target_price": 120.56599999999999,
      "stop_price": 94.35600000000001,
      "thesis": "A confirmed climb: up 32% over six months and 16% over the year, trading 95% of the way up its 52-week range with moderate (27%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 102.32,
-     "bars_held": 8,
+     "last_price": 100.72,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -632,8 +669,8 @@
      "target_price": 564.6039999999999,
      "stop_price": 441.864,
      "thesis": "A confirmed climb: up 37% over six months and 10% over the year, trading 98% of the way up its 52-week range with moderate (33%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 471.92,
-     "bars_held": 8,
+     "last_price": 470.87,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -648,8 +685,8 @@
      "target_price": 110.0895,
      "stop_price": 86.15700000000001,
      "thesis": "A confirmed climb: up 22% over six months and 40% over the year, trading 97% of the way up its 52-week range with moderate (17%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 98.79,
-     "bars_held": 8,
+     "last_price": 98.09,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -664,8 +701,8 @@
      "target_price": 529.3219999999999,
      "stop_price": 414.252,
      "thesis": "A confirmed climb: up 45% over six months and 61% over the year, trading 88% of the way up its 52-week range with moderate (33%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 457.93,
-     "bars_held": 8,
+     "last_price": 443.89,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -680,8 +717,8 @@
      "target_price": 286.83299999999997,
      "stop_price": 224.47799999999998,
      "thesis": "A confirmed climb: up 19% over six months and 18% over the year, trading 100% of the way up its 52-week range with moderate (20%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 252.93,
-     "bars_held": 8,
+     "last_price": 249.16,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -696,8 +733,8 @@
      "target_price": 1232.8,
      "stop_price": 964.8000000000001,
      "thesis": "A confirmed climb: up 31% over six months and 27% over the year, trading 99% of the way up its 52-week range with moderate (31%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 1091.67,
-     "bars_held": 8,
+     "last_price": 1084.43,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -712,8 +749,8 @@
      "target_price": 260.291,
      "stop_price": 203.70600000000002,
      "thesis": "A confirmed climb: up 33% over six months and 9% over the year, trading 80% of the way up its 52-week range with moderate (29%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 225.77,
-     "bars_held": 8,
+     "last_price": 228.58,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -728,8 +765,8 @@
      "target_price": 351.70449999999994,
      "stop_price": 275.247,
      "thesis": "A confirmed climb: up 21% over six months and 22% over the year, trading 87% of the way up its 52-week range with moderate (18%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 302.59,
-     "bars_held": 8,
+     "last_price": 300.68,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -744,8 +781,8 @@
      "target_price": 34.361999999999995,
      "stop_price": 26.892,
      "thesis": "A confirmed climb: up 17% over six months and 27% over the year, trading 84% of the way up its 52-week range with moderate (21%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 28.47,
-     "bars_held": 8,
+     "last_price": 28.06,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -760,8 +797,8 @@
      "target_price": 231.725,
      "stop_price": 181.35,
      "thesis": "A confirmed climb: up 27% over six months and 43% over the year, trading 82% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 194.38,
-     "bars_held": 8,
+     "last_price": 192.73,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -776,8 +813,8 @@
      "target_price": 331.3265,
      "stop_price": 259.29900000000004,
      "thesis": "A confirmed climb: up 39% over six months and 15% over the year, trading 98% of the way up its 52-week range with moderate (34%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 282.88,
-     "bars_held": 8,
+     "last_price": 282.22,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -792,11 +829,371 @@
      "target_price": 114.71249999999999,
      "stop_price": 89.775,
      "thesis": "A confirmed climb: up 28% over six months and 29% over the year, trading 89% of the way up its 52-week range with moderate (22%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
-     "last_price": 101.5,
-     "bars_held": 8,
+     "last_price": 99.79,
+     "bars_held": 9,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
+    },
+    {
+     "symbol": "MSI",
+     "name": "MSI",
+     "shares": 1.0,
+     "entry_price": 524.7922649999999,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 524.53,
+     "target_price": 603.2094999999999,
+     "stop_price": 472.077,
+     "thesis": "A confirmed climb: up 32% over six months and 39% over the year, trading 87% of the way up its 52-week range with moderate (20%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 524.53,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "PG",
+     "name": "PG",
+     "shares": 1.0,
+     "entry_price": 170.37514499999997,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 170.29,
+     "target_price": 195.8335,
+     "stop_price": 153.261,
+     "thesis": "A confirmed climb: up 20% over six months and 18% over the year, trading 91% of the way up its 52-week range with moderate (21%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 170.29,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "EW",
+     "name": "EW",
+     "shares": 1.0,
+     "entry_price": 105.28261499999999,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 105.23,
+     "target_price": 121.0145,
+     "stop_price": 94.70700000000001,
+     "thesis": "A confirmed climb: up 30% over six months and 24% over the year, trading 92% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 105.23,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "MAR",
+     "name": "MAR",
+     "shares": 1.0,
+     "entry_price": 426.11294999999996,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 425.9,
+     "target_price": 489.7849999999999,
+     "stop_price": 383.31,
+     "thesis": "A confirmed climb: up 20% over six months and 49% over the year, trading 95% of the way up its 52-week range with moderate (22%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 425.9,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "ULTA",
+     "name": "ULTA",
+     "shares": 1.0,
+     "entry_price": 648.834255,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 648.51,
+     "target_price": 745.7864999999999,
+     "stop_price": 583.659,
+     "thesis": "A confirmed climb: up 29% over six months and 26% over the year, trading 76% of the way up its 52-week range with moderate (32%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 648.51,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "HLT",
+     "name": "HLT",
+     "shares": 1.0,
+     "entry_price": 373.21651499999996,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 373.03,
+     "target_price": 428.9844999999999,
+     "stop_price": 335.727,
+     "thesis": "A confirmed climb: up 20% over six months and 39% over the year, trading 93% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 373.03,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "FAST",
+     "name": "FAST",
+     "shares": 1.0,
+     "entry_price": 53.986979999999996,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 53.96,
+     "target_price": 62.053999999999995,
+     "stop_price": 48.564,
+     "thesis": "A confirmed climb: up 24% over six months and 37% over the year, trading 87% of the way up its 52-week range with moderate (20%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 53.96,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "GWW",
+     "name": "GWW",
+     "shares": 1.0,
+     "entry_price": 1448.84406,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 1448.12,
+     "target_price": 1665.3379999999997,
+     "stop_price": 1303.308,
+     "thesis": "A confirmed climb: up 19% over six months and 61% over the year, trading 88% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 1448.12,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "AAPL",
+     "name": "AAPL",
+     "shares": 1.0,
+     "entry_price": 352.626225,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 352.45,
+     "target_price": 405.31749999999994,
+     "stop_price": 317.205,
+     "thesis": "A confirmed climb: up 18% over six months and 32% over the year, trading 93% of the way up its 52-week range with moderate (22%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 352.45,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "CB",
+     "name": "CB",
+     "shares": 1.0,
+     "entry_price": 371.20550999999995,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 371.02,
+     "target_price": 426.67299999999994,
+     "stop_price": 333.918,
+     "thesis": "A confirmed climb: up 17% over six months and 27% over the year, trading 86% of the way up its 52-week range with moderate (18%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 371.02,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "REGN",
+     "name": "REGN",
+     "shares": 1.0,
+     "entry_price": 946.002765,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 945.53,
+     "target_price": 1087.3594999999998,
+     "stop_price": 850.977,
+     "thesis": "A confirmed climb: up 34% over six months and 36% over the year, trading 88% of the way up its 52-week range with moderate (40%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 945.53,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "PGR",
+     "name": "PGR",
+     "shares": 1.0,
+     "entry_price": 228.58423499999998,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 228.47,
+     "target_price": 262.7405,
+     "stop_price": 205.623,
+     "thesis": "A confirmed climb: up 19% over six months and 4% over the year, trading 76% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 228.47,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "DIS",
+     "name": "DIS",
+     "shares": 1.0,
+     "entry_price": 122.42117999999999,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 122.36,
+     "target_price": 140.714,
+     "stop_price": 110.124,
+     "thesis": "A confirmed climb: up 13% over six months and 12% over the year, trading 100% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 122.36,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "COST",
+     "name": "COST",
+     "shares": 1.0,
+     "entry_price": 1097.1683099999998,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 1096.62,
+     "target_price": 1261.1129999999998,
+     "stop_price": 986.958,
+     "thesis": "A confirmed climb: up 8% over six months and 21% over the year, trading 93% of the way up its 52-week range with moderate (20%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 1096.62,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "CL",
+     "name": "CL",
+     "shares": 1.0,
+     "entry_price": 98.899425,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 98.85,
+     "target_price": 113.67749999999998,
+     "stop_price": 88.965,
+     "thesis": "A confirmed climb: up 15% over six months and 29% over the year, trading 89% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 98.85,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "MO",
+     "name": "MO",
+     "shares": 1.0,
+     "entry_price": 76.29813,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 76.26,
+     "target_price": 87.699,
+     "stop_price": 68.634,
+     "thesis": "A confirmed climb: up 7% over six months and 33% over the year, trading 85% of the way up its 52-week range with moderate (23%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 76.26,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "TGT",
+     "name": "TGT",
+     "shares": 1.0,
+     "entry_price": 166.012965,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 165.93,
+     "target_price": 190.8195,
+     "stop_price": 149.33700000000002,
+     "thesis": "A confirmed climb: up 30% over six months and 80% over the year, trading 94% of the way up its 52-week range with moderate (32%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 165.93,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "ALL",
+     "name": "ALL",
+     "shares": 1.0,
+     "entry_price": 266.72329499999995,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 266.59,
+     "target_price": 306.57849999999996,
+     "stop_price": 239.93099999999998,
+     "thesis": "A confirmed climb: up 25% over six months and 30% over the year, trading 84% of the way up its 52-week range with moderate (27%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 266.59,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "ED",
+     "name": "ED",
+     "shares": 1.0,
+     "entry_price": 119.329635,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 119.27,
+     "target_price": 137.16049999999998,
+     "stop_price": 107.343,
+     "thesis": "A confirmed climb: up 11% over six months and 15% over the year, trading 87% of the way up its 52-week range with moderate (19%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 119.27,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "KR",
+     "name": "KR",
+     "shares": 1.0,
+     "entry_price": 69.084525,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 69.05,
+     "target_price": 79.40749999999998,
+     "stop_price": 62.144999999999996,
+     "thesis": "A confirmed climb: up 6% over six months and 7% over the year, trading 66% of the way up its 52-week range with moderate (29%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 69.05,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "SPG",
+     "name": "SPG",
+     "shares": 1.0,
+     "entry_price": 231.49569,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 231.38,
+     "target_price": 266.087,
+     "stop_price": 208.242,
+     "thesis": "A confirmed climb: up 14% over six months and 27% over the year, trading 88% of the way up its 52-week range with moderate (18%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 231.38,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "KDP",
+     "name": "KDP",
+     "shares": 1.0,
+     "entry_price": 35.027505,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 35.01,
+     "target_price": 40.2615,
+     "stop_price": 31.509,
+     "thesis": "A confirmed climb: up 20% over six months and 29% over the year, trading 76% of the way up its 52-week range with moderate (33%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 35.01,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "JNJ",
+     "name": "JNJ",
+     "shares": 1.0,
+     "entry_price": 272.83635,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 272.7,
+     "target_price": 313.60499999999996,
+     "stop_price": 245.43,
+     "thesis": "A confirmed climb: up 21% over six months and 40% over the year, trading 81% of the way up its 52-week range with moderate (25%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 272.7,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
+    },
+    {
+     "symbol": "DRI",
+     "name": "DRI",
+     "shares": 1.0,
+     "entry_price": 239.33961,
+     "entry_date": "2026-11-18",
+     "raw_entry_price": 239.22,
+     "target_price": 275.10299999999995,
+     "stop_price": 215.298,
+     "thesis": "A confirmed climb: up 19% over six months and 35% over the year, trading 100% of the way up its 52-week range with moderate (29%) volatility. Target +15%, stop \u221210%, and it steps aside if the trend breaks.",
+     "last_price": 239.22,
+     "bars_held": 0,
+     "splits_applied": [],
+     "divs_credited": []
     }
    ],
    "closed": [
@@ -835,12 +1232,24 @@
      "slippage_bps": 5,
      "pnl_pct": -10.71,
      "reason": "stop loss"
+    },
+    {
+     "symbol": "UNH",
+     "name": "UNH",
+     "entry_date": "2026-08-04",
+     "entry_price": 407.7538,
+     "exit_date": "2026-11-18",
+     "exit_price": 349.735,
+     "raw_exit_price": 349.91,
+     "slippage_bps": 5,
+     "pnl_pct": -14.23,
+     "reason": "stop loss"
     }
    ],
    "cooldown": {
-    "STT": "2026-11-06"
+    "UNH": "2026-11-18"
    },
-   "last_eval_date": "2026-11-17",
+   "last_eval_date": "2026-11-18",
    "activity": [
     {
      "date": "2026-08-04",
@@ -957,10 +1366,110 @@
     {
      "date": "2026-11-05",
      "text": "+$3,862 added to the pot to fund 23 new recommendation(s)"
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY MSI @ $524.53 \u2014 A confirmed climb: up 32% over six months and 39% over the year, trading 87% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY PG @ $170.29 \u2014 A confirmed climb: up 20% over six months and 18% over the year, trading 91% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY EW @ $105.23 \u2014 A confirmed climb: up 30% over six months and 24% over the year, trading 92% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY MAR @ $425.90 \u2014 A confirmed climb: up 20% over six months and 49% over the year, trading 95% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY ULTA @ $648.51 \u2014 A confirmed climb: up 29% over six months and 26% over the year, trading 76% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY HLT @ $373.03 \u2014 A confirmed climb: up 20% over six months and 39% over the year, trading 93% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY FAST @ $53.96 \u2014 A confirmed climb: up 24% over six months and 37% over the year, trading 87% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY GWW @ $1,448.12 \u2014 A confirmed climb: up 19% over six months and 61% over the year, trading 88% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY AAPL @ $352.45 \u2014 A confirmed climb: up 18% over six months and 32% over the year, trading 93% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY CB @ $371.02 \u2014 A confirmed climb: up 17% over six months and 27% over the year, trading 86% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY REGN @ $945.53 \u2014 A confirmed climb: up 34% over six months and 36% over the year, trading 88% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY PGR @ $228.47 \u2014 A confirmed climb: up 19% over six months and 4% over the year, trading 76% of t"
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY DIS @ $122.36 \u2014 A confirmed climb: up 13% over six months and 12% over the year, trading 100% of"
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY COST @ $1,096.62 \u2014 A confirmed climb: up 8% over six months and 21% over the year, trading 93% of t"
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY CL @ $98.85 \u2014 A confirmed climb: up 15% over six months and 29% over the year, trading 89% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY MO @ $76.26 \u2014 A confirmed climb: up 7% over six months and 33% over the year, trading 85% of t"
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY TGT @ $165.93 \u2014 A confirmed climb: up 30% over six months and 80% over the year, trading 94% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY ALL @ $266.59 \u2014 A confirmed climb: up 25% over six months and 30% over the year, trading 84% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY ED @ $119.27 \u2014 A confirmed climb: up 11% over six months and 15% over the year, trading 87% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY KR @ $69.05 \u2014 A confirmed climb: up 6% over six months and 7% over the year, trading 66% of th"
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY SPG @ $231.38 \u2014 A confirmed climb: up 14% over six months and 27% over the year, trading 88% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY KDP @ $35.01 \u2014 A confirmed climb: up 20% over six months and 29% over the year, trading 76% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY JNJ @ $272.70 \u2014 A confirmed climb: up 21% over six months and 40% over the year, trading 81% of "
+    },
+    {
+     "date": "2026-11-18",
+     "text": "BUY DRI @ $239.22 \u2014 A confirmed climb: up 19% over six months and 35% over the year, trading 100% of"
+    },
+    {
+     "date": "2026-11-18",
+     "text": "+$4,943 added to the pot to fund 24 new recommendation(s)"
     }
    ],
-   "units": 13548.626154959822,
-   "contributed": 13862.200997294936
+   "units": 18350.437373656965,
+   "contributed": 18805.44974176847
   },
   "longterm": {
    "cash": 0.0,
@@ -974,8 +1483,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "S&P 500 core \u2014 owns the 500 biggest US companies",
-     "last_price": 673.19,
-     "bars_held": 28,
+     "last_price": 671.31,
+     "bars_held": 29,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -989,8 +1498,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Nasdaq-100 \u2014 concentrated big-tech growth",
-     "last_price": 656.95,
-     "bars_held": 28,
+     "last_price": 659.51,
+     "bars_held": 29,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -1004,8 +1513,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Dividend quality \u2014 cash-generating value companies",
-     "last_price": 35.31,
-     "bars_held": 28,
+     "last_price": 34.7,
+     "bars_held": 29,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -1019,8 +1528,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "International \u2014 diversification outside the US",
-     "last_price": 80.11,
-     "bars_held": 28,
+     "last_price": 79.24,
+     "bars_held": 29,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -1034,8 +1543,8 @@
      "target_price": null,
      "stop_price": null,
      "thesis": "Bonds \u2014 ballast that cushions stock drawdowns",
-     "last_price": 70.71,
-     "bars_held": 28,
+     "last_price": 70.87,
+     "bars_held": 29,
      "splits_applied": [],
      "divs_credited": [],
      "missing_runs": 0
@@ -1043,7 +1552,7 @@
    ],
    "closed": [],
    "cooldown": {},
-   "last_eval_date": "2026-11-17",
+   "last_eval_date": "2026-11-18",
    "activity": [
     {
      "date": "2026-07-31",
@@ -1887,7 +2396,7 @@
     "CELH": "2026-08-24",
     "UPST": "2026-08-26"
    },
-   "last_eval_date": "2026-11-17",
+   "last_eval_date": "2026-11-18",
    "activity": [
     {
      "date": "2026-07-31",
@@ -2333,10 +2842,17 @@
    "growth": 10508.41,
    "longterm": 9867.3,
    "benchmark": 9804.69
+  },
+  "2026-11-18": {
+   "daytrade": 9544.55,
+   "aggressive": 9253.26,
+   "growth": 10293.71,
+   "longterm": 9819.27,
+   "benchmark": 9774.71
   }
  },
- "runs": 39,
- "last_run_utc": "2026-11-18T08:34:18Z",
+ "runs": 40,
+ "last_run_utc": "2026-11-19T04:37:48Z",
  "intraday": {
   "date": "2026-08-26",
   "marks": {
